@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 
 import NotificationCard from "@/components/NotificationCard";
 
@@ -82,4 +82,4 @@ const notification = () => {
   );
 };
 
-export default notification;
+export default memo(notification);

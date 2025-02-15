@@ -1,5 +1,5 @@
 import { ScrollView, Text } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import CourseCard from "@/components/CourseCard";
 
 const index = () => {
@@ -15,4 +15,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default memo(index);

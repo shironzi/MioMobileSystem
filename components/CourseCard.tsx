@@ -1,13 +1,15 @@
 import { Text, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
-import React from "react";
+import React, { memo } from "react";
 import { useRouter } from "expo-router";
 
 const CourseCard = () => {
   const router = useRouter();
 
   return (
-    <TouchableOpacity onPress={() => router.navigate("/course/courseDetails")}>
+    <TouchableOpacity
+      onPress={() => router.navigate("/(course)/courseDetails")}
+    >
       <Card containerStyle={{ borderRadius: 10 }}>
         <Card.Image
           source={{
@@ -21,4 +23,4 @@ const CourseCard = () => {
   );
 };
 
-export default CourseCard;
+export default memo(CourseCard);

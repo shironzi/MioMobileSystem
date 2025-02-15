@@ -1,8 +1,7 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { Card } from "@rneui/themed";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
-import Foundation from "@expo/vector-icons/Foundation";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -16,26 +15,35 @@ const NotificationCard = (props: {
 }) => {
   const router = useRouter();
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    });
-  };
+  const formatDate = useCallback(
+    (date: Date) => {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    },
+    [Date]
+  );
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return date.toDateString() === today.toDateString();
-  };
+  const isToday = useCallback(
+    (date: Date) => {
+      const today = new Date();
+      return date.toDateString() === today.toDateString();
+    },
+    [Date]
+  );
 
-  const isYesterday = (date: Date) => {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return date.toDateString() === yesterday.toDateString();
-  };
+  const isYesterday = useCallback(
+    (date: Date) => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      return date.toDateString() === yesterday.toDateString();
+    },
+    [Date]
+  );
 
-  const renderIcon = () => {
+  const renderIcon = useCallback(() => {
     switch (props.type.toLowerCase()) {
       case "activity":
         return (
@@ -76,14 +84,14 @@ const NotificationCard = (props: {
       default:
         return null;
     }
-  };
+  }, [props.type]);
 
   return (
     <TouchableOpacity
       onPress={() =>
         props.type.toLowerCase() === "message"
-          ? router.navigate("/notification/messageDetails")
-          : router.navigate("/notification/notificationDetails")
+          ? router.navigate("/(notification)/messageDetails")
+          : router.navigate("/(notification)/notificationDetails")
       }
     >
       <Card containerStyle={{ paddingLeft: 0, margin: 0 }}>
@@ -141,4 +149,4 @@ const NotificationCard = (props: {
   );
 };
 
-export default NotificationCard;
+export default memo(NotificationCard);
