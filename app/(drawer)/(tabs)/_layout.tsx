@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
+import { DrawerToggleButton } from "@react-navigation/drawer";
 
 export default function Layout() {
   return (
@@ -16,12 +17,12 @@ export default function Layout() {
           paddingTop: 10,
           paddingBottom: 10,
         },
+        headerLeft: () => <DrawerToggleButton />,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          headerShown: false,
           tabBarLabel: () => <Text style={{ color: "white" }}>Dashboard</Text>,
           tabBarIcon: () => <Ionicons name="apps" size={24} color="white" />,
         }}
@@ -29,7 +30,6 @@ export default function Layout() {
       <Tabs.Screen
         name="notification"
         options={{
-          headerShown: false,
           tabBarLabel: () => (
             <Text style={{ color: "white" }}>Notification</Text>
           ),
@@ -41,7 +41,6 @@ export default function Layout() {
       <Tabs.Screen
         name="inbox"
         options={{
-          headerShown: false,
           tabBarLabel: () => <Text style={{ color: "white" }}>Inbox</Text>,
           tabBarIcon: () => <Feather name="mail" size={24} color="white" />,
         }}
