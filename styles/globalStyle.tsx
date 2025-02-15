@@ -7,6 +7,10 @@ const globalStyle = StyleSheet.create({
   primaryBg: {
     backgroundColor: "#2264DC",
   },
+  header: {
+    fontSize: 16,
+    fontWeight: 400,
+  },
 });
 
 export default globalStyle;

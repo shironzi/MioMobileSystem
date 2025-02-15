@@ -8,6 +8,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import globalStyle from "@/styles/globalStyle";
+import { router } from "expo-router";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -53,7 +54,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label={"Profile"}
         labelStyle={{ color: "#fff" }}
         onPress={() => {
-          props.navigation.navigate("profile");
+          router.navigate("profile");
         }}
         icon={() => <MaterialIcons name="person" size={30} color="#fff" />}
         style={{ width: "60%", margin: "auto" }}
@@ -62,7 +63,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label={"Calendar"}
         labelStyle={{ color: "#fff" }}
         onPress={() => {
-          props.navigation.navigate("calendar");
+          router.navigate("calendar");
         }}
         icon={() => <AntDesign name="calendar" size={30} color="#fff" />}
         style={{ width: "60%", margin: "auto" }}
@@ -71,7 +72,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label={"Help & Support"}
         labelStyle={{ color: "#fff" }}
         onPress={() => {
-          props.navigation.navigate("calendar");
+          router.navigate("calendar");
         }}
         icon={() => (
           <MaterialCommunityIcons name="help-circle" size={30} color="white" />
@@ -82,7 +83,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label={"Logout"}
         labelStyle={{ color: "#fff" }}
         onPress={() => {
-          props.navigation.navigate("calendar");
+          router.navigate("calendar");
         }}
         icon={() => <AntDesign name="logout" size={30} color="white" />}
         style={{ width: "60%", margin: "auto" }}

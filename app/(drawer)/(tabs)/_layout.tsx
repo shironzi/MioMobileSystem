@@ -25,6 +25,7 @@ export default function Layout() {
         options={{
           tabBarLabel: () => <Text style={{ color: "white" }}>Dashboard</Text>,
           tabBarIcon: () => <Ionicons name="apps" size={24} color="white" />,
+          headerTitle: () => <Text style={{ color: "black" }}>Dashboard</Text>,
         }}
       />
       <Tabs.Screen
@@ -36,6 +37,9 @@ export default function Layout() {
           tabBarIcon: () => (
             <Ionicons name="notifications" size={24} color="white" />
           ),
+          headerTitle: () => (
+            <Text style={{ color: "black", fontSize: 18 }}>Notification</Text>
+          ),
         }}
       />
       <Tabs.Screen
@@ -43,6 +47,11 @@ export default function Layout() {
         options={{
           tabBarLabel: () => <Text style={{ color: "white" }}>Inbox</Text>,
           tabBarIcon: () => <Feather name="mail" size={24} color="white" />,
+          headerTitle: () => (
+            <Text style={{ color: "black", fontSize: 16, marginLeft: 10 }}>
+              Inbox
+            </Text>
+          ),
         }}
       />
     </Tabs>
