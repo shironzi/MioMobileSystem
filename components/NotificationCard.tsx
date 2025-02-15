@@ -139,7 +139,7 @@ const NotificationCard = (props: {
               style={{ fontSize: 14, marginTop: 5, height: 60, width: 300 }}
             >
               {props.desc.length > 100
-                ? props.desc.substring(0, 150 - 3) + "..."
+                ? props.desc.substring(0, 100 - 3) + "..."
                 : props.desc}
             </Text>
           </View>
