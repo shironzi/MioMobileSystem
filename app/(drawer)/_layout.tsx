@@ -9,6 +9,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import globalStyle from "@/styles/globalStyle";
 import { router } from "expo-router";
+import { withTheme } from "@rneui/themed";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -38,18 +39,27 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       >
         <Image
           source={{
-            uri: "https://scontent.fcrk3-3.fna.fbcdn.net/v/t39.30808-6/453753078_3841543359397752_1250767487900252619_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEno1FjlnSmpa43ISrhtDhsXPEaLFlSVnRc8RosWVJWdJAWTFBJGpYMiKZi0OuoxTp2Vj_9dAreqKKDt3pgxddV&_nc_ohc=76n1KV2pTvQQ7kNvgHFfngz&_nc_oc=AdhqK6Go57yQsn3kFArBeo2XmGBHQ7r_Ggg_FQ7KiA9ctSlCtCdTcQU7on3eVuQeI_0&_nc_zt=23&_nc_ht=scontent.fcrk3-3.fna&_nc_gid=AVjH3czmHKYSSI8SETaRQ0y&oh=00_AYAhPi0iT8JxzhXgwR_q3Ave3PuYaN4agNBF_chLxIeoCg&oe=67B67C07",
+            uri: "https://scontent.fmnl30-2.fna.fbcdn.net/v/t39.30808-6/473547042_2064844093944288_35658282325017136_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeFb9Md8FoOgmLR21SVbpZvb2nz24s_aBHnafPbiz9oEeUJy40_mCUDnVSIpvwNAzNbGRSbeIy-YvhITNAT868U1&_nc_ohc=1nP6U0eCltgQ7kNvgFDIvhV&_nc_oc=AdhJNEvp15SOaPWvx9C1wsVVQeoKjq__CYlM_rJtmfNLTtwKUXln_1oHh4tae2eOAvQ&_nc_zt=23&_nc_ht=scontent.fmnl30-2.fna&_nc_gid=AIzWrGR0qsIgFV1cFXXXY9K&oh=00_AYD_2BoGL3MIWaVoLP_CcnMbbnZcX3gchnonXpdyqLZPsw&oe=67B76D5B"
           }}
           width={80}
           height={80}
           style={{
             borderRadius: 180,
+            borderWidth: 3,
+            borderColor: "#fff"
           }}
         />
-        <Text style={{ fontSize: 16, fontWeight: "500", color: "#fff" }}>
-          Aaron Josh Baon
-        </Text>
+       <View>
+          <Text style={{ fontSize: 16, fontWeight: "500", color: "#fff" }}>
+            Ava Samantha Arce
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "300", color: "#fff", textAlign:"left" }}>
+            SI0001
+          </Text>
+        </View>
+
       </View>
+      
       <DrawerItem
         label={"Profile"}
         labelStyle={{ color: "#fff" }}
@@ -58,7 +68,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
           props.navigation.closeDrawer();
         }}
         icon={() => <MaterialIcons name="person" size={30} color="#fff" />}
-        style={{ width: "60%", margin: "auto" }}
+        style={{ width: "70%", margin: "auto" }}
       />
       <DrawerItem
         label={"Calendar"}
@@ -68,7 +78,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
           props.navigation.closeDrawer();
         }}
         icon={() => <AntDesign name="calendar" size={30} color="#fff" />}
-        style={{ width: "60%", margin: "auto" }}
+        style={{ width: "70%", margin: "auto" }}
       />
       <DrawerItem
         label={"Help & Support"}
@@ -80,7 +90,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         icon={() => (
           <MaterialCommunityIcons name="help-circle" size={30} color="white" />
         )}
-        style={{ width: "60%", margin: "auto" }}
+        style={{ width: "70%", margin: "auto" }}
       />
       <DrawerItem
         label={"Logout"}
@@ -90,7 +100,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
           props.navigation.closeDrawer();
         }}
         icon={() => <AntDesign name="logout" size={30} color="white" />}
-        style={{ width: "60%", margin: "auto" }}
+        style={{ width: "70%", margin: "auto" }}
       />
     </DrawerContentScrollView>
   );
