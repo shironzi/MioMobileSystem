@@ -16,23 +16,16 @@ const data = [
 
 const courses = [
   { title: "Academic", section: "tw23", courseType: courseType.academic },
+  { title: "Academic", section: "tw23", courseType: courseType.academic },
+  { title: "Academic", section: "tw23", courseType: courseType.academic },
+  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
+  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
+  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
+  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
   { title: "Specialized", section: "tw23", courseType: courseType.specialized },
 ];
 
-// const DropdownComponent = ({
-//   onValueChange,
-// }: {
-//   onValueChange: (value: string) => void;
-// }) => {
-//   return (
-
-//   );
-// };
-
 const Index = () => {
-  const [selectedCourseType, setSelectedCourseType] =
-    useState<string>("academic");
-
   const [selectedValue, setSelectedValue] = useState("academic");
 
   return (
@@ -59,17 +52,17 @@ const Index = () => {
             labelField="label"
             valueField="value"
             onChange={(item) => {
-              setSelectedCourseType(item.value);
+              setSelectedValue(item.value);
             }}
           />
         </View>
       </View>
       <ScrollView>
-        {courses?.map((course) => {
-          if (course.courseType === selectedCourseType) {
+        {courses?.map((course, index) => {
+          if (course.courseType === selectedValue) {
             return (
               <SpecializedCard
-                key={course.title}
+                key={index}
                 courseTitle={course.title}
                 courseSection={course.section}
               />
