@@ -1,24 +1,39 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState, memo } from "react";
-import CourseCard from "@/components/CourseCard";
-import SpecializedCard from "@/components/SpecializedCard"; // Import SpecializedCard
-import { Dropdown } from "react-native-element-dropdown"; 
+import SpecializedCard from "@/components/SpecializedCard";
+import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
+enum courseType {
+  academic = "academic",
+  specialized = "specialized",
+}
 
 const data = [
   { label: "Academic Courses", value: "academic" },
   { label: "Specialized Courses", value: "specialized" },
 ];
 
-const DropdownComponent = ({ onValueChange }: { onValueChange: (value: string) => void }) => {
+const courses = [
+  { title: "course 1", section: "tw23", courseType: courseType.academic },
+  { title: "course 2", section: "tw23", courseType: courseType.specialized },
+];
+
+const DropdownComponent = ({
+  onValueChange,
+}: {
+  onValueChange: (value: string) => void;
+}) => {
   const [selectedValue, setSelectedValue] = useState("academic");
 
   return (
     <View style={styles.dropdownContainer}>
-      <Dropdown 
+      <Dropdown
         style={styles.dropdown}
         selectedTextStyle={styles.selectedTextStyle}
-        renderRightIcon={() => <MaterialIcons name="keyboard-arrow-down" style={styles.iconStyle} />}
+        renderRightIcon={() => (
+          <MaterialIcons name="keyboard-arrow-down" style={styles.iconStyle} />
+        )}
         data={data}
         value={selectedValue}
         labelField="label"
@@ -33,7 +48,8 @@ const DropdownComponent = ({ onValueChange }: { onValueChange: (value: string) =
 };
 
 const Index = () => {
-  const [selectedCourseType, setSelectedCourseType] = useState<string>("academic");
+  const [selectedCourseType, setSelectedCourseType] =
+    useState<string>("academic");
 
   return (
     <ScrollView>
@@ -44,21 +60,11 @@ const Index = () => {
 
       {selectedCourseType === "academic" ? (
         <>
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
+          <SpecializedCard courseTitle="course 1" courseSection="TW23" />
         </>
       ) : (
         <>
-          <SpecializedCard />
-          <SpecializedCard />
-          <SpecializedCard />
-          <SpecializedCard />
-          <SpecializedCard />
-          <SpecializedCard />
+          <SpecializedCard courseTitle="course 1" courseSection="TW23" />
         </>
       )}
     </ScrollView>

@@ -8,8 +8,6 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import globalStyle from "@/styles/globalStyle";
-import { router } from "expo-router";
-import { withTheme } from "@rneui/themed";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -39,27 +37,33 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       >
         <Image
           source={{
-            uri: "https://scontent.fmnl30-2.fna.fbcdn.net/v/t39.30808-6/473547042_2064844093944288_35658282325017136_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeFb9Md8FoOgmLR21SVbpZvb2nz24s_aBHnafPbiz9oEeUJy40_mCUDnVSIpvwNAzNbGRSbeIy-YvhITNAT868U1&_nc_ohc=1nP6U0eCltgQ7kNvgFDIvhV&_nc_oc=AdhJNEvp15SOaPWvx9C1wsVVQeoKjq__CYlM_rJtmfNLTtwKUXln_1oHh4tae2eOAvQ&_nc_zt=23&_nc_ht=scontent.fmnl30-2.fna&_nc_gid=AIzWrGR0qsIgFV1cFXXXY9K&oh=00_AYD_2BoGL3MIWaVoLP_CcnMbbnZcX3gchnonXpdyqLZPsw&oe=67B76D5B"
+            uri: "https://scontent.fmnl30-2.fna.fbcdn.net/v/t39.30808-6/473547042_2064844093944288_35658282325017136_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeFb9Md8FoOgmLR21SVbpZvb2nz24s_aBHnafPbiz9oEeUJy40_mCUDnVSIpvwNAzNbGRSbeIy-YvhITNAT868U1&_nc_ohc=1nP6U0eCltgQ7kNvgFDIvhV&_nc_oc=AdhJNEvp15SOaPWvx9C1wsVVQeoKjq__CYlM_rJtmfNLTtwKUXln_1oHh4tae2eOAvQ&_nc_zt=23&_nc_ht=scontent.fmnl30-2.fna&_nc_gid=AIzWrGR0qsIgFV1cFXXXY9K&oh=00_AYD_2BoGL3MIWaVoLP_CcnMbbnZcX3gchnonXpdyqLZPsw&oe=67B76D5B",
           }}
           width={80}
           height={80}
           style={{
             borderRadius: 180,
             borderWidth: 3,
-            borderColor: "#fff"
+            borderColor: "#fff",
           }}
         />
-       <View>
+        <View>
           <Text style={{ fontSize: 16, fontWeight: "500", color: "#fff" }}>
             Ava Samantha Arce
           </Text>
-          <Text style={{ fontSize: 14, fontWeight: "300", color: "#fff", textAlign:"left" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "300",
+              color: "#fff",
+              textAlign: "left",
+            }}
+          >
             SI0001
           </Text>
         </View>
-
       </View>
-      
+
       <DrawerItem
         label={"Profile"}
         labelStyle={{ color: "#fff" }}

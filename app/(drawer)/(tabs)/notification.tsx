@@ -5,6 +5,8 @@ import NotificationCard from "@/components/NotificationCard";
 
 const notification = () => {
   return (
+    // edit notification per day
+
     <ScrollView>
       <NotificationCard
         title="Notification Title"
