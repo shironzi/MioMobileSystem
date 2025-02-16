@@ -15,59 +15,70 @@ const data = [
 ];
 
 const courses = [
-  { title: "course 1", section: "tw23", courseType: courseType.academic },
-  { title: "course 2", section: "tw23", courseType: courseType.specialized },
+  { title: "Academic", section: "tw23", courseType: courseType.academic },
+  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
 ];
 
-const DropdownComponent = ({
-  onValueChange,
-}: {
-  onValueChange: (value: string) => void;
-}) => {
-  const [selectedValue, setSelectedValue] = useState("academic");
+// const DropdownComponent = ({
+//   onValueChange,
+// }: {
+//   onValueChange: (value: string) => void;
+// }) => {
+//   return (
 
-  return (
-    <View style={styles.dropdownContainer}>
-      <Dropdown
-        style={styles.dropdown}
-        selectedTextStyle={styles.selectedTextStyle}
-        renderRightIcon={() => (
-          <MaterialIcons name="keyboard-arrow-down" style={styles.iconStyle} />
-        )}
-        data={data}
-        value={selectedValue}
-        labelField="label"
-        valueField="value"
-        onChange={(item) => {
-          setSelectedValue(item.value);
-          onValueChange?.(item.value);
-        }}
-      />
-    </View>
-  );
-};
+//   );
+// };
 
 const Index = () => {
   const [selectedCourseType, setSelectedCourseType] =
     useState<string>("academic");
 
-  return (
-    <ScrollView>
-      <View style={styles.headerContainer}>
-        <Text style={styles.courseTitle}>Courses</Text>
-        <DropdownComponent onValueChange={setSelectedCourseType} />
-      </View>
+  const [selectedValue, setSelectedValue] = useState("academic");
 
-      {selectedCourseType === "academic" ? (
-        <>
-          <SpecializedCard courseTitle="course 1" courseSection="TW23" />
-        </>
-      ) : (
-        <>
-          <SpecializedCard courseTitle="course 1" courseSection="TW23" />
-        </>
-      )}
-    </ScrollView>
+  return (
+    <View>
+      <View
+        style={{
+          display: "flex",
+          ...styles.headerContainer,
+        }}
+      >
+        <Text style={styles.courseTitle}>Courses</Text>
+        <View style={styles.dropdownContainer}>
+          <Dropdown
+            style={styles.dropdown}
+            selectedTextStyle={styles.selectedTextStyle}
+            renderRightIcon={() => (
+              <MaterialIcons
+                name="keyboard-arrow-down"
+                style={styles.iconStyle}
+              />
+            )}
+            data={data}
+            value={selectedValue}
+            labelField="label"
+            valueField="value"
+            onChange={(item) => {
+              setSelectedCourseType(item.value);
+            }}
+          />
+        </View>
+      </View>
+      <ScrollView>
+        {courses?.map((course) => {
+          if (course.courseType === selectedCourseType) {
+            return (
+              <SpecializedCard
+                key={course.title}
+                courseTitle={course.title}
+                courseSection={course.section}
+              />
+            );
+          }
+          return null;
+        })}
+      </ScrollView>
+    </View>
   );
 };
 
