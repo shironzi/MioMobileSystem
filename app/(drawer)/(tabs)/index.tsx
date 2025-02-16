@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState, memo } from "react";
 import CourseCard from "@/components/CourseCard";
+import SpecializedCard from "@/components/SpecializedCard"; // Import SpecializedCard
 import { Dropdown } from "react-native-element-dropdown"; 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -17,7 +18,6 @@ const DropdownComponent = ({ onValueChange }: { onValueChange: (value: string) =
       <Dropdown 
         style={styles.dropdown}
         selectedTextStyle={styles.selectedTextStyle}
-        // containerStyle={styles.dropdownList} 
         renderRightIcon={() => <MaterialIcons name="keyboard-arrow-down" style={styles.iconStyle} />}
         data={data}
         value={selectedValue}
@@ -41,7 +41,8 @@ const Index = () => {
         <Text style={styles.courseTitle}>Courses</Text>
         <DropdownComponent onValueChange={setSelectedCourseType} />
       </View>
-      {selectedCourseType === "academic" && (
+
+      {selectedCourseType === "academic" ? (
         <>
           <CourseCard />
           <CourseCard />
@@ -49,6 +50,15 @@ const Index = () => {
           <CourseCard />
           <CourseCard />
           <CourseCard />
+        </>
+      ) : (
+        <>
+          <SpecializedCard />
+          <SpecializedCard />
+          <SpecializedCard />
+          <SpecializedCard />
+          <SpecializedCard />
+          <SpecializedCard />
         </>
       )}
     </ScrollView>
@@ -58,7 +68,7 @@ const Index = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     marginTop: 10,
@@ -73,13 +83,8 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingHorizontal: 10,
-    // borderColor: "#000",
     paddingVertical: 8,
   },
-  // dropdownList: {
-  //  borderEndWidth: 3,
-  //  borderColor: "#FFF18",
-  // },
   selectedTextStyle: {
     color: "#FFBF18",
     fontSize: 14,

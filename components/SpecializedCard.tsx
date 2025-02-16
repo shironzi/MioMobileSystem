@@ -10,15 +10,15 @@ const SpecializedCard = () => {
     <TouchableOpacity
       onPress={() => router.navigate("/(course)/specializedDetails")}
     >
-      <Card containerStyle={{ borderRadius: 10 }}>
-        <Card.Image
-          source={{
-            uri: "https://media.istockphoto.com/id/486555606/vector/black-vector-grunge-stamp-sample.jpg?s=612x612&w=0&k=20&c=IL8MiWgIr3okKuK4ZuA2qmEU2YlIFSfyQYZCDAA6MIY=",
-          }}
-        />
-        <Text>Course Title</Text>
-        <Text>Course Section</Text>
-      </Card>
+    <Card containerStyle={{ borderRadius: 10, backgroundColor: "#f0f0f0" }}>
+      <Card.Image
+        source={{
+        uri: "https://pic-bstarstatic.akamaized.net/ugc/093038ab9a4a29b0d4d6edb0575c82a7.jpg",
+        }}
+      />
+      <Text style={{ color: "#333" }}>Course Title</Text>
+      <Text style={{ color: "#666" }}>Course Section</Text>
+    </Card>
     </TouchableOpacity>
   );
 };
