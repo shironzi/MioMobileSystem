@@ -11,6 +11,10 @@ const globalStyle = StyleSheet.create({
     fontSize: 16,
     fontWeight: 400,
   },
+  container: {
+    marginLeft: 15,
+    marginRight: 15,
+  },
 });
 
 export default globalStyle;

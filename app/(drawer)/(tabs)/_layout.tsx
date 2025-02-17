@@ -1,10 +1,39 @@
 import { Tabs } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import { DrawerToggleButton } from "@react-navigation/drawer";
-import { Icon } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import {
+  CourseCardViewProvider,
+  CourseCardViewContext,
+} from "@/components/contexts/CourseCardViewContext";
+import { useContext } from "react";
+
+function HeaderRightToggle() {
+  const { toggleCourseCardView } = useContext(CourseCardViewContext);
+  const { courseCardView } = useContext(CourseCardViewContext);
+  return (
+    <Pressable onPress={toggleCourseCardView}>
+      {courseCardView ? (
+        <MaterialIcons
+          name="splitscreen"
+          size={24}
+          color="white"
+          style={{ marginRight: 15 }}
+        />
+      ) : (
+        <AntDesign
+          name="appstore1"
+          size={24}
+          color="white"
+          style={{ marginRight: 15 }}
+        />
+      )}
+    </Pressable>
+  );
+}
 
 export default function Layout() {
   return (

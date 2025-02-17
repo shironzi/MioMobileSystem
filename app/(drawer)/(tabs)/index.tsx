@@ -1,8 +1,10 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState, memo } from "react";
+import React, { useState, memo, useContext } from "react";
 import SpecializedCard from "@/components/SpecializedCard";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
+import globalStyle from "@/styles/globalStyle";
 
 enum courseType {
   academic = "academic",
@@ -27,15 +29,11 @@ const courses = [
 
 const Index = () => {
   const [selectedValue, setSelectedValue] = useState("academic");
+  const { courseCardView } = useContext(CourseCardViewContext);
 
   return (
-    <View>
-      <View
-        style={{
-          display: "flex",
-          ...styles.headerContainer,
-        }}
-      >
+    <View style={globalStyle.container}>
+      <View style={styles.courseContainer}>
         <Text style={styles.courseTitle}>Courses</Text>
         <View style={styles.dropdownContainer}>
           <Dropdown
@@ -57,15 +55,19 @@ const Index = () => {
           />
         </View>
       </View>
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={courseCardView ? styles.gridContainer : null}
+      >
         {courses?.map((course, index) => {
           if (course.courseType === selectedValue) {
             return (
-              <SpecializedCard
-                key={index}
-                courseTitle={course.title}
-                courseSection={course.section}
-              />
+              <View key={index} style={courseCardView ? styles.gridItem : null}>
+                <SpecializedCard
+                  courseTitle={course.title}
+                  courseSection={course.section}
+                />
+                <Text>{courseCardView}</Text>
+              </View>
             );
           }
           return null;
@@ -76,7 +78,8 @@ const Index = () => {
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  courseContainer: {
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
   dropdown: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     paddingVertical: 8,
   },
   selectedTextStyle: {
@@ -104,6 +107,14 @@ const styles = StyleSheet.create({
   iconStyle: {
     fontSize: 20,
     color: "#FFBF18",
+  },
+  gridContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  gridItem: {
+    width: "50%",
+    justifyContent: "center",
   },
 });
 

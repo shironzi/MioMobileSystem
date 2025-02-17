@@ -13,13 +13,32 @@ const SpecializedCard = (props: {
     <TouchableOpacity
       onPress={() => router.navigate("/(course)/specializedDetails")}
     >
-      <Card containerStyle={{ borderRadius: 10, backgroundColor: "#f0f0f0" }}>
+      <Card
+        containerStyle={{
+          borderRadius: 10,
+          backgroundColor: "#f0f0f0",
+          marginHorizontal: 5,
+          marginVertical: 0,
+        }}
+      >
         <Card.Image
           source={{
             uri: "https://pic-bstarstatic.akamaized.net/ugc/093038ab9a4a29b0d4d6edb0575c82a7.jpg",
           }}
+          style={{
+            borderRadius: 3,
+          }}
         />
-        <Text style={{ color: "#333" }}>{props.courseTitle}</Text>
+        <Text
+          style={{
+            color: "#333",
+            fontWeight: "bold",
+            fontSize: 16,
+            marginTop: 5,
+          }}
+        >
+          {props.courseTitle}
+        </Text>
         <Text style={{ color: "#666" }}>{props.courseSection}</Text>
       </Card>
     </TouchableOpacity>
