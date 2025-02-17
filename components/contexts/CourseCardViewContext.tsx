@@ -16,7 +16,7 @@ interface ProviderProps {
 
 export const CourseCardViewProvider = ({ children }: ProviderProps) => {
   const [courseCardView, setCourseCardView] = useState(true);
-  const toggleCourseCardView = () => setCourseCardView((prev) => !prev);
+  const toggleCourseCardView = () => setCourseCardView(!courseCardView);
 
   return (
     <CourseCardViewContext.Provider

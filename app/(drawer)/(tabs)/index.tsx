@@ -32,7 +32,7 @@ const Index = () => {
   const { courseCardView } = useContext(CourseCardViewContext);
 
   return (
-    <View style={globalStyle.container}>
+    <View>
       <View style={styles.courseContainer}>
         <Text style={styles.courseTitle}>Courses</Text>
         <View style={styles.dropdownContainer}>
@@ -56,7 +56,10 @@ const Index = () => {
         </View>
       </View>
       <ScrollView
-        contentContainerStyle={courseCardView ? styles.gridContainer : null}
+        contentContainerStyle={[
+          courseCardView ? styles.gridContainer : null,
+          globalStyle.container,
+        ]}
       >
         {courses?.map((course, index) => {
           if (course.courseType === selectedValue) {
