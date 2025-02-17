@@ -8,8 +8,6 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const NotificationCard = (props: {
   title: string;
-  date: Date;
-  time: string;
   desc: string;
   type: string;
 }) => {
@@ -117,23 +115,6 @@ const NotificationCard = (props: {
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                 {props.title}
               </Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  columnGap: 5,
-                }}
-              >
-                <Text style={{ fontSize: 15 }}>
-                  {isToday(props.date)
-                    ? "Today"
-                    : isYesterday(props.date)
-                    ? "Yesterday"
-                    : formatDate(props.date)}
-                </Text>
-                <Text style={{ fontSize: 15 }}>{props.time}</Text>
-              </View>
             </View>
             <Text
               style={{ fontSize: 14, marginTop: 5, height: 60, width: 300 }}
