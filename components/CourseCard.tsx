@@ -3,15 +3,12 @@ import { Card } from "@rneui/themed";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
 
-const SpecializedCard = (props: {
-  courseTitle: string;
-  courseSection: string;
-}) => {
+const CourseCard = (props: { courseTitle: string; courseSection: string }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(course)/specializedDetails")}
+      onPress={() => router.navigate("/(course)/courseDetails")}
     >
       <Card
         containerStyle={{
@@ -45,4 +42,4 @@ const SpecializedCard = (props: {
   );
 };
 
-export default memo(SpecializedCard);
+export default memo(CourseCard);

@@ -4,6 +4,9 @@ const globalStyle = StyleSheet.create({
   primary: {
     color: "#2264DC",
   },
+  secondary: {
+    color: "#F4F2F2",
+  },
   primaryBg: {
     backgroundColor: "#2264DC",
   },

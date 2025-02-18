@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState, memo, useContext } from "react";
-import SpecializedCard from "@/components/SpecializedCard";
+import SpecializedCard from "@/components/CourseCard";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
 import globalStyle from "@/styles/globalStyle";
+import CourseCard from "@/components/CourseCard";
 
 enum courseType {
   academic = "academic",
@@ -65,7 +66,7 @@ const Index = () => {
           if (course.courseType === selectedValue) {
             return (
               <View key={index} style={courseCardView ? styles.gridItem : null}>
-                <SpecializedCard
+                <CourseCard
                   courseTitle={course.title}
                   courseSection={course.section}
                 />
