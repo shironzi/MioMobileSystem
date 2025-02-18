@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import React, { memo } from "react";
 import MessageCard from "@/components/MessageCard";
 

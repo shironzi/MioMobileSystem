@@ -3,8 +3,6 @@ import { Card } from "@rneui/themed";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Entypo from "@expo/vector-icons/Entypo";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const MessageCard = (props: {
   title: string;

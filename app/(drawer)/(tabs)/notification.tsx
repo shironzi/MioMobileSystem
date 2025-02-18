@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import NotificationCard from "@/components/NotificationCard";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -64,8 +64,11 @@ const data = [
 const Notification = () => {
   const [expandedSections, setExpandedSections] = useState(new Set<string>());
 
-  const now = new Date();
-  const filteredData = data.filter((item) => now > item.date);
+  const now = useMemo(() => new Date(), []);
+  const filteredData = useMemo(
+    () => data.filter((item) => now > item.date),
+    []
+  );
 
   const sections = Object.values(
     filteredData.reduce((acc, item) => {
