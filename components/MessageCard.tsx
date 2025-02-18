@@ -24,22 +24,6 @@ const MessageCard = (props: {
     [Date]
   );
 
-  const isToday = useCallback(
-    (date: Date) => {
-      const today = new Date();
-      return date.toDateString() === today.toDateString();
-    },
-    [Date]
-  );
-
-  const isYesterday = useCallback(
-    (date: Date) => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      return date.toDateString() === yesterday.toDateString();
-    },
-    [Date]
-  );
   return (
     <TouchableOpacity
       onPress={() =>
@@ -48,21 +32,28 @@ const MessageCard = (props: {
           : router.navigate("/(notification)/notificationDetails")
       }
     >
-      <Card containerStyle={{ paddingLeft: 0, margin: 0 }}>
+      <Card
+        containerStyle={{
+          padding: 0,
+          margin: 0,
+          backgroundColor: "#f0f0f0",
+        }}
+      >
         <View
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             overflow: "hidden",
-            width: "100%",
+            height: 80,
+            marginTop: 10,
           }}
         >
           <MaterialIcons
             name="account-circle"
             size={45}
             color="black"
-            style={{ padding: 23 }}
+            style={{ paddingHorizontal: 20 }}
           />
           <View>
             <View
@@ -70,29 +61,14 @@ const MessageCard = (props: {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
               }}
             >
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                 {props.title}
               </Text>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  columnGap: 5,
-                }}
-              >
-                <Text style={{ fontSize: 15 }}>
-                  {isToday(props.date)
-                    ? "Today"
-                    : isYesterday(props.date)
-                    ? "Yesterday"
-                    : formatDate(props.date)}
-                </Text>
-                <Text style={{ fontSize: 15 }}>{props.time}</Text>
-              </View>
+              <Text style={{ fontSize: 12, marginTop: 5 }}>
+                {formatDate(props.date)}
+              </Text>
             </View>
             <Text
               style={{ fontSize: 14, marginTop: 5, height: 60, width: 300 }}

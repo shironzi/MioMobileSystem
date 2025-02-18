@@ -1,93 +1,127 @@
-import { ScrollView } from "react-native";
-import React, { memo } from "react";
+import { ScrollView, View, StyleSheet, Text } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import React, { memo, useCallback, useState } from "react";
 import MessageCard from "@/components/MessageCard";
 
-const inbox = () => {
+enum messageType {
+  inbox = "Inbox",
+  unread = "Unread",
+  sent = "Sent",
+  archived = "Archived",
+}
+
+const data = [
+  {
+    id: 1,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 2,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "unread",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "sent",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "archived",
+  },
+];
+
+const Inbox = () => {
+  const [selectedType, setSelectedType] = useState<messageType>(
+    messageType.inbox
+  );
+
   return (
-    <ScrollView>
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date("2025-02-14")}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date("2025-02-13")}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date("2025-02-12")}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-      <MessageCard
-        title="Message"
-        date={new Date(Date.now())}
-        time="10:00 AM"
-        desc={
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure, obcaecati fuga eum blanditiis, error cupiditate sit exercitationem, tempora laboriosam nisi sed molestiae impedit omnis. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit blanditiis officiis neque facilis veniam recusandae, dolore at inventore eum accusantium ut,tempora ad quos a dignissimos quae quam, odio tempore!"
-        }
-        type="message"
-      />
-    </ScrollView>
+    <View>
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageCateg}>{selectedType}</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={selectedType}
+            onValueChange={(itemValue: string) =>
+              setSelectedType(itemValue as messageType)
+            }
+            style={styles.picker}
+            mode="dropdown"
+          >
+            {Object.values(messageType).map((type) => (
+              <Picker.Item key={type} label={type} value={type} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
+      <ScrollView>
+        {data?.map((data) =>
+          data.messageType.toLocaleLowerCase() ===
+          selectedType.toLocaleLowerCase() ? (
+            <MessageCard
+              key={data.id}
+              title={data.title}
+              date={data.date}
+              desc={data.desc}
+              type={data.messageType}
+              time={data.date.toLocaleTimeString()}
+            />
+          ) : null
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
-export default memo(inbox);
+const styles = StyleSheet.create({
+  messageContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: 25,
+  },
+  messageCateg: {
+    fontSize: 20,
+  },
+  pickerWrapper: {
+    alignSelf: "flex-end",
+    width: 150,
+  },
+  picker: {
+    width: "100%",
+    color: "orange",
+  },
+  messageCard: {
+    backgroundColor: "black",
+  },
+});
+
+export default memo(Inbox);

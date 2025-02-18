@@ -94,7 +94,7 @@ export default function Layout() {
               <Text style={{ color: "white" }}>Notification</Text>
             ),
             tabBarIcon: ({ color }) => (
-              <Ionicons name="notifications" size={24} color={color} />
+              <Ionicons name="notifications-outline" size={24} color={color} />
             ),
             headerTitle: () => (
               <Text style={{ color: "white", fontSize: 18 }}>Notification</Text>
