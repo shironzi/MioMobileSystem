@@ -60,13 +60,6 @@ const Inbox = () => {
     messageType.inbox
   );
 
-  // const capitalizeFirstLetter = useCallback(
-  //   (str: string): string => {
-  //     return str.charAt(0).toUpperCase() + str.slice(1);
-  //   },
-  //   [selectedType]
-  // );
-
   return (
     <View>
       <View style={styles.messageContainer}>
