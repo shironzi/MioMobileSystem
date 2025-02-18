@@ -1,23 +1,36 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { memo, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { memo, useCallback, useEffect } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Link, useNavigation } from "expo-router";
+import { Link, useFocusEffect, useNavigation, useRouter } from "expo-router";
 
 import globalStyle from "@/styles/globalStyle";
 
 const courseDetails = () => {
   const navigation = useNavigation();
+  const router = useRouter();
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: "Course Details",
-      headerStyle: {
-        backgroundColor: "#2264DC",
-      },
-      headerTintColor: "#fff",
-    });
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerTitle: "Course Details",
+        headerStyle: {
+          backgroundColor: "#2264DC",
+        },
+        headerTintColor: "#fff",
+      });
+
+      return () => {
+        navigation.setOptions({
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "",
+          },
+          headerTintColor: "",
+        });
+      };
+    }, [navigation])
+  );
 
   return (
     <View style={[globalStyle.container, styles.container]}>
@@ -38,7 +51,13 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        <Link href={"/(course)/speechTrainingExercises"} style={styles.link}>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(
+            () => router.push("/(course)/speechTrainingExercises"),
+            []
+          )}
+        >
           <View style={styles.linkContent}>
             <MaterialIcons name="record-voice-over" size={40} color="#FFBF18" />
             <View style={styles.linkTextContainer}>
@@ -46,31 +65,49 @@ const courseDetails = () => {
               <Entypo name="chevron-small-right" size={30} color="#CCC" />
             </View>
           </View>
-        </Link>
-        <Link href={"/(course)/announcements"} style={styles.link}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(
+            () => router.push("/(course)/announcements"),
+            []
+          )}
+        >
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Announcements</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
-        </Link>
-        <Link href={"/(course)/assignments"} style={styles.link}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(() => router.push("/(course)/assignments"), [])}
+        >
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Assignments</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
-        </Link>
-        <Link href={"/(course)/scores"} style={styles.link}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(() => router.push("/(course)/scores"), [])}
+        >
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Scores</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
-        </Link>
-        <Link href={"/(course)/modules"} style={styles.link}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(
+            () => router.push("/(course)/modules"),
+            [router]
+          )}
+        >
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Modules</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
-        </Link>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -100,7 +137,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: 5,
     backgroundColor: "#fff",
-    paddingVertical: 9,
+    paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: 10,
   },
@@ -108,10 +145,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 5,
+    columnGap: 12,
     backgroundColor: "#fff",
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: 10,
     width: "100%",
   },

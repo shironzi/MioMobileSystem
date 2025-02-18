@@ -118,8 +118,8 @@ export default function Layout() {
       )}
       screenOptions={{ headerShown: false }}
     >
-      <Drawer.Screen name="Profile" options={{ headerShown: true }} />
-      <Drawer.Screen name="Calendar" options={{ headerShown: true }} />
+      {/* <Drawer.Screen name="Profile" options={{ headerShown: true }} />
+      <Drawer.Screen name="Calendar" options={{ headerShown: true }} /> */}
     </Drawer>
   );
 }

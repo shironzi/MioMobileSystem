@@ -1,19 +1,31 @@
 import { View, Text } from "react-native";
-import React, { useEffect } from "react";
-import { useNavigation } from "expo-router";
+import React, { memo, useCallback, useEffect } from "react";
+import { useFocusEffect, useNavigation } from "expo-router";
 
 const scores = () => {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: "Scores",
-      headerStyle: {
-        backgroundColor: "#2264DC",
-      },
-      headerTintColor: "#fff",
-    });
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerTitle: "Course Details",
+        headerStyle: {
+          backgroundColor: "#2264DC",
+        },
+        headerTintColor: "#fff",
+      });
+
+      return () => {
+        navigation.setOptions({
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "",
+          },
+          headerTintColor: "",
+        });
+      };
+    }, [navigation])
+  );
   return (
     <View>
       <Text>scores</Text>
@@ -21,4 +33,4 @@ const scores = () => {
   );
 };
 
-export default scores;
+export default memo(scores);
