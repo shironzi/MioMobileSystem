@@ -4,11 +4,56 @@ import React, { memo, useState } from "react";
 import MessageCard from "@/components/MessageCard";
 
 enum messageType {
-  inbox = "Inbox",
-  unread = "Unread",
-  sent = "Sent",
-  archived = "Archived",
+  inbox = "inbox",
+  unread = "unread",
+  sent = "sent",
+  archived = "archived",
 }
+
+const data = [
+  {
+    id: 1,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 2,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "inbox",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "unread",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "sent",
+  },
+  {
+    id: 3,
+    title: "Message",
+    date: new Date(Date.now()),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "archived",
+  },
+];
 
 const Inbox = () => {
   const [selectedType, setSelectedType] = useState<messageType>(
@@ -32,29 +77,19 @@ const Inbox = () => {
         </Picker>
       </View>
 
-      {/* Message List */}
       <ScrollView>
-        <MessageCard
-          title="Message"
-          date={new Date(Date.now())}
-          time="10:00 AM"
-          desc="Lorem ipsum dolor sit amet consectetur adipisicing elit..."
-          type="message"
-        />
-        <MessageCard
-          title="Message"
-          date={new Date("2025-02-14")}
-          time="11:00 AM"
-          desc="Lorem ipsum dolor sit amet consectetur adipisicing elit..."
-          type="message"
-        />
-        <MessageCard
-          title="Message"
-          date={new Date("2025-02-13")}
-          time="12:00 PM"
-          desc="Lorem ipsum dolor sit amet consectetur adipisicing elit..."
-          type="message"
-        />
+        {data?.map((data) =>
+          data.messageType === selectedType ? (
+            <MessageCard
+              key={data.id}
+              title={data.title}
+              date={data.date}
+              desc={data.desc}
+              type={data.messageType}
+              time={data.date.toLocaleTimeString()}
+            />
+          ) : null
+        )}
       </ScrollView>
     </View>
   );
