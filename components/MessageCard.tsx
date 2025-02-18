@@ -50,7 +50,7 @@ const MessageCard = (props: {
           : router.navigate("/(notification)/notificationDetails")
       }
     >
-      <Card containerStyle={{ paddingLeft: 0, margin: 0 }}>
+      <Card containerStyle={{ paddingLeft: 0, margin: 0, marginTop:-10, backgroundColor: "#f0f0f0" }}>
         <View
           style={{
             display: "flex",
@@ -58,13 +58,15 @@ const MessageCard = (props: {
             alignItems: "center",
             overflow: "hidden",
             width: "100%",
+            height: 80,
+            //backgroundColor: "#000",
           }}
         >
           <MaterialIcons
             name="account-circle"
             size={45}
             color="black"
-            style={{ padding: 23 }}
+            style={{ padding: 10 }}
           />
           <View>
             <View
@@ -73,6 +75,7 @@ const MessageCard = (props: {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                
               }}
             >
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
@@ -86,14 +89,14 @@ const MessageCard = (props: {
                   columnGap: 5,
                 }}
               >
-                <Text style={{ fontSize: 15 }}>
+                <Text style={{ fontSize: 12, marginTop: 5 }}>
                   {isToday(props.date)
                     ? "Today"
                     : isYesterday(props.date)
                     ? "Yesterday"
                     : formatDate(props.date)}
                 </Text>
-                <Text style={{ fontSize: 15 }}>{props.time}</Text>
+                <Text style={{ fontSize: 12,  marginTop: 5  }}>{props.time}</Text>
               </View>
             </View>
             <Text
