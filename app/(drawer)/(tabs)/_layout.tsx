@@ -72,7 +72,6 @@ export default function Layout() {
             headerRight: () => <HeaderRightToggle />,
           }}
         />
-        {/* Other screens */}
         <Tabs.Screen
           name="todo"
           options={{

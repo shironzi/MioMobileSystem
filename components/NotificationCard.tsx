@@ -12,35 +12,6 @@ const NotificationCard = (props: {
   type: string;
 }) => {
   const router = useRouter();
-
-  const formatDate = useCallback(
-    (date: Date) => {
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      });
-    },
-    [Date]
-  );
-
-  const isToday = useCallback(
-    (date: Date) => {
-      const today = new Date();
-      return date.toDateString() === today.toDateString();
-    },
-    [Date]
-  );
-
-  const isYesterday = useCallback(
-    (date: Date) => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      return date.toDateString() === yesterday.toDateString();
-    },
-    [Date]
-  );
-
   const renderIcon = useCallback(() => {
     switch (props.type.toLowerCase()) {
       case "activity":
@@ -56,15 +27,6 @@ const NotificationCard = (props: {
         return (
           <Entypo
             name="warning"
-            size={45}
-            color="black"
-            style={{ padding: 23 }}
-          />
-        );
-      case "message":
-        return (
-          <MaterialIcons
-            name="account-circle"
             size={45}
             color="black"
             style={{ padding: 23 }}
