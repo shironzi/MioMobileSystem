@@ -1,13 +1,13 @@
-import { ScrollView, View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import MessageCard from "@/components/MessageCard";
 
 enum messageType {
-  inbox = "inbox",
-  unread = "unread",
-  sent = "sent",
-  archived = "archived",
+  inbox = "Inbox",
+  unread = "Unread",
+  sent = "Sent",
+  archived = "Archived",
 }
 
 const data = [
@@ -60,26 +60,37 @@ const Inbox = () => {
     messageType.inbox
   );
 
+  // const capitalizeFirstLetter = useCallback(
+  //   (str: string): string => {
+  //     return str.charAt(0).toUpperCase() + str.slice(1);
+  //   },
+  //   [selectedType]
+  // );
+
   return (
-    <View style={styles.container}>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={selectedType}
-          onValueChange={(itemValue: string) =>
-            setSelectedType(itemValue as messageType)
-          }
-          style={styles.picker}
-          mode="dropdown"
-        >
-          {Object.values(messageType).map((type) => (
-            <Picker.Item key={type} label={type} value={type} />
-          ))}
-        </Picker>
+    <View>
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageCateg}>{selectedType}</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={selectedType}
+            onValueChange={(itemValue: string) =>
+              setSelectedType(itemValue as messageType)
+            }
+            style={styles.picker}
+            mode="dropdown"
+          >
+            {Object.values(messageType).map((type) => (
+              <Picker.Item key={type} label={type} value={type} />
+            ))}
+          </Picker>
+        </View>
       </View>
 
       <ScrollView>
         {data?.map((data) =>
-          data.messageType === selectedType ? (
+          data.messageType.toLocaleLowerCase() ===
+          selectedType.toLocaleLowerCase() ? (
             <MessageCard
               key={data.id}
               title={data.title}
@@ -96,8 +107,16 @@ const Inbox = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  messageContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: 25,
+  },
+  messageCateg: {
+    fontSize: 20,
   },
   pickerWrapper: {
     alignSelf: "flex-end",
