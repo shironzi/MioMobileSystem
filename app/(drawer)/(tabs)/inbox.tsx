@@ -11,15 +11,18 @@ enum messageType {
 }
 
 const Inbox = () => {
-  const [selectedType, setSelectedType] = useState<messageType>(messageType.inbox);
+  const [selectedType, setSelectedType] = useState<messageType>(
+    messageType.inbox
+  );
 
   return (
     <View style={styles.container}>
-
       <View style={styles.pickerWrapper}>
         <Picker
           selectedValue={selectedType}
-          onValueChange={(itemValue: string) => setSelectedType(itemValue as messageType)}
+          onValueChange={(itemValue: string) =>
+            setSelectedType(itemValue as messageType)
+          }
           style={styles.picker}
           mode="dropdown"
         >
@@ -62,15 +65,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pickerWrapper: {
-    alignSelf: "flex-end", 
-    width: 150, 
+    alignSelf: "flex-end",
+    width: 150,
   },
   picker: {
     width: "100%",
     color: "orange",
   },
   messageCard: {
-    marginVertical: 10,
     backgroundColor: "black",
   },
 });
