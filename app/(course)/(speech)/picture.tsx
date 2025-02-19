@@ -2,13 +2,13 @@ import { View, Text } from "react-native";
 import React, { memo, useCallback, useEffect } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 
-const speechTrainingExercises = () => {
+const picture = () => {
   const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
-        headerTitle: "Course Details",
+        headerTitle: "Picture Flashcards",
         headerStyle: {
           backgroundColor: "#2264DC",
         },
@@ -28,9 +28,9 @@ const speechTrainingExercises = () => {
   );
   return (
     <View>
-      <Text>speechTrainingExercies</Text>
+      <Text>picture</Text>
     </View>
   );
 };
 
-export default memo(speechTrainingExercises);
+export default memo(picture);

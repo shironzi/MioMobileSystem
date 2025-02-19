@@ -8,7 +8,7 @@ const scores = () => {
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
-        headerTitle: "Course Details",
+        headerTitle: "Scores",
         headerStyle: {
           backgroundColor: "#2264DC",
         },
