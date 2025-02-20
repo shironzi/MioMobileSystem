@@ -4,10 +4,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useHeaderHeight } from '@react-navigation/elements';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-const speechTrainingExercise = () => {
+const SpeechTrainingExercise = () => {
   const navigation = useNavigation();
+  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -32,79 +33,49 @@ const speechTrainingExercise = () => {
   );
 
   return (
-    <View>
-      <SpeechCards />
-    </View>
-  );
-};
-
-type IconName = "photo" | "quiz" | "sms" | "local-library";
-
-const SpeechCard = ({ title, iconName }: { title: string, iconName: IconName }) => {
-  const router = useRouter();
-
-  const handlePress = () => {
-    router.push('/(speech)/picture');
-  };
-
-  return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
-      <MaterialIcons name={iconName} style={styles.icons} />
-      <Text style={styles.cardText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
-
-const SpeechCards = () => {
-  const cards = [
-    'Picture Flashcards', 
-    'Question Flashcards', 
-    'Phrase Flashcards', 
-    'ReadMe Flashcards'
-  ];
-  const icons: IconName[] = ['photo', 'quiz', 'sms', 'local-library'];
-
-  return (
-    <View style={styles.container}>
-      {cards.map((card, index) => (
-        <View key={index} style={styles.cardWrapper}>
-          <SpeechCard title={card} iconName={icons[index]} />
-        </View>
-      ))}
+    <View style={{ display: "flex", 
+    flexDirection: "row", 
+    flexWrap: "wrap", 
+    justifyContent: "space-around", 
+    padding: 10, 
+    rowGap: 18, 
+    columnGap: 21 }}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+        <MaterialIcons name="photo" size={60} style={styles.icons} />
+        <Text>Picture Flashcards</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+        <MaterialIcons name="quiz" size={60} style={styles.icons} />
+        <Text>Question Flashcard</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+        <MaterialIcons name="local-library" size={60} style={styles.icons} />
+        <Text>Phrase Flashcards</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+        <MaterialCommunityIcons name="message-bulleted" size={60} style={styles.icons} />
+        <Text>ReadMe Flashcard</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: 10,
-    marginHorizontal: 10,
-  },
-  cardWrapper: {
-    width: '48%',
-    marginVertical: 10,
+  icons: {
+    color: "#FFBF18",
   },
   card: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2 },
-    padding: 20,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    width: 172,
+    height: 140,
+    padding: 23,
+    fontSize: 12,
+    backgroundColor: "#fff",
     borderRadius: 10,
-    alignItems: 'center',
-  },
-  icons: {
-    fontSize: 50,
-    color: '#FFBF18',
-    marginBottom: 10,
-  },
-  cardText: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
+  }
 });
 
-export default memo(speechTrainingExercise);
+export default memo(SpeechTrainingExercise);
