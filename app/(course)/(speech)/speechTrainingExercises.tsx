@@ -40,19 +40,19 @@ const SpeechTrainingExercise = () => {
     padding: 10, 
     rowGap: 18, 
     columnGap: 21 }}>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
         <MaterialIcons name="photo" size={60} style={styles.icons} />
         <Text>Picture Flashcards</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
         <MaterialIcons name="quiz" size={60} style={styles.icons} />
         <Text>Question Flashcard</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
         <MaterialIcons name="local-library" size={60} style={styles.icons} />
         <Text>Phrase Flashcards</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/picture")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
         <MaterialCommunityIcons name="message-bulleted" size={60} style={styles.icons} />
         <Text>ReadMe Flashcard</Text>
       </TouchableOpacity>
