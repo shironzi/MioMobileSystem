@@ -64,7 +64,7 @@ const profile = () => {
           }}
         />
           <Text style={styles.iconWrapper}>
-          <FontAwesome name="pencil" size={27} color="#fff" />
+          <FontAwesome name="pencil" size={25} color="#fff" />
           </Text>
           <View style={styles.cardContent}>
             <Text style={styles.name}>{item.name}</Text>
@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
   
   iconWrapper: {
     position: "absolute",
-    top: 110,
-    right: 110, 
+    top: 115,
+    right: 135, 
     backgroundColor: "#FFBF18",
-    height: 32,
-    width: 32,
+    height: 27,
+    width: 27,
     borderRadius: 15, 
     justifyContent: "center",
     alignItems: "center",
