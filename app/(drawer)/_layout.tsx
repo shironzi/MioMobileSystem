@@ -3,10 +3,8 @@ import { Drawer } from "expo-router/drawer";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { Image, Text, View } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 import globalStyle from "@/styles/globalStyle";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
@@ -88,7 +86,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label={"Help & Support"}
         labelStyle={{ color: "#fff" }}
         onPress={() => {
-          props.navigation.navigate("calendar");
+          props.navigation.navigate("help");
           props.navigation.closeDrawer();
         }}
         icon={() => (
