@@ -8,7 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 const data = [
   {
     id: 1,
-    image: "https://scontent.fmnl30-2.fna.fbcdn.net/v/t39.30808-6/473547042_2064844093944288_35658282325017136_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeFb9Md8FoOgmLR21SVbpZvb2nz24s_aBHnafPbiz9oEeUJy40_mCUDnVSIpvwNAzNbGRSbeIy-YvhITNAT868U1&_nc_ohc=1nP6U0eCltgQ7kNvgFDIvhV&_nc_ht=scontent.fmnl30-2.fna&oh=00_AfYd_2BoGL3MIWaVoLP_CcnMbbnZcX3gchnonXpdyqLZPsw&oe=67B76D5B",
+    image: require("@/assets/1.png"),
     name: "Ava Samantha Arce",
     bibliography: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget nunc non arcu fermentum pharetra. Vivamus id justo vitae odio feugiat scelerisque.",
     contact: "09662303125",
@@ -46,11 +46,10 @@ const profile = () => {
     <View style={styles.container}>
       {data.map((item) => (
         <Card key={item.id} containerStyle={styles.cardContainer}>
-        <Text style={{ fontSize: 16, fontWeight:"bold" }}>Profile</Text>
+        <Text style={{ fontSize: 20, fontWeight:"bold" }}>Profile</Text>
         <Image
-          source={{
-            uri: "https://scontent.fmnl30-2.fna.fbcdn.net/v/t39.30808-6/473547042_2064844093944288_35658282325017136_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeFb9Md8FoOgmLR21SVbpZvb2nz24s_aBHnafPbiz9oEeUJy40_mCUDnVSIpvwNAzNbGRSbeIy-YvhITNAT868U1&_nc_ohc=1nP6U0eCltgQ7kNvgFDIvhV&_nc_oc=AdhJNEvp15SOaPWvx9C1wsVVQeoKjq__CYlM_rJtmfNLTtwKUXln_1oHh4tae2eOAvQ&_nc_zt=23&_nc_ht=scontent.fmnl30-2.fna&_nc_gid=AIzWrGR0qsIgFV1cFXXXY9K&oh=00_AYD_2BoGL3MIWaVoLP_CcnMbbnZcX3gchnonXpdyqLZPsw&oe=67B76D5B",
-          }}
+          source={item.image}
+    
           width={80}
           height={80}
           style={{
@@ -64,7 +63,7 @@ const profile = () => {
           }}
         />
           <Text style={styles.iconWrapper}>
-          <FontAwesome name="pencil" size={25} color="#fff" />
+          <FontAwesome name="pencil" size={15} color="#fff" />
           </Text>
           <View style={styles.cardContent}>
             <Text style={styles.name}>{item.name}</Text>
@@ -153,11 +152,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginTop: 10,
     alignItems: "center",
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    
   },
   
   iconWrapper: {
@@ -172,6 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 2,
     borderColor: "#fff",
+    padding: 4,
   },
 });
 

@@ -33,7 +33,7 @@ const level = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Select a Difficulty Level</Text>
       <View style={styles.cardContainer}>
-        <TouchableOpacity style={styles.card} >
+        <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/play")} >
           <MaterialIcons name="star" size={50} color="#009c41" style={styles.icon} />
           <Text style={[styles.cardText, {color: "#009c41"}]}>Easy</Text>
         </TouchableOpacity>
