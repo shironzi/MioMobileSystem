@@ -6,14 +6,14 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo, useState, useRef } from "react";
 import NotificationCard from "@/components/NotificationCard";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const data = [
   {
     id: 1,
-    title: "Notification Title",
+    title: "Notification Title 1",
     date: new Date(Date.now()),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -21,7 +21,7 @@ const data = [
   },
   {
     id: 2,
-    title: "Notification Title",
+    title: "Notification Title 2",
     date: new Date("2025-1-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -29,7 +29,7 @@ const data = [
   },
   {
     id: 3,
-    title: "Notification Title",
+    title: "Notification Title 3",
     date: new Date("2025-1-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -37,7 +37,7 @@ const data = [
   },
   {
     id: 4,
-    title: "Notification Title",
+    title: "Notification Title 4",
     date: new Date("2024-5-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -45,7 +45,7 @@ const data = [
   },
   {
     id: 5,
-    title: "Notification Title",
+    title: "Notification Title 5",
     date: new Date("2024-5-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -53,7 +53,7 @@ const data = [
   },
   {
     id: 6,
-    title: "Notification Title",
+    title: "Notification Title 6",
     date: new Date("2024-5-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -63,11 +63,24 @@ const data = [
 
 const Notification = () => {
   const [expandedSections, setExpandedSections] = useState(new Set<string>());
+  const [notifications, setNotifications] = useState(data);
+  // Track active swipeable items
+  const openSwipeableRef = useRef<number | null>(null);
+
+  const deleteNotification = (id: number) => {
+    // Make sure any open swipeable is cleared before removing the notification
+    openSwipeableRef.current = null;
+
+    // Use a small timeout to ensure the UI updates properly
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((item) => item.id !== id));
+    }, 100);
+  };
 
   const now = useMemo(() => new Date(), []);
   const filteredData = useMemo(
-    () => data.filter((item) => now > item.date),
-    []
+    () => notifications.filter((item) => now > item.date),
+    [notifications, now]
   );
 
   const sections = Object.values(
@@ -83,7 +96,7 @@ const Notification = () => {
       acc[dateStr].data.push(item);
       return acc;
     }, {} as Record<string, { date: string; data: typeof filteredData }>)
-  );
+  ).filter((section) => section.data.length > 0);
 
   const handleToggle = (date: string) => {
     setExpandedSections((prev) => {
@@ -98,19 +111,40 @@ const Notification = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <SectionList
         sections={sections}
-        extraData={expandedSections}
-        keyExtractor={(item, index) => item.title + index}
+        extraData={[expandedSections, notifications]} // Watch for both state changes
+        keyExtractor={(item) => item.id.toString()} // Use unique ID for better tracking
         renderItem={({ section, item }) => {
           const isExpanded = expandedSections.has(section.date);
           if (!isExpanded) return null;
           return (
             <NotificationCard
+              key={item.id} // Add a key prop to help React track items
               title={item.title}
               desc={item.desc}
               type={item.type}
+              onSwipeStart={() => {
+                // Close any previously open swipeable when a new one is opened
+                if (
+                  openSwipeableRef.current !== item.id &&
+                  openSwipeableRef.current !== null
+                ) {
+                  const prevItemIndex = notifications.findIndex(
+                    (n) => n.id === openSwipeableRef.current
+                  );
+                  if (prevItemIndex !== -1) {
+                    // Trigger a re-render to close previous swipeable
+                    setNotifications([...notifications]);
+                  }
+                }
+                openSwipeableRef.current = item.id;
+              }}
+              onDismiss={() => {
+                console.log("removing: " + item.title);
+                deleteNotification(item.id);
+              }}
             />
           );
         }}
@@ -139,6 +173,10 @@ const Notification = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
   header: {
     fontSize: 16,
     padding: 10,
