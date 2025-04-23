@@ -1,10 +1,10 @@
 import { useFocusEffect, useNavigation } from "expo-router";
 import React, {memo, useCallback} from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import PicgameCard from "@/components/PicgameCard";
 
 
-const picgame = () => {
+
+const PicgameCard = () => {
    const navigation = useNavigation();
    useFocusEffect(
       useCallback(() => {
@@ -35,4 +35,4 @@ const picgame = () => {
 }
 
 
-export default memo(picgame);
+export default memo(PicgameCard);
