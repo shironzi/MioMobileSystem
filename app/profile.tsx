@@ -1,21 +1,27 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Linking } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 
-
-const data = [
-  {
-    id: 1,
-    image: require("@/assets/1.png"),
-    name: "Ava Samantha Arce",
-    bibliography: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget nunc non arcu fermentum pharetra. Vivamus id justo vitae odio feugiat scelerisque.",
-    contact: "09662303125",
-    socialLink: "Facebook: @itz_naiah",
-    link: "https://www.google.com",
-  },
-];
+const data = {
+  id: 1,
+  image:
+    "https://scontent.fcrk3-1.fna.fbcdn.net/v/t1.15752-9/490985916_1202175937960521_8050126276858148282_n.jpg?stp=dst-jpg_p480x480_tt6&_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeGdS_RHXex_0OCp-aLXEeC40MR0ym5I97vQxHTKbkj3u-VWX16S8FkyS8TZDJsy7bVJnVrb4ioGAm1z_AQ6sqJ7&_nc_ohc=kgJNUn5Ix3wQ7kNvwED2EVt&_nc_oc=AdmysBOwUz556KCfGyCwdPtRHv9P9_YPyHkQRv3GdGjYsNKDajUbD4YS7tE0rFp-DQA&_nc_zt=23&_nc_ht=scontent.fcrk3-1.fna&oh=03_Q7cD2AEwoyZmSU9qAQXanXXFqDrjPo4ai2COCsq7GKVQsJlo3g&oe=6830AA7D",
+  name: "Aaron Josh Baon",
+  bibliography:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget nunc non arcu fermentum pharetra. Vivamus id justo vitae odio feugiat scelerisque.",
+  contact: "09662303125",
+  socialLink: "Facebook: @josh",
+  link: "https://www.google.com",
+};
 
 const profile = () => {
   const navigation = useNavigation();
@@ -44,44 +50,37 @@ const profile = () => {
 
   return (
     <View style={styles.container}>
-      {data.map((item) => (
-        <Card key={item.id} containerStyle={styles.cardContainer}>
-        <Text style={{ fontSize: 20, fontWeight:"bold" }}>Profile</Text>
-        <Image
-          source={item.image}
-    
-          width={80}
-          height={80}
-          style={{
-            width: 100,
-            height: 100,
-            left: 110,
-            marginTop: 20,
-            borderRadius: 180,
-            borderWidth: 3,
-            borderColor: "#fff",
-          }}
-        />
-          <Text style={styles.iconWrapper}>
-          <FontAwesome name="pencil" size={15} color="#fff" />
-          </Text>
-          <View style={styles.cardContent}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.sectionTitle}>Biography</Text>
-            <Text style={styles.bibliography}>{item.bibliography}</Text>
-            <Text style={styles.sectionTitle}>Contact</Text>
-            <Text style={styles.contact}>{item.contact}</Text>
-            <Text style={styles.sectionTitle}>Social Links</Text>
-            <Text style={styles.socialLink}>{item.socialLink}</Text>
+      <Card key={data.id} containerStyle={styles.cardContainer}>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
+        <View style={styles.profile}>
+          <Image
+            source={{ uri: data.image }}
+            width={80}
+            height={80}
+            style={styles.profilePic}
+          />
+          <View style={styles.iconWrapper}>
+            <Text style={styles.pencil}>
+              <FontAwesome name="pencil" size={20} color="#fff" />
+            </Text>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => Linking.openURL(item.link)}
-          >
-            <Text style={styles.buttonText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </Card>
-      ))}
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={styles.name}>{data.name}</Text>
+          <Text style={styles.sectionTitle}>Biography</Text>
+          <Text style={styles.bibliography}>{data.bibliography}</Text>
+          <Text style={styles.sectionTitle}>Contact</Text>
+          <Text style={styles.contact}>{data.contact}</Text>
+          <Text style={styles.sectionTitle}>Social Links</Text>
+          <Text style={styles.socialLink}>{data.socialLink}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Linking.openURL(data.link)}
+        >
+          <Text style={styles.buttonText}>Edit Profile</Text>
+        </TouchableOpacity>
+      </Card>
     </View>
   );
 };
@@ -158,22 +157,33 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    
   },
-  
+
   iconWrapper: {
-    position: "absolute",
-    top: 115,
-    right: 135, 
-    backgroundColor: "#FFBF18",
-    height: 27,
-    width: 27,
-    borderRadius: 15, 
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
+    borderRadius: 180,
+    marginTop: -32,
+    marginLeft: 70,
+    backgroundColor: "#fff",
+    padding: 3,
+  },
+  profilePic: {
+    width: 125,
+    height: 125,
+    marginTop: 20,
+    borderRadius: 180,
+    borderWidth: 3,
     borderColor: "#fff",
-    padding: 4,
+  },
+  profile: {
+    alignItems: "center",
+  },
+  pencil: {
+    textAlign: "center",
+    padding: 5,
+    width: 25,
+    height: 25,
+    borderRadius: 180,
+    backgroundColor: "#FFBF18",
   },
 });
 
