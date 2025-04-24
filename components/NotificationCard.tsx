@@ -23,7 +23,6 @@ const NotificationCard = (props: {
   const router = useRouter();
   const swipeableRef = useRef<Swipeable>(null);
 
-  // Close swipeable when component is unmounted
   useEffect(() => {
     return () => {
       if (swipeableRef.current) {
@@ -93,7 +92,6 @@ const NotificationCard = (props: {
         onPress={() => {
           if (swipeableRef.current) {
             swipeableRef.current.close();
-            // Short delay to allow animation to complete
             setTimeout(props.onDismiss, 200);
           }
         }}
@@ -117,7 +115,6 @@ const NotificationCard = (props: {
       renderRightActions={renderRightActions}
       onSwipeableOpen={() => props.onSwipeStart?.()}
       onSwipeableRightOpen={() => {
-        // Short delay to allow animation to complete
         setTimeout(props.onDismiss, 200);
       }}
       friction={2}

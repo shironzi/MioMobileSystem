@@ -53,7 +53,7 @@ const data = [
   },
   {
     id: 6,
-    title: "Notification Title 6",
+    title: "Notification Title 6w",
     date: new Date("2024-5-5"),
     time: "10:00 AM",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
@@ -64,14 +64,11 @@ const data = [
 const Notification = () => {
   const [expandedSections, setExpandedSections] = useState(new Set<string>());
   const [notifications, setNotifications] = useState(data);
-  // Track active swipeable items
   const openSwipeableRef = useRef<number | null>(null);
 
   const deleteNotification = (id: number) => {
-    // Make sure any open swipeable is cleared before removing the notification
     openSwipeableRef.current = null;
 
-    // Use a small timeout to ensure the UI updates properly
     setTimeout(() => {
       setNotifications((prev) => prev.filter((item) => item.id !== id));
     }, 100);
@@ -114,19 +111,18 @@ const Notification = () => {
     <SafeAreaView style={styles.container}>
       <SectionList
         sections={sections}
-        extraData={[expandedSections, notifications]} // Watch for both state changes
-        keyExtractor={(item) => item.id.toString()} // Use unique ID for better tracking
+        extraData={[expandedSections, notifications]}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ section, item }) => {
           const isExpanded = expandedSections.has(section.date);
           if (!isExpanded) return null;
           return (
             <NotificationCard
-              key={item.id} // Add a key prop to help React track items
+              key={item.id}
               title={item.title}
               desc={item.desc}
               type={item.type}
               onSwipeStart={() => {
-                // Close any previously open swipeable when a new one is opened
                 if (
                   openSwipeableRef.current !== item.id &&
                   openSwipeableRef.current !== null
@@ -135,7 +131,6 @@ const Notification = () => {
                     (n) => n.id === openSwipeableRef.current
                   );
                   if (prevItemIndex !== -1) {
-                    // Trigger a re-render to close previous swipeable
                     setNotifications([...notifications]);
                   }
                 }
