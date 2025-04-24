@@ -7,7 +7,7 @@ import {
   Linking,
 } from "react-native";
 import React, { memo, useCallback } from "react";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -25,6 +25,7 @@ const data = {
 
 const profile = () => {
   const navigation = useNavigation();
+  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -61,7 +62,7 @@ const profile = () => {
           />
           <View style={styles.iconWrapper}>
             <Text style={styles.pencil}>
-              <FontAwesome name="pencil" size={20} color="#fff" />
+              <FontAwesome name="pencil" size={15} color="#fff" />
             </Text>
           </View>
         </View>
@@ -76,7 +77,7 @@ const profile = () => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => Linking.openURL(data.link)}
+          onPress={() => router.push("edit") }
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
