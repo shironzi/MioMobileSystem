@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -164,7 +164,18 @@ const courseDetails = () => {
           }, [course, router])}
         >
           <View style={styles.linkContent}>
-            <MaterialIcons name="record-voice-over" size={40} color="#FFBF18" />
+            <Image
+              source={
+                course?.activityCategory === activityCategory.speech
+                  ? require("@/assets/icons/speech.png")
+                  : course?.activityCategory === activityCategory.auditory
+                  ? require("@/assets/icons/auditory.png")
+                  : course?.activityCategory === activityCategory.language
+                  ? require("@/assets/icons/language.png")
+                  : null
+              }
+              style={{ width: 37, height: 37 }}
+            />
             <View style={styles.linkTextContainer}>
               <Text style={styles.fontSizeOne}>
                 {course?.activityCategory} Training Exercises
