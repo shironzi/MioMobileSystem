@@ -3,6 +3,28 @@ import React, {memo, useCallback} from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import PicgameCard from "@/components/PicgameCard";
 
+const pictureFlashcard = [
+  {
+    imageSrc: "@/assets/flashcards/apple.jpg",
+    isAnswered: false,
+  },
+  {
+    imageSrc: "@/assets/flashcards/apple.jpg",
+    isAnswered: false,
+  },
+  {
+    imageSrc: "@/assets/flashcards/apple.jpg",
+    isAnswered: false,
+  },
+  {
+    imageSrc: "@/assets/flashcards/apple.jpg",
+    isAnswered: false,
+  },
+  {
+    imageSrc: "@/assets/flashcards/apple.jpg",
+    isAnswered: false,
+  },
+];
 
 const picgame = () => {
    const navigation = useNavigation();
