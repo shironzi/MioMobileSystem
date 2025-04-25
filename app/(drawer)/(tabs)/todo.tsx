@@ -63,29 +63,6 @@ const Todo = () => {
   const [selectedCategory, setSelectedCategory] = useState<todoType | "all">("all");
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "To Do",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
-
   const filteredData = selectedCategory === "all"
     ? data
     : data.filter((item) => item.category === selectedCategory);
@@ -96,13 +73,19 @@ const Todo = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <TouchableOpacity style={styles.dropdownHeader} 
-        onPress={() => setDropdownVisible(true)}>
+        onPress={() => setDropdownVisible(!dropdownVisible)}>
         <Text style={styles.dropdownLabel}>
           {selectedCategory === "all" ? "All" : selectedCategory === todoType.academic ? "Academic" : "Specialized"}
         </Text>
-        <AntDesign name="down" size={14} color="#FFBF18" style={{ marginLeft: 5, fontWeight:"bold", marginRight: 5 }} />
+        <AntDesign 
+          name={dropdownVisible ? "up" : "down"} 
+          size={14} 
+          color="#FFBF18" 
+          style={{ marginLeft: 5, fontWeight: "bold", marginRight: 5 }} 
+        />
       </TouchableOpacity>
 
       <Modal transparent visible={dropdownVisible} animationType="fade">
@@ -137,6 +120,9 @@ const Todo = () => {
         ))}
       </ScrollView>
     </View>
+
+    </ScrollView>
+    
   );
 };
 
@@ -166,15 +152,12 @@ const styles = StyleSheet.create({
   },
   dropdownBox: {
     position: "absolute",
-    right: 10,
-    top: 115,
+    right: 20,
+    top: 120,
     backgroundColor: "#3267e3",
     borderRadius: 20,
     paddingVertical: 10,
     width: 180,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
     elevation: 5,
   },
   dropdownItem: {
