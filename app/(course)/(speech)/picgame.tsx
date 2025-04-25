@@ -1,6 +1,7 @@
 import { useFocusEffect, useNavigation } from "expo-router";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const initialData = [
   {
@@ -124,6 +125,7 @@ const Picgame = () => {
       };
     }, [navigation])
   );
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -285,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(picgame);
+export default memo(Picgame);
