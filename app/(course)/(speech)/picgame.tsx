@@ -37,6 +37,72 @@ const initialData = [
 
 const Picgame = () => {
   const navigation = useNavigation();
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [completedCards, setCompletedCards] = useState(new Set());
+  const [cards, setCards] = useState(initialData);
+  const [isRecording, setIsRecording] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(8);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const currentCard = cards[currentCardIndex];
+
+  const handleMicPress = () => {
+    if (!isRecording) {
+      // Start recording
+      setIsRecording(true);
+      setTimeLeft(8); // Reset timer
+
+      // Start the countdown timer
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            // Time's up, stop recording
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+            }
+            handleCorrectAnswer();
+            setIsRecording(false);
+            return 8;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      handleCorrectAnswer();
+      setIsRecording(false);
+      setTimeLeft(8); // Reset timer
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCorrectAnswer = () => {
+    setCards((prevCards) => {
+      const updatedCards = [...prevCards];
+      updatedCards[currentCardIndex].isAnswered = true;
+      return updatedCards;
+    });
+
+    setCompletedCards((prev) => new Set([...prev, currentCardIndex]));
+  };
+
+  const handleNext = () => {
+    if (currentCardIndex < cards.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+    } else {
+      setCurrentCardIndex(0);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
