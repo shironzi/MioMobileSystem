@@ -1,11 +1,11 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState, memo, useContext } from "react";
-import SpecializedCard from "@/components/CourseCard";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
+
 
 enum courseType {
   academic = "academic",
@@ -23,43 +23,51 @@ const courses = [
     title: "Math",
     section: "tw23",
     courseType: courseType.academic,
+    courseImage: require("@/assets/dashImage/math.png")
   },
   {
     courseId: 2,
     title: "English",
     section: "tw23",
     courseType: courseType.academic,
+    courseImage: require("@/assets/dashImage/english.png")
   },
   {
     courseId: 3,
     title: "Science",
     section: "tw23",
     courseType: courseType.academic,
+    courseImage: require("@/assets/dashImage/science.png")
   },
   {
     courseId: 4,
     title: "Speech Training",
     section: "tw23",
     courseType: courseType.specialized,
+    courseImage: require("@/assets/dashImage/speech.png")
   },
   {
     courseId: 5,
     title: "Auditory Training ",
     section: "tw23",
     courseType: courseType.specialized,
+    courseImage: require("@/assets/dashImage/science.png")
   },
   {
     courseId: 6,
     title: "Language Training",
     section: "tw23",
     courseType: courseType.specialized,
+    courseImage: require("@/assets/dashImage/language.png")
   },
-  {
-    courseId: 7,
-    title: "Filipino",
-    section: "tw23",
-    courseType: courseType.academic,
-  },
+  // {
+  //   courseId: 7,
+  //   title: "Filipino",
+  //   section: "tw23",
+  //   courseType: courseType.academic,
+  //   courseImage: require("@/assets/dashImage/math.png")
+  // },
+ 
   // {
   //   courseId: 8,
   //   title: "MAPEH",
@@ -86,11 +94,11 @@ const Index = () => {
           <Dropdown
             style={styles.dropdown}
             selectedTextStyle={styles.selectedTextStyle}
-            renderRightIcon={() => (
+            renderRightIcon={(isOpened) => (
               <MaterialIcons
-                name="keyboard-arrow-down"
+                name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
                 style={styles.iconStyle}
-              />
+                    />
             )}
             data={data}
             value={selectedValue}
@@ -116,6 +124,7 @@ const Index = () => {
                   courseTitle={course.title}
                   courseSection={course.section}
                   courseId={course.courseId}
+                  courseImage={course.courseImage}
                 />
                 <Text>{courseCardView}</Text>
               </View>

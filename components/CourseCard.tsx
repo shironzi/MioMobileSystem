@@ -2,11 +2,13 @@ import { Text, TouchableOpacity } from "react-native";
 import { Card } from "@rneui/themed";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const CourseCard = (props: {
   courseTitle: string;
   courseSection: string;
   courseId: number;
+  courseImage:any;
 }) => {
   const router = useRouter();
 
@@ -24,28 +26,37 @@ const CourseCard = (props: {
           borderRadius: 10,
           backgroundColor: "#f0f0f0",
           marginHorizontal: 5,
-          marginVertical: 0,
+          marginVertical: 10,
+          elevation: 5,
+          marginTop: 10,
+          padding:0,
+          marginBottom: -15,
         }}
       >
         <Card.Image
-          source={{
-            uri: "https://pic-bstarstatic.akamaized.net/ugc/093038ab9a4a29b0d4d6edb0575c82a7.jpg",
-          }}
+          source={props.courseImage}
           style={{
-            borderRadius: 3,
+            width: "100%",
+            borderRadius: 10,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            
           }}
         />
+        <MaterialIcons name="circle" color="#ffbf18" size={12} style={{left:13, top:10}}></MaterialIcons>
         <Text
           style={{
             color: "#333",
             fontWeight: "bold",
             fontSize: 16,
-            marginTop: 5,
+            marginTop: -8,
+            marginLeft: 35,
+            marginBottom: 2,
           }}
         >
           {props.courseTitle}
         </Text>
-        <Text style={{ color: "#666" }}>{props.courseSection}</Text>
+        <Text style={{ color: "#666", marginLeft: 35, marginBottom: 10 }}>{props.courseSection}</Text>
       </Card>
     </TouchableOpacity>
   );
