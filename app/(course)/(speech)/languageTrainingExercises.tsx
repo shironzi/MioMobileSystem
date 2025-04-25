@@ -41,7 +41,7 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/(speech)/level")}
           >
             <Image
-              source={require("@/assets/icons/speaker_notes.png")}
+              source={require("@/assets/icons/speaker_Notes.png")}
               style={styles.icon}
             />
             <Text>ReadMe Flashcard</Text>
@@ -54,7 +54,7 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/(speech)/level")}
           >
             <Image
-              source={require("@/assets/icons/technology_lifestyle.png")}
+              source={require("@/assets/icons/technology_Lifestyle.png")}
               style={styles.icon}
             />
             <Text>Talk2Me: Responding Questions</Text>
