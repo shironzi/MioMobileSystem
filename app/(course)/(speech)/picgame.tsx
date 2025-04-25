@@ -125,17 +125,48 @@ const Picgame = () => {
     }, [navigation])
   );
   return (
-    <View style={{ marginHorizontal: 23 }}>
-      <View>
-        <Text
-          style={{
-            fontSize: 17,
-            color: "#1F1F1F",
-            marginTop: 13,
-            fontWeight: 800,
-          }}
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.difficultyText}>Easy</Text>
+        <View style={styles.progressRow}>
+          {cards.map((card, index) => (
+            <View
+              key={index}
+              style={[
+                styles.progressItem,
+                card.isAnswered && styles.completedProgressItem,
+              ]}
+            />
+          ))}
+        </View>
+        <Text style={styles.instructionText}>
+          Say what you see in the picture
+        </Text>
+      </View>
+
+      <View style={styles.flashcardContainer}>
+        <View style={styles.imageContainer}>
+          <Image
+            source={currentCard.imageSrc}
+            style={styles.cardImage}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+
+      <View style={styles.micContainer}>
+        <TouchableOpacity
+          style={[styles.micButton, isRecording && styles.recordingButton]}
+          onPress={handleMicPress}
         >
-          Easy
+          <FontAwesome
+            name="microphone"
+            size={50}
+            color={isRecording ? "#fff" : "black"}
+          />
+        </TouchableOpacity>
+        <Text style={!isRecording ? { opacity: 0 } : styles.recordingText}>
+          Listening...
         </Text>
         <View
           style={{
