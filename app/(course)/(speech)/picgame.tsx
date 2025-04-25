@@ -168,34 +168,121 @@ const Picgame = () => {
         <Text style={!isRecording ? { opacity: 0 } : styles.recordingText}>
           Listening...
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 13,
-            gap: 10,
-          }}
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.continueButton,
+            !currentCard.isAnswered && styles.disabledButton,
+          ]}
+          onPress={handleNext}
+          disabled={!currentCard.isAnswered}
         >
-          {data?.map((ques, index) => (
-            <View
-              key={index}
-              style={{
-                flex: 1,
-                borderColor: "#CBCBCB",
-                borderWidth: 1,
-                backgroundColor: "#CBCBCB",
-                borderRadius: 5,
-                height: 25,
-                width: "auto",
-              }}
-            />
-          ))}
-        </View>
-        <Text style={{ color: "#434242", fontSize: 15, marginTop: 25 }}>
-          Guess the picture
-        </Text>
+          <Text style={styles.continueButtonText}>
+            {currentCardIndex === cards.length - 1 ? "Submit" : "Continue"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+  },
+  headerContainer: {
+    backgroundColor: "transparent",
+    marginBottom: 20,
+  },
+  difficultyText: {
+    fontSize: 17,
+    fontWeight: "800",
+  },
+  progressRow: {
+    flexDirection: "row",
+    marginTop: 13,
+    gap: 5,
+  },
+  progressItem: {
+    flex: 1,
+    borderColor: "#CBCBCB",
+    borderWidth: 1,
+    backgroundColor: "#CBCBCB",
+    borderRadius: 5,
+    height: 25,
+  },
+  completedProgressItem: {
+    backgroundColor: "#FFBF18",
+    borderColor: "#FFBF18",
+  },
+  instructionText: {
+    color: "#434242",
+    fontSize: 15,
+    marginTop: 25,
+  },
+  flashcardContainer: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 20,
+    height: 300,
+  },
+  imageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
+  cardImage: {
+    width: 250,
+    height: 250,
+    borderRadius: 10,
+  },
+  micContainer: {
+    alignItems: "center",
+    marginTop: 39,
+  },
+  micButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#E0E0E0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  recordingButton: {
+    backgroundColor: "#FFBF18",
+  },
+  recordingText: {
+    marginTop: 15,
+    color: "#FFBF18",
+    fontWeight: "500",
+  },
+  buttonContainer: {
+    marginTop: 100,
+  },
+  continueButton: {
+    backgroundColor: "#FFBF18",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  disabledButton: {
+    backgroundColor: "#E0E0E0",
+  },
+  continueButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+});
 
 export default memo(picgame);
