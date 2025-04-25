@@ -40,7 +40,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Speaker_Notes.png")} />
+            <Image
+              source={require("@/assets/icons/speaker_notes.png")}
+              style={styles.icon}
+            />
             <Text>ReadMe Flashcard</Text>
           </TouchableOpacity>
         </View>
@@ -51,7 +54,8 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/(speech)/level")}
           >
             <Image
-              source={require("@/assets/icons/Technology_Lifestyle.png")}
+              source={require("@/assets/icons/technology_lifestyle.png")}
+              style={styles.icon}
             />
             <Text>Talk2Me: Responding Questions</Text>
           </TouchableOpacity>
@@ -62,7 +66,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Note.png")} />
+            <Image
+              source={require("@/assets/icons/homonyms.png")}
+              style={styles.icon}
+            />
             <Text>Homonyms</Text>
           </TouchableOpacity>
         </View>
@@ -105,35 +112,35 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    width: "100%", // Make sure it fills the parent width
-    justifyContent: "space-between", // Add space between grid items
-    marginTop: 20, // Add some margin from the top
+    width: "100%",
+    justifyContent: "space-between",
+    marginTop: 20,
   },
   gridItem: {
-    width: "48%", // Slightly less than 50% to account for gap
+    width: "48%",
     justifyContent: "center",
-    marginBottom: 16, // Add space between rows
+    marginBottom: 16,
   },
   card: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    width: "100%", // Use full width of grid item
+    width: "100%",
     height: 140,
     padding: 16,
     fontSize: 12,
     backgroundColor: "#fff",
     borderRadius: 10,
-    // Add shadow for better separation
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
-  icons: {
-    color: "#FFBF18",
+  icon: {
+    width: 60,
+    height: 60,
   },
 });
 

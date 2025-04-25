@@ -40,7 +40,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Picture.png")} />
+            <Image
+              source={require("@/assets/icons/Picture.png")}
+              style={styles.icon}
+            />
             <Text>ReadMe Flashcard</Text>
           </TouchableOpacity>
         </View>
@@ -50,7 +53,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Questions.png")} />
+            <Image
+              source={require("@/assets/icons/Questions.png")}
+              style={styles.icon}
+            />
             <Text>Question Flashcards</Text>
           </TouchableOpacity>
         </View>
@@ -60,7 +66,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Dictionary.png")} />
+            <Image
+              source={require("@/assets/icons/Dictionary.png")}
+              style={styles.icon}
+            />
             <Text>Phrase Flashcards</Text>
           </TouchableOpacity>
         </View>
@@ -70,7 +79,10 @@ const SpeechTrainingExercise = () => {
             style={styles.card}
             onPress={() => router.push("/(speech)/level")}
           >
-            <Image source={require("@/assets/icons/Speaker_Notes.png")} />
+            <Image
+              source={require("@/assets/icons/speaker_notes.png")}
+              style={styles.icon}
+            />
             <Text>ReadMe Flashcard</Text>
           </TouchableOpacity>
         </View>
@@ -113,35 +125,35 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    width: "100%", // Make sure it fills the parent width
-    justifyContent: "space-between", // Add space between grid items
-    marginTop: 20, // Add some margin from the top
+    width: "100%",
+    justifyContent: "space-between",
+    marginTop: 20,
   },
   gridItem: {
-    width: "48%", // Slightly less than 50% to account for gap
+    width: "48%",
     justifyContent: "center",
-    marginBottom: 16, // Add space between rows
+    marginBottom: 16,
   },
   card: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    width: "100%", // Use full width of grid item
+    width: "100%",
     height: 140,
     padding: 16,
     fontSize: 12,
     backgroundColor: "#fff",
     borderRadius: 10,
-    // Add shadow for better separation
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
-  icons: {
-    color: "#FFBF18",
+  icon: {
+    width: 60,
+    height: 60,
   },
 });
 
