@@ -2,30 +2,40 @@ import { useFocusEffect, useNavigation } from "expo-router";
 import React, { memo, useCallback } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const data = [
+const initialData = [
   {
-    imageSrc: "@/assets/flashcards/apple.jpg",
+    id: 1,
+    imageSrc: require("@/assets/flashcards/apple.jpg"),
+    word: "Apple",
     isAnswered: false,
   },
   {
-    imageSrc: "@/assets/flashcards/apple.jpg",
+    id: 2,
+    imageSrc: require("@/assets/flashcards/fireExtinguisher.jpg"),
+    word: "Banana",
     isAnswered: false,
   },
   {
-    imageSrc: "@/assets/flashcards/apple.jpg",
+    id: 3,
+    imageSrc: require("@/assets/flashcards/scissors.png"),
+    word: "Orange",
     isAnswered: false,
   },
   {
-    imageSrc: "@/assets/flashcards/apple.jpg",
+    id: 4,
+    imageSrc: require("@/assets/flashcards/teacher.jpg"),
+    word: "Grapes",
     isAnswered: false,
   },
   {
-    imageSrc: "@/assets/flashcards/apple.jpg",
+    id: 5,
+    imageSrc: require("@/assets/flashcards/whisper.png"),
+    word: "Strawberry",
     isAnswered: false,
   },
 ];
 
-const picgame = () => {
+const Picgame = () => {
   const navigation = useNavigation();
   useFocusEffect(
     useCallback(() => {
