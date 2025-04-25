@@ -91,8 +91,6 @@ const courseDetails = () => {
     const courseId = Number(id);
     const foundCourse = data?.find((c) => c.courseId === courseId);
     setCourse(foundCourse ?? null);
-
-    // console.log(courseId);
   }, [id]);
 
   useFocusEffect(
@@ -141,7 +139,6 @@ const courseDetails = () => {
           onPress={useCallback(() => {
             if (!course) return;
 
-            // Route based on activity category
             switch (course.activityCategory) {
               case activityCategory.speech:
                 router.push({
@@ -159,7 +156,6 @@ const courseDetails = () => {
                 });
                 break;
               default:
-                // Fallback route
                 router.push("/(course)/(speech)/speechTrainingExercises");
             }
           }, [course, router])}

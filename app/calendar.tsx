@@ -66,7 +66,8 @@ const CalendarScreen = () => {
     : {};
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <Calendar
         style={styles.calendar}
         markingType="multi-dot"
@@ -139,6 +140,9 @@ const CalendarScreen = () => {
         )}
       </ScrollView>
     </View>
+      
+    </ScrollView>
+    
   );
 };
 
@@ -149,12 +153,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   calendar: {
-    // borderRadius: 10,
-    // elevation: 5,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 4,
     margin: 5,
   },
   scrollContainer: {
