@@ -87,7 +87,8 @@ const Index = () => {
   const { courseCardView } = useContext(CourseCardViewContext);
 
   return (
-    <View>
+    <ScrollView>
+          <View>
       <View style={styles.courseContainer}>
         <Text style={styles.courseTitle}>Courses</Text>
         <View style={styles.dropdownContainer}>
@@ -134,6 +135,9 @@ const Index = () => {
         })}
       </ScrollView>
     </View>
+
+    </ScrollView>
+
   );
 };
 
