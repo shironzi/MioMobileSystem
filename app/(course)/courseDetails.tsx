@@ -1,14 +1,98 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React, { memo, useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Link, useFocusEffect, useNavigation, useRouter } from "expo-router";
+import {
+  Link,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 
 import globalStyle from "@/styles/globalStyle";
+
+enum activityCategory {
+  speech = "Speech",
+  auditory = "Auditory",
+  language = "Language",
+}
+
+const data = [
+  {
+    courseId: 1,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.speech,
+  },
+  {
+    courseId: 2,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.speech,
+  },
+  {
+    courseId: 3,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.speech,
+  },
+  {
+    courseId: 4,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.auditory,
+  },
+  {
+    courseId: 5,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.auditory,
+  },
+  {
+    courseId: 6,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.auditory,
+  },
+  {
+    courseId: 7,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.language,
+  },
+  {
+    courseId: 8,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.language,
+  },
+  {
+    courseId: 9,
+    title: "Academic",
+    section: "tw23",
+    activityCategory: activityCategory.language,
+  },
+];
 
 const courseDetails = () => {
   const navigation = useNavigation();
   const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const [course, setCourse] = useState<{
+    courseId: number;
+    title: string;
+    section: string;
+    activityCategory: activityCategory;
+  } | null>(null);
+
+  useEffect(() => {
+    const courseId = Number(id);
+    const foundCourse = data?.find((c) => c.courseId === courseId);
+    setCourse(foundCourse ?? null);
+
+    console.log(courseId);
+  }, [id]);
 
   useFocusEffect(
     useCallback(() => {
@@ -53,15 +137,38 @@ const courseDetails = () => {
       <View style={styles.linksContainer}>
         <TouchableOpacity
           style={styles.link}
-          onPress={useCallback(
-            () => router.push("/(course)/speechTrainingExercises"),
-            []
-          )}
+          onPress={useCallback(() => {
+            if (!course) return;
+
+            // Route based on activity category
+            switch (course.activityCategory) {
+              case activityCategory.speech:
+                router.push({
+                  pathname: "/(course)/(speech)/speechTrainingExercises",
+                });
+                break;
+              case activityCategory.auditory:
+                router.push({
+                  pathname: "/(course)/(speech)/auditoryTrainingExercises",
+                });
+                break;
+              case activityCategory.language:
+                router.push({
+                  pathname: "/(course)/(speech)/languageTrainingExercises",
+                });
+                break;
+              default:
+                // Fallback route
+                router.push("/(course)/(speech)/speechTrainingExercises");
+            }
+          }, [course, router])}
         >
           <View style={styles.linkContent}>
             <MaterialIcons name="record-voice-over" size={40} color="#FFBF18" />
             <View style={styles.linkTextContainer}>
-              <Text style={styles.fontSizeOne}>Speech Training Exercises</Text>
+              <Text style={styles.fontSizeOne}>
+                {course?.activityCategory} Training Exercises
+              </Text>
               <Entypo name="chevron-small-right" size={30} color="#CCC" />
             </View>
           </View>
