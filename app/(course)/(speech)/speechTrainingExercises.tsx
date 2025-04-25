@@ -80,7 +80,7 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/(speech)/level")}
           >
             <Image
-              source={require("@/assets/icons/speaker_Notes.png")}
+              source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
             />
             <Text>ReadMe Flashcard</Text>
