@@ -1,10 +1,10 @@
-import React, { useCallback, memo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
+import React, { useCallback, memo } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const SpeechTrainingExercise = () => {
   const navigation = useNavigation();
@@ -33,49 +33,116 @@ const SpeechTrainingExercise = () => {
   );
 
   return (
-    <View style={{ display: "flex", 
-    flexDirection: "row", 
-    flexWrap: "wrap", 
-    justifyContent: "space-around", 
-    padding: 10, 
-    rowGap: 18, 
-    columnGap: 21 }}>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
-        <MaterialIcons name="photo" size={60} style={styles.icons} />
-        <Text>Picture Flashcards</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
-        <MaterialIcons name="quiz" size={60} style={styles.icons} />
-        <Text>Question Flashcard</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
-        <MaterialIcons name="local-library" size={60} style={styles.icons} />
-        <Text>Phrase Flashcards</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/level")}>
-        <MaterialCommunityIcons name="message-bulleted" size={60} style={styles.icons} />
-        <Text>ReadMe Flashcard</Text>
-      </TouchableOpacity>
+    <View style={styles.courseContainer}>
+      <View style={styles.gridContainer}>
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push("/(speech)/level")}
+          >
+            <Image source={require("@/assets/icons/Picture.png")} />
+            <Text>ReadMe Flashcard</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push("/(speech)/level")}
+          >
+            <Image source={require("@/assets/icons/Questions.png")} />
+            <Text>Question Flashcards</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push("/(speech)/level")}
+          >
+            <Image source={require("@/assets/icons/Dictionary.png")} />
+            <Text>Phrase Flashcards</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.gridItem}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push("/(speech)/level")}
+          >
+            <Image source={require("@/assets/icons/Speaker_Notes.png")} />
+            <Text>ReadMe Flashcard</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  icons: {
+  courseContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  courseTitle: {
+    fontSize: 20,
+  },
+  dropdownContainer: {
+    width: 200,
+  },
+  dropdown: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+  },
+  selectedTextStyle: {
     color: "#FFBF18",
+    fontSize: 14,
+    textAlign: "right",
+    flex: 1,
+  },
+  iconStyle: {
+    fontSize: 20,
+    color: "#FFBF18",
+  },
+  gridContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%", // Make sure it fills the parent width
+    justifyContent: "space-between", // Add space between grid items
+    marginTop: 20, // Add some margin from the top
+  },
+  gridItem: {
+    width: "48%", // Slightly less than 50% to account for gap
+    justifyContent: "center",
+    marginBottom: 16, // Add space between rows
   },
   card: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    width: 172,
+    width: "100%", // Use full width of grid item
     height: 140,
-    padding: 23,
+    padding: 16,
     fontSize: 12,
     backgroundColor: "#fff",
     borderRadius: 10,
-  }
+    // Add shadow for better separation
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  icons: {
+    color: "#FFBF18",
+  },
 });
 
 export default memo(SpeechTrainingExercise);
