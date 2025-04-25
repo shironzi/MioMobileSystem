@@ -1,9 +1,8 @@
 import { useFocusEffect, useNavigation } from "expo-router";
-import React, {memo, useCallback} from "react";
+import React, { memo, useCallback } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import PicgameCard from "@/components/PicgameCard";
 
-const pictureFlashcard = [
+const data = [
   {
     imageSrc: "@/assets/flashcards/apple.jpg",
     isAnswered: false,
