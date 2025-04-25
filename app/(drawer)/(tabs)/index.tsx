@@ -18,14 +18,60 @@ const data = [
 ];
 
 const courses = [
-  { title: "Academic", section: "tw23", courseType: courseType.academic },
-  { title: "Academic", section: "tw23", courseType: courseType.academic },
-  { title: "Academic", section: "tw23", courseType: courseType.academic },
-  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
-  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
-  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
-  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
-  { title: "Specialized", section: "tw23", courseType: courseType.specialized },
+  {
+    courseId: 1,
+    title: "Academic",
+    section: "tw23",
+    courseType: courseType.academic,
+  },
+  {
+    courseId: 2,
+    title: "Academic",
+    section: "tw23",
+    courseType: courseType.academic,
+  },
+  {
+    courseId: 3,
+    title: "Academic",
+    section: "tw23",
+    courseType: courseType.academic,
+  },
+  {
+    courseId: 4,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
+  {
+    courseId: 5,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
+  {
+    courseId: 6,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
+  {
+    courseId: 7,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
+  {
+    courseId: 8,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
+  {
+    courseId: 9,
+    title: "Specialized",
+    section: "tw23",
+    courseType: courseType.specialized,
+  },
 ];
 
 const Index = () => {
@@ -69,6 +115,7 @@ const Index = () => {
                 <CourseCard
                   courseTitle={course.title}
                   courseSection={course.section}
+                  courseId={course.courseId}
                 />
                 <Text>{courseCardView}</Text>
               </View>
