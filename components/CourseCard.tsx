@@ -3,12 +3,21 @@ import { Card } from "@rneui/themed";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
 
-const CourseCard = (props: { courseTitle: string; courseSection: string }) => {
+const CourseCard = (props: {
+  courseTitle: string;
+  courseSection: string;
+  courseId: number;
+}) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(course)/courseDetails")}
+      onPress={() =>
+        router.push({
+          pathname: "/(course)/courseDetails",
+          params: { id: props.courseId },
+        })
+      }
     >
       <Card
         containerStyle={{
