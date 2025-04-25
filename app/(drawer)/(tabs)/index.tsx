@@ -20,58 +20,58 @@ const data = [
 const courses = [
   {
     courseId: 1,
-    title: "Academic",
+    title: "Math",
     section: "tw23",
     courseType: courseType.academic,
   },
   {
     courseId: 2,
-    title: "Academic",
+    title: "English",
     section: "tw23",
     courseType: courseType.academic,
   },
   {
     courseId: 3,
-    title: "Academic",
+    title: "Science",
     section: "tw23",
     courseType: courseType.academic,
   },
   {
     courseId: 4,
-    title: "Specialized",
+    title: "Speech Training",
     section: "tw23",
     courseType: courseType.specialized,
   },
   {
     courseId: 5,
-    title: "Specialized",
+    title: "Auditory Training ",
     section: "tw23",
     courseType: courseType.specialized,
   },
   {
     courseId: 6,
-    title: "Specialized",
+    title: "Language Training",
     section: "tw23",
     courseType: courseType.specialized,
   },
   {
     courseId: 7,
-    title: "Specialized",
+    title: "Filipino",
     section: "tw23",
-    courseType: courseType.specialized,
+    courseType: courseType.academic,
   },
-  {
-    courseId: 8,
-    title: "Specialized",
-    section: "tw23",
-    courseType: courseType.specialized,
-  },
-  {
-    courseId: 9,
-    title: "Specialized",
-    section: "tw23",
-    courseType: courseType.specialized,
-  },
+  // {
+  //   courseId: 8,
+  //   title: "MAPEH",
+  //   section: "tw23",
+  //   courseType: courseType.academic,
+  // },
+  // {
+  //   courseId: 9,
+  //   title: "Araling Panlipunan",
+  //   section: "tw23",
+  //   courseType: courseType.academic,
+  // },
 ];
 
 const Index = () => {
@@ -105,7 +105,7 @@ const Index = () => {
       <ScrollView
         contentContainerStyle={[
           courseCardView ? styles.gridContainer : null,
-          globalStyle.container,
+          globalStyle.container, 
         ]}
       >
         {courses?.map((course, index) => {

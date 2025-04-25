@@ -16,6 +16,7 @@ enum activityCategory {
   speech = "Speech",
   auditory = "Auditory",
   language = "Language",
+  academic = "Academic"
 }
 
 const data = [
@@ -23,25 +24,25 @@ const data = [
     courseId: 1,
     title: "Academic",
     section: "tw23",
-    activityCategory: activityCategory.speech,
+    activityCategory: activityCategory.academic,
   },
   {
     courseId: 2,
     title: "Academic",
     section: "tw23",
-    activityCategory: activityCategory.speech,
+    activityCategory: activityCategory.academic,
   },
   {
     courseId: 3,
     title: "Academic",
     section: "tw23",
-    activityCategory: activityCategory.speech,
+    activityCategory: activityCategory.academic,
   },
   {
     courseId: 4,
     title: "Academic",
     section: "tw23",
-    activityCategory: activityCategory.auditory,
+    activityCategory: activityCategory.speech,
   },
   {
     courseId: 5,
@@ -53,7 +54,7 @@ const data = [
     courseId: 6,
     title: "Academic",
     section: "tw23",
-    activityCategory: activityCategory.auditory,
+    activityCategory: activityCategory.language,
   },
   {
     courseId: 7,
@@ -91,7 +92,7 @@ const courseDetails = () => {
     const foundCourse = data?.find((c) => c.courseId === courseId);
     setCourse(foundCourse ?? null);
 
-    console.log(courseId);
+    // console.log(courseId);
   }, [id]);
 
   useFocusEffect(
