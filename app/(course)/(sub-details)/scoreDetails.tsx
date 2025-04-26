@@ -10,9 +10,10 @@ const data = [
     difficulty: "Challenge",
     actNo: "Exercise 1",
     attemptNo: "Latest Attempt",
+    scores: 7,
+    totalQuestion: 8,
   },
 ];
-
 
 const ScoreDetails = () => {
   const navigation = useNavigation();
@@ -44,11 +45,11 @@ const ScoreDetails = () => {
           difficulty={item.difficulty}
           actNo={item.actNo}
           attemptNo={item.attemptNo}
+          score={item.scores}
+          totalQuestion={item.totalQuestion}
         />
       ))}
-      
     </View>
-
   );
 };
 
