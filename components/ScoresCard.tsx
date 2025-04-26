@@ -16,11 +16,11 @@ const ScoresCard = (props: {
     <TouchableOpacity onPress={() => router.push("scoreDetails")}>
       <Card containerStyle={styles.card}>
         <View style={styles.row}>
-        <View style={styles.flex2}>
+          <View style={styles.flex2}>
             <Text style={[styles.text, styles.wrapText]} numberOfLines={3}>
-                {props.name}
+              {props.name}
             </Text>
-        </View>
+          </View>
           <View style={styles.flex1}>
             <Text style={[styles.text, styles.center]}>{props.difficulty}</Text>
           </View>
@@ -30,7 +30,12 @@ const ScoresCard = (props: {
           <View style={styles.flex1}>
             <Text style={[styles.text, styles.right]}>{props.score}</Text>
           </View>
-          <Entypo name="chevron-small-right" size={30} color="#ccc" style={{left:-10}} />
+          <Entypo
+            name="chevron-small-right"
+            size={30}
+            color="#ccc"
+            style={{ left: -10 }}
+          />
         </View>
       </Card>
     </TouchableOpacity>
@@ -72,9 +77,7 @@ const styles = StyleSheet.create({
   wrapText: {
     flexWrap: "wrap",
     // marginRight:30,
-    
-  }
-  
+  },
 });
 
 export default memo(ScoresCard);
