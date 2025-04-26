@@ -3,11 +3,9 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 import PlayCard from "@/components/playCard";
 
-const word = "Play";
-//word.length 
 const data = Array.from({ length: 12 }, (_, index) => ({
-    id: index + 1,
-  }));
+  id: index + 1,
+}));
 
 const Play = () => {
   const navigation = useNavigation();
@@ -34,7 +32,7 @@ const Play = () => {
     }, [navigation])
   );
 
-  const renderItem = ({ item }: { item: { id: number} }) => (
+  const renderItem = ({ item }: { item: { id: number } }) => (
     <PlayCard id={item.id} label="Play" />
   );
 
