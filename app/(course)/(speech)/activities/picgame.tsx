@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import React, { memo, useCallback, useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -38,6 +38,8 @@ const initialData = [
 
 const Picgame = () => {
   const navigation = useNavigation();
+  const router = useRouter();
+
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [completedCards, setCompletedCards] = useState(new Set());
   const [cards, setCards] = useState(initialData);
@@ -49,15 +51,12 @@ const Picgame = () => {
 
   const handleMicPress = () => {
     if (!isRecording) {
-      // Start recording
       setIsRecording(true);
-      setTimeLeft(8); // Reset timer
+      setTimeLeft(8);
 
-      // Start the countdown timer
       timerRef.current = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
-            // Time's up, stop recording
             if (timerRef.current) {
               clearInterval(timerRef.current);
             }
@@ -74,7 +73,7 @@ const Picgame = () => {
       }
       handleCorrectAnswer();
       setIsRecording(false);
-      setTimeLeft(8); // Reset timer
+      setTimeLeft(8);
     }
   };
 
@@ -100,7 +99,9 @@ const Picgame = () => {
     if (currentCardIndex < cards.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
     } else {
-      setCurrentCardIndex(0);
+      router.push({
+        pathname: "/(course)/(sub-details)/scoreDetails",
+      });
     }
   };
 
