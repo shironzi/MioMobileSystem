@@ -8,20 +8,22 @@ type titleProps = {
   difficulty: string;
   actNo: string;
   attemptNo: string;
+  score: number;
+  totalQuestion: number;
 };
 
 const commentText =
   "Great effort! Keep practicing and paying attention to details—you're getting better! Try again and see if you can improve your score. You're on the right track!";
 
-const ScoreDetailsCard = ({
+const ScoreDetails = ({
   title,
   difficulty,
   actNo,
   attemptNo,
+  score,
+  totalQuestion,
 }: titleProps) => {
-  const fillValue = 70;
-
-  const points = (fillValue / 100) * 10;
+  const fillPercentage = totalQuestion > 0 ? (score / totalQuestion) * 100 : 0;
 
   return (
     <View style={{}}>
@@ -38,18 +40,20 @@ const ScoreDetailsCard = ({
           <AnimatedCircularProgress
             size={100}
             width={5}
-            fill={fillValue}
+            fill={fillPercentage}
             tintColor="#ffbf18"
             backgroundColor="#e7eaea"
+            rotation={0}
+            lineCap="round"
           >
             {() => (
               <Text style={styles.pointsLabel}>
-                {points.toFixed(0.2)}
+                {score.toFixed(0.2)}
                 {"\n"}Points
               </Text>
             )}
           </AnimatedCircularProgress>
-          <Text style={styles.label}>Out of 10 points</Text>
+          <Text style={styles.label}>Out of {totalQuestion} points</Text>
         </View>
       </Card>
 
@@ -168,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ScoreDetailsCard);
+export default memo(ScoreDetails);
