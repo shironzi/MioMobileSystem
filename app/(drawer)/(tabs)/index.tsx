@@ -6,7 +6,6 @@ import { CourseCardViewContext } from "@/components/contexts/CourseCardViewConte
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
 
-
 enum courseType {
   academic = "academic",
   specialized = "specialized",
@@ -23,42 +22,42 @@ const courses = [
     title: "Math",
     section: "tw23",
     courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/math.png")
+    courseImage: require("@/assets/dashImage/math.png"),
   },
   {
     courseId: 2,
     title: "English",
     section: "tw23",
     courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/english.png")
+    courseImage: require("@/assets/dashImage/english.png"),
   },
   {
     courseId: 3,
     title: "Science",
     section: "tw23",
     courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/science.png")
+    courseImage: require("@/assets/dashImage/science.png"),
   },
   {
     courseId: 4,
     title: "Speech Training",
     section: "tw23",
     courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/speech.png")
+    courseImage: require("@/assets/dashImage/speech.png"),
   },
   {
     courseId: 5,
     title: "Auditory Training ",
     section: "tw23",
     courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/science.png")
+    courseImage: require("@/assets/dashImage/science.png"),
   },
   {
     courseId: 6,
     title: "Language Training",
     section: "tw23",
     courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/language.png")
+    courseImage: require("@/assets/dashImage/language.png"),
   },
   // {
   //   courseId: 7,
@@ -67,7 +66,7 @@ const courses = [
   //   courseType: courseType.academic,
   //   courseImage: require("@/assets/dashImage/math.png")
   // },
- 
+
   // {
   //   courseId: 8,
   //   title: "MAPEH",
@@ -88,56 +87,57 @@ const Index = () => {
 
   return (
     <ScrollView>
-          <View>
-      <View style={styles.courseContainer}>
-        <Text style={styles.courseTitle}>Courses</Text>
-        <View style={styles.dropdownContainer}>
-          <Dropdown
-            style={styles.dropdown}
-            selectedTextStyle={styles.selectedTextStyle}
-            renderRightIcon={(isOpened) => (
-              <MaterialIcons
-                name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-                style={styles.iconStyle}
-                    />
-            )}
-            data={data}
-            value={selectedValue}
-            labelField="label"
-            valueField="value"
-            onChange={(item) => {
-              setSelectedValue(item.value);
-            }}
-          />
-        </View>
-      </View>
-      <ScrollView
-        contentContainerStyle={[
-          courseCardView ? styles.gridContainer : null,
-          globalStyle.container, 
-        ]}
-      >
-        {courses?.map((course, index) => {
-          if (course.courseType === selectedValue) {
-            return (
-              <View key={index} style={courseCardView ? styles.gridItem : null}>
-                <CourseCard
-                  courseTitle={course.title}
-                  courseSection={course.section}
-                  courseId={course.courseId}
-                  courseImage={course.courseImage}
+      <View>
+        <View style={styles.courseContainer}>
+          <Text style={styles.courseTitle}>Courses</Text>
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              style={styles.dropdown}
+              selectedTextStyle={styles.selectedTextStyle}
+              renderRightIcon={(isOpened) => (
+                <MaterialIcons
+                  name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                  style={styles.iconStyle}
                 />
-                <Text>{courseCardView}</Text>
-              </View>
-            );
-          }
-          return null;
-        })}
-      </ScrollView>
-    </View>
-
+              )}
+              data={data}
+              value={selectedValue}
+              labelField="label"
+              valueField="value"
+              onChange={(item) => {
+                setSelectedValue(item.value);
+              }}
+            />
+          </View>
+        </View>
+        <ScrollView
+          contentContainerStyle={[
+            courseCardView ? styles.gridContainer : null,
+            globalStyle.container,
+          ]}
+        >
+          {courses?.map((course, index) => {
+            if (course.courseType === selectedValue) {
+              return (
+                <View
+                  key={index}
+                  style={courseCardView ? styles.gridItem : null}
+                >
+                  <CourseCard
+                    courseTitle={course.title}
+                    courseSection={course.section}
+                    courseId={course.courseId}
+                    courseImage={course.courseImage}
+                  />
+                  <Text>{courseCardView}</Text>
+                </View>
+              );
+            }
+            return null;
+          })}
+        </ScrollView>
+      </View>
     </ScrollView>
-
   );
 };
 
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    paddingBottom: 20,
   },
   gridItem: {
     width: "50%",
