@@ -8,19 +8,20 @@ type PlayCardProps = {
 };
 
 const PlayCard = ({ id, label }: PlayCardProps) => {
-    const navigation = useNavigation();
-    const router = useRouter();
-    return (
-        <TouchableOpacity style={styles.card} onPress={() => router.push("/picgame")}>
-          <View style={styles.linkDecoration}>
-            <Text style={styles.cardNumber}>{id}</Text>
-            <Text style={styles.cardWord}>{label}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    };
-    
-
+  const navigation = useNavigation();
+  const router = useRouter();
+  return (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => router.push("/activities/picgame")}
+    >
+      <View style={styles.linkDecoration}>
+        <Text style={styles.cardNumber}>{id}</Text>
+        <Text style={styles.cardWord}>{label}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   card: {
@@ -54,7 +55,6 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-  
   },
 });
 
