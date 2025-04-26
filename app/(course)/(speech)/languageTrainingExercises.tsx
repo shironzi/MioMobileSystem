@@ -3,8 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const SpeechTrainingExercise = () => {
   const navigation = useNavigation();
