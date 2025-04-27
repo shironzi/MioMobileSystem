@@ -5,7 +5,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
 import Draggable from "react-native-draggable";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, GestureHandlerRootView} from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 
 type Box = {
@@ -60,32 +60,35 @@ const fillInTheBlank = () => {
     });
 
   return (
-    <View style={styles.container}>
-      <ActivityProgress
-        difficulty="Easy"
-        totalItems={10}
-        completedItems={0}
-        instruction="Drag the word to complete the sentence"
-      />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <ActivityProgress
+          difficulty="Easy"
+          totalItems={10}
+          completedItems={0}
+          instruction="Drag the word to complete the sentence"
+        />
 
-      <View>
-        <View style={styles.questionCard}>
-          <FontAwesome6
-            name="volume-high"
-            size={20}
-            color="#fff"
-            style={styles.speakerIcon}
-          />
-          <View></View>
-        </View>
-        <GestureDetector gesture={panGesture}>
-          <View></View>
-          <View>
-            <Text>Choices</Text>
+        <View>
+          <View style={styles.questionCard}>
+            <FontAwesome6
+              name="volume-high"
+              size={20}
+              color="#fff"
+              style={styles.speakerIcon}
+            />
+            <View></View>
           </View>
-        </GestureDetector>
+          <GestureDetector gesture={panGesture}>
+            <View>
+              <Text>Choices</Text>
+            </View>
+          </GestureDetector>
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
+
+    
   );
 };
 
