@@ -147,7 +147,7 @@ const courseDetails = () => {
                 break;
               case activityCategory.auditory:
                 router.push({
-                  pathname: "/(course)/(speech)/auditoryTrainingExercises",
+                  pathname: "/(course)/(auditory)/auditoryTrainingExercises",
                 });
                 break;
               case activityCategory.language:
