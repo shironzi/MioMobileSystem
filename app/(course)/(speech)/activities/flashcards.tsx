@@ -2,6 +2,7 @@ import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import React, { memo, useCallback, useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import ActivityProgress from "@/components/activityProgress";
 
 const initialData = [
   {
@@ -48,6 +49,8 @@ const Picgame = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentCard = cards[currentCardIndex];
+
+  const completedItemsCount = cards.filter((card) => card.isAnswered).length;
 
   const handleMicPress = () => {
     if (!isRecording) {
@@ -129,23 +132,12 @@ const Picgame = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.difficultyText}>Easy</Text>
-        <View style={styles.progressRow}>
-          {cards.map((card, index) => (
-            <View
-              key={index}
-              style={[
-                styles.progressItem,
-                card.isAnswered && styles.completedProgressItem,
-              ]}
-            />
-          ))}
-        </View>
-        <Text style={styles.instructionText}>
-          Say what you see in the picture
-        </Text>
-      </View>
+      <ActivityProgress
+        difficulty="Easy"
+        totalItems={cards.length}
+        completedItems={completedItemsCount}
+        instruction="Say what you see in the picture"
+      />
 
       <View style={styles.flashcardContainer}>
         <View style={styles.imageContainer}>
@@ -196,36 +188,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 20,
-  },
-  headerContainer: {
-    backgroundColor: "transparent",
-    marginBottom: 20,
-  },
-  difficultyText: {
-    fontSize: 17,
-    fontWeight: "800",
-  },
-  progressRow: {
-    flexDirection: "row",
-    marginTop: 13,
-    gap: 5,
-  },
-  progressItem: {
-    flex: 1,
-    borderColor: "#CBCBCB",
-    borderWidth: 1,
-    backgroundColor: "#CBCBCB",
-    borderRadius: 5,
-    height: 25,
-  },
-  completedProgressItem: {
-    backgroundColor: "#FFBF18",
-    borderColor: "#FFBF18",
-  },
-  instructionText: {
-    color: "#434242",
-    fontSize: 15,
-    marginTop: 25,
   },
   flashcardContainer: {
     backgroundColor: "white",
