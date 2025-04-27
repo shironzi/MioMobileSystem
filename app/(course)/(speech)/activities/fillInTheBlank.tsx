@@ -1,29 +1,40 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
-import Draggable from "react-native-draggable";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Word from "@/components/dragAndDrop/Word";
+import WordList from "@/components/dragAndDrop/WordList";
 
-type Box = {
-  id: string;
-  text: string;
-  x: number;
-  y: number;
-};
+import { Dimensions } from "react-native";
 
-type DropZone = {
-  id: string;
-  x: number;
-  y: number;
-  occupied: string;
-};
+const words = [
+  { id: 1, word: "Can" },
+  { id: 2, word: "I" },
+  { id: 3, word: "borrow" },
+  { id: 4, word: "your" },
+  { id: 5, word: "ballpen" },
+  { id: 6, word: "his" },
+  { id: 7, word: "pencil" },
+  { id: 8, word: "take" },
+  { id: 9, word: "the" },
+  { id: 10, word: "notebook" },
+];
+
+const { width, height } = Dimensions.get("window");
 
 const fillInTheBlank = () => {
   const navigation = useNavigation();
+  const [iconBounds, setIconBounds] = useState<{
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  } | null>(null);
+  const iconRef = useRef<View | null>(null);
+
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
@@ -46,18 +57,19 @@ const fillInTheBlank = () => {
     }, [navigation])
   );
 
-  const translationX = useSharedValue(0);
-  const translationY = useSharedValue(0);
-
-  const panGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      translationX.value = e.translationX;
-      translationY.value = e.translationY;
-    })
-    .onEnd(() => {
-      translationX.value = 0;
-      translationY.value = 0;
-    });
+  const measureIcon = () => {
+    if (iconRef.current) {
+      iconRef.current.measure((x, y, width, height, pageX, pageY) => {
+        const padding = 10;
+        setIconBounds({
+          left: pageX - padding,
+          top: pageY - padding,
+          right: pageX + width + padding,
+          bottom: pageY + height + padding,
+        });
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -68,22 +80,23 @@ const fillInTheBlank = () => {
         instruction="Drag the word to complete the sentence"
       />
 
-      <View>
-        <View style={styles.questionCard}>
-          <FontAwesome6
-            name="volume-high"
-            size={20}
-            color="#fff"
-            style={styles.speakerIcon}
-          />
-          <View></View>
-        </View>
-        <GestureDetector gesture={panGesture}>
-          <View></View>
+      <View style={styles.questionCard}>
+        <FontAwesome6
+          name="volume-high"
+          size={20}
+          color="#fff"
+          style={styles.speakerIcon}
+        />
+        <GestureHandlerRootView>
           <View>
-            <Text>Choices</Text>
+            <Text>Answers</Text>
           </View>
-        </GestureDetector>
+          <WordList>
+            {words.map((item) => (
+              <Word key={item.id} id={item.id} word={item.word} />
+            ))}
+          </WordList>
+        </GestureHandlerRootView>
       </View>
     </View>
   );
@@ -96,14 +109,16 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   questionCard: {
+    flexDirection: "column",
     backgroundColor: "#fff",
-    height: "30%",
+    height: height * 0.5,
     borderRadius: 10,
   },
   speakerIcon: {
     backgroundColor: "#FFBF18",
     borderRadius: 180,
     padding: 10,
+    display: "flex",
   },
 });
 
