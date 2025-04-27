@@ -108,7 +108,7 @@ const Picgame = () => {
     }
   };
 
-  useFocusEffect(
+ useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
         headerTitle: "Picture Flashcards",
@@ -127,7 +127,7 @@ const Picgame = () => {
           headerTintColor: "",
         });
       };
-    }, [navigation])
+    }, [navigation]) 
   );
 
   return (
