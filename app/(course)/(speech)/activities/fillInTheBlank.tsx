@@ -27,13 +27,6 @@ const { width, height } = Dimensions.get("window");
 
 const fillInTheBlank = () => {
   const navigation = useNavigation();
-  const [iconBounds, setIconBounds] = useState<{
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  } | null>(null);
-  const iconRef = useRef<View | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -57,20 +50,6 @@ const fillInTheBlank = () => {
     }, [navigation])
   );
 
-  const measureIcon = () => {
-    if (iconRef.current) {
-      iconRef.current.measure((x, y, width, height, pageX, pageY) => {
-        const padding = 10;
-        setIconBounds({
-          left: pageX - padding,
-          top: pageY - padding,
-          right: pageX + width + padding,
-          bottom: pageY + height + padding,
-        });
-      });
-    }
-  };
-
   return (
     <View style={styles.container}>
       <ActivityProgress
@@ -80,22 +59,25 @@ const fillInTheBlank = () => {
         instruction="Drag the word to complete the sentence"
       />
 
-      <View style={styles.questionCard}>
-        <FontAwesome6
-          name="volume-high"
-          size={20}
-          color="#fff"
-          style={styles.speakerIcon}
-        />
-        <GestureHandlerRootView>
-          <View>
-            <Text>Answers</Text>
+      <View style={styles.cardContainer}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={styles.questionCard}>
+            <FontAwesome6
+              name="volume-high"
+              size={20}
+              color="#fff"
+              style={styles.speakerIcon}
+            />
           </View>
-          <WordList>
-            {words.map((item) => (
-              <Word key={item.id} id={item.id} word={item.word} />
-            ))}
-          </WordList>
+          <View style={{ backgroundColor: "transparent", flex: 1 }}>
+            <View>
+              <WordList>
+                {words.map((item) => (
+                  <Word key={item.id} id={item.id} word={item.word} />
+                ))}
+              </WordList>
+            </View>
+          </View>
         </GestureHandlerRootView>
       </View>
     </View>
@@ -108,17 +90,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
+  cardContainer: {
+    height: "50%",
+  },
   questionCard: {
     flexDirection: "column",
+    height: "70%",
     backgroundColor: "#fff",
-    height: height * 0.5,
     borderRadius: 10,
+    padding: 17,
   },
   speakerIcon: {
     backgroundColor: "#FFBF18",
     borderRadius: 180,
-    padding: 10,
-    display: "flex",
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    alignSelf: "flex-start",
   },
 });
 
