@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 type WordListProps = {
   children: React.ReactNode;
@@ -9,17 +8,16 @@ type WordListProps = {
 
 const WordList = ({ children, title }: WordListProps) => {
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
       <View style={styles.wordsContainer}>{children}</View>
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: "#fff",
     borderRadius: 10,
   },
   title: {

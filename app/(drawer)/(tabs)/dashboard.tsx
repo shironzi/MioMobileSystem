@@ -81,7 +81,7 @@ const courses = [
   // },
 ];
 
-const Index = () => {
+const dashboard = () => {
   const [selectedValue, setSelectedValue] = useState("academic");
   const { courseCardView } = useContext(CourseCardViewContext);
 
@@ -183,4 +183,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Index);
+export default memo(dashboard);

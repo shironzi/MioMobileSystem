@@ -1,14 +1,19 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
+import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Word from "@/components/dragAndDrop/Word";
-import WordList from "@/components/dragAndDrop/WordList";
-
-import { Dimensions } from "react-native";
+import { Box, Dropzone } from "./types";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import {
+  GestureHandlerRootView,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
 
 const words = [
   { id: 1, word: "Can" },
@@ -24,6 +29,10 @@ const words = [
 ];
 
 const { width, height } = Dimensions.get("window");
+const BOX_SIZE = 80;
+const DROP_ZONE_COUNT = 4;
+const DROP_ZONE_SPACING =
+  (width - DROP_ZONE_COUNT * BOX_SIZE) / (DROP_ZONE_COUNT + 1);
 
 const fillInTheBlank = () => {
   const navigation = useNavigation();
@@ -50,6 +59,54 @@ const fillInTheBlank = () => {
     }, [navigation])
   );
 
+  const initialDropZones: Dropzone[] = Array.from(
+    { length: DROP_ZONE_COUNT },
+    (_, index) => ({
+      id: index + 1,
+      x: DROP_ZONE_SPACING * (index + 1) + BOX_SIZE * index,
+      y: 300,
+      occupiedBy: null,
+    })
+  );
+
+  const initialDraggableBoxes: Box[] = [
+    {
+      id: 1,
+      x: DROP_ZONE_SPACING,
+      y: 100,
+      word: "hello",
+    },
+    {
+      id: 2,
+      x: DROP_ZONE_SPACING,
+      y: 100,
+      word: "hello",
+    },
+    {
+      id: 3,
+      x: DROP_ZONE_SPACING,
+      y: 100,
+      word: "hello",
+    },
+    {
+      id: 4,
+      x: DROP_ZONE_SPACING,
+      y: 100,
+      word: "hello",
+    },
+  ];
+
+  const [dropZones, setDropZones] = useState<Dropzone[]>(initialDropZones);
+  const [draggableBoxes, setDraggableBoxes] = useState<Box[]>(
+    initialDraggableBoxes
+  );
+  const [boxArrangement, setBoxArrangement] = useState<Box[]>([]);
+
+  const translateValues = draggableBoxes.map(() => ({
+    translateX: useSharedValue(0),
+    translateY: useSharedValue(0),
+  }));
+
   return (
     <View style={styles.container}>
       <ActivityProgress
@@ -60,7 +117,7 @@ const fillInTheBlank = () => {
       />
 
       <View style={styles.cardContainer}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
           <View style={styles.questionCard}>
             <FontAwesome6
               name="volume-high"
@@ -70,15 +127,34 @@ const fillInTheBlank = () => {
             />
           </View>
           <View style={{ backgroundColor: "transparent", flex: 1 }}>
-            <View>
-              <WordList>
-                {words.map((item) => (
-                  <Word key={item.id} id={item.id} word={item.word} />
-                ))}
-              </WordList>
-            </View>
+            <GestureHandlerRootView>
+              {draggableBoxes.map((box, index) => {
+                const animatedStyle = useAnimatedStyle(() => ({
+                  transform: [
+                    { translateX: translateValues[index].translateX.value },
+                    { translateY: translateValues[index].translateY.value },
+                  ],
+                }));
+
+                return (
+                  <PanGestureHandler>
+                    <Animated.View
+                      style={[{ left: box.x, top: box.y }, animatedStyle]}
+                    >
+                      <Word key={index} id={box.id} word={box.word}></Word>
+                    </Animated.View>
+                  </PanGestureHandler>
+                );
+              })}
+
+              {dropZones.map((zone) => (
+                <View key={zone.id}>
+                  <Word id={zone.id} word={zone.occupiedBy || ""} />
+                </View>
+              ))}
+            </GestureHandlerRootView>
           </View>
-        </GestureHandlerRootView>
+        </View>
       </View>
     </View>
   );
