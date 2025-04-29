@@ -2,8 +2,6 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-// import { useNavigation } from "expo-router";
 
 const Index = () => {
   const router = useRouter();
