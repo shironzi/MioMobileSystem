@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { useNavigation, useRouter } from "expo-router";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Index = () => {
@@ -9,8 +9,10 @@ const Index = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  navigation.setOptions({
-    headerShown: false,
+  useFocusEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
   });
 
   return (
