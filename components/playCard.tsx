@@ -13,7 +13,7 @@ const PlayCard = ({ id, label }: PlayCardProps) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push("/activities/flashcards")}
+      onPress={() => router.push("/activities/fillInTheBlank")}
     >
       <View style={styles.linkDecoration}>
         <Text style={styles.cardNumber}>{id}</Text>
