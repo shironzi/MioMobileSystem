@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   continueButton: {
     backgroundColor: "#FFBF18",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 50,
     alignItems: "center",
   },
   disabledButton: {

@@ -1,33 +1,50 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useCallback } from "react";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ActivityProgress from "@/components/activityProgress";
-import Draggable from "react-native-draggable";
-import { Gesture, GestureDetector, GestureHandlerRootView} from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
+import Word from "@/components/dragAndDrop/Word";
+import WordList from "@/components/dragAndDrop/WordList";
 
-type Box = {
-  id: string;
-  text: string;
-  x: number;
-  y: number;
-};
-
-type DropZone = {
-  id: string;
-  x: number;
-  y: number;
-  occupied: string;
-};
+const words = [
+  { id: 1, word: "Can" },
+  { id: 2, word: "I" },
+  { id: 3, word: "borrow" },
+  { id: 4, word: "your" },
+  { id: 5, word: "ballpen" },
+  { id: 6, word: "his" },
+  { id: 7, word: "pencil" },
+  { id: 8, word: "take" },
+  { id: 9, word: "the" },
+  { id: 10, word: "notebook" },
+];
 
 const fillInTheBlank = () => {
   const navigation = useNavigation();
+  const [currentSentence, setCurrentSentence] = useState<string>("");
+
+  const handleSubmit = () => {
+    console.log(currentSentence);
+  };
+
+  const handleSentenceChange = useCallback((sentence: string) => {
+    console.log("Working");
+    setCurrentSentence(sentence);
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
-        headerTitle: "Picture Flashcards",
+        headerTitle: "Fill in the Blank",
         headerStyle: {
           backgroundColor: "#2264DC",
         },
@@ -46,67 +63,88 @@ const fillInTheBlank = () => {
     }, [navigation])
   );
 
-  const translationX = useSharedValue(0);
-  const translationY = useSharedValue(0);
-
-  const panGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      translationX.value = e.translationX;
-      translationY.value = e.translationY;
-    })
-    .onEnd(() => {
-      translationX.value = 0;
-      translationY.value = 0;
-    });
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <View style={styles.container}>
-        <ActivityProgress
-          difficulty="Easy"
-          totalItems={10}
-          completedItems={0}
-          instruction="Drag the word to complete the sentence"
-        />
+        <View style={styles.progressContainer}>
+          <ActivityProgress
+            difficulty="Easy"
+            totalItems={10}
+            completedItems={0}
+            instruction="Drag the words to complete the sentence"
+          />
+        </View>
 
-        <View>
-          <View style={styles.questionCard}>
-            <FontAwesome6
-              name="volume-high"
-              size={20}
-              color="#fff"
-              style={styles.speakerIcon}
-            />
-            <View></View>
-          </View>
-          <GestureDetector gesture={panGesture}>
-            <View>
-              <Text>Choices</Text>
+        <View style={styles.contentContainer}>
+          <View style={styles.sentenceContainer}>
+            <View style={styles.speakerIcon}>
+              <FontAwesome6 name="volume-high" size={20} color="#fff" />
             </View>
-          </GestureDetector>
+            <View style={styles.wordsArea}>
+              <WordList onSentenceChange={handleSentenceChange}>
+                {words.map((word) => (
+                  <Word key={word.id} {...word} />
+                ))}
+              </WordList>
+            </View>
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </GestureHandlerRootView>
-
-    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
-  questionCard: {
-    backgroundColor: "#fff",
-    height: "30%",
-    borderRadius: 10,
+  progressContainer: {},
+  contentContainer: {},
+  cardContainer: {},
+  sentenceContainer: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    height: "63%",
+  },
+  wordsArea: {
+    backgroundColor: "transparent",
+    paddingTop: 20,
+    height: 300,
   },
   speakerIcon: {
     backgroundColor: "#FFBF18",
     borderRadius: 180,
-    padding: 10,
+    alignSelf: "flex-start",
+    height: 50,
+    width: 50,
+    alignContent: "center",
+  },
+  button: {
+    backgroundColor: "#FFBF18",
+    padding: 15,
+    borderRadius: 50,
+    alignItems: "center",
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  buttonContainer: {
+    justifyContent: "flex-end",
   },
 });
 
