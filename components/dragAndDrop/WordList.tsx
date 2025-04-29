@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
+import React, { ReactElement, useEffect, useState, useRef } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { useSharedValue, runOnUI, runOnJS } from "react-native-reanimated";
 

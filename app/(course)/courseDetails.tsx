@@ -1,9 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { memo, useCallback, useEffect, useState } from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import {
-  Link,
   useFocusEffect,
   useLocalSearchParams,
   useNavigation,
@@ -16,7 +14,7 @@ enum activityCategory {
   speech = "Speech",
   auditory = "Auditory",
   language = "Language",
-  academic = "Academic"
+  academic = "Academic",
 }
 
 const data = [

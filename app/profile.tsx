@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Linking,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { Card } from "@rneui/themed";
@@ -77,7 +70,7 @@ const profile = () => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("edit") }
+          onPress={() => router.push("edit")}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>

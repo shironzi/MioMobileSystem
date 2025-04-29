@@ -1,6 +1,6 @@
 import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import MessageCard from "@/components/MessageCard";
 
 enum messageType {
