@@ -16,7 +16,7 @@ export default function Layout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: true }}>
       <Stack.Screen
         name="(drawer)"
         options={{
