@@ -1,27 +1,47 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
-const Word = (props: { id: number; word: string }) => {
-  return (
-    <View>
-      <View style={[styles.wordContainer]}>
-        <Text style={styles.text}>{props.word}</Text>
-      </View>
-    </View>
-  );
-};
+import { WORD_HEIGHT } from "./Layout";
 
 const styles = StyleSheet.create({
-  wordContainer: {
-    backgroundColor: "#E8F1FD",
-    borderRadius: 8,
+  root: {
+    padding: 4,
+  },
+  container: {
     padding: 8,
-    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E8E6E8",
+    backgroundColor: "white",
+    height: WORD_HEIGHT - 8,
   },
   text: {
-    fontSize: 16,
-    color: "#333",
+    fontFamily: "Nunito-Regular",
+    fontSize: 19,
+  },
+  shadow: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 8,
+    borderBottomWidth: 3,
+    borderColor: "#E8E6E8",
+    top: 4,
   },
 });
+
+interface WordProps {
+  id: number;
+  word: string;
+}
+
+const Word = ({ word }: WordProps) => (
+  <View style={styles.root}>
+    <View>
+      <View style={styles.container}>
+        <Text style={styles.text}>{word}</Text>
+      </View>
+      <View style={styles.shadow} />
+    </View>
+  </View>
+);
 
 export default Word;
