@@ -108,7 +108,7 @@ const Picgame = () => {
     }
   };
 
- useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
         headerTitle: "Picture Flashcards",
@@ -127,7 +127,7 @@ const Picgame = () => {
           headerTintColor: "",
         });
       };
-    }, [navigation]) 
+    }, [navigation])
   );
 
   return (
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   continueButton: {
     backgroundColor: "#FFBF18",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 50,
     alignItems: "center",
   },
   disabledButton: {
