@@ -13,7 +13,7 @@ const CourseCard = (props: {
   const router = useRouter();
 
   return (
-    <TouchableOpacity
+    <TouchableOpacity activeOpacity={0.9}
       onPress={() =>
         router.push({
           pathname: "/(course)/courseDetails",
