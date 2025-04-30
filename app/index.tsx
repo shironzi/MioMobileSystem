@@ -3,6 +3,7 @@ import React, { useState, memo } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
+import { MARGIN_TOP } from "@/components/dragAndDrop/Layout";
 
 
 const Index = () => {
@@ -22,11 +23,11 @@ const Index = () => {
     <View style={styles.upper}>
       <View style={{ padding: 20, backgroundColor:"#4d83e4", top: 200, borderTopStartRadius:300, borderTopEndRadius:300, left:-120, width:"160%"}}>
         <View style={{ padding: 60, backgroundColor:"#fff", top: 20, borderTopStartRadius:300, borderTopEndRadius:300, left:0, width:"100%"}}>
-        <View style={{padding:60,justifyContent:"center", top:-80, margin:10, marginLeft:15}}>
+        <View style={{padding:60,justifyContent:"center", top:-110, margin:10, marginLeft:15}}>
           <View>
             <Image
               source={require("@/assets/logo.png")}
-              style={{ width: 100, height: 130, top: 50, right:-265 }}
+              style={{ width: 100, height: 130, top: 70, right:-265 }}
             />
             <Text style={styles.header}>Welcome Back!</Text>
             <Text style={styles.sub}>Log in to your account</Text>
