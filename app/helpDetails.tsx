@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect, useNavigation } from "expo-router";
 import { Card } from "@rneui/themed";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import HeaderConfig from "@/components/HeaderConfig";

@@ -1,6 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import React, { memo, useCallback } from "react";
-import { useFocusEffect, useNavigation } from "expo-router";
+import React, { memo } from "react";
 import ModuleCard from "@/components/ModuleCard";
 import HeaderConfig from "@/components/HeaderConfig";
 

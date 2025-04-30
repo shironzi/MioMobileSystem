@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React, { memo, useCallback } from "react";
-import { useFocusEffect, useNavigation } from "expo-router";
+import React, { memo } from "react";
 import { Card } from "@rneui/themed";
 import HeaderConfig from "@/components/HeaderConfig";
 

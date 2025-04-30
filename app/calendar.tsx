@@ -1,6 +1,5 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { useFocusEffect, useNavigation } from "expo-router";
 import { Calendar, LocaleConfig, DateData } from "react-native-calendars";
 import CalendarCard from "@/components/CalendarCard";
 import { MarkedDates } from "react-native-calendars/src/types";

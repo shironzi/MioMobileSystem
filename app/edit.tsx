@@ -7,8 +7,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { memo, useCallback, useState } from "react";
-import { useFocusEffect, useNavigation } from "expo-router";
+import React, { memo, useState } from "react";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import HeaderConfig from "@/components/HeaderConfig";

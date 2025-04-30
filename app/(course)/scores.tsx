@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect, useNavigation } from "expo-router";
 import ScoresCard from "@/components/ScoresCard";
 import { AntDesign } from "@expo/vector-icons";
 import HeaderConfig from "@/components/HeaderConfig";

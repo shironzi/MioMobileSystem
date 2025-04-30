@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { memo, useCallback, useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -39,7 +39,6 @@ const initialData = [
 ];
 
 const Picgame = () => {
-  const navigation = useNavigation();
   const router = useRouter();
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -107,28 +106,6 @@ const Picgame = () => {
       });
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Picture Flashcards",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
 
   return (
     <View style={styles.container}>

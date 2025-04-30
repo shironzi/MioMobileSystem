@@ -1,8 +1,6 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ActivityProgress from "@/components/activityProgress";
 import Word from "@/components/dragAndDrop/Word";
@@ -23,7 +21,6 @@ const words = [
 ];
 
 const fillInTheBlank = () => {
-  const navigation = useNavigation();
   const [currentSentence, setCurrentSentence] = useState<string>("");
 
   const handleSubmit = () => {

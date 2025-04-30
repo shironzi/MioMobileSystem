@@ -1,6 +1,5 @@
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { useFocusEffect, useNavigation } from "expo-router";
 import PlayCard from "@/components/playCard";
 import HeaderConfig from "@/components/HeaderConfig";
 

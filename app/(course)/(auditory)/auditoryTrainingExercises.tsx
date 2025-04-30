@@ -1,7 +1,5 @@
-import React, { useCallback, memo } from "react";
+import React, { memo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
 

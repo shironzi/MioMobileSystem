@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { memo, useCallback } from "react";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import React, { memo } from "react";
+import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HeaderConfig from "@/components/HeaderConfig";
 

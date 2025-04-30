@@ -1,6 +1,6 @@
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import HelpCard from "@/components/HelpCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import HeaderConfig from "@/components/HeaderConfig";

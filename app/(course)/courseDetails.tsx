@@ -1,12 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
-import {
-  useFocusEffect,
-  useLocalSearchParams,
-  useNavigation,
-  useRouter,
-} from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import globalStyle from "@/styles/globalStyle";
 import HeaderConfig from "@/components/HeaderConfig";
