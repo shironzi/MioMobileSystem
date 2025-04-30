@@ -24,7 +24,7 @@ const announceCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(sub-details)/announceDetails")}
+      onPress={() => router.push("/(sub-details)/announceDetails")}
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     margin: 15,
     marginBottom: 0,
     borderRadius: 10,
+    elevation: 5
   },
   cardContainer: {
     padding: 0,

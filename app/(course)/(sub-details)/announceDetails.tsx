@@ -14,7 +14,7 @@ const data = [
 ];
 
 const announceDetails = () => {
-  HeaderConfig("Announcment");
+  HeaderConfig("Announcement");
 
   return (
     <View style={styles.container}>
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 10,
+    elevation:5
   },
   cardContainer: {
     padding: 15,
@@ -50,16 +51,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     borderWidth: 0,
-    shadowColor: "transparent",
+    // shadowColor: "transparent",
+    elevation: 5,
+   
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    
   },
   title: {
     fontSize: 18,
-    color: "#000",
+    color: "#ffbf18",
+    fontWeight: "bold",
     marginBottom: 5,
   },
   date: {

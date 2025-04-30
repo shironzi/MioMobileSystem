@@ -19,7 +19,7 @@ const data = [
 ];
 
 const announcements = () => {
-  HeaderConfig("Announcments");
+  HeaderConfig("Announcements");
 
   return (
     <View style={styles.container}>
