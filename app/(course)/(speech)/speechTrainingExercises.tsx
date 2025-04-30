@@ -20,7 +20,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Picture.png")}
               style={styles.icon}
             />
-            <Text>ReadMe Flashcard</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>Picture Flashcards</Text>
           </TouchableOpacity>
         </View>
 
@@ -33,7 +33,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Questions.png")}
               style={styles.icon}
             />
-            <Text>Question Flashcards</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>Question Flashcards</Text>
           </TouchableOpacity>
         </View>
 
@@ -46,7 +46,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Dictionary.png")}
               style={styles.icon}
             />
-            <Text>Phrase Flashcards</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>Phrase Flashcards</Text>
           </TouchableOpacity>
         </View>
 
@@ -59,7 +59,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
             />
-            <Text>ReadMe Flashcard</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>ReadMe: Pronunciation Challenge</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -121,11 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    elevation: 5,
   },
   icon: {
     width: 60,

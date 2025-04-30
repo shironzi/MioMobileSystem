@@ -20,7 +20,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Collectibles.png")}
               style={styles.icon}
             />
-            <Text>Bingo Cards</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>Bingo Cards</Text>
           </TouchableOpacity>
         </View>
 
@@ -33,7 +33,7 @@ const SpeechTrainingExercise = () => {
               source={require("@/assets/icons/Red_Card.png")}
               style={styles.icon}
             />
-            <Text>Matching Card</Text>
+            <Text style={{textAlign:"center", marginTop:5}}>Matching Card</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 5,
   },
   icon: {
     width: 60,

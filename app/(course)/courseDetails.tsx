@@ -86,7 +86,7 @@ const courseDetails = () => {
     setCourse(foundCourse ?? null);
   }, [id]);
 
-  HeaderConfig("Calendar");
+  HeaderConfig("Course Details");
 
   return (
     <View style={[globalStyle.container, styles.container]}>
@@ -107,8 +107,8 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        <TouchableOpacity
-          style={styles.link}
+        <TouchableOpacity 
+          style={[styles.link, styles.content]}
           onPress={useCallback(() => {
             if (!course) return;
 
@@ -155,7 +155,7 @@ const courseDetails = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.link}
+          style={[styles.link, styles.content]}
           onPress={useCallback(
             () => router.push("/(course)/announcements"),
             []
@@ -167,7 +167,7 @@ const courseDetails = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.link}
+          style={[styles.link, styles.content]}
           onPress={useCallback(() => router.push("/(course)/assignments"), [])}
         >
           <View style={styles.linkDecoration}>
@@ -176,7 +176,7 @@ const courseDetails = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.link}
+          style={[styles.link, styles.content]}
           onPress={useCallback(() => router.push("/(course)/scores"), [])}
         >
           <View style={styles.linkDecoration}>
@@ -185,7 +185,7 @@ const courseDetails = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.link}
+          style={[styles.link, styles.content]}
           onPress={useCallback(
             () => router.push("/(course)/modules"),
             [router]
@@ -204,11 +204,13 @@ const courseDetails = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 22,
+
   },
   courseInfoContainer: {
     backgroundColor: "#1F1F1F",
     padding: 13,
     borderRadius: 10,
+    elevation: 5
   },
   courseInfo: {
     borderLeftColor: "#fff",
@@ -247,6 +249,7 @@ const styles = StyleSheet.create({
   },
   fontSizeOne: {
     fontSize: 18,
+    textAlignVertical:"center",
   },
   fontSizeTwo: {
     fontSize: 15,
@@ -263,6 +266,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  content: {
+    elevation: 2,
+    margin: 3
+  }
 });
 
 export default memo(courseDetails);
