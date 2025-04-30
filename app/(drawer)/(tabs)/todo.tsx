@@ -161,7 +161,8 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "transparent",
+    // backgroundColor: "transparent",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   dropdownBox: {
     position: "absolute",

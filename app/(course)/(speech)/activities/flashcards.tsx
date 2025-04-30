@@ -51,7 +51,7 @@ const Picgame = () => {
 
   const completedItemsCount = cards.filter((card) => card.isAnswered).length;
 
-  HeaderConfig("Flashcards");
+  HeaderConfig("Picture Flashcards");
 
   const handleMicPress = () => {
     if (!isRecording) {
@@ -113,10 +113,16 @@ const Picgame = () => {
         difficulty="Easy"
         totalItems={cards.length}
         completedItems={completedItemsCount}
-        instruction="Say what you see in the picture"
+        instruction="Guess the picture"
       />
 
       <View style={styles.flashcardContainer}>
+        <View>
+          <Image
+            source={require("@/assets/orange.png")}
+            style={{width:90, height:50 }}
+          />
+        </View>
         <View style={styles.imageContainer}>
           <Image
             source={currentCard.imageSrc}
@@ -170,12 +176,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 20,
+    elevation: 5,
+    marginBottom: 0,
     height: 300,
   },
   imageContainer: {
@@ -184,13 +186,14 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   cardImage: {
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 200,
     borderRadius: 10,
+    marginTop: -90,
   },
   micContainer: {
     alignItems: "center",
-    marginTop: 39,
+    marginTop: 40,
   },
   micButton: {
     width: 80,
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   buttonContainer: {
-    marginTop: 100,
+    marginTop: 70,
   },
   continueButton: {
     backgroundColor: "#FFBF18",
