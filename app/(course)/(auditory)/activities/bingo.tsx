@@ -44,8 +44,6 @@ const bingo = () => {
   const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const currentWord = UNIQUE_WORDS[currentIndex];
-
   const handleCardPress = (id: string): void => {
     if (!matchedIds.includes(id)) {
       setMatchedIds([...matchedIds, id]);
