@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     margin: 15,
     marginBottom: 0,
     borderRadius: 10,
+    elevation: 5
   },
   cardContainer: {
     padding: 0,
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 14,
+    fontSize: 15,
   },
   linkDecoration: {
     borderLeftColor: "#FFBF18",

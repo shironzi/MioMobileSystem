@@ -44,8 +44,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
-    borderWidth: 0,
-    shadowColor: "transparent",
+    elevation: 5
   },
   cardContent: {
     flexDirection: "column",
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#000",
+    color: "#2264dc",
     marginBottom: 20,
   },
   description: {

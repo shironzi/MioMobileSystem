@@ -55,17 +55,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#fff",
     borderWidth: 0,
-    shadowColor: "transparent",
+    // shadowColor: "transparent",
+    elevation:5,
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    margin:10
   },
   title: {
     fontSize: 20,
-    color: "#000",
+    color: "#2264dc",
     marginBottom: 15,
+    fontWeight: "bold",
+    marginTop: -5,
   },
   row: {
     flexDirection: "row",
@@ -96,14 +100,14 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#FFBF18",
     margin: 10,
-    padding: 10,
+    padding: 12,
     borderRadius: 50,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

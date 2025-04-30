@@ -55,18 +55,20 @@ const assCard = (props: {
 const styles = StyleSheet.create({
   touchableOpacity: {
     backgroundColor: "#fff",
-    padding: 10,
-    paddingEnd: 0,
+    padding: 20,
+    paddingEnd: 13,
     margin: 15,
     marginBottom: 0,
     borderRadius: 10,
+    elevation: 5
   },
   cardContainer: {
-    padding: 10,
+    padding: 0,
+    paddingLeft: 10,
     margin: 0,
-    borderWidth: 0,
+    borderWidth: 0, 
     shadowColor: "transparent",
-    borderRadius: 15,
+
   },
   cardContent: {
     flexDirection: "row", 
