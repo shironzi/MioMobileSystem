@@ -10,100 +10,59 @@ const initialData = [
     id: 1,
     imageSrc: require("@/assets/flashcards/apple.jpg"),
     word: "Apple",
-    isAnswered: false,
   },
   {
     id: 2,
     imageSrc: require("@/assets/flashcards/fireExtinguisher.jpg"),
     word: "Banana",
-    isAnswered: false,
   },
   {
     id: 3,
     imageSrc: require("@/assets/flashcards/scissors.png"),
     word: "Orange",
-    isAnswered: false,
   },
   {
     id: 4,
     imageSrc: require("@/assets/flashcards/teacher.jpg"),
     word: "Grapes",
-    isAnswered: false,
   },
   {
     id: 5,
     imageSrc: require("@/assets/flashcards/whisper.png"),
     word: "Strawberry",
-    isAnswered: false,
   },
 ];
 
 const Picgame = () => {
+  HeaderConfig("Picture Flashcards");
   const router = useRouter();
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [cards, setCards] = useState(initialData);
   const [isRecording, setIsRecording] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(8);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isAnswered, setIsAnswered] = useState(false);
 
   const currentCard = cards[currentCardIndex];
 
-  const completedItemsCount = cards.filter((card) => card.isAnswered).length;
-
-  HeaderConfig("Picture Flashcards");
-
   const handleMicPress = () => {
-    if (!isRecording) {
-      setIsRecording(true);
-      setTimeLeft(8);
+    setIsRecording(true);
 
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            if (timerRef.current) {
-              clearInterval(timerRef.current);
-            }
-            handleCorrectAnswer();
-            setIsRecording(false);
-            return 8;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-      handleCorrectAnswer();
+    setTimeout(() => {
       setIsRecording(false);
-      setTimeLeft(8);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
-
-  const handleCorrectAnswer = () => {
-    setCards((prevCards) => {
-      const updatedCards = [...prevCards];
-      updatedCards[currentCardIndex].isAnswered = true;
-      return updatedCards;
-    });
+      setIsAnswered(true);
+    }, 8000);
   };
 
   const handleNext = () => {
-    if (currentCardIndex < cards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
-    } else {
-      router.push({
-        pathname: "/(course)/(sub-details)/scoreDetails",
-      });
+    if (!isRecording) {
+      if (currentCardIndex < cards.length - 1) {
+        setIsAnswered(false);
+        setCurrentCardIndex(currentCardIndex + 1);
+      } else {
+        router.push({
+          pathname: "/(course)/(sub-details)/scoreDetails",
+        });
+      }
     }
   };
 
@@ -112,7 +71,7 @@ const Picgame = () => {
       <ActivityProgress
         difficulty="Easy"
         totalItems={cards.length}
-        completedItems={completedItemsCount}
+        completedItems={currentCardIndex}
         instruction="Guess the picture"
       />
 
@@ -120,7 +79,7 @@ const Picgame = () => {
         <View>
           <Image
             source={require("@/assets/orange.png")}
-            style={{width:90, height:50 }}
+            style={{ width: 90, height: 50 }}
           />
         </View>
         <View style={styles.imageContainer}>
@@ -143,7 +102,12 @@ const Picgame = () => {
             color={isRecording ? "#fff" : "black"}
           />
         </TouchableOpacity>
-        <Text style={!isRecording ? { opacity: 0 } : styles.recordingText}>
+        <Text
+          style={[
+            styles.recordingText,
+            isRecording ? { opacity: 100 } : { opacity: 0 },
+          ]}
+        >
           Listening...
         </Text>
       </View>
@@ -152,10 +116,12 @@ const Picgame = () => {
         <TouchableOpacity
           style={[
             styles.continueButton,
-            !currentCard.isAnswered && styles.disabledButton,
+            isAnswered && !isRecording
+              ? { backgroundColor: "#FFBF18" }
+              : { backgroundColor: "#E0E0E0" },
           ]}
           onPress={handleNext}
-          disabled={!currentCard.isAnswered}
+          disabled={!isAnswered || isRecording}
         >
           <Text style={styles.continueButtonText}>
             {currentCardIndex === cards.length - 1 ? "Submit" : "Continue"}
@@ -194,6 +160,8 @@ const styles = StyleSheet.create({
   micContainer: {
     alignItems: "center",
     marginTop: 40,
+    display: "flex",
+    flexDirection: "column",
   },
   micButton: {
     width: 80,
@@ -215,13 +183,9 @@ const styles = StyleSheet.create({
     marginTop: 70,
   },
   continueButton: {
-    backgroundColor: "#FFBF18",
     padding: 15,
     borderRadius: 50,
     alignItems: "center",
-  },
-  disabledButton: {
-    backgroundColor: "#E0E0E0",
   },
   continueButtonText: {
     color: "white",

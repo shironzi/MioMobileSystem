@@ -71,7 +71,6 @@ const bingo = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.difficulty}>Easy</Text>
-
       <FlatList
         style={styles.bingoCards}
         data={Data}
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
   },
   bingoCards: {
     marginHorizontal: "auto",
-    height: "65%",
+    height: "70%",
   },
   speakerIcon: {
     borderRadius: 180,
