@@ -60,11 +60,9 @@ const bingo = () => {
 
   const playAudio = () => {
     setIsPlaying(true);
-    console.log("Audio is playing!");
 
     setTimeout(() => {
       setIsPlaying(false);
-      console.log(currentIndex);
       goNext();
       console.log("Audio has finished playing.");
     }, 5000);
