@@ -79,8 +79,8 @@ const CalendarScreen = () => {
           markedDates={markedDates}
           enableSwipeMonths={true}
           theme={{
-            backgroundColor: "#ffffff",
-            calendarBackground: "#ffffff",
+            backgroundColor: "#f5f5f5",
+            calendarBackground: "#f5f5f5",
             textSectionTitleColor: "#b6c1cd",
             selectedDayBackgroundColor: "#FFBF18",
             selectedDayTextColor: "#000",
@@ -152,11 +152,16 @@ const CalendarScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
     padding: 10,
   },
   calendar: {
     margin: 5,
+    marginBottom: 10,
+    backgroundColor: "#f5f5f5",
+    paddingBottom:10,
+
+
   },
   scrollContainer: {
     paddingHorizontal: 10,

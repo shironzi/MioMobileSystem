@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet} from "react-native";
 import { Card } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -21,7 +21,7 @@ const CalendarCard: React.FC<CalendarCardProps> = (props) => {
   };
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity activeOpacity={0.9}>
       <Card containerStyle={styles.card}>
         <View style={styles.cardContent}>
           <MaterialIcons name="image" size={50} color="#FFBF18" style={styles.icon} />
@@ -40,14 +40,10 @@ const CalendarCard: React.FC<CalendarCardProps> = (props) => {
 
 const styles = StyleSheet.create({
   card: {
-    left: 0,
-    width: "92%",
+    left: -15,
+    width: "100%",
     backgroundColor: "#fff",
     borderRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     elevation: 5,
     padding: 20,
     height: 110,
