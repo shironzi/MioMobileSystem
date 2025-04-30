@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import ModuleCard from "@/components/ModuleCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -23,38 +24,16 @@ const data = [
 ];
 
 const modules = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Modules",
-        headerStyle: styles.headerStyle,
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {},
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Modules");
 
   return (
-      <View style={styles.container}>
-        {data.map((item) => (
-          <ModuleCard
-            key={item.id}
-            title={item.title}
-            
-          />
-        ))}
-      </View>
-    );
-  };
+    <View style={styles.container}>
+      {data.map((item) => (
+        <ModuleCard key={item.id} title={item.title} />
+      ))}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

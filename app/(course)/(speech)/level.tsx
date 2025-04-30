@@ -2,52 +2,55 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const level = () => {
-  const navigation = useNavigation();
   const router = useRouter();
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Picture Flashcards",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Levels");
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select a Difficulty Level</Text>
       <View style={styles.cardContainer}>
-        <TouchableOpacity style={styles.card} onPress={() => router.push("/(speech)/play")} >
-          <MaterialIcons name="star" size={50} color="#009c41" style={styles.icon} />
-          <Text style={[styles.cardText, {color: "#009c41"}]}>Easy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.card} >
-          <MaterialIcons name="star" size={50} color="#FFda03" style={styles.icon} />
-          <Text style={[styles.cardText, {color: "#FFda03"}]}>Average</Text>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => router.push("/(speech)/play")}
+        >
+          <MaterialIcons
+            name="star"
+            size={50}
+            color="#009c41"
+            style={styles.icon}
+          />
+          <Text style={[styles.cardText, { color: "#009c41" }]}>Easy</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.card}>
-          <MaterialIcons name="star" size={50} color="#FFa700" style={styles.icon} />
-          <Text style={[styles.cardText, {color: "#FFa700"}]}>Difficult</Text>
+          <MaterialIcons
+            name="star"
+            size={50}
+            color="#FFda03"
+            style={styles.icon}
+          />
+          <Text style={[styles.cardText, { color: "#FFda03" }]}>Average</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.card}>
-          <MaterialIcons name="star" size={50}  color="#FF0000" style={styles.icon} />
-          <Text style={[styles.cardText, {color: "#FF0000"}]}>Challenge</Text>
+          <MaterialIcons
+            name="star"
+            size={50}
+            color="#FFa700"
+            style={styles.icon}
+          />
+          <Text style={[styles.cardText, { color: "#FFa700" }]}>Difficult</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.card}>
+          <MaterialIcons
+            name="star"
+            size={50}
+            color="#FF0000"
+            style={styles.icon}
+          />
+          <Text style={[styles.cardText, { color: "#FF0000" }]}>Challenge</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -93,13 +96,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000",
   },
- 
+
   icon: {
     left: 15,
     marginTop: 20,
   },
-
-
 });
 
 export default memo(level);

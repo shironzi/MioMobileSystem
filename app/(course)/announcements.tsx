@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import AnnounceCard from "@/components/AnnounceCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -19,25 +20,7 @@ const data = [
 ];
 
 const announcements = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Announcement",
-        headerStyle: styles.headerStyle,
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {},
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Announcments");
 
   return (
     <View style={styles.container}>

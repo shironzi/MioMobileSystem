@@ -4,18 +4,45 @@ import { useFocusEffect, useNavigation } from "expo-router";
 import { Calendar, LocaleConfig, DateData } from "react-native-calendars";
 import CalendarCard from "@/components/CalendarCard";
 import { MarkedDates } from "react-native-calendars/src/types";
+import HeaderConfig from "@/components/HeaderConfig";
 
 LocaleConfig.locales["fr"] = {
   monthNames: [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ],
   monthNamesShort: [
-    "Jan", "Feb", "Mar", "Apr", "May", "June",
-    "July", "Aug", "Sept", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "June",
+    "July",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
   ],
   dayNames: [
-    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ],
   dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   today: "Today",
@@ -23,30 +50,9 @@ LocaleConfig.locales["fr"] = {
 LocaleConfig.defaultLocale = "fr";
 
 const CalendarScreen = () => {
-  const navigation = useNavigation();
   const [selected, setSelected] = useState("");
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Calendar",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Calendar");
 
   const markedDates: MarkedDates = selected
     ? {
@@ -68,81 +74,79 @@ const CalendarScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-      <Calendar
-        style={styles.calendar}
-        markingType="multi-dot"
-        markedDates={markedDates}
-        enableSwipeMonths={true}
-        theme={{
-          backgroundColor: "#ffffff",
-          calendarBackground: "#ffffff",
-          textSectionTitleColor: "#b6c1cd",
-          selectedDayBackgroundColor: "#FFBF18",
-          selectedDayTextColor: "#000",
-          todayTextColor: "#FFBF18",
-          dayTextColor: "#2d4150",
-          textDisabledColor: "#d9e1e8",
-          dotColor: "#2264DC",
-          selectedDotColor: "#ffffff",
-          arrowColor: "#2264DC",
-          monthTextColor: "#2264DC",
-          indicatorColor: "#2264DC",
-          textDayFontWeight: "300",
-          textMonthFontWeight: "bold",
-          textDayHeaderFontWeight: "300",
-          textDayFontSize: 16,
-          textMonthFontSize: 18,
-          textDayHeaderFontSize: 14,
-        }}
-        onDayPress={(day: DateData) => {
-          setSelected(day.dateString);
-        }}
-      />
-       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {selected && (
-          <>
-            <CalendarCard
-              title="Speech Development"
-              sub="Picture Flashcards"
-              date={selected}
-              time="10:00 AM"
-              type="Submitted"
-            />
-            <CalendarCard
-              title="Speech Development"
-              sub="Picture Flashcards"
-              date={selected}
-              time="10:00 AM"
-              type="Submitted"
-            />
-            <CalendarCard
-              title="Speech Development"
-              sub="Picture Flashcards"
-              date={selected}
-              time="10:00 AM"
-              type="Submitted"
-            />
-            <CalendarCard
-              title="Speech Development"
-              sub="Picture Flashcards"
-              date={selected}
-              time="10:00 AM"
-              type="Submitted"
-            />
-            <CalendarCard
-              title="Speech Development"
-              sub="Picture Flashcards"
-              date={selected}
-              time="10:00 AM"
-              type="Submitted"
-            />
-          </>
-        )}
-      </ScrollView>
-    </View>
-      
+        <Calendar
+          style={styles.calendar}
+          markingType="multi-dot"
+          markedDates={markedDates}
+          enableSwipeMonths={true}
+          theme={{
+            backgroundColor: "#ffffff",
+            calendarBackground: "#ffffff",
+            textSectionTitleColor: "#b6c1cd",
+            selectedDayBackgroundColor: "#FFBF18",
+            selectedDayTextColor: "#000",
+            todayTextColor: "#FFBF18",
+            dayTextColor: "#2d4150",
+            textDisabledColor: "#d9e1e8",
+            dotColor: "#2264DC",
+            selectedDotColor: "#ffffff",
+            arrowColor: "#2264DC",
+            monthTextColor: "#2264DC",
+            indicatorColor: "#2264DC",
+            textDayFontWeight: "300",
+            textMonthFontWeight: "bold",
+            textDayHeaderFontWeight: "300",
+            textDayFontSize: 16,
+            textMonthFontSize: 18,
+            textDayHeaderFontSize: 14,
+          }}
+          onDayPress={(day: DateData) => {
+            setSelected(day.dateString);
+          }}
+        />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {selected && (
+            <>
+              <CalendarCard
+                title="Speech Development"
+                sub="Picture Flashcards"
+                date={selected}
+                time="10:00 AM"
+                type="Submitted"
+              />
+              <CalendarCard
+                title="Speech Development"
+                sub="Picture Flashcards"
+                date={selected}
+                time="10:00 AM"
+                type="Submitted"
+              />
+              <CalendarCard
+                title="Speech Development"
+                sub="Picture Flashcards"
+                date={selected}
+                time="10:00 AM"
+                type="Submitted"
+              />
+              <CalendarCard
+                title="Speech Development"
+                sub="Picture Flashcards"
+                date={selected}
+                time="10:00 AM"
+                type="Submitted"
+              />
+              <CalendarCard
+                title="Speech Development"
+                sub="Picture Flashcards"
+                date={selected}
+                time="10:00 AM"
+                type="Submitted"
+              />
+            </>
+          )}
+        </ScrollView>
+      </View>
     </ScrollView>
-    
   );
 };
 

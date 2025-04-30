@@ -1,44 +1,33 @@
 import React, { memo, useCallback, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { Card } from "@rneui/themed";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const helpDetails = () => {
-  const navigation = useNavigation();
-  const [issue, setIssue] = useState(""); // State to manage the text input
+  const [issue, setIssue] = useState("");
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Help & Support",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-        headerRight: () => (
-          <MaterialIcon name="help" size={24} color="#fff" style={{ marginRight: 15 }} />
-        ),
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
-
+  HeaderConfig("Help & Support");
   return (
     <Card containerStyle={styles.cardContainer}>
       <View style={styles.cardContent}>
         <Text style={styles.title}>Report an Issue</Text>
-        <MaterialIcon name="plagiarism" size={90} color="#ffbf18" style={{ marginBottom: 10, alignSelf: "center", margin: 20 }} />
-        <Text style={styles.description}>Is there anything wrong with the app?</Text>
+        <MaterialIcon
+          name="plagiarism"
+          size={90}
+          color="#ffbf18"
+          style={{ marginBottom: 10, alignSelf: "center", margin: 20 }}
+        />
+        <Text style={styles.description}>
+          Is there anything wrong with the app?
+        </Text>
       </View>
       <Card containerStyle={styles.inputCard}>
         <TextInput

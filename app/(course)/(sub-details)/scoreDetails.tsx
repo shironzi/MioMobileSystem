@@ -2,6 +2,7 @@ import { useFocusEffect, useNavigation } from "expo-router";
 import React, { memo, useCallback } from "react";
 import { View, StyleSheet } from "react-native";
 import ScoreDetailsCard from "@/components/ScoreDetailsCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -16,25 +17,7 @@ const data = [
 ];
 
 const ScoreDetails = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Exercise Details",
-        headerStyle: { backgroundColor: "#2264DC" },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {},
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Score");
 
   return (
     <View style={styles.container}>

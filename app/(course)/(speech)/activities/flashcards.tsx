@@ -3,6 +3,7 @@ import React, { memo, useCallback, useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ActivityProgress from "@/components/activityProgress";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const initialData = [
   {
@@ -42,7 +43,6 @@ const Picgame = () => {
   const router = useRouter();
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [completedCards, setCompletedCards] = useState(new Set());
   const [cards, setCards] = useState(initialData);
   const [isRecording, setIsRecording] = useState(false);
   const [timeLeft, setTimeLeft] = useState(8);
@@ -51,6 +51,8 @@ const Picgame = () => {
   const currentCard = cards[currentCardIndex];
 
   const completedItemsCount = cards.filter((card) => card.isAnswered).length;
+
+  HeaderConfig("Flashcards");
 
   const handleMicPress = () => {
     if (!isRecording) {
@@ -94,8 +96,6 @@ const Picgame = () => {
       updatedCards[currentCardIndex].isAnswered = true;
       return updatedCards;
     });
-
-    setCompletedCards((prev) => new Set([...prev, currentCardIndex]));
   };
 
   const handleNext = () => {

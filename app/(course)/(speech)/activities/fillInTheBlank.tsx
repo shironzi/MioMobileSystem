@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ActivityProgress from "@/components/activityProgress";
 import Word from "@/components/dragAndDrop/Word";
 import WordList from "@/components/dragAndDrop/WordList";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const words = [
   { id: 1, word: "Can" },
@@ -34,27 +35,7 @@ const fillInTheBlank = () => {
     setCurrentSentence(sentence);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Fill in the Blank",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Fill in the Blank");
 
   return (
     <GestureHandlerRootView>

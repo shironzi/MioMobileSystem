@@ -1,8 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import React, { memo, useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -13,52 +22,37 @@ const data = [
 ];
 
 const Edit = () => {
-  const navigation = useNavigation();
   const [biography, setBiography] = useState("");
   const [contact, setContact] = useState("");
   const [socialLinks, setSocialLinks] = useState([{ title: "", url: "" }]);
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Profile",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
+  HeaderConfig("Profile");
 
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
-
-interface SocialLink {
+  interface SocialLink {
     title: string;
     url: string;
-}
+  }
 
-const handleSocialLinkChange = (index: number, field: keyof SocialLink, value: string): void => {
+  const handleSocialLinkChange = (
+    index: number,
+    field: keyof SocialLink,
+    value: string
+  ): void => {
     const updatedLinks: SocialLink[] = [...socialLinks];
     updatedLinks[index][field] = value;
     setSocialLinks(updatedLinks);
-};
+  };
 
   const handleAddSocialLink = () => {
     setSocialLinks([...socialLinks, { title: "", url: "" }]);
   };
 
-const handleRemoveSocialLink = (index: number): void => {
-    const updatedLinks: SocialLink[] = socialLinks.filter((_, i) => i !== index);
+  const handleRemoveSocialLink = (index: number): void => {
+    const updatedLinks: SocialLink[] = socialLinks.filter(
+      (_, i) => i !== index
+    );
     setSocialLinks(updatedLinks);
-};
+  };
 
   return (
     <ScrollView>
@@ -66,10 +60,7 @@ const handleRemoveSocialLink = (index: number): void => {
         {data.map((item) => (
           <Card key={item.id} containerStyle={styles.cardContainer}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
-            <Image
-              source={item.image}
-              style={styles.profileImage}
-            />
+            <Image source={item.image} style={styles.profileImage} />
             <TouchableOpacity style={styles.iconWrapper}>
               <FontAwesome name="pencil" size={15} color="#fff" />
             </TouchableOpacity>
@@ -105,7 +96,9 @@ const handleRemoveSocialLink = (index: number): void => {
                     placeholder="Title"
                     placeholderTextColor="#aaa"
                     value={link.title}
-                    onChangeText={(value) => handleSocialLinkChange(index, "title", value)}
+                    onChangeText={(value) =>
+                      handleSocialLinkChange(index, "title", value)
+                    }
                     multiline={true}
                   />
                   <Text style={styles.arrow}>›</Text>
@@ -114,7 +107,9 @@ const handleRemoveSocialLink = (index: number): void => {
                     placeholder="URL"
                     placeholderTextColor="#aaa"
                     value={link.url}
-                    onChangeText={(value) => handleSocialLinkChange(index, "url", value)}
+                    onChangeText={(value) =>
+                      handleSocialLinkChange(index, "url", value)
+                    }
                     multiline={true}
                   />
                   <TouchableOpacity
@@ -288,7 +283,7 @@ const styles = StyleSheet.create({
   textInput: {
     top: 5,
     paddingTop: -10,
-  }
+  },
 });
 
 export default memo(Edit);

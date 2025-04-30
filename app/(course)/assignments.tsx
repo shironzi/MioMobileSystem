@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import AssCard from "@/components/AssCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -23,25 +24,7 @@ const data = [
 ];
 
 const assignments = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Assignments",
-        headerStyle: styles.headerStyle,
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {},
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Assignments");
 
   return (
     <View style={styles.container}>

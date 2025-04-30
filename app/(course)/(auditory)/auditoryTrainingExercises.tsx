@@ -3,32 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const SpeechTrainingExercise = () => {
-  const navigation = useNavigation();
   const router = useRouter();
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Auditory Training Exercises",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Auditory Training Exercises");
 
   return (
     <View style={styles.courseContainer}>

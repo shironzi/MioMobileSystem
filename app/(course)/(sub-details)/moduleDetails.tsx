@@ -3,6 +3,7 @@ import React, { memo, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { Card } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -13,29 +14,7 @@ const data = [
 ];
 
 const moduleDetails = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "[M1 - MAIN]  Speech Development",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Module");
 
   return (
     <View style={styles.container}>
@@ -45,7 +24,7 @@ const moduleDetails = () => {
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.desc}</Text>
           </View>
-          <TouchableOpacity style={styles.button} >
+          <TouchableOpacity style={styles.button}>
             <MaterialIcons name="download" size={24} color="#fff" />
             <Text style={styles.buttonText}>Module 1.pdf</Text>
           </TouchableOpacity>

@@ -9,6 +9,7 @@ import {
 } from "expo-router";
 
 import globalStyle from "@/styles/globalStyle";
+import HeaderConfig from "@/components/HeaderConfig";
 
 enum activityCategory {
   speech = "Speech",
@@ -75,7 +76,6 @@ const data = [
 ];
 
 const courseDetails = () => {
-  const navigation = useNavigation();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [course, setCourse] = useState<{
@@ -91,27 +91,7 @@ const courseDetails = () => {
     setCourse(foundCourse ?? null);
   }, [id]);
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Course Details",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Calendar");
 
   return (
     <View style={[globalStyle.container, styles.container]}>

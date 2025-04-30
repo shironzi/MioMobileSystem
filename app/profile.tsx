@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import React, { memo, useCallback } from "react";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import React, { memo } from "react";
+import { useRouter } from "expo-router";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = {
   id: 1,
@@ -17,30 +18,9 @@ const data = {
 };
 
 const profile = () => {
-  const navigation = useNavigation();
   const router = useRouter();
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Profile",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Profile");
 
   return (
     <View style={styles.container}>

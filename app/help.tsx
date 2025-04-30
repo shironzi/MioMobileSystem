@@ -3,6 +3,7 @@ import { Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import HelpCard from "@/components/HelpCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
   {
@@ -43,34 +44,8 @@ const data = [
 ];
 
 const help = () => {
-  const navigation = useNavigation();
   const router = useRouter();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Help & Support",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-        headerRight: () => (
-          <MaterialIcon name="help" size={24} color="#fff" style={{ marginRight: 15 }}
-          />
-        ),  
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Help & Support");
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

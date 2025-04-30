@@ -1,8 +1,15 @@
 import React, { memo, useCallback, useState } from "react";
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity} from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 import ScoresCard from "@/components/ScoresCard";
 import { AntDesign } from "@expo/vector-icons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 enum scoreType {
   assessment = "Assessment",
@@ -38,31 +45,12 @@ const data = [
 ];
 
 const ScoresScreen = () => {
-  const navigation = useNavigation();
-  const [selectedCategory, setSelectedCategory] = useState<scoreType | "all">("all");
+  const [selectedCategory, setSelectedCategory] = useState<scoreType | "all">(
+    "all"
+  );
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Scores",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Scores");
 
   const filteredData =
     selectedCategory === "all"
@@ -83,7 +71,12 @@ const ScoresScreen = () => {
         >
           <Text style={styles.dropdownToggle}>
             {selectedCategory === "all" ? "All" : selectedCategory}{" "}
-            <AntDesign name={dropdownVisible ? "up" : "down"} size={14} color="#FFBF18" style={{ marginLeft: 5 }}/>
+            <AntDesign
+              name={dropdownVisible ? "up" : "down"}
+              size={14}
+              color="#FFBF18"
+              style={{ marginLeft: 5 }}
+            />
           </Text>
         </TouchableOpacity>
 
@@ -97,7 +90,9 @@ const ScoresScreen = () => {
               <Text style={styles.dropdownItem}>Exercises</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => handleSelect(scoreType.assessment)}>
+            <TouchableOpacity
+              onPress={() => handleSelect(scoreType.assessment)}
+            >
               <Text style={styles.dropdownItem}>Tests</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
@@ -157,7 +152,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     zIndex: 10,
   },
-  
+
   dropdownToggle: {
     color: "#F4B400",
     fontSize: 16,
@@ -178,7 +173,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-  
 });
 
 export default memo(ScoresScreen);

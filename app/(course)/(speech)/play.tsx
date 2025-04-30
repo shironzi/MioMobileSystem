@@ -2,35 +2,14 @@ import React, { memo, useCallback } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 import PlayCard from "@/components/playCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,
 }));
 
 const Play = () => {
-  const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Picture Flashcards",
-        headerStyle: {
-          backgroundColor: "#2264DC",
-        },
-        headerTintColor: "#fff",
-      });
-
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "",
-          },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation])
-  );
+  HeaderConfig("Play");
 
   const renderItem = ({ item }: { item: { id: number } }) => (
     <PlayCard id={item.id} label="Play" />
