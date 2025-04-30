@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, ScrollView, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import HelpCard from "@/components/HelpCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
@@ -48,7 +48,8 @@ const help = () => {
   HeaderConfig("Help & Support");
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View>
+      <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Reports</Text>
       {data.map((item) => (
         <HelpCard
@@ -59,13 +60,16 @@ const help = () => {
           type={item.type}
         />
       ))}
-      <TouchableOpacity
+    
+    </ScrollView>
+    <TouchableOpacity
         style={styles.addButton}
         onPress={() => router.push("helpDetails")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>
-    </ScrollView>
+    </View>
+    
   );
 };
 
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: 80,
+    bottom: 40,
     right: 20,
     elevation: 5,
   },

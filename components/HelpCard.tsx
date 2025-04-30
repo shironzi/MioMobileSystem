@@ -47,15 +47,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         backgroundColor: "#f5f5f5",
         marginBottom: -15,
-        // borderWidth: 0,
-        // shadowColor: "transparent",
     },
     row: {
         width: "97%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        // paddingVertical: 5,
         
     },
     image: {

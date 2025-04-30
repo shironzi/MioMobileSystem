@@ -34,8 +34,8 @@ const helpDetails = () => {
           placeholder="State the issue you are experiencing.."
           placeholderTextColor="#aaa"
           value={issue}
-          onChangeText={setIssue} // Update the state when the text changes
-          multiline={true} // Allow multiple lines
+          onChangeText={setIssue} 
+          multiline={true}
         />
       </Card>
       <TouchableOpacity>
@@ -51,10 +51,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     elevation: 5,
   },
   cardContent: {
@@ -82,13 +78,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "#f9f9f9",
-    borderWidth: 1,
-    borderColor: "#ddd",
     height: 250,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     elevation: 5,
     marginBottom: 20,
   },
@@ -96,7 +86,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     height: 100,
-    textAlignVertical: "top", // Align text to the top
+    textAlignVertical: "top", 
   },
   button: {
     marginTop: 20,
