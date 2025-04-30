@@ -49,7 +49,7 @@ const fillInTheBlank = () => {
         <View style={styles.contentContainer}>
           <View style={styles.sentenceContainer}>
             <View style={styles.speakerIcon}>
-              <FontAwesome6 name="volume-high" size={20} color="#fff" />
+              <FontAwesome6 name="volume-high" size={25} color="#fff" />
             </View>
             <View style={styles.wordsArea}>
               <WordList onSentenceChange={handleSentenceChange}>
@@ -75,9 +75,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
-  progressContainer: {},
-  contentContainer: {},
-  cardContainer: {},
+  progressContainer: {
+   
+  },
+  contentContainer: {
+   
+  },
+  cardContainer: {
+   
+  },
   sentenceContainer: {
     backgroundColor: "white",
     borderRadius: 15,
@@ -87,12 +93,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    height: "63%",
+    height: "70%",
   },
   wordsArea: {
     backgroundColor: "transparent",
     paddingTop: 20,
-    height: 300,
+    height: 100,
   },
   speakerIcon: {
     backgroundColor: "#FFBF18",
@@ -100,7 +106,12 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     height: 50,
     width: 50,
-    alignContent: "center",
+    top:-10,
+    paddingTop:13,
+    paddingLeft:10,
+    left: 0,
+    marginTop:10,
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#FFBF18",
