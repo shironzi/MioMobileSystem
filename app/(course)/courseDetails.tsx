@@ -151,7 +151,7 @@ const courseDetails = () => {
               <Text style={styles.fontSizeOne}>
                 {course?.activityCategory} Training Exercises
               </Text>
-              <Entypo name="chevron-small-right" size={30} color="#CCC" />
+              <Entypo name="chevron-small-right" size={35} color="#CCC" />
             </View>
           </View>
         </TouchableOpacity>
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    paddingRight: 18,
   },
   yellowBulletin: {
     borderColor: "#FFBF18",
