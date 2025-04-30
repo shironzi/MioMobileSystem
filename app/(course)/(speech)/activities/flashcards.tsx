@@ -1,5 +1,5 @@
-import { useFocusEffect, useRouter } from "expo-router";
-import React, { memo, useCallback, useState, useRef, useEffect } from "react";
+import { useRouter } from "expo-router";
+import React, { memo, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ActivityProgress from "@/components/activityProgress";
