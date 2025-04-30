@@ -46,10 +46,8 @@ const handleCardPress = (card: Card): void => {
 
   return (
     <View style={styles.container}>
-        <TouchableOpacity style={styles.speakerIcon}>
-        <FontAwesome6 name="volume-high" size={25} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.listen}>Listen...</Text>
+        <Text style={styles.header}>Easy</Text>
+        
 
       {/* <Text>{currentWord}</Text> */}
       <FlatList
@@ -64,6 +62,10 @@ const handleCardPress = (card: Card): void => {
         )}
         keyExtractor={(item) => item.id}
       />
+      <TouchableOpacity style={styles.speakerIcon}>
+        <FontAwesome6 name="volume-high" size={25} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.listen}>Listen...</Text>
         
       <TouchableOpacity style={styles.done} onPress={()=> router.push("/(course)/(sub-details)/scoreDetails")}>
         <Text style={{fontSize:20, textAlign:"center", color:"#fff", fontWeight:"bold"}}>Submit</Text>
@@ -90,19 +92,26 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     height: 50,
     width: 50,
-    top:-10,
+    top: 25,
     paddingTop:13,
     paddingLeft:10,
     left: 25,
     marginTop:-10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   listen: {
     fontSize:18,
-    top:-55,
+    top:-35,
     left: -75,
     color: "#ffbf18",
     marginBottom:-20,
+  },
+  header:{
+    fontSize:20,
+    fontWeight:"bold",
+    left:-150,
+    top:-30,
+    marginBottom: -15,
   }
 });
 
