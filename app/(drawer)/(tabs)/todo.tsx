@@ -1,13 +1,5 @@
 import React, { memo, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Modal,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, StyleSheet, ScrollView, Text,  TouchableOpacity,  Modal,  TouchableWithoutFeedback,} from "react-native";
 import { useNavigation } from "expo-router";
 import TodoCard from "@/components/todoCard";
 import { AntDesign } from "@expo/vector-icons";
@@ -151,7 +143,7 @@ const Todo = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
     padding: 10,
   },
   dropdownHeader: {

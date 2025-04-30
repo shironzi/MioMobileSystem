@@ -20,7 +20,7 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
         });
         }
   return (
-    <TouchableOpacity>
+    <TouchableOpacity activeOpacity={0.9}>
       <Card containerStyle={styles.card}>
         <View style={styles.cardContent}>
           <MaterialIcons name="image" size={50} color="#FFBF18" style={styles.icon} />

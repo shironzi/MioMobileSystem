@@ -80,7 +80,7 @@ export default function Layout() {
               <MaterialIcons name="checklist" size={24} color={color} />
             ),
             headerTitle: () => (
-              <Text style={{ color: "white", fontSize: 18 }}>To-do</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>To do</Text>
             ),
             headerBackground: () => (
               <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
