@@ -24,6 +24,7 @@ const Play = () => {
         numColumns={3}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContainer}
+        style={{ paddingHorizontal: 5 }}
       />
     </View>
   );

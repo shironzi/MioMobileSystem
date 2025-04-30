@@ -91,14 +91,15 @@ const courseDetails = () => {
   return (
     <View style={[globalStyle.container, styles.container]}>
       <View style={styles.courseInfoContainer}>
-        <View style={styles.courseInfo}>
+        <View style={styles.courseInfo}></View>
+        <View>
           <Text style={[globalStyle.secondary, styles.fontSizeOne]}>
             Course Code
           </Text>
           <Text style={[globalStyle.secondary, styles.fontSizeOne]}>
             Course Title
           </Text>
-          <Text style={[globalStyle.secondary, styles.fontSizeOne]}>
+          <Text style={[globalStyle.secondary, styles.fontSizeTwo]}>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis
             maiores, quidem voluptate quis facere doloribus quas optio. Nisi
             tempore iure error labore est quisquam repudiandae itaque, aperiam
@@ -107,8 +108,8 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        <TouchableOpacity 
-          style={[styles.link, styles.content]}
+        <TouchableOpacity
+          style={styles.link}
           onPress={useCallback(() => {
             if (!course) return;
 
@@ -155,42 +156,46 @@ const courseDetails = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.link, styles.content]}
+          style={styles.link}
           onPress={useCallback(
             () => router.push("/(course)/announcements"),
             []
           )}
         >
+          <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Announcements</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.link, styles.content]}
+          style={styles.link}
           onPress={useCallback(() => router.push("/(course)/assignments"), [])}
         >
+          <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Assignments</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.link, styles.content]}
+          style={styles.link}
           onPress={useCallback(() => router.push("/(course)/scores"), [])}
         >
+          <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Scores</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.link, styles.content]}
+          style={styles.link}
           onPress={useCallback(
             () => router.push("/(course)/modules"),
             [router]
           )}
         >
+          <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Modules</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
@@ -204,18 +209,22 @@ const courseDetails = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 22,
-
   },
   courseInfoContainer: {
     backgroundColor: "#1F1F1F",
-    padding: 13,
+    paddingLeft: 13,
+    paddingRight: 50,
+    paddingVertical: 15,
+    elevation: 5,
+    display: "flex",
+    flexDirection: "row",
+    columnGap: 14,
     borderRadius: 10,
-    elevation: 5
   },
   courseInfo: {
-    borderLeftColor: "#fff",
-    borderLeftWidth: 5,
-    paddingHorizontal: 19,
+    borderColor: "#fff",
+    borderWidth: 2.5,
+    borderRadius: 100,
   },
   linksContainer: {
     rowGap: 10,
@@ -225,11 +234,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 5,
+    columnGap: 11,
     backgroundColor: "#fff",
     paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: 10,
+    elevation: 2,
+    margin: 3,
   },
   linkContent: {
     display: "flex",
@@ -248,28 +259,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   fontSizeOne: {
-    fontSize: 18,
-    textAlignVertical:"center",
+    fontSize: 20,
+    textAlignVertical: "center",
   },
   fontSizeTwo: {
-    fontSize: 15,
-  },
-  fontSizeThree: {
-    fontSize: 14,
+    fontSize: 16,
   },
   linkDecoration: {
-    borderLeftColor: "#FFBF18",
-    borderLeftWidth: 5,
-    paddingLeft: 19,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
   },
-  content: {
-    elevation: 2,
-    margin: 3
-  }
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    height: "100%",
+    borderWidth: 2.5,
+    borderRadius: 100,
+  },
 });
 
 export default memo(courseDetails);
