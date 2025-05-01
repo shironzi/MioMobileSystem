@@ -120,27 +120,34 @@ const bingo = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    rowGap: 20,
+    rowGap: 10,
   },
   difficulty: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "left",
     height: "5%",
+    left:5,
   },
   bingoCards: {
-    marginHorizontal: "auto",
+    margin:10,
+    left:2,
+    marginHorizontal: -5,
     height: "70%",
+    marginTop:10,
   },
   speakerIcon: {
     borderRadius: 180,
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 12,
+    marginTop:-60,
+    left:5,
   },
   listen: {
     fontSize: 18,
     color: "#ffbf18",
+    marginTop:-130,
   },
   playAudioContainer: {
     display: "flex",
@@ -153,8 +160,14 @@ const styles = StyleSheet.create({
     padding: 17,
     borderRadius: 50,
     alignItems: "center",
+    marginTop:-30,
+    margin:10,
   },
-  nextText: { color: "#fff", fontSize: 16 },
+  nextText: { 
+    color: "#fff", 
+    fontSize: 16, 
+    fontWeight:"bold",
+},
 });
 
 export default memo(bingo);

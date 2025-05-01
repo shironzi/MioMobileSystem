@@ -25,8 +25,8 @@ const BingoCard: React.FC<BingoCardProps> = ({ image, isMatched, onPress }) => (
 
 const styles = StyleSheet.create({
   card: {
-    width: 119,
-    height: 120,
+    width: 110,
+    height: 115,
     marginHorizontal: 5,
     marginVertical: 5,
     padding: 5,
