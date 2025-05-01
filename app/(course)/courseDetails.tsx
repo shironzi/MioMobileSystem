@@ -259,11 +259,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   fontSizeOne: {
-    fontSize: 20,
+    fontSize: 18,
     textAlignVertical: "center",
   },
   fontSizeTwo: {
-    fontSize: 16,
+    fontSize: 15,
   },
   linkDecoration: {
     display: "flex",

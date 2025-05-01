@@ -28,15 +28,18 @@ const announceCard = (props: {
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>
-        <View style={[styles.row, styles.linkDecoration]}>
+      <View style={styles.row}>
+        <View style={styles.yellowBulletin}></View>
+        <View style={styles.textContainer}>
           <Text style={styles.title}>{props.title}</Text>
-          <View style={styles.rightSection}>
-            <Text style={styles.date}>
-              {formatDate(props.date)} {props.time}
-            </Text>
-            <Entypo name="chevron-small-right" size={30} color="#ccc" />
-          </View>
         </View>
+        <View style={styles.rightSection}>
+          <Text style={styles.date}>
+            {formatDate(props.date)} {props.time}
+          </Text>
+          <Entypo name="chevron-small-right" size={30} color="#ccc" />
+        </View>
+      </View>
       </Card>
     </TouchableOpacity>
   );
@@ -66,23 +69,36 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    left:-5,
   },
   date: {
     fontSize: 12,
     color: "#888",
   },
   linkDecoration: {
-    borderLeftColor: "#FFBF18",
-    borderLeftWidth: 5,
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    paddingRight: 18,
   },
   rightSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
     right: -10,
+  },
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    height: 35,
+    width:"1.5%",
+    borderRadius: 100,
+    left:-20
+  },
+  textContainer: {
+    flex: 1,
+    paddingHorizontal: -20,
   },
 });
 
