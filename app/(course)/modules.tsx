@@ -10,15 +10,15 @@ const data = [
   },
   {
     id: 2,
-    title: "[M2 - MAIN]  Speech Development",
+    title: "[M2 - MAIN]  Intonation Development and Training",
   },
   {
     id: 3,
-    title: "[M3 - MAIN]  Speech Development",
+    title: "[M3 - MAIN]  Accent Development",
   },
   {
     id: 4,
-    title: "[M4 - MAIN]  Speech Development",
+    title: "[M4 - MAIN]  Sound Development",
   },
 ];
 

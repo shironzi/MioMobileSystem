@@ -31,7 +31,7 @@ const announceCard = (props: {
       <View style={styles.row}>
         <View style={styles.yellowBulletin}></View>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{props.title}</Text>
+          <Text style={styles.title} numberOfLines={3}>{props.title}</Text>
         </View>
         <View style={styles.rightSection}>
           <Text style={styles.date}>
@@ -68,8 +68,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     left:-5,
+    fontWeight:"500"
   },
   date: {
     fontSize: 12,
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   yellowBulletin: {
     borderColor: "#FFBF18",
     backgroundColor: "#FFBF18",
-    height: 35,
+    height: 45,
     width:"1.5%",
     borderRadius: 100,
     left:-20

@@ -31,105 +31,92 @@ const assCard = (props: {
     >
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
-            <View style={styles.yellowBulletin}></View>
-            <View style={styles.leftContent}>
-            <Text style={styles.title}>{props.title}</Text>
-            <View style={styles.leftSection}>
+          <View style={styles.yellowBulletin} />
+          <View style={styles.textContent}>
+            <Text style={styles.title} numberOfLines={3}>{props.title}</Text>
+            <View style={styles.bottomRow}>
               <Text style={styles.score}>{props.score}</Text>
-              <Text style={styles.type}>| {props.type}</Text>
+              <Text style={styles.type}> | {props.type}</Text>
             </View>
-        </View>
+          </View>
           <View style={styles.rightSection}>
             <Text style={styles.date}>
               {formatDate(props.date)} {props.time}
             </Text>
-            <Entypo name="chevron-small-right" size={30} color="#ccc" />
+            <Entypo name="chevron-small-right" size={24} color="#aaa" />
           </View>
         </View>
-        
       </Card>
     </TouchableOpacity>
+
   );
 };
 
 const styles = StyleSheet.create({
   touchableOpacity: {
-    backgroundColor: "#fff",
-    padding: 20,
-    paddingEnd: 13,
-    margin: 15,
-    marginBottom: 0,
+    marginHorizontal: 15,
+    marginBottom: 15,
     borderRadius: 10,
-    elevation: 5
+    backgroundColor: "#fff",
+    elevation: 4,
+    top:15,
   },
   cardContainer: {
-    padding: 0,
-    paddingLeft: 10,
+    borderWidth: 0,
     margin: 0,
-    borderWidth: 0, 
+    padding: 0,
+    borderRadius: 16,
     shadowColor: "transparent",
-    height:43
-
   },
   cardContent: {
-    flexDirection: "row", 
-    justifyContent: "space-between",
+    flexDirection: "row",
     alignItems: "center",
-    top:-5,
+    padding: 16,
   },
-  leftContent: {
+  yellowBulletin: {
+    width: "1.5%",
+    height: 55,
+    backgroundColor: "#FFBF18",
+    borderRadius: 3,
+    marginRight: 12,
+  },
+  textContent: {
+    flex: 1,
     flexDirection: "column",
-    alignItems: "flex-start",
-    left:-25,
-
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#000",
-    marginBottom: 5,
+    fontWeight: "500",
+    marginBottom: 4,
+    flexShrink: 1,
+    flexWrap: "wrap",
   },
-  leftSection: {
-    flexDirection: "row", 
+  bottomRow: {
+    flexDirection: "row",
     alignItems: "center",
   },
   score: {
-    fontSize: 12,
+    fontSize: 13,
     color: "#888",
-    marginRight: 5,
   },
   type: {
-    fontSize: 12,
+    fontSize: 13,
     color: "#888",
   },
   rightSection: {
-    flexDirection: "row", 
-    alignItems: "center",
-    justifyContent: "flex-end",
-    right: -5,
+    flexDirection:"row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginLeft: 10,
   },
   date: {
     fontSize: 12,
     color: "#888",
-    marginRight: 10,
-  },
-  linkDecoration: {
-    borderLeftColor: "#FFBF18",
-    borderLeftWidth: 5,
-    flexDirection: "row",
-    left: -10,
-    paddingLeft: 15,
-    justifyContent: "space-between",
-    width: "100%",
-    height: 45,
-  },
-  yellowBulletin: {
-    borderColor: "#FFBF18",
-    backgroundColor: "#FFBF18",
-    height: 55,
-    width:"1.5%",
-    borderRadius: 100,
-    left:-15,
+    marginBottom: 5,
+    textAlign: "right",
   },
 });
+
 
 export default memo(assCard);

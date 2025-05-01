@@ -7,7 +7,7 @@ import HeaderConfig from "@/components/HeaderConfig";
 const data = [
   {
     id: 1,
-    title: "Activity 1",
+    title: "Activity 1: Sound Difference",
     date: new Date(Date.now()),
     time: "10:00 AM",
     score: 50 + "/50 pts",
