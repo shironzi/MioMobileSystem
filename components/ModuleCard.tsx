@@ -1,12 +1,10 @@
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const moduleCard = (props: { 
-    title: string; 
-}) => {
+const ModuleCard = (props: { title: string }) => {
   const router = useRouter();
 
   return (
@@ -15,9 +13,14 @@ const moduleCard = (props: {
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>
-        <View style={[styles.row, styles.linkDecoration]}>
-          <Text style={styles.title}>{props.title}</Text>
-          <Entypo name="chevron-small-right" size={30} color="#ccc" />
+        <View style={styles.cardContent}>
+          <View style={styles.yellowBulletin} />
+          <View style={styles.titleContainer}>
+            <Text style={styles.title} numberOfLines={3}>
+              {props.title}
+            </Text>
+          </View>
+          <Entypo name="chevron-small-right" size={26} color="#ccc" />
         </View>
       </Card>
     </TouchableOpacity>
@@ -27,36 +30,40 @@ const moduleCard = (props: {
 const styles = StyleSheet.create({
   touchableOpacity: {
     backgroundColor: "#fff",
-    padding: 15,
-    paddingEnd: 0,
-    margin: 15,
-    marginBottom: 0,
+    marginHorizontal: 15,
+    marginBottom: 15,
     borderRadius: 10,
-    elevation: 5
+    elevation: 4,
+    top:15
   },
   cardContainer: {
-    padding: 0,
+    borderRadius:10,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     margin: 0,
-    borderWidth: 0, 
+    borderWidth: 0,
     shadowColor: "transparent",
   },
-  row: {
+  cardContent: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+  },
+  yellowBulletin: {
+    width: "1.5%",
+    height: 45,
+    backgroundColor: "#FFBF18",
+    borderRadius: 3,
+    marginRight: 14,
+  },
+  titleContainer: {
+    flex: 1,
+    paddingRight: 10,
   },
   title: {
     fontSize: 15,
+    fontWeight: "500",
+    color: "#000",
   },
-  linkDecoration: {
-    borderLeftColor: "#FFBF18",
-    borderLeftWidth: 5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-
 });
 
-export default memo(moduleCard);
+export default memo(ModuleCard);
