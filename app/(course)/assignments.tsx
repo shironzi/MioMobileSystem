@@ -1,7 +1,8 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import React, { memo } from "react";
 import AssCard from "@/components/AssCard";
 import HeaderConfig from "@/components/HeaderConfig";
+
 
 const data = [
   {
@@ -17,8 +18,8 @@ const data = [
     title: "Activity 2",
     date: new Date(Date.now()),
     time: "10:00 AM",
-    score: 30 + "/50 pts",
-    type: "Type Entry",
+    score: 50 + "/50 pts",
+    type: "Quiz",
   },
 ];
 
@@ -26,7 +27,8 @@ const assignments = () => {
   HeaderConfig("Assignments");
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       {data.map((item) => (
         <AssCard
           key={item.id}
@@ -38,6 +40,8 @@ const assignments = () => {
         />
       ))}
     </View>
+    </ScrollView>
+    
   );
 };
 
