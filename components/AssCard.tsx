@@ -31,22 +31,22 @@ const assCard = (props: {
     >
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
-        <View style={[styles.linkDecoration]}>
-          <View style={styles.leftContent}>
+            <View style={styles.yellowBulletin}></View>
+            <View style={styles.leftContent}>
             <Text style={styles.title}>{props.title}</Text>
             <View style={styles.leftSection}>
               <Text style={styles.score}>{props.score}</Text>
               <Text style={styles.type}>| {props.type}</Text>
             </View>
-          </View>
+        </View>
           <View style={styles.rightSection}>
             <Text style={styles.date}>
               {formatDate(props.date)} {props.time}
             </Text>
             <Entypo name="chevron-small-right" size={30} color="#ccc" />
           </View>
-          </View>
         </View>
+        
       </Card>
     </TouchableOpacity>
   );
@@ -68,16 +68,20 @@ const styles = StyleSheet.create({
     margin: 0,
     borderWidth: 0, 
     shadowColor: "transparent",
+    height:43
 
   },
   cardContent: {
     flexDirection: "row", 
     justifyContent: "space-between",
     alignItems: "center",
+    top:-5,
   },
   leftContent: {
     flexDirection: "column",
     alignItems: "flex-start",
+    left:-25,
+
   },
   title: {
     fontSize: 18,
@@ -87,7 +91,6 @@ const styles = StyleSheet.create({
   leftSection: {
     flexDirection: "row", 
     alignItems: "center",
-    marginBottom: 10, 
   },
   score: {
     fontSize: 12,
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", 
     alignItems: "center",
     justifyContent: "flex-end",
-    right: -15,
+    right: -5,
   },
   date: {
     fontSize: 12,
@@ -118,6 +121,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     height: 45,
+  },
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    height: 55,
+    width:"1.5%",
+    borderRadius: 100,
+    left:-15,
   },
 });
 
