@@ -1,4 +1,3 @@
-// attendanceDetails.tsx
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import React, { memo } from "react";
 import AttendanceCard from "@/components/attendanceCard";

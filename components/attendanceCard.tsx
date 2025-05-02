@@ -1,4 +1,4 @@
-// AttendanceCard.tsx
+
 import React, { memo } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Card } from "@rneui/themed";

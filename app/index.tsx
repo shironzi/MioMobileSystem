@@ -60,13 +60,15 @@ const Index = () => {
                   />
                   <Text>Remember me</Text>
                 </View>
-                <TouchableOpacity onPress={() => router.push("forgot")}>
+                <TouchableOpacity onPress={() => router.push({ pathname: "/auth", params: { from: "forgot" } })
+}>
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.push("/(course)/(login)/auth")}
+                onPress={() => router.push({ pathname: "/auth", params: { from: "login" } })
+              }
               >
                 <Text
                   style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
