@@ -116,18 +116,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight:-5
   },
-  addButton: {
-    backgroundColor: "#2264DC",
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 40,
-    right: 20,
-    elevation: 5,
-  },
+
 });
 
 export default memo(announceCard);

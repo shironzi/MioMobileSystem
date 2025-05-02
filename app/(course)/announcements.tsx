@@ -38,12 +38,12 @@ const announcements = () => {
       ))}
     </View>
     </ScrollView>
-      <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push("helpDetails")}
-        >
-          <MaterialIcon name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+    <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("helpDetails")}
+      >
+        <MaterialIcon name="add" size={30} color="#fff" />
+    </TouchableOpacity>
     </View>
     
   );

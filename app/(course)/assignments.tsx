@@ -1,7 +1,9 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
 import AssCard from "@/components/AssCard";
 import HeaderConfig from "@/components/HeaderConfig";
+import { useRouter } from "expo-router";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 
 const data = [
@@ -25,9 +27,11 @@ const data = [
 
 const assignments = () => {
   HeaderConfig("Assignments");
+  const router = useRouter();
 
   return (
-    <ScrollView>
+    <View>
+      <ScrollView>
       <View style={styles.container}>
       {data.map((item) => (
         <AssCard
@@ -41,7 +45,16 @@ const assignments = () => {
       ))}
     </View>
     </ScrollView>
+    <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("helpDetails")}
+      >
+        <MaterialIcon name="add" size={30} color="#fff" />
+    </TouchableOpacity>
     
+
+    </View>
+
   );
 };
 
@@ -51,6 +64,18 @@ const styles = StyleSheet.create({
   },
   headerStyle: {
     backgroundColor: "#2264DC",
+  },
+  addButton: {
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: -520,
+    right: 20,
+    elevation: 5,
   },
 });
 

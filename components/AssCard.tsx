@@ -40,9 +40,17 @@ const assCard = (props: {
             </View>
           </View>
           <View style={styles.rightSection}>
-            <Text style={styles.date}>
+            {/* <Text style={styles.date}>
               {formatDate(props.date)} {props.time}
-            </Text>
+            </Text> */}
+            <View style={styles.icons}>
+            <TouchableOpacity>
+              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Entypo name="trash" size={15} color="#aaa" />
+            </TouchableOpacity>
+          </View>
             <Entypo name="chevron-small-right" size={24} color="#aaa" />
           </View>
         </View>
@@ -115,6 +123,12 @@ const styles = StyleSheet.create({
     color: "#888",
     marginBottom: 5,
     textAlign: "right",
+  },
+  icons: {
+    flexDirection: "row",
+    marginLeft: 5,
+    marginRight:5,
+    top: -5,
   },
 });
 
