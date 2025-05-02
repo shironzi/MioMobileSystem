@@ -52,7 +52,7 @@ const auth = () => {
               </View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.back()}
+                onPress={() => router.push("/(drawer)")}
               >
                 <Text
                   style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
