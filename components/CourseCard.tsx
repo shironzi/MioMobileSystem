@@ -24,7 +24,7 @@ const CourseCard = (props: {
       <Card
         containerStyle={{
           borderRadius: 10,
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#fff",
           marginHorizontal: 5,
           marginVertical: 10,
           elevation: 5,

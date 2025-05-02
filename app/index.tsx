@@ -69,7 +69,7 @@ const Index = () => {
                 onPress={() => router.push("/(drawer)")}
               >
                 <Text
-                  style={{ textAlign: "center", color: "#fff", fontSize: 18 }}
+                  style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
                 >
                   Login
                 </Text>
@@ -131,8 +131,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 0,
-
- 
   },
   checkbox: {
     padding: 0,

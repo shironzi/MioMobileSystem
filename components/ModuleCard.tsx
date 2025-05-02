@@ -20,7 +20,15 @@ const ModuleCard = (props: { title: string }) => {
               {props.title}
             </Text>
           </View>
-          <Entypo name="chevron-small-right" size={26} color="#ccc" />
+          <View style={styles.icons}>
+            <TouchableOpacity>
+              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Entypo name="trash" size={15} color="#aaa" />
+            </TouchableOpacity>
+          </View>
+          <Entypo name="chevron-small-right" size={30} color="#aaa" />
         </View>
       </Card>
     </TouchableOpacity>
@@ -63,6 +71,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "500",
     color: "#000",
+  },
+  icons: {
+    flexDirection: "row",
+    marginLeft: 5,
+    marginRight:5,
   },
 });
 

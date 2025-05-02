@@ -51,7 +51,7 @@ const assCard = (props: {
               <Entypo name="trash" size={15} color="#aaa" />
             </TouchableOpacity>
           </View>
-            <Entypo name="chevron-small-right" size={24} color="#aaa" />
+            <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
       </Card>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 5,
     marginRight:5,
-    top: -5,
+    top: -8,
   },
 });
 
