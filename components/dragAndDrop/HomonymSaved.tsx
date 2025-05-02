@@ -137,33 +137,32 @@
 // export default HomonymCard;
 
 // HomonymCard.tsx
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
+  Dimensions,
+  findNodeHandle,
+  UIManager,
   TouchableOpacity,
   StyleSheet,
-  LayoutChangeEvent,
-  Dimensions,
 } from "react-native";
-import HeaderConfig from "@/components/HeaderConfig";
-import { FontAwesome6 } from "@expo/vector-icons";
-import {
-  GestureHandlerRootView,
-  GestureDetector,
-  Gesture,
-} from "react-native-gesture-handler";
+import HeaderConfig from "../HeaderConfig";
+import { Rect } from "react-native-svg";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
   runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
 } from "react-native-reanimated";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import { FontAwesome6 } from "@expo/vector-icons";
+// ... other imports remain the same
 
-// Type for our blank/drop-zone rectangles
-type Rect = { x: number; y: number; width: number; height: number };
-
-export default function HomonymCard({
+export default function HomonymSaved({
   questions,
   choices,
 }: {
@@ -172,25 +171,79 @@ export default function HomonymCard({
 }) {
   HeaderConfig("Homonyms");
 
-  // 1. Prepare to save each BLANK's on-screen rect
-  const choicesPosition = useRef<Rect[]>([]);
-  const recordPosition = (i: number) => (e: LayoutChangeEvent) => {
-    const { x, y, width, height } = e.nativeEvent.layout;
-    choicesPosition.current[i] = { x, y, width, height };
+  // Get screen dimensions
+  const screenWidth = Dimensions.get("screen").width;
+  const screenHeight = Dimensions.get("screen").height;
+
+  // Store refs to blank spaces
+  const blankRefs = useRef<Record<number, View | null>>({});
+
+  // Store positions with screen-relative coordinates
+  const [blankPositions, setBlankPositions] = useState<
+    Record<
+      number,
+      {
+        x: number;
+        y: number;
+        relativeX: number;
+        relativeY: number;
+        width: number;
+        height: number;
+      }
+    >
+  >({});
+
+  // Measure position using refs
+  const measureBlank = (index: number) => {
+    const node = findNodeHandle(blankRefs.current[index]);
+    if (!node) return;
+
+    UIManager.measure(node, (x, y, width, height, pageX, pageY) => {
+      // Store position with coordinates relative to screen
+      const relativeX = pageX / screenWidth; // as percentage of screen width
+      const relativeY = pageY / screenHeight; // as percentage of screen height
+
+      setBlankPositions((prev) => ({
+        ...prev,
+        [index]: {
+          x: pageX, // absolute position
+          y: pageY, // absolute position
+          relativeX, // position as percentage of screen width
+          relativeY, // position as percentage of screen height
+          width,
+          height,
+        },
+      }));
+
+      console.log(`Blank ${index} position:`, {
+        absolute: { x: pageX, y: pageY },
+        relative: { x: relativeX, y: relativeY },
+      });
+    });
   };
 
-  // 2. Track which blank (by index) has which word
+  // Measure all blanks after layout
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Object.keys(blankRefs.current).forEach((idx) => {
+        measureBlank(Number(idx));
+      });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // State to track placed choices
   const [placed, setPlaced] = useState<Record<number, string>>({});
 
-  // 3. When drag ends, check if the drop landed in any rect
+  // Replace your recordPosition method with ref approach
   const handleDrop = (
     choiceIndex: number,
     absX: number,
     absY: number,
     reset: () => void
   ) => {
-    const zoneIndex = choicesPosition.current.findIndex((rect) => {
-      if (!rect) return false;
+    const zoneIndex = Object.entries(blankPositions).findIndex(([_, rect]) => {
       return (
         absX >= rect.x &&
         absX <= rect.x + rect.width &&
@@ -200,47 +253,63 @@ export default function HomonymCard({
     });
 
     if (zoneIndex >= 0) {
-      // Drop succeeded: assign word to blank
+      // Drop succeeded
       setPlaced((prev) => ({
         ...prev,
         [zoneIndex]: choices[choiceIndex],
       }));
     }
-    // always reset the bubble back
+
     runOnJS(reset)();
   };
 
-  // 4. Render one draggable choice bubble
   const renderChoice = (option: string, idx: number) => {
-    // shared values for translation
-    const tX = useSharedValue(0);
-    const tY = useSharedValue(0);
+    const translationX = useSharedValue(0);
+    const translationY = useSharedValue(0);
+    const prevX = useSharedValue(0);
+    const prevY = useSharedValue(0);
 
-    // animated style that applies translateX/Y
-    const aStyle = useAnimatedStyle(() => ({
-      transform: [{ translateX: tX.value }, { translateY: tY.value }],
+    const style = useAnimatedStyle(() => ({
+      transform: [
+        { translateX: translationX.value },
+        { translateY: translationY.value },
+      ],
     }));
 
-    // function to reset back to [0,0] with spring
-    const resetPosition = () => {
-      tX.value = withSpring(0);
-      tY.value = withSpring(0);
-    };
-
-    // the pan gesture
     const pan = Gesture.Pan()
-      .onUpdate((evt) => {
-        tX.value = evt.translationX;
-        tY.value = evt.translationY;
+      .onStart(() => {
+        prevX.value = translationX.value;
+        prevY.value = translationY.value;
       })
-      .onEnd((evt) => {
-        // pass drop coords and reset fn into JS world
-        runOnJS(handleDrop)(idx, evt.absoluteX, evt.absoluteY, resetPosition);
+      .onUpdate((e) => {
+        translationX.value = prevX.value + e.translationX;
+        translationY.value = prevY.value + e.translationY;
+      })
+      .onEnd(() => {
+        console.log("X: " + translationX.value);
+        console.log("Y: " + translationY.value);
+        // let snapped = false;
+        // const threshold = 50; // px
+        // for (const key in positions) {
+        //   const { x: tx, y: ty } = positions[key];
+        //   const dx = Math.abs(translationX.value - tx);
+        //   const dy = Math.abs(translationY.value - ty);
+        //   if (dx <= threshold && dy <= threshold) {
+        //     translationX.value = withSpring(tx);
+        //     translationY.value = withSpring(ty);
+        //     snapped = true;
+        //     break;
+        //   }
+        // }
+        // if (!snapped) {
+        //   translationX.value = withSpring(0);
+        //   translationY.value = withSpring(0);
+        // }
       });
 
     return (
       <GestureDetector key={idx} gesture={pan}>
-        <Animated.View style={[styles.choiceHolder, aStyle]}>
+        <Animated.View style={[styles.choiceHolder, style]}>
           <Text style={styles.choiceText}>{option}</Text>
         </Animated.View>
       </GestureDetector>
@@ -249,7 +318,7 @@ export default function HomonymCard({
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      {/* QUESTIONS WITH BLANKS */}
+      {/* Rest of your component remains similar */}
       <View style={styles.questionsContainer}>
         {questions.map((q, qi) => {
           const words = q.split(/\s+/);
@@ -263,7 +332,8 @@ export default function HomonymCard({
                   w === "BLANK" ? (
                     <View
                       key={wi}
-                      onLayout={recordPosition(wi)}
+                      ref={(ref) => (blankRefs.current[wi] = ref)}
+                      onLayout={() => {}} // We'll use useEffect instead of onLayout
                       style={styles.blankSpace}
                     >
                       {placed[wi] && (
@@ -281,8 +351,6 @@ export default function HomonymCard({
           );
         })}
       </View>
-
-      {/* DRAGGABLE CHOICES */}
       <View style={styles.choicesContainer}>
         {choices.map((opt, ci) => renderChoice(opt, ci))}
       </View>
