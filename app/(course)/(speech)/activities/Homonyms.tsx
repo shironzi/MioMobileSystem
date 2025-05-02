@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import React from "react";
 import HeaderConfig from "@/components/HeaderConfig";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -13,11 +13,13 @@ const Data = [
   },
 ];
 
+const { width, height } = Dimensions.get("screen");
+
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, width: width, height: height * 0.5 }}>
       <HomonymCard
         questions={[Data[0].question1, Data[0].question2]}
         choices={Data[0].choices}
