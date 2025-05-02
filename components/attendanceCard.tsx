@@ -13,7 +13,7 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
   const router = useRouter();
 
   return (
-    <View style={styles.touchableOpacity}>
+    <TouchableOpacity style={styles.touchableOpacity}>
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
@@ -36,7 +36,7 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
           </View>
         </View>
       </Card>
-    </View>
+    </TouchableOpacity>
   );
 };
 

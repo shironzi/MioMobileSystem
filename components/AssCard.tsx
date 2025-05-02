@@ -13,16 +13,16 @@ const assCard = (props: {
 }) => {
   const router = useRouter();
 
-  const formatDate = useCallback(
-    (date: Date) => {
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      });
-    },
-    [Date]
-  );
+  // const formatDate = useCallback(
+  //   (date: Date) => {
+  //     return date.toLocaleDateString("en-US", {
+  //       month: "short",
+  //       day: "2-digit",
+  //       year: "numeric",
+  //     });
+  //   },
+  //   [Date]
+  // );
 
   return (
     <TouchableOpacity

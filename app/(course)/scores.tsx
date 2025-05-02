@@ -16,7 +16,8 @@ const data = [
     name: "Speech Flashcard Activity",
     difficulty: "Easy",
     level: 1,
-    score: "8/10",
+    // score: "8/10",
+    student: "8 of 15",
     category: scoreType.exercise,
   },
   {
@@ -24,7 +25,8 @@ const data = [
     name: "Audio Task",
     difficulty: "Average",
     level: 1,
-    score: "10/10",
+    // score: "10/10",
+    student: "10 of 15",
     category: scoreType.assessment,
   },
   {
@@ -32,7 +34,8 @@ const data = [
     name: "Language",
     difficulty: "Medium",
     level: 2,
-    score: "8/10",
+    // score: "8/10",
+    student: "12 of 15",
     category: scoreType.typeEntry,
   },
 ];
@@ -71,7 +74,9 @@ const ScoresScreen = () => {
         <Text style={styles.label}>Name</Text>
         <Text style={styles.label}>Difficulty</Text>
         <Text style={styles.label}>Level</Text>
-        <Text style={styles.label}>Score</Text>
+        {/* <Text style={styles.label}>Score</Text> */}
+        <Text style={styles.label}>Student</Text>
+
       </View>
 
       <View>
@@ -81,12 +86,12 @@ const ScoresScreen = () => {
             name={item.name}
             difficulty={item.difficulty}
             level={item.level}
-            score={item.score}
+            // score={item.score}
+            student={item.student}
           />
         ))}
       </View>
-
-      {/* CATEGORY SELECTION MODAL */}
+      
       <Modal
         transparent
         animationType="fade"
