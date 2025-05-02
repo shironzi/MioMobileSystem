@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
 import React, { useState, memo } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -26,37 +19,9 @@ const Index = () => {
 
   return (
     <View style={styles.upper}>
-      <View
-        style={{
-          padding: 20,
-          backgroundColor: "#4d83e4",
-          top: 200,
-          borderTopStartRadius: 300,
-          borderTopEndRadius: 300,
-          left: -120,
-          width: "160%",
-        }}
-      >
-        <View
-          style={{
-            padding: 60,
-            backgroundColor: "#fff",
-            top: 20,
-            borderTopStartRadius: 300,
-            borderTopEndRadius: 300,
-            left: 0,
-            width: "100%",
-          }}
-        >
-          <View
-            style={{
-              padding: 60,
-              justifyContent: "center",
-              top: -110,
-              margin: 10,
-              marginLeft: 15,
-            }}
-          >
+      <View style={styles.first}>
+        <View style={styles.second}>
+          <View style={styles.container}>
             <View>
               <Image
                 source={require("@/assets/logo.png")}
@@ -118,6 +83,31 @@ const Index = () => {
 };
 
 const styles = StyleSheet.create({
+  first: {
+    padding: 20,
+    backgroundColor: "#4d83e4",
+    top: 200,
+    borderTopStartRadius: 300,
+    borderTopEndRadius: 300,
+    left: -120,
+    width: "160%",
+  },
+  second: {
+    padding: 60,
+    backgroundColor: "#fff",
+    top: 20,
+    borderTopStartRadius: 300,
+    borderTopEndRadius: 300,
+    left: 0,
+    width: "100%"
+  },
+  container: {
+    padding: 60,
+    justifyContent: "center",
+    top: -110,
+    margin: 10,
+    marginLeft: 15,
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -141,6 +131,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 0,
+
+ 
   },
   checkbox: {
     padding: 0,
