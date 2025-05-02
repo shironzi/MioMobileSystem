@@ -1,56 +1,32 @@
-import React, { memo, useCallback } from "react";
+import React, { memo} from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const assCard = (props: { 
-    title: string; 
-    date: Date; 
-    time: string;
+const ScoreNamesCard = (props: { 
+    name: string; 
     score: string;
-    type: string;
+    attempt: string;
 }) => {
   const router = useRouter();
 
-  // const formatDate = useCallback(
-  //   (date: Date) => {
-  //     return date.toLocaleDateString("en-US", {
-  //       month: "short",
-  //       day: "2-digit",
-  //       year: "numeric",
-  //     });
-  //   },
-  //   [Date]
-  // );
-
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(sub-details)/assDetails")}
+      onPress={() => router.navigate("/(sub-details)/scoreDetails")}
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.textContent}>
-            <Text style={styles.title} numberOfLines={3}>{props.title}</Text>
+            <Text style={styles.title} numberOfLines={3}>{props.name}</Text>
             <View style={styles.bottomRow}>
               <Text style={styles.score}>{props.score}</Text>
-              <Text style={styles.type}> | {props.type}</Text>
+              <Text style={styles.type}> | {props.attempt}</Text>
             </View>
           </View>
           <View style={styles.rightSection}>
-            {/* <Text style={styles.date}>
-              {formatDate(props.date)} {props.time}
-            </Text> */}
-            <View style={styles.icons}>
-            <TouchableOpacity>
-              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Entypo name="trash" size={15} color="#aaa" />
-            </TouchableOpacity>
-          </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
@@ -73,7 +49,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     margin: 0,
     padding: 0,
-    borderRadius: 16,
+    borderRadius: 10,
     shadowColor: "transparent",
   },
   cardContent: {
@@ -118,19 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 10,
   },
-  date: {
-    fontSize: 12,
-    color: "#888",
-    marginBottom: 5,
-    textAlign: "right",
-  },
-  icons: {
-    flexDirection: "row",
-    marginLeft: 5,
-    marginRight:5,
-    top: -8,
-  },
 });
 
 
-export default memo(assCard);
+export default memo(ScoreNamesCard);

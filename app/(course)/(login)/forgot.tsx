@@ -3,6 +3,8 @@ import React, { useState, memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
+const email = ("202210920@fit.edu.ph");
+
 const forgotPass = () => {
   const router = useRouter();
   const navigation = useNavigation();
@@ -32,7 +34,7 @@ const forgotPass = () => {
                 <TouchableOpacity onPress={() => router.back()}>
                     <MaterialIcons name="arrow-back" size={20}/>
                 </TouchableOpacity>
-                <Text style={{left:20, color:"#666"}}>Forgot Password</Text>
+                <Text style={{left:20, color:"#666"}}>{email}</Text>
             </View>
             <Text style={{left:20, fontSize:16, fontWeight:"500", marginBottom:5}}>Change Password</Text>
             <Text style={{left:20, fontSize:14, marginBottom:15}}>Enter your new password</Text>

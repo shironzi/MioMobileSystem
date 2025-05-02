@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
 import React, { useState, memo, useCallback } from "react";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { useFocusEffect, useNavigation, useLocalSearchParams, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const email = ("202210920@fit.edu.ph");
@@ -9,12 +9,23 @@ const auth = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const [newCode, setNewCode] = useState("");
+  const { from: source } = useLocalSearchParams();
 
   useFocusEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   });
+
+  const handleConfirm = () => {
+    if (source === "forgot") {
+      router.back(); 
+    } else if (source === "login") {
+      router.push("/(drawer)"); 
+    } else {
+      router.push("index");
+    }
+  };
 
   return (
     <View style={styles.upper}>
@@ -50,16 +61,11 @@ const auth = () => {
                 />
                
               </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => router.push("/(drawer)")}
-              >
-                <Text
-                  style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
-                >
-                  Confirm
-                </Text>
-              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={handleConfirm}>
+              <Text style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+                Confirm
+              </Text>
+            </TouchableOpacity>
             </View>
           </View>
         </View>

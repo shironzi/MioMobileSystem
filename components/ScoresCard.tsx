@@ -8,12 +8,13 @@ const ScoresCard = (props: {
   name: string;
   difficulty: string;
   level: number;
-  score: string;
+  // score: string;
+  student: string;
 }) => {
   const router = useRouter();
 
   return (
-    <TouchableOpacity onPress={() => router.push("scoreDetails")}>
+    <TouchableOpacity onPress={() => router.push("scoreNames")}>
       <Card containerStyle={styles.card}>
         <View style={styles.row}>
           <View style={styles.flex2}>
@@ -28,7 +29,8 @@ const ScoresCard = (props: {
             <Text style={[styles.text, styles.center]}>{props.level}</Text>
           </View>
           <View style={styles.flex1}>
-            <Text style={[styles.text, styles.right]}>{props.score}</Text>
+            <Text style={[styles.text, styles.right]}>{props.student}</Text>
+            {/* <Text style={[styles.text, styles.right]}>{props.score}</Text> */}
           </View>
           <Entypo
             name="chevron-small-right"
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
     width: "100%",
     left: -15,
     padding: 10,
-    // borderRadius: 8,
     backgroundColor: "#f0f0f0",
     marginBottom: -15,
   },
@@ -76,7 +77,6 @@ const styles = StyleSheet.create({
   },
   wrapText: {
     flexWrap: "wrap",
-    // marginRight:30,
   },
 });
 
