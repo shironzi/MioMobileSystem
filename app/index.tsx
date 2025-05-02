@@ -66,7 +66,7 @@ const Index = () => {
               </View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.push("/(drawer)")}
+                onPress={() => router.push("/(course)/(login)/auth")}
               >
                 <Text
                   style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}

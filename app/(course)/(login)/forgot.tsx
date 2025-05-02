@@ -2,15 +2,12 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "reac
 import React, { useState, memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { StackActions } from "@react-navigation/native";
 
 const forgotPass = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const [newPassword, setNewPassword] = useState("");
-const [retypePassword, setRetypePassword] = useState("");
-//   const [rememberMe, setRememberMe] = useState(false);
-
+  const [retypePassword, setRetypePassword] = useState("");
 
   useFocusEffect(() => {
     navigation.setOptions({
