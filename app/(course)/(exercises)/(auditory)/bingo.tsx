@@ -58,15 +58,20 @@ const bingo = () => {
     }
   }, [currentIndex, router]);
 
-  const playAudio = () => {
-    setIsPlaying(true);
+  const playAudio = useCallback(
+    (duration = 5000) => {
+      setIsPlaying(true);
 
-    setTimeout(() => {
-      setIsPlaying(false);
-      goNext();
-      console.log("Audio has finished playing.");
-    }, 5000);
-  };
+      const timer = setTimeout(() => {
+        setIsPlaying(false);
+        goNext();
+        console.log("Audio has finished playing.");
+      }, duration);
+
+      return () => clearTimeout(timer);
+    },
+    [goNext]
+  );
 
   return (
     <View style={styles.container}>
@@ -93,7 +98,7 @@ const bingo = () => {
               ? { backgroundColor: "#FFBF18" }
               : { backgroundColor: "#DEDFE2" },
           ]}
-          onPress={playAudio}
+          onPress={() => playAudio()}
         >
           <FontAwesome6 name="volume-high" size={25} color="#fff" />
         </TouchableOpacity>

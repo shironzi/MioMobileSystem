@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Card } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -12,8 +12,12 @@ type CalendarCardProps = {
 };
 
 const CalendarCard: React.FC<CalendarCardProps> = (props) => {
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
+  const formatDate = (date: string): string => {
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return "Invalid Date";
+    }
+    return parsedDate.toLocaleDateString("en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
@@ -24,7 +28,12 @@ const CalendarCard: React.FC<CalendarCardProps> = (props) => {
     <TouchableOpacity activeOpacity={0.9}>
       <Card containerStyle={styles.card}>
         <View style={styles.cardContent}>
-          <MaterialIcons name="image" size={50} color="#FFBF18" style={styles.icon} />
+          <MaterialIcons
+            name="image"
+            size={50}
+            color="#FFBF18"
+            style={styles.icon}
+          />
           <Text style={styles.sub}>{props.sub}</Text>
           <Text style={styles.title}>{props.title}</Text>
           <View style={styles.row}>
@@ -47,7 +56,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 20,
     height: 110,
-    
   },
   cardContent: {
     flexDirection: "column",

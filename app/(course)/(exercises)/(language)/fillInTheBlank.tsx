@@ -21,18 +21,18 @@ const words = [
 ];
 
 const fillInTheBlank = () => {
+  HeaderConfig("Fill in the Blank");
+
   const [currentSentence, setCurrentSentence] = useState<string>("");
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     console.log(currentSentence);
-  };
+  }, [currentSentence]);
 
   const handleSentenceChange = useCallback((sentence: string) => {
     console.log("Working");
     setCurrentSentence(sentence);
   }, []);
-
-  HeaderConfig("Fill in the Blank");
 
   return (
     <GestureHandlerRootView>

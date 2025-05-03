@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ActivityProgress from "@/components/activityProgress";
@@ -42,18 +42,22 @@ const Picgame = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
 
-  const currentCard = cards[currentCardIndex];
+  const currentCard = useMemo(() => {
+    return cards[currentCardIndex];
+  }, [cards, currentCardIndex]);
 
-  const handleMicPress = () => {
+  const handleMicPress = useCallback(() => {
     setIsRecording(true);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsRecording(false);
       setIsAnswered(true);
     }, 8000);
-  };
 
-  const handleNext = () => {
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleNext = useCallback(() => {
     if (!isRecording) {
       if (currentCardIndex < cards.length - 1) {
         setIsAnswered(false);
@@ -64,7 +68,7 @@ const Picgame = () => {
         });
       }
     }
-  };
+  }, [router]);
 
   return (
     <View style={styles.container}>

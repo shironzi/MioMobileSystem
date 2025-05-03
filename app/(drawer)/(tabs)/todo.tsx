@@ -1,5 +1,13 @@
-import React, { memo, useState } from "react";
-import { View, StyleSheet, ScrollView, Text,  TouchableOpacity,  Modal,  TouchableWithoutFeedback,} from "react-native";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useNavigation } from "expo-router";
 import TodoCard from "@/components/todoCard";
 import { AntDesign } from "@expo/vector-icons";
@@ -58,21 +66,21 @@ const data = [
 ];
 
 const Todo = () => {
-  const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState<todoType | "all">(
     "all"
   );
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const filteredData =
-    selectedCategory === "all"
+  const filteredData = useMemo(() => {
+    return selectedCategory === "all"
       ? data
       : data.filter((item) => item.category === selectedCategory);
+  }, [selectedCategory, data]);
 
-  const handleSelect = (value: todoType | "all") => {
+  const handleSelect = useCallback((value: todoType | "all") => {
     setSelectedCategory(value);
     setDropdownVisible(false);
-  };
+  }, []);
 
   return (
     <ScrollView>

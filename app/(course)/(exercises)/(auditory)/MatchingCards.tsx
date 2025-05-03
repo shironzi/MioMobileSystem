@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   View,
   Image,
@@ -54,46 +54,49 @@ const MatchingCards = () => {
   const audioRefs = useRef<Record<string, { x: number; y: number }>>({});
   const imageRefs = useRef<Record<string, { x: number; y: number }>>({});
 
-  const handleImageTap = (imageId: string): void => {
-    if (
-      selectedAudioId &&
-      audioRefs.current[selectedAudioId] &&
-      imageRefs.current[imageId]
-    ) {
-      const start: AudioRef = audioRefs.current[selectedAudioId];
-      const end: ImageRef = imageRefs.current[imageId];
+  const handleImageTap = useCallback(
+    (imageId: string) => {
+      if (
+        selectedAudioId &&
+        audioRefs.current[selectedAudioId] &&
+        imageRefs.current[imageId]
+      ) {
+        const start: AudioRef = audioRefs.current[selectedAudioId];
+        const end: ImageRef = imageRefs.current[imageId];
 
-      setConnections((prev: Connection[]) => [
-        ...prev.filter((line) => line.audioId !== selectedAudioId),
-        {
-          x1: start.x,
-          y1: start.y,
-          x2: end.x,
-          y2: end.y,
-          audioId: selectedAudioId,
-        },
-      ]);
+        setConnections((prev: Connection[]) => [
+          ...prev.filter((line) => line.audioId !== selectedAudioId),
+          {
+            x1: start.x,
+            y1: start.y,
+            x2: end.x,
+            y2: end.y,
+            audioId: selectedAudioId,
+          },
+        ]);
 
-      setAnswers((prev) => {
-        const already = prev.some((a) => a.audioId === selectedAudioId);
-        if (already) {
-          // update existing pair
-          return prev.map((a) =>
-            a.audioId === selectedAudioId
-              ? { audioId: selectedAudioId, imageId }
-              : a
-          );
-        }
-        return [...prev, { audioId: selectedAudioId, imageId }];
-      });
+        setAnswers((prev) => {
+          const already = prev.some((a) => a.audioId === selectedAudioId);
+          if (already) {
+            // Update existing pair
+            return prev.map((a) =>
+              a.audioId === selectedAudioId
+                ? { audioId: selectedAudioId, imageId }
+                : a
+            );
+          }
+          return [...prev, { audioId: selectedAudioId, imageId }];
+        });
 
-      setSelectedAudioId(null);
-    }
-  };
+        setSelectedAudioId(null);
+      }
+    },
+    [selectedAudioId, audioRefs, imageRefs]
+  );
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     console.log(answers.length);
-  };
+  }, [answers]);
 
   return (
     <View style={{ flex: 1 }}>

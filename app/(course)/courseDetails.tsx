@@ -81,9 +81,10 @@ const courseDetails = () => {
   } | null>(null);
 
   useEffect(() => {
-    const courseId = Number(id);
-    const foundCourse = data?.find((c) => c.courseId === courseId);
-    setCourse(foundCourse ?? null);
+    setCourse(() => {
+      const courseId = Number(id);
+      return data.find((c) => c.courseId === courseId) ?? null;
+    });
   }, [id]);
 
   HeaderConfig("Course Details");

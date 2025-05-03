@@ -29,7 +29,7 @@ const auth = () => {
     });
   });
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (source === "forgot") {
       router.back();
     } else if (source === "login") {
@@ -37,7 +37,7 @@ const auth = () => {
     } else {
       router.push("index");
     }
-  };
+  }, [source, router]);
 
   return (
     <View style={styles.upper}>

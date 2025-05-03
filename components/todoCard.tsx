@@ -12,18 +12,23 @@ type TodoCardProps = {
 };
 
 const todoCard: React.FC<TodoCardProps> = (props) => {
-    const formatDate = (date: string) => {
-        return new Date(date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-        });
-        }
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <Card containerStyle={styles.card}>
         <View style={styles.cardContent}>
-          <MaterialIcons name="image" size={50} color="#FFBF18" style={styles.icon} />
+          <MaterialIcons
+            name="image"
+            size={50}
+            color="#FFBF18"
+            style={styles.icon}
+          />
           <Text style={styles.sub}>{props.sub}</Text>
           <Text style={styles.title}>{props.title}</Text>
           <View style={styles.row}>
@@ -46,7 +51,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 20,
     height: 110,
-    
   },
   cardContent: {
     flexDirection: "column",

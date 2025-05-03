@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 type ActivityProgressProps = {
@@ -14,8 +14,10 @@ const ActivityProgress = ({
   completedItems,
   instruction,
 }: ActivityProgressProps) => {
-  // Create an array with totalItems length to map over
-  const progressItems = Array(totalItems).fill(null);
+  const progressItems = useMemo(
+    () => Array(totalItems).fill(null),
+    [totalItems]
+  );
 
   return (
     <View style={styles.headerContainer}>

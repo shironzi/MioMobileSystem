@@ -34,7 +34,7 @@ const helpDetails = () => {
           placeholder="State the issue you are experiencing.."
           placeholderTextColor="#aaa"
           value={issue}
-          onChangeText={setIssue} 
+          onChangeText={setIssue}
           multiline={true}
         />
       </Card>
@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     height: 100,
-    textAlignVertical: "top", 
+    textAlignVertical: "top",
+    width: "100%",
   },
   button: {
     marginTop: 20,

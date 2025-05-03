@@ -4,7 +4,6 @@ import ScoreNamesCard from "@/components/ScoreNamesCard";
 import HeaderConfig from "@/components/HeaderConfig";
 import { useRouter } from "expo-router";
 
-
 const data = [
   {
     id: 1,
@@ -34,24 +33,22 @@ const data = [
 
 const scoreNames = () => {
   HeaderConfig("Scores");
-  const router = useRouter();
 
   return (
     <View>
       <ScrollView>
-      <View style={styles.container}>
-      {data.map((item) => (
-        <ScoreNamesCard
-          key={item.id}
-          name={item.name}
-          score={item.score}
-          attempt={item.attempt}
-        />
-      ))}
+        <View style={styles.container}>
+          {data.map((item) => (
+            <ScoreNamesCard
+              key={item.id}
+              name={item.name}
+              score={item.score}
+              attempt={item.attempt}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </View>
-    </ScrollView>
-    </View>
-
   );
 };
 

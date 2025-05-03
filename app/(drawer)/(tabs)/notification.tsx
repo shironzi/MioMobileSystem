@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { memo, useMemo, useState, useRef } from "react";
+import React, { memo, useMemo, useState, useRef, useCallback } from "react";
 import NotificationCard from "@/components/NotificationCard";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -66,13 +66,16 @@ const Notification = () => {
   const [notifications, setNotifications] = useState(data);
   const openSwipeableRef = useRef<number | null>(null);
 
-  const deleteNotification = (id: number) => {
-    openSwipeableRef.current = null;
+  const deleteNotification = useCallback(
+    (id: number) => {
+      openSwipeableRef.current = null;
 
-    setTimeout(() => {
-      setNotifications((prev) => prev.filter((item) => item.id !== id));
-    }, 100);
-  };
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((item) => item.id !== id));
+      }, 100);
+    },
+    [openSwipeableRef]
+  );
 
   const now = useMemo(() => new Date(), []);
   const filteredData = useMemo(

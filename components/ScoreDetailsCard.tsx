@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Card } from "@rneui/themed";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -25,7 +25,10 @@ const ScoreDetailsCard = ({
   totalQuestion,
   comments = [],
 }: titleProps) => {
-  const fillPercentage = totalQuestion > 0 ? (score / totalQuestion) * 100 : 0;
+  const fillPercentage = useMemo(() => {
+    if (totalQuestion <= 0) return 0;
+    return Math.min((score / totalQuestion) * 100, 100);
+  }, [score, totalQuestion]);
 
   return (
     <View>
@@ -85,13 +88,11 @@ const ScoreDetailsCard = ({
       {comments.map((item, index) => (
         <Card key={item.id} containerStyle={styles.cardContainer3}>
           <Text style={styles.noLabel}>Number {index + 1}</Text>
-          <Text style={{left:10, fontSize:14}}>{item.word}</Text>
+          <Text style={{ left: 10, fontSize: 14 }}>{item.word}</Text>
         </Card>
       ))}
-        
-      {/* </Card> */}
 
-      
+      {/* </Card> */}
     </View>
   );
 };
@@ -181,20 +182,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     // marginBottom: 5,
-    margin:10,
-    marginTop:10,
-
+    margin: 10,
+    marginTop: 10,
   },
   cardContainer3: {
     backgroundColor: "#fff",
     padding: 15,
-    paddingTop:5,
-    paddingRight:30,
+    paddingTop: 5,
+    paddingRight: 30,
     marginTop: 20,
     borderWidth: 0,
     borderRadius: 10,
     elevation: 5,
-    width:"95%",
+    width: "95%",
     left: -5,
   },
 });

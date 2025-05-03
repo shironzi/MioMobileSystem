@@ -7,7 +7,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
 import HeaderConfig from "@/components/HeaderConfig";
@@ -20,6 +20,11 @@ const data = [
   },
 ];
 
+interface SocialLink {
+  title: string;
+  url: string;
+}
+
 const Edit = () => {
   const [biography, setBiography] = useState("");
   const [contact, setContact] = useState("");
@@ -27,31 +32,28 @@ const Edit = () => {
 
   HeaderConfig("Profile");
 
-  interface SocialLink {
-    title: string;
-    url: string;
-  }
+  const handleSocialLinkChange = useCallback(
+    (index: number, field: keyof SocialLink, value: string): void => {
+      const updatedLinks: SocialLink[] = [...socialLinks];
+      updatedLinks[index][field] = value;
+      setSocialLinks(updatedLinks);
+    },
+    [socialLinks]
+  );
 
-  const handleSocialLinkChange = (
-    index: number,
-    field: keyof SocialLink,
-    value: string
-  ): void => {
-    const updatedLinks: SocialLink[] = [...socialLinks];
-    updatedLinks[index][field] = value;
-    setSocialLinks(updatedLinks);
-  };
-
-  const handleAddSocialLink = () => {
+  const handleAddSocialLink = useCallback(() => {
     setSocialLinks([...socialLinks, { title: "", url: "" }]);
-  };
+  }, [socialLinks]);
 
-  const handleRemoveSocialLink = (index: number): void => {
-    const updatedLinks: SocialLink[] = socialLinks.filter(
-      (_, i) => i !== index
-    );
-    setSocialLinks(updatedLinks);
-  };
+  const handleRemoveSocialLink = useCallback(
+    (index: number): void => {
+      const updatedLinks: SocialLink[] = socialLinks.filter(
+        (_, i) => i !== index
+      );
+      setSocialLinks(updatedLinks);
+    },
+    [socialLinks]
+  );
 
   return (
     <ScrollView>

@@ -1,5 +1,13 @@
-import React, { memo, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, Pressable} from "react-native";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+} from "react-native";
 import ScoresCard from "@/components/ScoresCard";
 import { AntDesign } from "@expo/vector-icons";
 import HeaderConfig from "@/components/HeaderConfig";
@@ -41,20 +49,23 @@ const data = [
 ];
 
 const ScoresScreen = () => {
-  const [selectedCategory, setSelectedCategory] = useState<scoreType | "all">("all");
+  const [selectedCategory, setSelectedCategory] = useState<scoreType | "all">(
+    "all"
+  );
   const [modalVisible, setModalVisible] = useState(false);
 
   HeaderConfig("Scores");
 
-  const filteredData =
-    selectedCategory === "all"
+  const filteredData = useMemo(() => {
+    return selectedCategory === "all"
       ? data
       : data.filter((item) => item.category === selectedCategory);
+  }, [data, selectedCategory]);
 
-  const handleSelect = (value: scoreType | "all") => {
+  const handleSelect = useCallback((value: scoreType | "all") => {
     setSelectedCategory(value);
     setModalVisible(false);
-  };
+  }, []);
 
   return (
     <ScrollView>
@@ -65,7 +76,12 @@ const ScoresScreen = () => {
         >
           <Text style={styles.dropdownToggle}>
             {selectedCategory === "all" ? "All" : selectedCategory}{" "}
-            <AntDesign name="down" size={14} color="#FFBF18" style={{ marginLeft: 5 }} />
+            <AntDesign
+              name="down"
+              size={14}
+              color="#FFBF18"
+              style={{ marginLeft: 5 }}
+            />
           </Text>
         </TouchableOpacity>
       </View>
@@ -76,7 +92,6 @@ const ScoresScreen = () => {
         <Text style={styles.label}>Level</Text>
         {/* <Text style={styles.label}>Score</Text> */}
         <Text style={styles.label}>Student</Text>
-
       </View>
 
       <View>
@@ -91,7 +106,7 @@ const ScoresScreen = () => {
           />
         ))}
       </View>
-      
+
       <Modal
         transparent
         animationType="fade"
@@ -111,7 +126,9 @@ const ScoresScreen = () => {
               <Text style={styles.modalItem}>Exercises</Text>
               <View style={styles.divider} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSelect(scoreType.assessment)}>
+            <TouchableOpacity
+              onPress={() => handleSelect(scoreType.assessment)}
+            >
               <Text style={styles.modalItem}>Assessmets</Text>
               <View style={styles.divider} />
             </TouchableOpacity>
@@ -154,7 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: 150,
     top: 110,
-    right:-230,
+    right: -230,
   },
   modalTitle: {
     color: "#fff",
@@ -167,7 +184,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     paddingVertical: 8,
-
   },
   divider: {
     borderBottomColor: "white",

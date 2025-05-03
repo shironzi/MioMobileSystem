@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import HeaderConfig from "@/components/HeaderConfig";
 import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
 import { useRouter } from "expo-router";
@@ -89,46 +89,67 @@ const Homonyms = () => {
 
   const router = useRouter();
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
-  const [items, setItems] = useState<typeof Data>(Data);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const currentItem = items[currentItemIndex] || { questions: [], choices: [] };
+  const currentItem = useMemo(
+    () => Data[currentItemIndex] || { questions: [], choices: [] },
+    [currentItemIndex]
+  );
 
-  const handleNext = () => {
-    if (currentItemIndex < items.length - 1) {
-      setCurrentItemIndex(currentItemIndex + 1);
-    } else {
-      router.push({
-        pathname: "/(course)/(sub-details)/scoreDetails",
-      });
-    }
-  };
-  const handleAnswerChange = (updatedAnswers: Record<string, string>) => {
-    setAnswers(() => ({
-      ...answers,
-      ...updatedAnswers,
-    }));
-  };
+  const totalBlanks = useMemo(
+    () =>
+      currentItem.questions.reduce(
+        (count, sentence) => count + (sentence.match(/BLANK/g) || []).length,
+        0
+      ),
+    [currentItem]
+  );
 
-  const handleAudioPlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+  const isAnswered = useMemo(
+    () => Object.keys(answers).length < totalBlanks,
+    [answers, totalBlanks]
+  );
 
-  const isAnswered =
-    Object.keys(answers).length <=
-    currentItem.questions.reduce(
-      (count, sentence) => count + (sentence.match(/BLANK/g) || []).length,
-      0
-    ) *
-      currentItemIndex;
+  const handleNext = useCallback(() => {
+    setCurrentItemIndex((prevIndex) => {
+      if (prevIndex < Data.length - 1) {
+        return prevIndex + 1;
+      } else {
+        router.push({
+          pathname: "/(course)/(sub-details)/scoreDetails",
+        });
+        return prevIndex;
+      }
+    });
+  }, [router]);
+
+  const handleAnswerChange = useCallback(
+    (updatedAnswers: Record<string, string>) => {
+      setAnswers((prevAnswers) => ({
+        ...prevAnswers,
+        ...updatedAnswers,
+      }));
+    },
+    []
+  );
+
+  const handleAudioPlay = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
+
+  const getButtonStyle = useMemo(() => {
+    return isAnswered && !isPlaying
+      ? styles.disabledButton
+      : styles.activeButton;
+  }, [isAnswered, isPlaying]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f5f5f5", padding: 20 }}>
+    <View style={styles.container}>
       <View style={styles.questionsContainer}>
         <ActivityProgress
           difficulty="Easy"
-          totalItems={items.length}
+          totalItems={Data.length}
           completedItems={currentItemIndex}
           instruction="Guess the picture"
         />
@@ -142,16 +163,11 @@ const Homonyms = () => {
         <View style={{ width: "100%" }}>
           <TouchableOpacity
             onPress={handleNext}
-            style={[
-              styles.button,
-              isAnswered && !isPlaying
-                ? { backgroundColor: "#E0E0E0" }
-                : { backgroundColor: "#FFBF18" },
-            ]}
+            style={[styles.button, getButtonStyle]}
             disabled={isAnswered && !isPlaying}
           >
             <Text style={styles.buttonText}>
-              {currentItemIndex < items.length - 1 ? "Continue" : "Submit"}
+              {currentItemIndex < Data.length - 1 ? "Continue" : "Submit"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -161,6 +177,11 @@ const Homonyms = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+  },
   questionsContainer: {
     height: "70%",
     justifyContent: "space-between",
@@ -171,11 +192,17 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 15,
   },
+  activeButton: {
+    backgroundColor: "#FFBF18",
+  },
+  disabledButton: {
+    backgroundColor: "#E0E0E0",
+  },
   buttonText: {
     color: "white",
     fontSize: 18,
     fontWeight: "600",
-    marginHorizontal: "auto",
+    textAlign: "center",
   },
 });
 

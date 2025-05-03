@@ -5,8 +5,6 @@ import HeaderConfig from "@/components/HeaderConfig";
 import { useRouter } from "expo-router";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
-
-
 const data = [
   {
     id: 1,
@@ -33,27 +31,25 @@ const assignments = () => {
   return (
     <View>
       <ScrollView>
-      <View style={styles.container}>
-      {data.map((item) => (
-        <AssCard
-          key={item.id}
-          title={item.title}
-          date={item.date}
-          time={item.time}
-          score={item.score}
-          type={item.type}
-        />
-      ))}
-    </View>
-    </ScrollView>
-    <TouchableOpacity
+        <View style={styles.container}>
+          {data.map((item) => (
+            <AssCard
+              key={item.id}
+              title={item.title}
+              date={item.date}
+              time={item.time}
+              score={item.score}
+              type={item.type}
+            />
+          ))}
+        </View>
+      </ScrollView>
+      <TouchableOpacity
         style={styles.addButton}
         onPress={() => router.push("helpDetails")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
-    </TouchableOpacity>
-    
-
+      </TouchableOpacity>
     </View>
   );
 };
