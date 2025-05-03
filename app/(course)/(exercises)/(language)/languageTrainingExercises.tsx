@@ -14,39 +14,43 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Fill in the Blanks</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Fill in the Blanks
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Technology_Lifestyle.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Talk2Me: Responding Questions</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Talk2Me: Responding Questions
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/homonyms.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Homonyms</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>Homonyms</Text>
           </TouchableOpacity>
         </View>
       </View>

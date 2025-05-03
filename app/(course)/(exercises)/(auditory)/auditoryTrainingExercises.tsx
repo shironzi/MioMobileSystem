@@ -14,26 +14,30 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Collectibles.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Bingo Cards</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Bingo Cards
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Red_Card.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Matching Card</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Matching Card
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

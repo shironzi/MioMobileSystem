@@ -3,8 +3,8 @@ import React, { useCallback, useState } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ActivityProgress from "@/components/activityProgress";
-import Word from "@/components/dragAndDrop/Word";
-import WordList from "@/components/dragAndDrop/WordList";
+import Word from "@/components/trainingActivities/language/Word";
+import WordList from "@/components/trainingActivities/language/WordList";
 import HeaderConfig from "@/components/HeaderConfig";
 
 const words = [
@@ -75,15 +75,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
-  progressContainer: {
-   
-  },
-  contentContainer: {
-   
-  },
-  cardContainer: {
-   
-  },
+  progressContainer: {},
+  contentContainer: {},
+  cardContainer: {},
   sentenceContainer: {
     backgroundColor: "white",
     borderRadius: 15,
@@ -106,11 +100,11 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     height: 50,
     width: 50,
-    top:-10,
-    paddingTop:13,
-    paddingLeft:10,
+    top: -10,
+    paddingTop: 13,
+    paddingLeft: 10,
     left: 0,
-    marginTop:10,
+    marginTop: 10,
     marginBottom: 10,
   },
   button: {

@@ -7,10 +7,8 @@ import {
 } from "react-native";
 import React, { memo, useCallback, useState } from "react";
 import HeaderConfig from "@/components/HeaderConfig";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { Dropdown } from "react-native-element-dropdown";
-import HomonymQuestionCard from "@/components/dragAndDrop/HomonymQuestionCard";
-import { router, useRouter } from "expo-router";
+import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
+import { useRouter } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
 
 const Data = [

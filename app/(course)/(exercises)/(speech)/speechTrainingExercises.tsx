@@ -14,7 +14,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("../level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Picture.png")}
@@ -29,7 +29,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Questions.png")}
@@ -44,7 +44,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("../level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Dictionary.png")}
@@ -59,7 +59,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/level")}
+            onPress={() => router.push("/(course)/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}

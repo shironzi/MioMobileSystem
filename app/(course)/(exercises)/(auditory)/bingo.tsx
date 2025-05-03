@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import BingoCard from "@/components/auditory/bingoCard";
+import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import { FontAwesome6 } from "@expo/vector-icons";
 import HeaderConfig from "@/components/HeaderConfig";
 import { useRouter } from "expo-router";
@@ -127,27 +127,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "left",
     height: "5%",
-    left:5,
+    left: 5,
   },
   bingoCards: {
-    margin:10,
-    left:2,
+    margin: 10,
+    left: 2,
     marginHorizontal: -5,
     height: "70%",
-    marginTop:10,
+    marginTop: 10,
   },
   speakerIcon: {
     borderRadius: 180,
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 12,
-    marginTop:-60,
-    left:5,
+    marginTop: -60,
+    left: 5,
   },
   listen: {
     fontSize: 18,
     color: "#ffbf18",
-    marginTop:-130,
+    marginTop: -130,
   },
   playAudioContainer: {
     display: "flex",
@@ -160,14 +160,14 @@ const styles = StyleSheet.create({
     padding: 17,
     borderRadius: 50,
     alignItems: "center",
-    marginTop:-30,
-    margin:10,
+    marginTop: -30,
+    margin: 10,
   },
-  nextText: { 
-    color: "#fff", 
-    fontSize: 16, 
-    fontWeight:"bold",
-},
+  nextText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default memo(bingo);
