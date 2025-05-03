@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontAwesome6 } from "@expo/vector-icons";
 
@@ -51,4 +51,4 @@ const Talk2Me = () => {
   );
 };
 
-export default Talk2Me;
+export default memo(Talk2Me);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { View } from "react-native";
 
 import { MARGIN_LEFT, MARGIN_TOP, Offset, WORD_HEIGHT } from "./Layout";
@@ -23,4 +23,4 @@ const Placeholder = ({ offset }: PlaceholderProps) => {
   );
 };
 
-export default Placeholder;
+export default memo(Placeholder);

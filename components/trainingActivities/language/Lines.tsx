@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { WORD_HEIGHT, NUMBER_OF_LINES } from "./Layout";
@@ -21,4 +21,4 @@ const Lines = () => {
   );
 };
 
-export default Lines;
+export default memo(Lines);

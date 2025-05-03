@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { memo, ReactElement } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -142,4 +142,4 @@ const SortableWord = ({
   );
 };
 
-export default SortableWord;
+export default memo(SortableWord);

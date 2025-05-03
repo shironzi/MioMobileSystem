@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState, useRef } from "react";
+import React, { ReactElement, useEffect, useState, useRef, memo } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { useSharedValue, runOnUI, runOnJS } from "react-native-reanimated";
 
@@ -122,4 +122,4 @@ const WordList = ({ children, onSentenceChange }: WordListProps) => {
   );
 };
 
-export default WordList;
+export default memo(WordList);
