@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     padding: 15,
     margin: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: "#fff",
     borderWidth: 0,
     // shadowColor: "transparent",

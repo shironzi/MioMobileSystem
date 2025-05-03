@@ -1,6 +1,6 @@
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import React, { memo } from "react";
-import ModuleCard from "@/components/ModuleCard";
+import AttendanceCard from "@/components/attendanceCard";
 import HeaderConfig from "@/components/HeaderConfig";
 import { useRouter } from "expo-router";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
@@ -8,56 +8,40 @@ import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 const data = [
   {
     id: 1,
-    title: "[M1 - MAIN]  Speech Development",
+    date: new Date(Date.now()),
   },
   {
     id: 2,
-    title: "[M2 - MAIN]  Intonation Development and Training",
-  },
-  {
-    id: 3,
-    title: "[M3 - MAIN]  Accent Development",
-  },
-  {
-    id: 4,
-    title: "[M4 - MAIN]  Sound Development",
+    date: new Date(Date.now()),
   },
 ];
 
-const modules = () => {
-
-  HeaderConfig("Modules");
+const attendanceDetails = () => {
+  HeaderConfig("Attendance");
   const router = useRouter();
- 
 
   return (
     <View>
       <ScrollView>
         <View style={styles.container}>
           {data.map((item) => (
-            <ModuleCard key={item.id} title={item.title} />
+            <AttendanceCard key={item.id} item={item} />
           ))}
         </View>
       </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("helpDetails")}
+        onPress={() => router.push("attendanceDetails")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
-    </TouchableOpacity>
-
+      </TouchableOpacity>
     </View>
-   
-
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 2,
-  },
-  headerStyle: {
-    backgroundColor: "#2264DC",
   },
   addButton: {
     backgroundColor: "#2264DC",
@@ -67,11 +51,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: -370,
+    bottom: -550,
     right: 20,
     elevation: 5,
   },
 });
 
-
-export default memo(modules);
+export default memo(attendanceDetails);

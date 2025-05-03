@@ -151,7 +151,7 @@ const courseDetails = () => {
               <Text style={styles.fontSizeOne}>
                 {course?.activityCategory} Training Exercises
               </Text>
-              <Entypo name="chevron-small-right" size={35} color="#CCC" />
+              <Entypo name="chevron-small-right" size={30} color="#CCC" />
             </View>
           </View>
         </TouchableOpacity>
@@ -198,6 +198,19 @@ const courseDetails = () => {
           <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Modules</Text>
+            <Entypo name="chevron-small-right" size={30} color="#CCC" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(
+            () => router.push("/(course)/attendance"),
+            [router]
+          )}
+        >
+          <View style={styles.yellowBulletin}></View>
+          <View style={styles.linkDecoration}>
+            <Text style={styles.fontSizeOne}>Attendance</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>

@@ -4,6 +4,7 @@ import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
+
 const announceCard = (props: { 
     title: string; 
     date: Date; 
@@ -37,11 +38,20 @@ const announceCard = (props: {
           <Text style={styles.date}>
             {formatDate(props.date)} {props.time}
           </Text>
-          <Entypo name="chevron-small-right" size={30} color="#ccc" />
+          <View style={styles.icons}>
+            <TouchableOpacity>
+              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:5}} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Entypo name="trash" size={15} color="#aaa" />
+            </TouchableOpacity>
+          </View>
+          <Entypo name="chevron-small-right" size={30} color="#aaa" />
         </View>
       </View>
       </Card>
     </TouchableOpacity>
+    
   );
 };
 
@@ -100,6 +110,11 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     paddingHorizontal: -20,
+  },
+  icons: {
+    flexDirection: "row",
+    marginLeft: 5,
+    marginRight:-5
   },
 });
 

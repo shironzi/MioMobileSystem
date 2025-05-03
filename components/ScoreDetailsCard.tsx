@@ -10,23 +10,25 @@ type titleProps = {
   attemptNo: string;
   score: number;
   totalQuestion: number;
+  comments: { id: number; word: string }[];
 };
 
 const commentText =
   "Great effort! Keep practicing and paying attention to details—you're getting better! Try again and see if you can improve your score. You're on the right track!";
 
-const ScoreDetails = ({
+const ScoreDetailsCard = ({
   title,
   difficulty,
   actNo,
   attemptNo,
   score,
   totalQuestion,
+  comments = [],
 }: titleProps) => {
   const fillPercentage = totalQuestion > 0 ? (score / totalQuestion) * 100 : 0;
 
   return (
-    <View style={{}}>
+    <View>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.row}>
         <Text style={styles.bold}>{difficulty}</Text>
@@ -58,33 +60,38 @@ const ScoreDetails = ({
       </Card>
 
       <Card containerStyle={styles.cardContainer2}>
-        <View>
-          <Text style={styles.scoreLabel}>Feedback</Text>
-        </View>
+        <Text style={[styles.scoreLabel, { left: -10 }]}>Feedback</Text>
         <View style={styles.faceRow}>
-          <View style={styles.faceRow}>
-            <Image
-              source={require("@/assets/face/red.png")}
-              style={{ width: 60, height: 60 }}
-            />
-            <Image
-              source={require("@/assets/face/yellow.png")}
-              style={{ width: 80, height: 80, top: -10 }}
-            />
-            <Image
-              source={require("@/assets/face/blue.png")}
-              style={{ width: 50, height: 50, top: 5 }}
-            />
-            <Image
-              source={require("@/assets/face/green.png")}
-              style={{ width: 50, height: 50, top: 5 }}
-            />
-          </View>
+          <Image
+            source={require("@/assets/face/red.png")}
+            style={{ width: 60, height: 60 }}
+          />
+          <Image
+            source={require("@/assets/face/yellow.png")}
+            style={{ width: 80, height: 80, top: -10 }}
+          />
+          <Image
+            source={require("@/assets/face/blue.png")}
+            style={{ width: 50, height: 50, top: 5 }}
+          />
+          <Image
+            source={require("@/assets/face/green.png")}
+            style={{ width: 50, height: 50, top: 5 }}
+          />
         </View>
-        <View>
-          <Text style={styles.commentText}>{commentText}</Text>
-        </View>
+        <Text style={styles.commentText}>{commentText}</Text>
       </Card>
+      {/* <Card> */}
+      {comments.map((item, index) => (
+        <Card key={item.id} containerStyle={styles.cardContainer3}>
+          <Text style={styles.noLabel}>Number {index + 1}</Text>
+          <Text style={{left:10, fontSize:14}}>{item.word}</Text>
+        </Card>
+      ))}
+        
+      {/* </Card> */}
+
+      
     </View>
   );
 };
@@ -115,25 +122,25 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   cardContainer1: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
     height: 190,
     left: -5,
     padding: 10,
     marginTop: 20,
     width: "95%",
     borderWidth: 0,
-    borderRadius: 15,
+    borderRadius: 10,
     elevation: 5,
   },
   cardContainer2: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
     height: 300,
     left: -5,
     padding: 20,
     marginTop: 20,
     width: "95%",
     borderWidth: 0,
-    borderRadius: 15,
+    borderRadius: 10,
     elevation: 5,
   },
   circleContainer: {
@@ -155,7 +162,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
     top: "35%",
-    left: "35%",
+    left: "32%",
   },
   faceRow: {
     flexDirection: "row",
@@ -170,6 +177,26 @@ const styles = StyleSheet.create({
     marginTop: 10,
     lineHeight: 25,
   },
+  noLabel: {
+    fontWeight: "bold",
+    fontSize: 16,
+    // marginBottom: 5,
+    margin:10,
+    marginTop:10,
+
+  },
+  cardContainer3: {
+    backgroundColor: "#fff",
+    padding: 15,
+    paddingTop:5,
+    paddingRight:30,
+    marginTop: 20,
+    borderWidth: 0,
+    borderRadius: 10,
+    elevation: 5,
+    width:"95%",
+    left: -5,
+  },
 });
 
-export default memo(ScoreDetails);
+export default memo(ScoreDetailsCard);
