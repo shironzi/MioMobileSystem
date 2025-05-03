@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 
+
 const data = [
   {
     id: 1,
@@ -54,7 +55,6 @@ const assignments = () => {
     
 
     </View>
-
   );
 };
 

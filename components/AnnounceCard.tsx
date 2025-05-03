@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight:-5
   },
-
 });
 
 export default memo(announceCard);

@@ -37,6 +37,7 @@ const announcements = () => {
         />
       ))}
     </View>
+
     </ScrollView>
     <TouchableOpacity
         style={styles.addButton}
@@ -45,7 +46,6 @@ const announcements = () => {
         <MaterialIcon name="add" size={30} color="#fff" />
     </TouchableOpacity>
     </View>
-    
   );
 };
 
