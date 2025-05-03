@@ -1,4 +1,11 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useState, memo } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -38,6 +45,7 @@ const Index = () => {
                   placeholder="Username"
                   value={username}
                   onChangeText={setUsername}
+                  style={{ width: "100%" }}
                 />
               </View>
               <View style={styles.inputContainer}>
@@ -47,6 +55,7 @@ const Index = () => {
                   secureTextEntry={true}
                   value={password}
                   onChangeText={setPassword}
+                  style={{ width: "100%" }}
                 />
               </View>
 
@@ -60,18 +69,30 @@ const Index = () => {
                   />
                   <Text>Remember me</Text>
                 </View>
-                <TouchableOpacity onPress={() => router.push({ pathname: "/auth", params: { from: "forgot" } })
-}>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push({
+                      pathname: "/auth",
+                      params: { from: "forgot" },
+                    })
+                  }
+                >
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.push({ pathname: "/auth", params: { from: "login" } })
-              }
+                onPress={() =>
+                  router.push({ pathname: "/auth", params: { from: "login" } })
+                }
               >
                 <Text
-                  style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
                 >
                   Login
                 </Text>
@@ -101,7 +122,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: 0,
-    width: "100%"
+    width: "100%",
   },
   container: {
     padding: 60,

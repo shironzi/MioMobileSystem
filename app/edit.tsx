@@ -282,6 +282,7 @@ const styles = StyleSheet.create({
   textInput: {
     top: 5,
     paddingTop: -10,
+    width: "100%",
   },
 });
 

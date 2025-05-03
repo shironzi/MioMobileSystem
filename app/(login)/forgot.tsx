@@ -1,9 +1,16 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useState, memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-const email = ("202210920@fit.edu.ph");
+const email = "202210920@fit.edu.ph";
 
 const forgotPass = () => {
   const router = useRouter();
@@ -31,13 +38,24 @@ const forgotPass = () => {
               <Text style={styles.sub}>Log in to your account</Text>
             </View>
             <View style={styles.row}>
-                <TouchableOpacity onPress={() => router.back()}>
-                    <MaterialIcons name="arrow-back" size={20}/>
-                </TouchableOpacity>
-                <Text style={{left:20, color:"#666"}}>{email}</Text>
+              <TouchableOpacity onPress={() => router.back()}>
+                <MaterialIcons name="arrow-back" size={20} />
+              </TouchableOpacity>
+              <Text style={{ left: 20, color: "#666" }}>{email}</Text>
             </View>
-            <Text style={{left:20, fontSize:16, fontWeight:"500", marginBottom:5}}>Change Password</Text>
-            <Text style={{left:20, fontSize:14, marginBottom:15}}>Enter your new password</Text>
+            <Text
+              style={{
+                left: 20,
+                fontSize: 16,
+                fontWeight: "500",
+                marginBottom: 5,
+              }}
+            >
+              Change Password
+            </Text>
+            <Text style={{ left: 20, fontSize: 14, marginBottom: 15 }}>
+              Enter your new password
+            </Text>
 
             <View style={{ rowGap: 14 }}>
               <View style={styles.inputContainer}>
@@ -47,6 +65,7 @@ const forgotPass = () => {
                   secureTextEntry={true}
                   value={newPassword}
                   onChangeText={setNewPassword}
+                  style={{ width: "100%" }}
                 />
               </View>
               <View style={styles.inputContainer}>
@@ -56,6 +75,7 @@ const forgotPass = () => {
                   secureTextEntry={true}
                   value={retypePassword}
                   onChangeText={setRetypePassword}
+                  style={{ width: "100%" }}
                 />
               </View>
               <TouchableOpacity
@@ -63,7 +83,12 @@ const forgotPass = () => {
                 onPress={() => router.back()}
               >
                 <Text
-                  style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
                 >
                   Confirm
                 </Text>
@@ -93,7 +118,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: 0,
-    width: "100%"
+    width: "100%",
   },
   container: {
     padding: 60,
@@ -118,8 +143,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     margin: 15,
-    marginTop:-20,
-    marginBottom:20,
+    marginTop: -20,
+    marginBottom: 20,
   },
   forgotText: {
     textDecorationLine: "underline",
@@ -146,7 +171,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: -10,
     marginBottom: 45,
-    color:"#1f1f1f"
+    color: "#1f1f1f",
   },
   upper: {
     backgroundColor: "#2264dc",

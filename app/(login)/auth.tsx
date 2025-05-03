@@ -1,9 +1,21 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React, { useState, memo, useCallback } from "react";
-import { useFocusEffect, useNavigation, useLocalSearchParams, useRouter } from "expo-router";
+import {
+  useFocusEffect,
+  useNavigation,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-const email = ("202210920@fit.edu.ph");
+const email = "202210920@fit.edu.ph";
 
 const auth = () => {
   const router = useRouter();
@@ -19,9 +31,9 @@ const auth = () => {
 
   const handleConfirm = () => {
     if (source === "forgot") {
-      router.back(); 
+      router.back();
     } else if (source === "login") {
-      router.push("/(drawer)"); 
+      router.push("/(drawer)");
     } else {
       router.push("index");
     }
@@ -41,31 +53,58 @@ const auth = () => {
               <Text style={styles.sub}>Log in to your account</Text>
             </View>
             <View style={styles.row}>
-                <TouchableOpacity onPress={() => router.back()}>
-                    <MaterialIcons name="arrow-back" size={20}/>
-                </TouchableOpacity>
-                <Text style={{left:20, color:"#666"}}>{email}</Text>
+              <TouchableOpacity onPress={() => router.back()}>
+                <MaterialIcons name="arrow-back" size={20} />
+              </TouchableOpacity>
+              <Text style={{ left: 20, color: "#666" }}>{email}</Text>
             </View>
-            <Text style={{left:20, fontSize:16, fontWeight:"500", marginBottom:5}}>Enter Code</Text>
-            <Text style={{left:20, fontSize:14, marginBottom:15, marginRight:30, lineHeight:20}}>Enter the code sent to your email to change your password</Text>
+            <Text
+              style={{
+                left: 20,
+                fontSize: 16,
+                fontWeight: "500",
+                marginBottom: 5,
+              }}
+            >
+              Enter Code
+            </Text>
+            <Text
+              style={{
+                left: 20,
+                fontSize: 14,
+                marginBottom: 15,
+                marginRight: 30,
+                lineHeight: 20,
+              }}
+            >
+              Enter the code sent to your email to change your password
+            </Text>
 
             <View style={{ rowGap: 14 }}>
               <View style={styles.inputContainer}>
                 <MaterialIcons name="pin" size={30} color="#bbb" />
                 <TextInput
-                    placeholder="Code"
-                    keyboardType="numeric"
-                    value={newCode}
-                    onChangeText={setNewCode}
-                    maxLength={6} 
+                  placeholder="Code"
+                  keyboardType="number-pad"
+                  value={newCode}
+                  onChangeText={setNewCode}
+                  maxLength={6}
+                  inputMode="numeric"
+                  style={{ width: "100%" }}
                 />
-               
               </View>
               <TouchableOpacity style={styles.button} onPress={handleConfirm}>
-              <Text style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-                Confirm
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Confirm
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -91,7 +130,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: 0,
-    width: "100%"
+    width: "100%",
   },
   container: {
     padding: 60,
@@ -116,8 +155,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     margin: 15,
-    marginTop:-20,
-    marginBottom:20,
+    marginTop: -20,
+    marginBottom: 20,
   },
   button: {
     backgroundColor: "#ffbf18",
@@ -139,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: -10,
     marginBottom: 45,
-    color:"#1f1f1f"
+    color: "#1f1f1f",
   },
   upper: {
     backgroundColor: "#2264dc",
