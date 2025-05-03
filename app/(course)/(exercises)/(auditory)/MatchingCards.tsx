@@ -48,7 +48,9 @@ const MatchingCards = () => {
 
   const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [answers, setAnswers] = useState<[number, number][]>([]); // audio id to image id
+  const [answers, setAnswers] = useState<
+    { audioId: string; imageId: string }[]
+  >([]); // audio id to image id
   const audioRefs = useRef<Record<string, { x: number; y: number }>>({});
   const imageRefs = useRef<Record<string, { x: number; y: number }>>({});
 
@@ -72,10 +74,18 @@ const MatchingCards = () => {
         },
       ]);
 
-      setAnswers((prev) => [
-        ...prev,
-        [Number(selectedAudioId), Number(imageId)],
-      ]);
+      setAnswers((prev) => {
+        const already = prev.some((a) => a.audioId === selectedAudioId);
+        if (already) {
+          // update existing pair
+          return prev.map((a) =>
+            a.audioId === selectedAudioId
+              ? { audioId: selectedAudioId, imageId }
+              : a
+          );
+        }
+        return [...prev, { audioId: selectedAudioId, imageId }];
+      });
 
       setSelectedAudioId(null);
     }
@@ -152,12 +162,12 @@ const MatchingCards = () => {
         <TouchableOpacity
           style={[
             styles.button,
-            answers.length === 5
+            answers.length >= 5
               ? { backgroundColor: "#FFBF18" }
               : { backgroundColor: "#ddd" },
           ]}
           onPress={handleSubmit}
-          disabled={answers.length != 5}
+          disabled={answers.length < 5}
         >
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
