@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import HeaderConfig from "@/components/HeaderConfig";
 import Talk2MeMessageCard from "@/components/trainingActivities/language/Talk2MeMessageCard";
@@ -6,7 +6,7 @@ import Talk2MeMessageCard from "@/components/trainingActivities/language/Talk2Me
 const talk2Me = () => {
   HeaderConfig("Talk2Me: Responding Questions");
   return (
-    <View>
+    <View style={{ padding: 20 }}>
       <Talk2MeMessageCard />
     </View>
   );
