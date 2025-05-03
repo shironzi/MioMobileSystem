@@ -7,8 +7,9 @@ import DropDownPicker from "react-native-dropdown-picker";
 const HomonymQuestionCard = (props: {
   question: string[];
   choices: string[];
+  onAnswerChange: (answers: Record<string, string>) => void;
+  onAudioPlay: () => void;
 }) => {
-  // Format data for the dropdown picker
   const dropdownItems = useMemo(
     () =>
       props.choices.map((choice) => ({
@@ -38,15 +39,22 @@ const HomonymQuestionCard = (props: {
   }, []);
 
   const handleSelect = useCallback(
-    (value: string, qIndex: number, wIndex: number) => {
-      const key = `q${qIndex}-w${wIndex}`;
-      setSelectedAnswers((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
+    (qKey: string, value: string) => {
+      setSelectedAnswers((prev) => {
+        const updated = { ...prev, [qKey]: value };
+        props.onAnswerChange(updated);
+        return updated;
+      });
     },
-    []
+    [props.onAnswerChange]
   );
+
+  const handleAudioPlay = () => {
+    props.onAudioPlay();
+    setTimeout(() => {
+      props.onAudioPlay();
+    }, 8000);
+  };
 
   return (
     <View style={styles.container}>
@@ -55,25 +63,30 @@ const HomonymQuestionCard = (props: {
 
         return (
           <View key={qIndex} style={styles.questionCard}>
-            <TouchableOpacity style={styles.audioButton}>
+            <TouchableOpacity
+              style={styles.audioButton}
+              onPress={handleAudioPlay}
+            >
               <FontAwesome6 name="volume-high" size={20} color="#fff" />
             </TouchableOpacity>
 
             <View style={styles.wordsContainer}>
               {wordsArray.map((word, wIndex) => {
-                const dropdownKey = `q${qIndex}-w${wIndex}`;
+                const dropdownKey = `${word}-${qIndex}-${wIndex}`;
 
-                return word === "BLANK" ? (
+                return word.replace(/[^a-zA-Z]/g, "") === "BLANK" ? (
                   <View key={wIndex} style={styles.dropdownContainer}>
                     <DropDownPicker
                       open={openDropdowns[dropdownKey] || false}
                       setOpen={(isOpen) =>
                         handleToggleDropdown(dropdownKey, !!isOpen)
                       }
-                      value={selectedAnswers[dropdownKey] || null}
+                      value={selectedAnswers[dropdownKey]}
                       setValue={(callback) => {
-                        const newValue = callback(selectedAnswers[dropdownKey]);
-                        handleSelect(newValue, qIndex, wIndex);
+                        const newValue = callback(
+                          selectedAnswers[dropdownKey] || null
+                        );
+                        handleSelect(dropdownKey, newValue as string);
                       }}
                       items={dropdownItems}
                       placeholder="Select"
@@ -96,7 +109,6 @@ const HomonymQuestionCard = (props: {
                         />
                       )}
                       listItemLabelStyle={styles.itemLabelStyle}
-                      // Handle nested dropdowns with proper z-index values
                       zIndex={5000 - qIndex * 100 - wIndex}
                       zIndexInverse={1000 + qIndex * 100 + wIndex}
                     />
