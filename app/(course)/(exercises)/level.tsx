@@ -15,7 +15,7 @@ const level = () => {
       <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/(speech)/play")}
+          onPress={() => router.push("/(course)/(exercises)/play")}
         >
           <MaterialIcons
             name="star"

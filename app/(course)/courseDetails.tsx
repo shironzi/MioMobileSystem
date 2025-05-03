@@ -116,17 +116,20 @@ const courseDetails = () => {
             switch (course.activityCategory) {
               case activityCategory.speech:
                 router.push({
-                  pathname: "/(course)/(speech)/speechTrainingExercises",
+                  pathname:
+                    "/(course)/(exercises)/(speech)/speechTrainingExercises",
                 });
                 break;
               case activityCategory.auditory:
                 router.push({
-                  pathname: "/(course)/(auditory)/auditoryTrainingExercises",
+                  pathname:
+                    "/(course)/(exercises)/(auditory)/(auditoryTrainingExercises",
                 });
                 break;
               case activityCategory.language:
                 router.push({
-                  pathname: "/(course)/(speech)/languageTrainingExercises",
+                  pathname:
+                    "/(course)/(exercises)/(language)/languageTrainingExercises",
                 });
                 break;
               default:

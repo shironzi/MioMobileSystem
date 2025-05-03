@@ -107,7 +107,6 @@ const WordList = ({ children, onSentenceChange }: WordListProps) => {
   }
   return (
     <View style={styles.container}>
-      <Lines />
       {children.map((child, index) => (
         <SortableWord
           key={index}
@@ -118,6 +117,7 @@ const WordList = ({ children, onSentenceChange }: WordListProps) => {
           {child}
         </SortableWord>
       ))}
+      <Lines />
     </View>
   );
 };

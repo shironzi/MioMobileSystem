@@ -14,52 +14,60 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("../level")}
           >
             <Image
               source={require("@/assets/icons/Picture.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Picture Flashcards</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Picture Flashcards
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/level")}
           >
             <Image
               source={require("@/assets/icons/Questions.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Question Flashcards</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Question Flashcards
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("../level")}
           >
             <Image
               source={require("@/assets/icons/Dictionary.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>Phrase Flashcards</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              Phrase Flashcards
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(speech)/level")}
+            onPress={() => router.push("/level")}
           >
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
             />
-            <Text style={{textAlign:"center", marginTop:5}}>ReadMe: Pronunciation Challenge</Text>
+            <Text style={{ textAlign: "center", marginTop: 5 }}>
+              ReadMe: Pronunciation Challenge
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
