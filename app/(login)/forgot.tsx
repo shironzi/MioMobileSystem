@@ -32,7 +32,7 @@ const forgotPass = () => {
             <View>
               <Image
                 source={require("@/assets/logo.png")}
-                style={{ width: 100, height: 130, top: 70, right: -265 }}
+                style={{ width: 100, height: 130, top: 70, right: -285 }}
               />
               <Text style={styles.header}>Welcome Back!</Text>
               <Text style={styles.sub}>Log in to your account</Text>
