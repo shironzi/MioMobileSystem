@@ -1,172 +1,131 @@
-import React, { memo, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Calendar, LocaleConfig, DateData } from "react-native-calendars";
-import CalendarCard from "@/components/CalendarCard";
-import { MarkedDates } from "react-native-calendars/src/types";
+import React, { useState } from "react";
+import { Dimensions, StyleSheet } from "react-native";
+import { Agenda } from "react-native-calendars";
+import moment from "moment";
 import HeaderConfig from "@/components/HeaderConfig";
 
-LocaleConfig.locales["fr"] = {
-  monthNames: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ],
-  monthNamesShort: [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "June",
-    "July",
-    "Aug",
-    "Sept",
-    "Oct",
-    "Nov",
-    "Dec",
-  ],
-  dayNames: [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ],
-  dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-  today: "Today",
-};
-LocaleConfig.defaultLocale = "fr";
+const screenWidth = Dimensions.get("window").width;
 
-const CalendarScreen = () => {
-  const [selected, setSelected] = useState("");
-
+const CalendarScreen: React.FC = () => {
   HeaderConfig("Calendar");
 
-  const markedDates: MarkedDates = selected
-    ? {
-        [selected]: {
-          selected: true,
-          selectedColor: "#FFBF18",
-          selectedTextColor: "#fff",
-          dots: [
-            {
-              key: "dot1",
-              color: "#2264DC",
-              selectedDotColor: "#2264DC",
-            },
-          ],
-        },
-      }
-    : {};
+  const today = moment().format("YYYY-MM-DD");
 
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Calendar
-          style={styles.calendar}
-          markingType="multi-dot"
-          markedDates={markedDates}
-          enableSwipeMonths={true}
-          theme={{
-            backgroundColor: "#f5f5f5",
-            calendarBackground: "#f5f5f5",
-            textSectionTitleColor: "#b6c1cd",
-            selectedDayBackgroundColor: "#FFBF18",
-            selectedDayTextColor: "#000",
-            todayTextColor: "#FFBF18",
-            dayTextColor: "#2d4150",
-            textDisabledColor: "#d9e1e8",
-            dotColor: "#2264DC",
-            selectedDotColor: "#ffffff",
-            arrowColor: "#2264DC",
-            monthTextColor: "#2264DC",
-            indicatorColor: "#2264DC",
-            textDayFontWeight: "300",
-            textMonthFontWeight: "bold",
-            textDayHeaderFontWeight: "300",
-            textDayFontSize: 16,
-            textMonthFontSize: 18,
-            textDayHeaderFontSize: 14,
-          }}
-          onDayPress={(day: DateData) => {
-            setSelected(day.dateString);
-          }}
-        />
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {selected && (
-            <>
-              <CalendarCard
-                title="Speech Development"
-                sub="Picture Flashcards"
-                date={selected}
-                time="10:00 AM"
-                type="Submitted"
-              />
-              <CalendarCard
-                title="Speech Development"
-                sub="Picture Flashcards"
-                date={selected}
-                time="10:00 AM"
-                type="Submitted"
-              />
-              <CalendarCard
-                title="Speech Development"
-                sub="Picture Flashcards"
-                date={selected}
-                time="10:00 AM"
-                type="Submitted"
-              />
-              <CalendarCard
-                title="Speech Development"
-                sub="Picture Flashcards"
-                date={selected}
-                time="10:00 AM"
-                type="Submitted"
-              />
-              <CalendarCard
-                title="Speech Development"
-                sub="Picture Flashcards"
-                date={selected}
-                time="10:00 AM"
-                type="Submitted"
-              />
-            </>
-          )}
-        </ScrollView>
-      </View>
-    </ScrollView>
-  );
+  const [items] = useState<{
+    [date: string]: {
+      id: string;
+      title: string;
+      time: string;
+      submitted: boolean;
+    }[];
+  }>({
+    [today]: [
+      {
+        id: "1",
+        title: "Picture Flashcards",
+        time: "09:00 AM",
+        submitted: true,
+      },
+      {
+        id: "2",
+        title: "Picture Flashcards",
+        time: "10:00 AM",
+        submitted: false,
+      },
+      {
+        id: "3",
+        title: "Picture Flashcards",
+        time: "11:00 AM",
+        submitted: false,
+      },
+    ],
+  });
+
+  const [selected, setSelected] = useState<string>(today);
+
+  return <Agenda items={items} selected={selected} />;
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 10,
+  dayCell: {
+    width: screenWidth / 7,
+    alignItems: "center",
+    paddingVertical: 8,
   },
-  calendar: {
-    margin: 5,
-    marginBottom: 10,
-    backgroundColor: "#f5f5f5",
-    paddingBottom:10,
-
-
+  dayName: {
+    fontSize: 10,
+    color: "#9B9B9B",
   },
-  scrollContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 70,
+  dayNameSelected: {
+    color: "#4A90E2",
+    fontWeight: "600",
+  },
+  dayNumberContainer: {
+    marginTop: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dayNumberContainerSelected: {
+    backgroundColor: "#4A90E2",
+  },
+  dayNumber: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "600",
+  },
+  dayNumberSelected: {
+    color: "#fff",
+  },
+  dot: {
+    marginTop: 2,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#4A90E2",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    padding: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#333",
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    marginTop: 4,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  dueText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  submitted: {
+    color: "#28A745",
+  },
+  notSubmitted: {
+    color: "#DC3545",
   },
 });
 
-export default memo(CalendarScreen);
+export default CalendarScreen;
