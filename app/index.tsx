@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
+import login from "./api/login";
 
 const Index = () => {
   const router = useRouter();
@@ -17,6 +18,19 @@ const Index = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
+  const [isConnected, setIsConnected] = useState(true);
+
+  const handleLogin = async () => {
+    try {
+      const response = await login(username, password);
+      console.log("Login successful:", response);
+
+      router.push("/(drawer)");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -80,12 +94,7 @@ const Index = () => {
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() =>
-                  router.push({ pathname: "/auth", params: { from: "login" } })
-                }
-              >
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text
                   style={{
                     textAlign: "center",
