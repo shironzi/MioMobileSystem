@@ -9,12 +9,24 @@ import globalStyle from "@/styles/globalStyle";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { useCallback } from "react";
 import { StackActions } from "@react-navigation/native";
+import { logout } from "../api/auth";
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
 }
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const navigation = useNavigation();
+
+  const handleLogout = useCallback(async () => {
+    try {
+      const response = await logout();
+      console.log("Logout successful:", response);
+      rootNav?.dispatch(StackActions.replace("index"));
+      props.navigation.closeDrawer();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -77,10 +89,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       <DrawerItem
         label="Logout"
         labelStyle={styles.drawerItemLabel}
-        onPress={() => {
-          rootNav?.dispatch(StackActions.replace("index"));
-          props.navigation.closeDrawer();
-        }}
+        onPress={handleLogout}
         icon={() => <AntDesign name="logout" size={30} color="white" />}
         style={styles.drawerItem}
       />

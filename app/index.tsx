@@ -10,12 +10,12 @@ import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
-import login from "./api/login";
+import login from "./api/auth";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -23,7 +23,7 @@ const Index = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await login(username, password);
+      const response = await login(email, password);
       console.log("Login successful:", response);
 
       router.push("/(drawer)");
@@ -56,9 +56,9 @@ const Index = () => {
               <View style={styles.inputContainer}>
                 <MaterialIcons name="person" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Username"
-                  value={username}
-                  onChangeText={setUsername}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
                   style={{ width: "100%" }}
                 />
               </View>
