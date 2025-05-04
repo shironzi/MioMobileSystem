@@ -1,22 +1,15 @@
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import React, { useState, memo } from "react";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image,} from "react-native";
+import React, { useState, memo, useCallback } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { CheckBox } from "@rneui/themed";
 
-const Index = () => {
+const email = ("202210920@fit.edu.ph");
+
+const forgotPass = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -32,69 +25,47 @@ const Index = () => {
             <View>
               <Image
                 source={require("@/assets/logo.png")}
-                style={{ width: 100, height: 130, top: 70, right: -285 }}
+                style={{ width: 100, height: 130, top: 70, right: -265 }}
               />
               <Text style={styles.header}>Welcome Back!</Text>
               <Text style={styles.sub}>Log in to your account</Text>
             </View>
+            <View style={styles.row}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <MaterialIcons name="arrow-back" size={20}/>
+                </TouchableOpacity>
+                <Text style={{left:20, color:"#666"}}>{email}</Text>
+            </View>
+            <Text style={{left:20, fontSize:16, fontWeight:"500", marginBottom:5}}>Change Password</Text>
+            <Text style={{left:20, fontSize:14, marginBottom:15}}>Enter your new password</Text>
 
             <View style={{ rowGap: 14 }}>
               <View style={styles.inputContainer}>
-                <MaterialIcons name="person" size={24} color="#808080" />
+                <MaterialIcons name="lock" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Username"
-                  value={username}
-                  onChangeText={setUsername}
-                  style={{ width: "100%" }}
+                  placeholder="New Password"
+                  secureTextEntry={true}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
                 />
               </View>
               <View style={styles.inputContainer}>
                 <MaterialIcons name="lock" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Password"
+                  placeholder="Re-type Password"
                   secureTextEntry={true}
-                  value={password}
-                  onChangeText={setPassword}
-                  style={{ width: "100%" }}
+                  value={retypePassword}
+                  onChangeText={setRetypePassword}
                 />
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.checkboxContainer}>
-                  <CheckBox
-                    size={20}
-                    checked={rememberMe}
-                    onPress={() => setRememberMe(!rememberMe)}
-                    containerStyle={styles.checkbox}
-                  />
-                  <Text>Remember me</Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push({
-                      pathname: "/auth",
-                      params: { from: "forgot" },
-                    })
-                  }
-                >
-                  <Text style={styles.forgotText}>Forgot Password?</Text>
-                </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() =>
-                  router.push({ pathname: "/auth", params: { from: "login" } })
-                }
+                onPress={() => router.back()}
               >
                 <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#fff",
-                    fontSize: 18,
-                    fontWeight: "bold",
-                  }}
+                  style={{ textAlign: "center", color: "#fff", fontSize: 18, fontWeight:"bold" }}
                 >
-                  Login
+                  Confirm
                 </Text>
               </TouchableOpacity>
             </View>
@@ -122,7 +93,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: 0,
-    width: "100%",
+    width: "100%"
   },
   container: {
     padding: 60,
@@ -145,21 +116,10 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     margin: 15,
-  },
-  checkboxContainer: {
-    left: -5,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 0,
-  },
-  checkbox: {
-    padding: 0,
-    margin: 0,
-    marginRight: 5,
-    backgroundColor: "#fff",
+    marginTop:-20,
+    marginBottom:20,
   },
   forgotText: {
     textDecorationLine: "underline",
@@ -170,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffbf18",
     borderRadius: 40,
     margin: 15,
-    marginTop: 0,
+    marginTop: 30,
     padding: 15,
   },
   header: {
@@ -185,11 +145,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontSize: 15,
     marginTop: -10,
-    marginBottom: 50,
+    marginBottom: 45,
+    color:"#1f1f1f"
   },
   upper: {
     backgroundColor: "#2264dc",
   },
 });
 
-export default memo(Index);
+export default memo(forgotPass);
