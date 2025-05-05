@@ -1,6 +1,6 @@
 export default async function login(email, password) {
     try {
-      const response = await fetch("http://192.168.254.169:8000/api/user-login", {
+      const response = await fetch("http://192.168.254.171:8000/api/user-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export default async function login(email, password) {
 
   export async function logout() {
     try {
-      const response = await fetch("http://192.168.254.169:8000/api/logout", {
+      const response = await fetch("http://192.168.254.171:8000/api/logout", {
         method: "POST",
       });
   
