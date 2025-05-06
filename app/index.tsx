@@ -21,16 +21,16 @@ const Index = () => {
 
   const [isConnected, setIsConnected] = useState(true);
 
-  const handleLogin = async () => {
-    try {
-      const response = await login(email, password);
-      console.log("Login successful:", response);
+  // const handleLogin = async () => {
+  //   try {
+  //     const response = await login(email, password);
+  //     console.log("Login successful:", response);
 
-      router.push("/(drawer)");
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
-  };
+  //     router.push("/(drawer)");
+  //   } catch (error) {
+  //     console.error("Login failed:", error);
+  //   }
+  // };
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -94,7 +94,8 @@ const Index = () => {
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <TouchableOpacity style={styles.button} onPress={()=>router.push("(drawer)")}>
+                {/*  onPress={handleLogin} */}
                 <Text
                   style={{
                     textAlign: "center",
