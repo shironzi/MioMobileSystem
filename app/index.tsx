@@ -6,17 +6,31 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
+import login from "./api/auth";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
+  const [isConnected, setIsConnected] = useState(true);
+
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password);
+      console.log("Login successful:", response);
+
+      router.push("/(drawer)");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -42,9 +56,9 @@ const Index = () => {
               <View style={styles.inputContainer}>
                 <MaterialIcons name="person" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Username"
-                  value={username}
-                  onChangeText={setUsername}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
                   style={{ width: "100%" }}
                 />
               </View>
@@ -80,12 +94,7 @@ const Index = () => {
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() =>
-                  router.push({ pathname: "/auth", params: { from: "login" } })
-                }
-              >
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text
                   style={{
                     textAlign: "center",
