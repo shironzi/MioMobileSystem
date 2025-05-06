@@ -6,9 +6,9 @@ import HeaderConfig from "@/components/HeaderConfig";
 
 const screenWidth = Dimensions.get("window").width;
 
+
 const CalendarScreen: React.FC = () => {
   HeaderConfig("Calendar");
-
   const today = moment().format("YYYY-MM-DD");
 
   const [items] = useState<{
