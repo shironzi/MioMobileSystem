@@ -32,28 +32,26 @@ const Index = () => {
   // };
 
   const handleLogin = async () => {
-    if(validator.isEmail(email)){
-      console.log("login");
-      setIsEmailValid(true)
-    }else{
-      console.log("email is Invalid")
-      setIsEmailValid(false);
-    }
 
-    // try {
-    //   const responseStatus = await login(email, password);
-    //   console.log(responseStatus);
-    //
-    //   if(responseStatus === 200){
-    //     router.push("/(drawer)");
-    //   }else if(responseStatus === 401){
-    //     console.log("invalid Credentials")
-    //     setIsCredentialsValid(false);
-    //   }
-    //
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    // }
+    try {
+
+      if(validator.isEmail(email)){
+        setIsEmailValid(true)
+        const responseStatus = await login(email, password);
+        if(responseStatus === 200){
+          router.push("/(drawer)");
+        }else if(responseStatus === 401){
+          console.log("invalid Credentials")
+          setIsCredentialsValid(false);
+        }
+      }else{
+        console.log("email is Invalid")
+        setIsEmailValid(false);
+      }
+
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   useFocusEffect(() => {
