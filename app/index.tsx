@@ -13,13 +13,13 @@ import { CheckBox } from "@rneui/themed";
 import validator from 'validator';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import login from "./api/auth";
+import login from "@/utils/auth";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("aaronbaon1@gmail.com");
+  const [password, setPassword] = useState("2003-07-10");
   const [rememberMe, setRememberMe] = useState(false);
   const [isCredentialsValid, setIsCredentialsValid] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);

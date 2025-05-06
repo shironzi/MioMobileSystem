@@ -1,4 +1,5 @@
-import validation from "validator"
+import * as SecureStore from 'expo-secure-store';
+import {getItemAsync} from "expo-secure-store";
 
 export default async function login(email, password) {
     try {
@@ -10,6 +11,18 @@ export default async function login(email, password) {
         },
         body: JSON.stringify({email: email, password: password }),
       });
+
+      const userData = await  response.json();
+
+      const sessionData = {
+        sessionId: userData.session_id,
+        userId: userData.user.uid,
+        role: userData.user.role,
+        email: userData.user.email,
+        name: userData.user.name,
+      };
+
+      await SecureStore.setItemAsync('sessionData', JSON.stringify(sessionData));
 
       return response.status;
     } catch (error) {
