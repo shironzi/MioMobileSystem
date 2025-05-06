@@ -11,6 +11,7 @@ import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
 import validator from 'validator';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import login from "./api/auth";
 
@@ -22,14 +23,12 @@ const Index = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isCredentialsValid, setIsCredentialsValid] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  // const handleEmailValidation = (value: string) => {
-  //   if (validator.isEmail(value)) {
-  //     setIsEmailValid(false);
-  //   } else {
-  //     setEmail(value)
-  //   }
-  // };
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const handleLogin = async () => {
 
@@ -41,11 +40,13 @@ const Index = () => {
         if(responseStatus === 200){
           router.push("/(drawer)");
         }else if(responseStatus === 401){
-          console.log("invalid Credentials")
+          setErrorMessage("Invalid Credentials")
+          setPassword("")
           setIsCredentialsValid(false);
         }
+
       }else{
-        console.log("email is Invalid")
+        setErrorMessage("Invalid Email Address")
         setIsEmailValid(false);
       }
 
@@ -72,7 +73,7 @@ const Index = () => {
               />
               <Text style={styles.header}>Welcome Back!</Text>
               <Text style={styles.sub}>Log in to your account</Text>
-              <Text style={isEmailValid ? {opacity: 0} : {opacity: 100} }>Invalid Email Address</Text>
+              <Text style={isEmailValid && isCredentialsValid ? {opacity: 0} : {opacity: 100} }>{errorMessage}</Text>
             </View>
 
             <View style={{ rowGap: 14 }}>
@@ -93,11 +94,18 @@ const Index = () => {
                 <MaterialIcons name="lock" size={24} color="#808080" />
                 <TextInput
                   placeholder="Password"
-                  secureTextEntry={true}
+                  secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
-                  style={{ width: "100%" }}
+                  style={{ width: "77%" }}
                 />
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  {isPasswordVisible ? (
+                      <Ionicons name="eye" size={24} color="#808080" />
+                  ) : (
+                      <Ionicons name="eye-off" size={24} color="#808080" />
+                  )}
+                </TouchableOpacity>
               </View>
 
               <View style={styles.row}>
