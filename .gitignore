@@ -39,3 +39,11 @@ yarn-error.*
 .expo
 dist/
 web-build/
+
+# ide
+.idea
+.vscode
+
+#emulator
+.android
+.ios
