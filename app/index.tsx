@@ -10,6 +10,8 @@ import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
+import validator from 'validator';
+
 import login from "./api/auth";
 
 const Index = () => {
@@ -18,18 +20,40 @@ const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isCredentialsValid, setIsCredentialsValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
 
-  const [isConnected, setIsConnected] = useState(true);
+  // const handleEmailValidation = (value: string) => {
+  //   if (validator.isEmail(value)) {
+  //     setIsEmailValid(false);
+  //   } else {
+  //     setEmail(value)
+  //   }
+  // };
 
   const handleLogin = async () => {
-    try {
-      const response = await login(email, password);
-      console.log("Login successful:", response);
-
-      router.push("/(drawer)");
-    } catch (error) {
-      console.error("Login failed:", error);
+    if(validator.isEmail(email)){
+      console.log("login");
+      setIsEmailValid(true)
+    }else{
+      console.log("email is Invalid")
+      setIsEmailValid(false);
     }
+
+    // try {
+    //   const responseStatus = await login(email, password);
+    //   console.log(responseStatus);
+    //
+    //   if(responseStatus === 200){
+    //     router.push("/(drawer)");
+    //   }else if(responseStatus === 401){
+    //     console.log("invalid Credentials")
+    //     setIsCredentialsValid(false);
+    //   }
+    //
+    // } catch (error) {
+    //   console.error("Login failed:", error);
+    // }
   };
 
   useFocusEffect(() => {
@@ -50,19 +74,24 @@ const Index = () => {
               />
               <Text style={styles.header}>Welcome Back!</Text>
               <Text style={styles.sub}>Log in to your account</Text>
+              <Text style={isEmailValid ? {opacity: 0} : {opacity: 100} }>Invalid Email Address</Text>
             </View>
 
             <View style={{ rowGap: 14 }}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, isCredentialsValid && isEmailValid ?  {borderColor: "transparent"} : {borderColor: "#FF0000"}]}>
                 <MaterialIcons name="person" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  style={{ width: "100%" }}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={(value) => {
+                      setEmail(value)
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={{ width: "100%" }}
                 />
               </View>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, isCredentialsValid ?  {borderColor: "transparent"} : {borderColor: "#FF0000"}]}>
                 <MaterialIcons name="lock" size={24} color="#808080" />
                 <TextInput
                   placeholder="Password"
@@ -151,6 +180,7 @@ const styles = StyleSheet.create({
     margin: 15,
     borderRadius: 20,
     elevation: 2,
+    borderWidth: 1
   },
   row: {
     flexDirection: "row",

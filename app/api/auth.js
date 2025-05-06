@@ -1,20 +1,22 @@
+import validation from "validator"
+
 export default async function login(email, password) {
     try {
-      const response = await fetch("http://192.168.254.171:8000/api/user-login", {
+      const response = await fetch("http://192.168.254.169:8001/api/user-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({email: email, password: password }),
       });
   
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
-      const data = await response.json();
-      return data;
+      console.log(response.json())
+
+      return response.status;
     } catch (error) {
       console.error("Error during login:", error);
       throw error;
@@ -23,15 +25,14 @@ export default async function login(email, password) {
 
   export async function logout() {
     try {
-      const response = await fetch("http://192.168.254.171:8000/api/logout", {
+      const response = await fetch("http://192.168.254.169:8001/api/logout", {
         method: "POST",
       });
   
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
-      const data = await response.json();
+      const data = response.json()
       return data;
     } catch (error) {
       console.error("Error during login:", error);
