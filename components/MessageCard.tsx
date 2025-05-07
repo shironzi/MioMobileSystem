@@ -26,11 +26,7 @@ const MessageCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        props.type.toLowerCase() === "message"
-          ? router.navigate("/(notification)/messageDetails")
-          : router.navigate("/(notification)/notificationDetails")
-      }
+      onPress={() => router.push("messageDetails") }
     >
       <Card
         containerStyle={{
@@ -46,14 +42,14 @@ const MessageCard = (props: {
             alignItems: "center",
             overflow: "hidden",
             height: 80,
-            marginTop: 10,
+            marginTop: 15,
           }}
         >
           <MaterialIcons
             name="account-circle"
             size={45}
             color="black"
-            style={{ paddingHorizontal: 20 }}
+            style={{ paddingHorizontal: 20, top:-5 }}
           />
           <View>
             <View
@@ -66,7 +62,7 @@ const MessageCard = (props: {
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                 {props.title}
               </Text>
-              <Text style={{ fontSize: 12, marginTop: 5 }}>
+              <Text style={{ fontSize: 12, marginTop: 5, marginRight:15}}>
                 {formatDate(props.date)}
               </Text>
             </View>

@@ -1,7 +1,9 @@
-import { ScrollView, View, StyleSheet, Text } from "react-native";
+import { ScrollView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { memo, useState } from "react";
 import MessageCard from "@/components/MessageCard";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
 
 enum messageType {
   inbox = "Inbox",
@@ -59,6 +61,7 @@ const Inbox = () => {
   const [selectedType, setSelectedType] = useState<messageType>(
     messageType.inbox
   );
+  const router = useRouter();
 
   return (
     <View>
@@ -95,6 +98,12 @@ const Inbox = () => {
           ) : null
         )}
       </ScrollView>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push("addMessage")}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
     </View>
   );
 };
@@ -122,6 +131,19 @@ const styles = StyleSheet.create({
   messageCard: {
     backgroundColor: "black",
   },
+  addButton: {
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: -320,
+    right: 20,
+    elevation: 5,
+  },
+
 });
 
 export default memo(Inbox);
