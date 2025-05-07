@@ -1,131 +1,227 @@
-import React, { useState } from "react";
-import { Dimensions, StyleSheet } from "react-native";
-import { Agenda } from "react-native-calendars";
-import moment from "moment";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState, useCallback, useMemo, memo } from "react";
 import HeaderConfig from "@/components/HeaderConfig";
+import DropDownPicker from "react-native-dropdown-picker";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-const screenWidth = Dimensions.get("window").width;
+const formatKey = (d: Date) => d.toISOString().split("T")[0];
 
-
-const CalendarScreen: React.FC = () => {
-  HeaderConfig("Calendar");
-  const today = moment().format("YYYY-MM-DD");
-
-  const [items] = useState<{
-    [date: string]: {
-      id: string;
-      title: string;
-      time: string;
-      submitted: boolean;
-    }[];
-  }>({
-    [today]: [
-      {
-        id: "1",
-        title: "Picture Flashcards",
-        time: "09:00 AM",
-        submitted: true,
-      },
-      {
-        id: "2",
-        title: "Picture Flashcards",
-        time: "10:00 AM",
-        submitted: false,
-      },
-      {
-        id: "3",
-        title: "Picture Flashcards",
-        time: "11:00 AM",
-        submitted: false,
-      },
-    ],
-  });
-
-  const [selected, setSelected] = useState<string>(today);
-
-  return <Agenda items={items} selected={selected} />;
+const data = {
+  [formatKey(new Date("2025-05-08T10:00:00"))]: {
+    1: {
+      courseType: "Math",
+      title: "Algebra Practice",
+      dueDate: new Date("2025-05-08T10:00:00"),
+      isSubmitted: true,
+    },
+    2: {
+      courseType: "Science",
+      title: "Physics Experiment",
+      dueDate: new Date("2025-05-09T14:00:00"),
+      isSubmitted: false,
+    },
+  },
+  [formatKey(new Date("2025-05-09T12:00:00"))]: {
+    1: {
+      courseType: "History",
+      title: "World War II Essay",
+      dueDate: new Date("2025-05-09T12:00:00"),
+      isSubmitted: false,
+    },
+  },
+  [formatKey(new Date("2025-05-10T16:00:00"))]: {
+    1: {
+      courseType: "Art",
+      title: "Sketching Assignment",
+      dueDate: new Date("2025-05-10T16:00:00"),
+      isSubmitted: true,
+    },
+    2: {
+      courseType: "Physical Education",
+      title: "Fitness Test",
+      dueDate: new Date("2025-05-10T09:00:00"),
+      isSubmitted: false,
+    },
+  },
+  [formatKey(new Date("2025-05-11T18:00:00"))]: {
+    1: {
+      courseType: "Music",
+      title: "Piano Practice",
+      dueDate: new Date("2025-05-11T18:00:00"),
+      isSubmitted: false,
+    },
+  },
 };
 
-const styles = StyleSheet.create({
-  dayCell: {
-    width: screenWidth / 7,
-    alignItems: "center",
-    paddingVertical: 8,
-  },
-  dayName: {
-    fontSize: 10,
-    color: "#9B9B9B",
-  },
-  dayNameSelected: {
-    color: "#4A90E2",
-    fontWeight: "600",
-  },
-  dayNumberContainer: {
-    marginTop: 4,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayNumberContainerSelected: {
-    backgroundColor: "#4A90E2",
-  },
-  dayNumber: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "600",
-  },
-  dayNumberSelected: {
-    color: "#fff",
-  },
-  dot: {
-    marginTop: 2,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#4A90E2",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#333",
-  },
-  cardSubtitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    marginTop: 4,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 12,
-  },
-  dueText: {
-    fontSize: 12,
-    color: "#666",
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  submitted: {
-    color: "#28A745",
-  },
-  notSubmitted: {
-    color: "#DC3545",
-  },
-});
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-export default CalendarScreen;
+const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const Calendar = () => {
+  HeaderConfig("Calendar");
+
+  const today = useMemo(() => new Date(), []);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(months[today.getMonth()]);
+  const [items] = useState(months.map((m) => ({ label: m, value: m })));
+  const [selectedDate, setSelectedDate] = useState(today);
+
+  const calculateWeekDates = useCallback((centerDate: Date) => {
+    const result: Date[] = [];
+    const startOfWeek = new Date(centerDate);
+    startOfWeek.setDate(centerDate.getDate() - 3);
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      result.push(date);
+    }
+
+    return result;
+  }, []);
+
+  const [weekDates, setWeekDates] = useState(calculateWeekDates(selectedDate));
+
+  const handleSelectedDay = useCallback(
+    (index: number) => {
+      const newDate = new Date(weekDates[index]);
+
+      setSelectedDate(newDate);
+      setWeekDates(calculateWeekDates(newDate));
+    },
+    [weekDates, calculateWeekDates]
+  );
+
+  const handleMonthChange = useCallback(() => {
+    const newDate = new Date(
+      selectedDate.setFullYear(
+        selectedDate.getFullYear(),
+        months.indexOf(value),
+        selectedDate.getDate()
+      )
+    );
+
+    setSelectedDate(newDate);
+    setWeekDates(calculateWeekDates(newDate));
+  }, [selectedDate]);
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>2025</Text>
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        onChangeValue={handleMonthChange}
+        placeholder={value}
+        style={{ width: "35%", borderWidth: 0, backgroundColor: "transparent" }}
+      />
+
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        {weekDates.map((date, index) => {
+          const isSelected =
+            date.getDate() === selectedDate.getDate() &&
+            date.getMonth() === selectedDate.getMonth() &&
+            date.getFullYear() === selectedDate.getFullYear();
+
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleSelectedDay(index)}
+              style={[
+                {
+                  flexDirection: "column",
+                  alignItems: "center",
+                  rowGap: 10,
+                  width: "12%",
+                  paddingVertical: 15,
+                },
+                isSelected
+                  ? {
+                      backgroundColor: "#FFBF18",
+                      borderRadius: 50,
+                    }
+                  : {},
+              ]}
+            >
+              <Text style={isSelected ? { color: "#fff" } : {}}>
+                {weekDays[date.getDay()]}
+              </Text>
+              <Text style={isSelected ? { color: "#fff" } : {}}>
+                {date.getDate()}
+              </Text>
+              {isSelected ? (
+                <Text
+                  style={{
+                    backgroundColor: "#2264DC",
+                    borderRadius: 180,
+                    width: 12,
+                    height: 12,
+                  }}
+                ></Text>
+              ) : null}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      {Object.keys(data).includes(selectedDate.toISOString().split("T")[0]) ? (
+        Object.entries(data[selectedDate.toISOString().split("T")[0]]).map(
+          ([taskId, task]) => (
+            <View
+              key={taskId}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 10,
+              }}
+            >
+              <View style={{ width: "20%", justifyContent: "center" }}>
+                <FontAwesome name="picture-o" size={43} color="#FFBF18" />
+              </View>
+              <View style={{ flexDirection: "column" }}>
+                <Text style={{ color: "#1F1F1F", fontSize: 14 }}>
+                  {task.courseType}
+                </Text>
+                <Text style={{ color: "#000", fontSize: 18 }}>
+                  {task.title}
+                </Text>
+                <Text style={{ color: "#1F1F1F", fontSize: 12 }}>
+                  {task.dueDate.toLocaleString()}
+                </Text>
+                <Text
+                  style={[
+                    { color: "#1F1F1F", fontSize: 14 },
+                    task.isSubmitted
+                      ? { color: "#FFBF18" }
+                      : { color: "#1F1F1F" },
+                  ]}
+                >
+                  {task.isSubmitted ? "Submitted" : "Not Submitted"}
+                </Text>
+              </View>
+            </View>
+          )
+        )
+      ) : (
+        <Text>No available activity</Text>
+      )}
+    </View>
+  );
+};
+
+export default memo(Calendar);

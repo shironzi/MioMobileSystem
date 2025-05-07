@@ -10,27 +10,50 @@ import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
-import login from "./api/auth";
+import validator from 'validator';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+import login from "@/utils/auth";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("aaronbaon1@gmail.com");
+  const [password, setPassword] = useState("2003-07-10");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isCredentialsValid, setIsCredentialsValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const [isConnected, setIsConnected] = useState(true);
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await login(email, password);
-  //     console.log("Login successful:", response);
+  const handleLogin = async () => {
 
-  //     router.push("/(drawer)");
-  //   } catch (error) {
-  //     console.error("Login failed:", error);
-  //   }
-  // };
+    try {
+
+      if(validator.isEmail(email)){
+        setIsEmailValid(true)
+        const responseStatus = await login(email, password);
+        if(responseStatus === 200){
+          router.push("/(drawer)");
+        }else if(responseStatus === 401){
+          setErrorMessage("Invalid Credentials")
+          setPassword("")
+          setIsCredentialsValid(false);
+        }
+
+      }else{
+        setErrorMessage("Invalid Email Address")
+        setIsEmailValid(false);
+      }
+
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -50,27 +73,39 @@ const Index = () => {
               />
               <Text style={styles.header}>Welcome Back!</Text>
               <Text style={styles.sub}>Log in to your account</Text>
+              <Text style={isEmailValid && isCredentialsValid ? {opacity: 0} : {opacity: 100} }>{errorMessage}</Text>
             </View>
 
             <View style={{ rowGap: 14 }}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, isCredentialsValid && isEmailValid ?  {borderColor: "transparent"} : {borderColor: "#FF0000"}]}>
                 <MaterialIcons name="person" size={24} color="#808080" />
                 <TextInput
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  style={{ width: "100%" }}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={(value) => {
+                      setEmail(value)
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={{ width: "100%" }}
                 />
               </View>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, isCredentialsValid ?  {borderColor: "transparent"} : {borderColor: "#FF0000"}]}>
                 <MaterialIcons name="lock" size={24} color="#808080" />
                 <TextInput
                   placeholder="Password"
-                  secureTextEntry={true}
+                  secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
-                  style={{ width: "100%" }}
+                  style={{ width: "77%" }}
                 />
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  {isPasswordVisible ? (
+                      <Ionicons name="eye" size={24} color="#808080" />
+                  ) : (
+                      <Ionicons name="eye-off" size={24} color="#808080" />
+                  )}
+                </TouchableOpacity>
               </View>
 
               <View style={styles.row}>
@@ -94,8 +129,7 @@ const Index = () => {
                   <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.button} onPress={()=>router.push("(drawer)")}>
-                {/*  onPress={handleLogin} */}
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text
                   style={{
                     textAlign: "center",
@@ -152,6 +186,7 @@ const styles = StyleSheet.create({
     margin: 15,
     borderRadius: 20,
     elevation: 2,
+    borderWidth: 1
   },
   row: {
     flexDirection: "row",

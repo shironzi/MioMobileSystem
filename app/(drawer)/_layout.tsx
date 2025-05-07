@@ -7,15 +7,34 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import globalStyle from "@/styles/globalStyle";
 import { useFocusEffect, useNavigation } from "expo-router";
-import { useCallback } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { StackActions } from "@react-navigation/native";
-import { logout } from "../api/auth";
+import * as SecureStore from 'expo-secure-store';
+
+import { logout } from "@/utils/auth";
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
 }
 
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const navigation = useNavigation();
+
+  const [userData, setUserData] = useState({
+      id: null,
+      name: null,
+  })
+
+    useEffect(() => {
+        const getUserData = async () => {
+            const storedSessionData = await SecureStore.getItemAsync('sessionData')
+
+            if(storedSessionData){
+                const data = await JSON.parse(storedSessionData)
+                setUserData({ name: data.name, id: data.userId})
+            }
+        }
+        getUserData();
+    }, []);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -49,8 +68,8 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
           style={styles.profileImage}
         />
         <View>
-          <Text style={styles.userName}>Ava Samantha Arce</Text>
-          <Text style={styles.userId}>SI0001</Text>
+          <Text style={styles.userName}>{userData.name}</Text>
+          <Text style={styles.userId}>{userData.id}</Text>
         </View>
       </View>
 
