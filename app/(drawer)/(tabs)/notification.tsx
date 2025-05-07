@@ -124,25 +124,9 @@ const Notification = () => {
               key={item.id}
               title={item.title}
               desc={item.desc}
+              time={item.time}
               type={item.type}
-              onSwipeStart={() => {
-                if (
-                  openSwipeableRef.current !== item.id &&
-                  openSwipeableRef.current !== null
-                ) {
-                  const prevItemIndex = notifications.findIndex(
-                    (n) => n.id === openSwipeableRef.current
-                  );
-                  if (prevItemIndex !== -1) {
-                    setNotifications([...notifications]);
-                  }
-                }
-                openSwipeableRef.current = item.id;
-              }}
-              onDismiss={() => {
-                console.log("removing: " + item.title);
-                deleteNotification(item.id);
-              }}
+              handleDelete={() => deleteNotification(item.id)}
             />
           );
         }}
