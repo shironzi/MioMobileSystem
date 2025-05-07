@@ -26,11 +26,7 @@ const MessageCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        props.type.toLowerCase() === "message"
-          ? router.navigate("/(notification)/messageDetails")
-          : router.navigate("/(notification)/notificationDetails")
-      }
+      onPress={() => router.push("messageDetails") }
     >
       <Card
         containerStyle={{
