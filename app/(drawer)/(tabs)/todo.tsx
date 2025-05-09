@@ -135,7 +135,7 @@ const Todo = () => {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("addMessage")}
+        onPress={() => router.push("addTodo")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>
