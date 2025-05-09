@@ -31,9 +31,9 @@ const modules = () => {
  
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <View style={styles.container}>
+        <View style={styles.content}>
           {data.map((item) => (
             <ModuleCard key={item.id} title={item.title} />
           ))}
@@ -54,21 +54,24 @@ const modules = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1
+  },
+  content: {
     padding: 2,
   },
   headerStyle: {
     backgroundColor: "#2264DC",
   },
   addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
     backgroundColor: "#2264DC",
     height: 60,
     width: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: -370,
-    right: 20,
     elevation: 5,
   },
 });

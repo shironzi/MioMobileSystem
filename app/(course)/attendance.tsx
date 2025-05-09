@@ -21,9 +21,9 @@ const attendanceDetails = () => {
   const router = useRouter();
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <View style={styles.container}>
+        <View style={styles.content}>
           {data.map((item) => (
             <AttendanceCard key={item.id} item={item} />
           ))}
@@ -41,18 +41,21 @@ const attendanceDetails = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1
+  },
+  content: {
     padding: 2,
   },
   addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
     backgroundColor: "#2264DC",
     height: 60,
     width: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: -550,
-    right: 20,
     elevation: 5,
   },
 });

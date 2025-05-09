@@ -25,47 +25,46 @@ const announcements = () => {
   const router = useRouter();
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-      <View style={styles.container}>
-      {data.map((item) => (
-        <AnnounceCard
-          key={item.id}
-          title={item.title}
-          date={item.date}
-          time={item.time}
-        />
-      ))}
-    </View>
-
-    </ScrollView>
-    <TouchableOpacity
+        <View style={styles.content}>
+          {data.map((item) => (
+            <AnnounceCard
+              key={item.id}
+              title={item.title}
+              date={item.date}
+              time={item.time}
+            />
+          ))}
+        </View>
+      </ScrollView>
+      <TouchableOpacity
         style={styles.addButton}
         onPress={() => router.push("addAnnouncement")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
-    </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
     padding: 2,
   },
-  headerStyle: {
-    backgroundColor: "#2264DC",
-  },
   addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
     backgroundColor: "#2264DC",
     height: 60,
     width: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: -530,
-    right: 20,
     elevation: 5,
   },
 });
