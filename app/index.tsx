@@ -12,7 +12,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CheckBox } from "@rneui/themed";
 import validator from 'validator';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
 import login from "@/utils/auth";
 
 const Index = () => {

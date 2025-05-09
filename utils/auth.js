@@ -1,5 +1,4 @@
 import * as SecureStore from 'expo-secure-store';
-import {getItemAsync} from "expo-secure-store";
 
 export default async function login(email, password) {
     try {
@@ -31,19 +30,26 @@ export default async function login(email, password) {
     }
   }
 
-  export async function logout() {
-    try {
-      const response = await fetch("http://192.168.254.169:8001/api/logout", {
-        method: "POST",
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = response.json()
-      return data;
-    } catch (error) {
-      console.error("Error during login:", error);
-      throw error;
+export async function logout() {
+  try {
+    const response = await fetch("http://192.168.254.169:8001/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await SecureStore.getItemAsync("sessionData")}`
+      },
+    });
+
+    console.log(await SecureStore.getItemAsync("sessionData"))
+
+    if (!response.ok) {
+      throw new Error(`Logout failed with status ${response.status}`);
     }
+
+    await SecureStore.deleteItemAsync("sessionData");
+    return true;
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error;
   }
+}

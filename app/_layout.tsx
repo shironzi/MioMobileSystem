@@ -1,61 +1,48 @@
 import { Stack, useRouter } from "expo-router";
-import { createContext, useCallback, useContext, useState } from "react";
-
-const AuthContext = createContext({ signOut: () => {} });
-export const useAuth = () => useContext(AuthContext);
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import * as SecureStore from "expo-secure-store";
+import {Text, View} from "react-native";
 
 export default function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const signOut = useCallback(() => {
-    setIsLoggedIn(false);
-    router.replace("/index");
+  useEffect(() => {
+    async function loadSession() {
+      try {
+        const data = await SecureStore.getItemAsync("sessionData");
+        if (data) {
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        console.error("Failed to load session:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadSession();
   }, [router]);
 
-  // if (!isLoggedIn) {
-  // <Stack screenOptions={{ headerShown: false }}>
-  //   <Stack.Screen
-  //     name="index"
-  //     options={{
-  //       headerShown: false,
-  //     }}
-  //   />
-  // </Stack>;
-  // }
-
-  // return (
-  // <Stack screenOptions={{ headerShown: true }}>
-  //   <Stack.Screen
-  //     name="(drawer)"
-  //     options={{
-  //       headerShown: false,
-  //     }}
-  //   />
-  // </Stack>
-  // );
+  if (isLoading) {
+    return (
+        <View>
+          <Text>Loading</Text>
+        </View>
+    );
+  }
 
   return (
-    <AuthContext.Provider value={{ signOut }}>
-      {!isLoggedIn ? (
-        <Stack screenOptions={{ headerShown: true }}>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-      ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="(drawer)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-      )}
-    </AuthContext.Provider>
+      <Stack
+          screenOptions={{
+            headerShown: true,
+          }}
+      >
+        {isLoggedIn ? (
+            <Stack.Screen name="(drawer)" />
+        ) : (
+            <Stack.Screen name="index" />
+        )}
+      </Stack>
   );
 }
