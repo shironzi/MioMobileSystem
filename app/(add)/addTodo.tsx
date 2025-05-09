@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: "#ddd",
       zIndex: 10,
-      elevation: 5,
+      // elevation: 5,
     },
     dropdownItem: {
       paddingVertical: 10,
