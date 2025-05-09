@@ -46,7 +46,7 @@ const assignments = () => {
       </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("helpDetails")}
+        onPress={() => router.push("addAssignment")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>

@@ -41,7 +41,7 @@ const announcements = () => {
     </ScrollView>
     <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("helpDetails")}
+        onPress={() => router.push("addAnnouncement")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
     </TouchableOpacity>
