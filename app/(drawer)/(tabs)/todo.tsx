@@ -1,16 +1,9 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Modal,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { useNavigation } from "expo-router";
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import TodoCard from "@/components/todoCard";
 import { AntDesign } from "@expo/vector-icons";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
 
 enum todoType {
   academic = "academic",
@@ -66,16 +59,15 @@ const data = [
 ];
 
 const Todo = () => {
-  const [selectedCategory, setSelectedCategory] = useState<todoType | "all">(
-    "all"
-  );
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState<todoType | "all">("all");
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const filteredData = useMemo(() => {
     return selectedCategory === "all"
       ? data
       : data.filter((item) => item.category === selectedCategory);
-  }, [selectedCategory, data]);
+  }, [selectedCategory]);
 
   const handleSelect = useCallback((value: todoType | "all") => {
     setSelectedCategory(value);
@@ -83,68 +75,71 @@ const Todo = () => {
   }, []);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.dropdownHeader}
-          onPress={() => setDropdownVisible(!dropdownVisible)}
-        >
-          <Text style={styles.dropdownLabel}>
-            {selectedCategory === "all"
-              ? "All"
-              : selectedCategory === todoType.academic
-              ? "Academic"
-              : "Specialized"}
-          </Text>
-          <AntDesign
-            name={dropdownVisible ? "up" : "down"}
-            size={14}
-            color="#FFBF18"
-            style={{ marginLeft: 5, fontWeight: "bold", marginRight: 5 }}
-          />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.dropdownHeader}
+        onPress={() => setDropdownVisible(!dropdownVisible)}
+      >
+        <Text style={styles.dropdownLabel}>
+          {selectedCategory === "all"
+            ? "All"
+            : selectedCategory === todoType.academic
+            ? "Academic"
+            : "Specialized"}
+        </Text>
+        <AntDesign
+          name={dropdownVisible ? "up" : "down"}
+          size={14}
+          color="#FFBF18"
+          style={{ marginLeft: 5 , marginRight: 5, marginTop: 5}}
+        />
+      </TouchableOpacity>
 
-        <Modal transparent visible={dropdownVisible} animationType="fade">
-          <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
-            <View style={styles.modalOverlay} />
-          </TouchableWithoutFeedback>
-          <View style={styles.dropdownBox}>
-            {["all", todoType.academic, todoType.specialized].map(
-              (type, index) => (
-                <TouchableOpacity
-                  key={type}
-                  onPress={() => handleSelect(type as todoType | "all")}
-                >
-                  <View style={styles.dropdownItem}>
-                    <Text style={styles.dropdownItemText}>
-                      {type === "all"
-                        ? "All"
-                        : type === todoType.academic
-                        ? "Academic"
-                        : "Specialized"}
-                    </Text>
-                    {index < 2 && <View style={styles.divider} />}
-                  </View>
-                </TouchableOpacity>
-              )
-            )}
-          </View>
-        </Modal>
-
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {filteredData.map((item) => (
-            <TodoCard
-              key={item.id}
-              title={item.title}
-              sub={item.sub}
-              date={item.date}
-              time={item.time}
-              type={item.type}
-            />
+      <Modal transparent visible={dropdownVisible} animationType="fade">
+        <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
+        <View style={styles.dropdownBox}>
+          {["all", todoType.academic, todoType.specialized].map((type, index) => (
+            <TouchableOpacity
+              key={type}
+              onPress={() => handleSelect(type as todoType | "all")}
+            >
+              <View style={styles.dropdownItem}>
+                <Text style={styles.dropdownItemText}>
+                  {type === "all"
+                    ? "All"
+                    : type === todoType.academic
+                    ? "Academic"
+                    : "Specialized"}
+                </Text>
+                {index < 2 && <View style={styles.divider} />}
+              </View>
+            </TouchableOpacity>
           ))}
-        </ScrollView>
-      </View>
-    </ScrollView>
+        </View>
+      </Modal>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {filteredData.map((item) => (
+          <TodoCard
+            key={item.id}
+            title={item.title}
+            sub={item.sub}
+            date={item.date}
+            time={item.time}
+            type={item.type}
+          />
+        ))}
+      </ScrollView>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("addMessage")}
+      >
+        <MaterialIcon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -152,24 +147,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    margin:5
   },
   dropdownHeader: {
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-end",
-    padding: 8,
-    marginBottom: -5,
+    marginBottom: 5,
   },
   dropdownLabel: {
-    right: 10,
     fontSize: 15,
     color: "#FFBF18",
     textDecorationLine: "underline",
+    marginTop:5
   },
   modalOverlay: {
     flex: 1,
-    // backgroundColor: "transparent",
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   dropdownBox: {
@@ -196,8 +191,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   scrollContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 70,
+    paddingBottom: 80,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
 });
 
