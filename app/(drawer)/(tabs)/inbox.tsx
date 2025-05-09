@@ -1,4 +1,4 @@
-import { ScrollView, View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, StyleSheet, Text, TouchableOpacity, SafeAreaView} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import React, { memo, useState } from "react";
 import MessageCard from "@/components/MessageCard";
@@ -16,44 +16,44 @@ const data = [
   {
     id: 1,
     title: "Message",
-    date: new Date(Date.now()),
+    date: new Date(),
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
     messageType: "inbox",
   },
   {
     id: 2,
     title: "Message",
-    date: new Date(Date.now()),
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
-    messageType: "inbox",
-  },
-  {
-    id: 3,
-    title: "Message",
-    date: new Date(Date.now()),
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
-    messageType: "inbox",
-  },
-  {
-    id: 3,
-    title: "Message",
-    date: new Date(Date.now()),
+    date: new Date(),
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
     messageType: "unread",
   },
   {
     id: 3,
     title: "Message",
-    date: new Date(Date.now()),
+    date: new Date(),
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
     messageType: "sent",
   },
   {
-    id: 3,
+    id: 4,
     title: "Message",
-    date: new Date(Date.now()),
+    date: new Date(),
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
     messageType: "archived",
+  },
+  {
+    id: 5,
+    title: "Message",
+    date: new Date(),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "archived",
+  },
+  {
+    id: 6,
+    title: "Message",
+    date: new Date(),
+    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+    messageType: "unread",
   },
 ];
 
@@ -64,9 +64,9 @@ const Inbox = () => {
   const router = useRouter();
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       <View style={styles.messageContainer}>
-        <Text style={styles.messageCateg}>{selectedType}</Text>
+        {/* <Text style={styles.messageCateg}>{selectedType}</Text> */}
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={selectedType}
@@ -83,53 +83,58 @@ const Inbox = () => {
         </View>
       </View>
 
-      <ScrollView>
-        {data?.map((data) =>
-          data.messageType.toLocaleLowerCase() ===
-          selectedType.toLocaleLowerCase() ? (
+      <ScrollView style={styles.messageList}>
+        {data
+          .filter((msg) => msg.messageType.toLowerCase() === selectedType.toLowerCase())
+          .map((msg) => (
             <MessageCard
-              key={data.id}
-              title={data.title}
-              date={data.date}
-              desc={data.desc}
-              type={data.messageType}
-              time={data.date.toLocaleTimeString()}
+              key={msg.id}
+              title={msg.title}
+              date={msg.date}
+              desc={msg.desc}
+              type={msg.messageType}
+              time={msg.date.toLocaleTimeString()}
             />
-          ) : null
-        )}
+          ))}
       </ScrollView>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push("addMessage")}
-        >
-          <MaterialIcon name="add" size={30} color="#fff" />
-        </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("addMessage")}
+      >
+        <MaterialIcon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    backgroundColor: "#fff",
+  },
   messageContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
+    // flexDirection: "row",
+    alignItems: "flex-end",
     justifyContent: "space-between",
-    marginLeft: 25,
+    paddingHorizontal: 25,
+    marginVertical: 5,
+    
   },
   messageCateg: {
     fontSize: 20,
+    fontWeight: 500,
   },
   pickerWrapper: {
-    alignSelf: "flex-end",
     width: 150,
   },
   picker: {
     width: "100%",
-    color: "orange",
+    color: "#ffbf18",
   },
-  messageCard: {
-    backgroundColor: "black",
+  messageList: {
+    flex: 1, 
+    backgroundColor:"#fff"
   },
   addButton: {
     backgroundColor: "#2264DC",
@@ -138,12 +143,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: -320,
-    right: 20,
+    position: "absolute", 
+    bottom: 20, 
+    right: 20, 
     elevation: 5,
   },
-
 });
 
 export default memo(Inbox);
