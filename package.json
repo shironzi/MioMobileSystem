@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/react-native": "^5.4.1",
     "@react-native-community/datetimepicker": "^8.3.0",
+    "@react-native-firebase/app": "^22.1.0",
     "@react-native-picker/picker": "^2.11.0",
     "@rneui/themed": "^4.0.0-rc.8",
     "expo": "^53.0.0",
