@@ -126,7 +126,6 @@ const AddTodo = () => {
           onChangeText={setDetails}
         />
 
-        {/* Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.cancelButton}>
             <Text style={styles.cancelText}>Cancel</Text>
