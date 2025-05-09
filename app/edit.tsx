@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView } from "react-native";
 import React, { memo, useCallback, useState } from "react";
 import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
@@ -56,7 +48,8 @@ const Edit = () => {
   );
 
   return (
-    <ScrollView>
+    <ScrollView
+    showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         {data.map((item) => (
           <Card key={item.id} containerStyle={styles.cardContainer}>
@@ -121,9 +114,10 @@ const Edit = () => {
                   </TouchableOpacity>
                 </View>
               ))}
-              <TouchableOpacity onPress={handleAddSocialLink}>
+                <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={handleAddSocialLink}>
+                <FontAwesome name="plus" size={12} color="#ffbf18" style={{top:0, left:10}}/>
                 <Text style={styles.addLinkText}>Add link</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Save Profile</Text>
@@ -147,10 +141,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     borderWidth: 0,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     elevation: 5,
   },
   profileImage: {
@@ -205,11 +195,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     height: 100,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
     marginBottom: 20,
   },
   con: {
@@ -222,11 +207,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     height: 50,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
     marginBottom: 20,
   },
   row: {
@@ -246,27 +226,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#f9f9f9",
     marginHorizontal: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 10,
   },
   arrow: {
-    fontSize: 18,
+    fontSize: 30,
     color: "#aaa",
     marginHorizontal: 5,
+    left:-5
   },
   deleteIcon: {
     marginLeft: 5,
     padding: 5,
   },
   addLinkText: {
-    left: 5,
+    left: 15,
     color: "#ffbf18",
     fontSize: 16,
     textDecorationLine: "underline",
     marginTop: 10,
+    marginBottom:10
+
   },
   button: {
     backgroundColor: "#FFBF18",
