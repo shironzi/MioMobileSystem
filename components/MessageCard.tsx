@@ -32,7 +32,7 @@ const MessageCard = (props: {
         containerStyle={{
           padding: 0,
           margin: 0,
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#fff",
         }}
       >
         <View
