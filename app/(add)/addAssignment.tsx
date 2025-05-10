@@ -3,6 +3,7 @@ import React, { memo, useState } from "react";
 import HeaderConfig from "@/components/HeaderConfig";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as DocumentPicker from "expo-document-picker";
 
 const addAssignment = () => {
   const [submissionType, setSubmissionType] = useState('');
@@ -15,9 +16,9 @@ const addAssignment = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const [quizItems, setQuizItems] = useState<{ question: string; answer: string }[]>([]);
+//   const [quizItems, setQuizItems] = useState<{ question: string; answer: string }[]>([]);
 
-  const submissionOptions = ['Text Entry', 'File Upload', 'Quiz Type'];
+  const submissionOptions = ['Text Entry', 'File Upload'];
 
   HeaderConfig("Add Assignment");
 
@@ -138,22 +139,62 @@ const addAssignment = () => {
     
         <View style={styles.row}>
             <Text style={styles.label}>Attempts</Text>
-            <TextInput
-            style={[styles.dropdown]}
-            placeholder="10"
-            placeholderTextColor="#aaa"
-            keyboardType="numeric"
-            value={attempt}
-            onChangeText={(value: string) => {
-            const numericValue: number = parseInt(value, 10);
-            if (!isNaN(numericValue) && numericValue >= 1 && numericValue <= 10) {
-                setAttempt(value);
-            } else if (value === "") {
-                setAttempt("");
-            }
-            }}
-            />
+            <View style={[styles.dropdown, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+            <Text style={{ color: attempt ? "#000" : "#aaa", fontSize: 16 }}>
+                {attempt || "1"}
+             </Text>
+
+            <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <TouchableOpacity
+                onPress={() => {
+                    const numericValue = parseInt(attempt, 10) || 0;
+                    if (numericValue < 10) {
+                    setAttempt((numericValue + 1).toString());
+                    }
+                }}
+                >
+                <MaterialIcons name="arrow-drop-up" size={25} color="#ffbf18" style={{marginTop:-10}}/>
+                </TouchableOpacity>
+                <TouchableOpacity
+                onPress={() => {
+                    const numericValue = parseInt(attempt, 10) || 0;
+                    if (numericValue > 1) {
+                    setAttempt((numericValue - 1).toString());
+                    }
+                }}
+                >
+                <MaterialIcons name="arrow-drop-down" size={25} color="#ffbf18" style={{marginTop:-15, marginBottom:-10}} />
+                </TouchableOpacity>
+            </View>
+            </View>
         </View>
+
+        {submissionType === 'File Upload' && (
+            <View style={styles.row}>
+            <Text style={styles.label}>File Upload</Text>
+            <TouchableOpacity
+                style={styles.dropdown}
+                onPress={async () => {
+                try {
+                    const result = await DocumentPicker.getDocumentAsync({
+                    type: '*/*', 
+                    copyToCacheDirectory: true,
+                    });
+                    if (!result.canceled) {
+                    if (result.assets && result.assets.length > 0) {
+                        console.log('File selected:', result.assets[0].uri);
+                    }
+                    }
+                } catch (error) {
+                    console.error('Error picking file:', error);
+                }
+                }}
+            >
+                <Text style={{ color: "#aaa" }}>Choose File</Text>
+                <MaterialIcons name="attach-file" size={22} color="#ffbf18" />
+            </TouchableOpacity>
+            </View>
+        )}
 
         <View style={styles.row}>
             <Text style={styles.label}>Title</Text>
@@ -181,25 +222,8 @@ const addAssignment = () => {
             />
         </View>
     
+       
 
-        {submissionType === 'File Upload' && (
-            <TextInput placeholder="File Type" style={styles.input} />
-        )}
-
-        {submissionType === 'Quiz Type' && (
-            <View>
-            <Button
-                title="+ Add Item"
-                onPress={() => setQuizItems([...quizItems, { question: '', answer: '' }])}
-            />
-            {quizItems.map((item, index) => (
-                <View key={index}>
-                <TextInput placeholder={`Question ${index + 1}`} style={styles.input} />
-                <TextInput placeholder={`Answer ${index + 1}`} style={styles.input} />
-                </View>
-            ))}
-            </View>
-        )}
         <TouchableOpacity style={styles.button}>
             <View style={styles.buttonRow}>
                 <MaterialIcons name="add" size={20} color="#fff" />
@@ -208,7 +232,6 @@ const addAssignment = () => {
 
       </TouchableOpacity>
 
-        {/* <Button title="+ Add Assignment" onPress={() => console.log("Add Assignment pressed")} /> */}
         </View>
 
     </ScrollView>
@@ -240,7 +263,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        // width:"55%"
       },
       label: {
         fontSize: 15,
@@ -299,7 +321,8 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor:"#ffbf18",
         padding:14,
-        borderRadius:50
+        borderRadius:50,
+        elevation:5
     },
     buttonText: {
         color:"#fff",
