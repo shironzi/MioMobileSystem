@@ -105,14 +105,18 @@ const attendanceDetails = () => {
 
                   {isDropdownOpen && (
                     <View style={styles.dropdown}>
-                      {statusOptions.map((option) => (
-                        <TouchableOpacity
-                          key={option}
-                          style={styles.dropdownOption}
-                          onPress={() => handleStatusSelect(item.id, option)}
-                        >
-                          <Text>{option.charAt(0).toUpperCase() + option.slice(1)}</Text>
-                        </TouchableOpacity>
+                      {statusOptions.map((option, index) => (
+                        <React.Fragment key={option}>
+                          <TouchableOpacity
+                            style={styles.dropdownOption}
+                            onPress={() => handleStatusSelect(item.id, option)}
+                          >
+                            <Text>{option.charAt(0).toUpperCase() + option.slice(1)}</Text>
+                          </TouchableOpacity>
+                          {index !== statusOptions.length - 1 && (
+                            <View style={styles.line} />
+                          )}
+                        </React.Fragment>
                       ))}
                     </View>
                   )}
@@ -196,9 +200,9 @@ const styles = StyleSheet.create({
   dropdown: {
     position: 'absolute',
     top: 45,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#999',
+    borderColor: '#ccc',
     borderRadius: 10,
     zIndex: 999,
     width:90
@@ -206,7 +210,11 @@ const styles = StyleSheet.create({
   dropdownOption: {
     padding: 10,
     minWidth: 90,
-    left:5
+    left:5,
+  },
+  line:{
+    height: 1,
+    backgroundColor: '#ddd', 
   },
   submit: {
     backgroundColor:"#ffbf18",
