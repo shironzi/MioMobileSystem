@@ -1,8 +1,9 @@
-import React, { memo, useCallback } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import React, { memo, useCallback,useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet, Modal } from "react-native";
 import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import DeleteCard from "./deleteCard";
 
 
 const announceCard = (props: { 
@@ -22,6 +23,8 @@ const announceCard = (props: {
     },
     [Date]
   );
+  const [showDeleteCard, setShowDeleteCard] = useState(false);
+
 
   return (
     <TouchableOpacity
@@ -42,14 +45,28 @@ const announceCard = (props: {
             <TouchableOpacity>
               <Entypo name="edit" size={15} color="#aaa" style={{marginRight:5}} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Entypo name="trash" size={15} color="#aaa" />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowDeleteCard(true)}>
+                <Entypo name="trash" size={15} color="#aaa" />
+              </TouchableOpacity>
+      
           </View>
           <Entypo name="chevron-small-right" size={30} color="#aaa" />
         </View>
       </View>
       </Card>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showDeleteCard}
+        onRequestClose={() => setShowDeleteCard(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <DeleteCard onClose={() => setShowDeleteCard(false)} />
+          </View>
+        </View>
+      </Modal>
+      
     </TouchableOpacity>
     
   );
@@ -115,6 +132,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 5,
     marginRight:-5
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    elevation: 10,
   },
 });
 
