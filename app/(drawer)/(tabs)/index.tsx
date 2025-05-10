@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState, memo, useContext } from "react";
+import React, {useState, memo, useContext, useEffect} from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
+import fetchSubjects, {getToken} from "@/utils/query";
 
 enum courseType {
   academic = "academic",
@@ -84,6 +85,23 @@ const courses = [
 const index = () => {
   const [selectedValue, setSelectedValue] = useState("academic");
   const { courseCardView } = useContext(CourseCardViewContext);
+
+    useEffect(() => {
+      // define an async function inside the effect
+      async function fetchAndLogToken() {
+        try {
+          const token = await fetchSubjects("GR7");
+          console.log(token);
+        } catch (err) {
+          console.error('Error getting token:', err);
+        }
+      }
+
+      // call it
+      fetchAndLogToken();
+
+      // (optional) you can return a cleanup function here if needed
+    }, []);  // ← empty deps means “run once on mount”
 
   return (
     <ScrollView>
