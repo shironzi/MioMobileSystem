@@ -1,32 +1,68 @@
-import { Stack, useRouter } from "expo-router";
+import {Stack, useNavigation, useRouter} from "expo-router";
 import { useEffect, useState } from "react";
 import { verifyToken } from "@/utils/auth";
+import * as SecureStore from "expo-secure-store";
+import {StackActions} from "@react-navigation/native";
 
 export default function Layout() {
+  const navigation = useNavigation()
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
+  const rootNav = navigation.getParent();
+
   useEffect(() => {
-    (async () => {
-      const ok = await verifyToken();
-      setIsLoggedIn(ok);
-      if (!ok) {
-        router.replace("/index");
+    let mounted = true;
+
+    async function checkAuth() {
+      const serverUserId = await verifyToken();
+
+      if (!mounted) return;
+
+      if (!serverUserId) {
+        setIsLoggedIn(false);
+        rootNav?.dispatch(StackActions.replace("index"));
+        return;
       }
-    })();
-  }, []);
+
+      const raw = await SecureStore.getItemAsync("sessionData");
+      if (!mounted) return;
+
+      if (!raw) {
+        setIsLoggedIn(false);
+        rootNav?.dispatch(StackActions.replace("index"));
+        return;
+      }
+
+      const { userId } = JSON.parse(raw);
+      if (userId === serverUserId) {
+        setIsLoggedIn(true);
+      } else {
+        // Mismatch between local and server IDs → force logout
+        await SecureStore.deleteItemAsync("sessionData");
+        setIsLoggedIn(false);
+        rootNav?.dispatch(StackActions.replace("index"));
+      }
+    }
+
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
+  }, [router]);
 
   if (isLoggedIn === null) {
     return null;
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {isLoggedIn ? (
-        <Stack.Screen name="(drawer)" />
-      ) : (
-        <Stack.Screen name="index" />
-      )}
-    </Stack>
+      <Stack screenOptions={{ headerShown: true }}>
+        {isLoggedIn ? (
+            <Stack.Screen name="(drawer)" />
+        ) : (
+            <Stack.Screen name="index" />
+        )}
+      </Stack>
   );
 }

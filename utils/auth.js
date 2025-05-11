@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { api } from '@/utils/apiClient';
+import {router} from "expo-router";
 
 export default async function login(email, password) {
     try {
@@ -40,20 +41,10 @@ export default async function login(email, password) {
 
 export async function verifyToken() {
   try {
-    // call your endpoint; axios will return parsed JSON in `response.data`
     const {data} = await api.get("/validate/token");
 
-    const sessionData = await SecureStore.getItemAsync("sessionData")
-
-    if (!sessionData) {
-      console.warn('No sessionData found')
-      return false
-    }
-
-    const { userId } = JSON.parse(sessionData)
-    return data.user_id === userId
+    return data.user_id
   } catch (error) {
-    console.error("Error during token validation:", error);
-    return null;
+    return null
   }
 }
