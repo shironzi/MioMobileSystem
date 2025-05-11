@@ -24,3 +24,13 @@ api.interceptors.request.use(
     },
     (error) => Promise.reject(error)
 );
+
+api.interceptors.response.use(
+    response => response,
+    async  error => {
+        if (error.response?.status === 401) {
+            await SecureStore.deleteItemAsync('sessionData');
+        }
+        return Promise.reject(error);
+    }
+);
