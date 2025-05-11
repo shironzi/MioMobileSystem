@@ -166,6 +166,7 @@ const index = () => {
                             courseTitle={subject.title}
                             courseSection={subject.section}
                             courseId={subject.subject_id}
+                            description={subject.description}
                             courseImage={require("@/assets/dashImage/language.png")}
                         />
                         <Text>{courseCardView}</Text>

@@ -71,7 +71,7 @@ const data = [
 
 const courseDetails = () => {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
+  const { id, description, title } = useLocalSearchParams();
   const [course, setCourse] = useState<{
     courseId: number;
     title: string;
@@ -95,16 +95,13 @@ const courseDetails = () => {
         <View style={styles.courseInfo}></View>
         <View>
           <Text style={[globalStyle.secondary, styles.fontSizeOne]}>
-            Course Code
+            {id}
           </Text>
           <Text style={[globalStyle.secondary, styles.fontSizeOne]}>
-            Course Title
+            {title}
           </Text>
           <Text style={[globalStyle.secondary, styles.fontSizeTwo]}>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis
-            maiores, quidem voluptate quis facere doloribus quas optio. Nisi
-            tempore iure error labore est quisquam repudiandae itaque, aperiam
-            quia, vitae reiciendis. Lorem
+            {description}
           </Text>
         </View>
       </View>
