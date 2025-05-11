@@ -32,7 +32,6 @@ const Index = () => {
 
   const handleLogin = async () => {
     // router.push("/(drawer)");
-
     try {
 
       if(validator.isEmail(email)){
