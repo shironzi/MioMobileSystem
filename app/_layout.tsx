@@ -1,61 +1,32 @@
 import { Stack, useRouter } from "expo-router";
-import { createContext, useCallback, useContext, useState } from "react";
-
-const AuthContext = createContext({ signOut: () => {} });
-export const useAuth = () => useContext(AuthContext);
+import { useEffect, useState } from "react";
+import { verifyToken } from "@/utils/auth";
 
 export default function Layout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  const signOut = useCallback(() => {
-    setIsLoggedIn(false);
-    router.replace("/index");
-  }, [router]);
+  useEffect(() => {
+    (async () => {
+      const ok = await verifyToken();
+      setIsLoggedIn(ok);
+      if (!ok) {
+        router.replace("/index");
+      }
+    })();
+  }, []);
 
-  // if (!isLoggedIn) {
-  // <Stack screenOptions={{ headerShown: false }}>
-  //   <Stack.Screen
-  //     name="index"
-  //     options={{
-  //       headerShown: false,
-  //     }}
-  //   />
-  // </Stack>;
-  // }
-
-  // return (
-  // <Stack screenOptions={{ headerShown: true }}>
-  //   <Stack.Screen
-  //     name="(drawer)"
-  //     options={{
-  //       headerShown: false,
-  //     }}
-  //   />
-  // </Stack>
-  // );
+  if (isLoggedIn === null) {
+    return null;
+  }
 
   return (
-    <AuthContext.Provider value={{ signOut }}>
-      {!isLoggedIn ? (
-        <Stack screenOptions={{ headerShown: true }}>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
+    <Stack screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="(drawer)" />
       ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="(drawer)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
+        <Stack.Screen name="index" />
       )}
-    </AuthContext.Provider>
+    </Stack>
   );
 }
