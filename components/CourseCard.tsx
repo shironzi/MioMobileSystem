@@ -7,7 +7,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 const CourseCard = (props: {
   courseTitle: string;
   courseSection: string;
-  courseId: number;
+  courseId: string;
   courseImage:any;
 }) => {
   const router = useRouter();

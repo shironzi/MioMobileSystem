@@ -31,29 +31,28 @@ const Index = () => {
   };
 
   const handleLogin = async () => {
-    router.push("/(drawer)");
+    // router.push("/(drawer)");
+    try {
 
-    // try {
+      if(validator.isEmail(email)){
+        setIsEmailValid(true)
+        const responseStatus = await login(email, password);
+        if(responseStatus === 200){
+          router.push("/(drawer)");
+        }else if(responseStatus === 401){
+          setErrorMessage("Invalid Credentials")
+          setPassword("")
+          setIsCredentialsValid(false);
+        }
 
-    //   if(validator.isEmail(email)){
-    //     setIsEmailValid(true)
-    //     const responseStatus = await login(email, password);
-    //     if(responseStatus === 200){
-    //       router.push("/(drawer)");
-    //     }else if(responseStatus === 401){
-    //       setErrorMessage("Invalid Credentials")
-    //       setPassword("")
-    //       setIsCredentialsValid(false);
-    //     }
+      }else{
+        setErrorMessage("Invalid Email Address")
+        setIsEmailValid(false);
+      }
 
-    //   }else{
-    //     setErrorMessage("Invalid Email Address")
-    //     setIsEmailValid(false);
-    //   }
-
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    // }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   useFocusEffect(() => {
