@@ -9,6 +9,7 @@ const CourseCard = (props: {
   courseSection: string;
   courseId: string;
   courseImage:any;
+  description: string;
 }) => {
   const router = useRouter();
 
@@ -17,7 +18,7 @@ const CourseCard = (props: {
       onPress={() =>
         router.push({
           pathname: "/(course)/courseDetails",
-          params: { id: props.courseId },
+          params: { id: props.courseId, description: props.description, title: props.courseTitle },
         })
       }
     >
