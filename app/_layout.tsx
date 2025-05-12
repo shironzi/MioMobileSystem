@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { verifyToken } from "@/utils/auth";
 import * as SecureStore from "expo-secure-store";
 import {StackActions} from "@react-navigation/native";
+import {Text, View} from "react-native";
 
 export default function Layout() {
   const navigation = useNavigation()
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const rootNav = navigation.getParent();
 
@@ -17,6 +19,8 @@ export default function Layout() {
     async function checkAuth() {
 
       const serverUserId = await verifyToken();
+
+      console.log(serverUserId)
       if (!mounted) return;
 
       if (!serverUserId) {
@@ -42,6 +46,8 @@ export default function Layout() {
         setIsLoggedIn(false);
         rootNav?.dispatch(StackActions.replace("index"));
       }
+
+      setLoading(false)
     }
 
     checkAuth();
@@ -53,6 +59,16 @@ export default function Layout() {
 
   if (isLoggedIn === null) {
     return null;
+  }
+
+  if(loading){
+    return (
+        <View>
+          <Text>
+            Loading.......
+          </Text>
+        </View>
+    )
   }
 
   return (
