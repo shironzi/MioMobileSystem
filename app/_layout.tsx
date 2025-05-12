@@ -15,8 +15,8 @@ export default function Layout() {
     let mounted = true;
 
     async function checkAuth() {
-      const serverUserId = await verifyToken();
 
+      const serverUserId = await verifyToken();
       if (!mounted) return;
 
       if (!serverUserId) {
@@ -38,7 +38,6 @@ export default function Layout() {
       if (userId === serverUserId) {
         setIsLoggedIn(true);
       } else {
-        // Mismatch between local and server IDs → force logout
         await SecureStore.deleteItemAsync("sessionData");
         setIsLoggedIn(false);
         rootNav?.dispatch(StackActions.replace("index"));
