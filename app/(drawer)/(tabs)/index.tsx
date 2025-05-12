@@ -6,6 +6,7 @@ import { CourseCardViewContext } from "@/components/contexts/CourseCardViewConte
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
 import { fetchSubjects } from "@/utils/query";
+import {useAuthGuard} from "@/utils/useAuthGuard";
 
 enum courseType {
   academic = "academic",
@@ -86,20 +87,35 @@ const index = () => {
   const [selectedValue, setSelectedValue] = useState("academic");
   const { courseCardView } = useContext(CourseCardViewContext);
   const [subjects, setSubjects] = useState<Record<string, any> | null>(null);
+  const [hasAuthError, setHasAuthError] = useState(false);
+  const [loading, setLoading] = useState(true)
+
+  useAuthGuard(hasAuthError);
 
   useEffect(() => {
     async function getSubjects() {
       try {
         const data = await fetchSubjects("GR7");
-        const gr7Subjects = data.subjects;
-        setSubjects(gr7Subjects);
+        setSubjects(data.subjects);
+        setLoading(false);
+        console.log(data.subjects)
       } catch (err) {
-        console.error("Failed to load subjects:", err);
+        console.error("error message: ", err)
+        setHasAuthError(true);
       }
     }
-
     getSubjects();
   }, []);
+
+  if(loading){
+    return(
+        <View>
+          <Text>
+            Loading........
+          </Text>
+        </View>
+    )
+  }
 
   return (
       <ScrollView>
