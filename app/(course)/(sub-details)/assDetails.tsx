@@ -38,7 +38,7 @@ const assDetails = () => {
               </Text>
               <Text style={styles.attempt}>Attempts: {item.attempt}</Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={()=>router.push("viewAss")}>
+            <TouchableOpacity style={styles.button} onPress={()=>router.push("viewAssFile")}>
             <Text style={styles.buttonText}>Take Quiz</Text>
           </TouchableOpacity>
           </Card>

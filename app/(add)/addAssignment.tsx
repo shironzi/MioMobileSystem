@@ -216,7 +216,6 @@ const addAssignment = () => {
             placeholder="Description"
             placeholderTextColor="#aaa"
             multiline={true}
-            numberOfLines={6}
             value={description}
             onChangeText={setDescription}
             />
