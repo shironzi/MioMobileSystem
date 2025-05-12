@@ -42,7 +42,7 @@ export default async function login(email, password) {
 
 export async function verifyToken() {
   try {
-    const { data } = await api.get<{ user_id }>('/validate/token');
+    const { data } = await api.get('/validate/token');
 
     return data.user_id;
   } catch (err) {
