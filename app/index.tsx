@@ -18,7 +18,7 @@ import login from "@/utils/auth";
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [email, setEmail] = useState("aaronbaon1@gmail.com");
+  const [email, setEmail] = useState("202212079@fit.edu.ph");
   const [password, setPassword] = useState("2003-07-10");
   const [rememberMe, setRememberMe] = useState(false);
   const [isCredentialsValid, setIsCredentialsValid] = useState(true);
@@ -31,7 +31,6 @@ const Index = () => {
   };
 
   const handleLogin = async () => {
-    // router.push("/(drawer)");
     try {
 
       if(validator.isEmail(email)){
@@ -44,7 +43,6 @@ const Index = () => {
           setPassword("")
           setIsCredentialsValid(false);
         }
-
       }else{
         setErrorMessage("Invalid Email Address")
         setIsEmailValid(false);
