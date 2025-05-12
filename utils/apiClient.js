@@ -11,13 +11,10 @@ api.interceptors.request.use(
     async (config) => {
         const raw = await SecureStore.getItemAsync('sessionData');
         if (raw) {
-            const session = JSON.parse(raw);
-            const token = session.sessionId;
-
-            // correctly merge into headers
+            const { sessionId } = JSON.parse(raw);
             config.headers = {
                 ...(config.headers || {}),
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${sessionId}`,
             };
         }
         return config;
@@ -27,9 +24,10 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     response => response,
-    async  error => {
-        if (error.response?.status === 401) {
-            await SecureStore.deleteItemAsync('sessionData');
+    async error => {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
+            console.log("status: ", status)
         }
         return Promise.reject(error);
     }

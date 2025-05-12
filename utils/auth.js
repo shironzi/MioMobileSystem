@@ -1,6 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
 import { api } from '@/utils/apiClient';
-import {router} from "expo-router";
 
 export default async function login(email, password) {
     try {
@@ -33,18 +32,20 @@ export default async function login(email, password) {
   }
 
   export async function logout() {
-    const {response} = await api.get("/validate/token");
+    const {response} = await api.get("/logout");
 
     await SecureStore.deleteItemAsync('sessionData')
     return response
   }
 
+  // Verify token and role
+
 export async function verifyToken() {
   try {
-    const {data} = await api.get("/validate/token");
+    const { data } = await api.get<{ user_id }>('/validate/token');
 
-    return data.user_id
-  } catch (error) {
-    return null
+    return data.user_id;
+  } catch (err) {
+    return err;
   }
 }
