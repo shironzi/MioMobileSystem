@@ -6,7 +6,7 @@ import { CourseCardViewContext } from "@/components/contexts/CourseCardViewConte
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
 import { fetchSubjects } from "@/utils/query";
-import {useAuthGuard} from "@/utils/useAuthGuard";
+import { useAuthGuard } from "@/utils/useAuthGuard";
 
 enum courseType {
   academic = "academic",
@@ -88,7 +88,7 @@ const index = () => {
   const { courseCardView } = useContext(CourseCardViewContext);
   const [subjects, setSubjects] = useState<Record<string, any> | null>(null);
   const [hasAuthError, setHasAuthError] = useState(false);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useAuthGuard(hasAuthError);
 
@@ -98,101 +98,96 @@ const index = () => {
         const data = await fetchSubjects("GR7");
         setSubjects(data.subjects);
         setLoading(false);
-        console.log(data.subjects)
       } catch (err) {
-        console.error("error message: ", err)
+        console.error("error message: ", err);
         setHasAuthError(true);
       }
     }
     getSubjects();
   }, []);
 
-  if(loading){
-    return(
-        <View>
-          <Text>
-            Loading........
-          </Text>
-        </View>
-    )
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading........</Text>
+      </View>
+    );
   }
 
   return (
-      <ScrollView>
-        <View>
-          <View style={styles.courseContainer}>
-            <Text style={styles.courseTitle}>Courses</Text>
-            <View style={styles.dropdownContainer}>
-              <Dropdown
-                  style={styles.dropdown}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  renderRightIcon={(isOpened) => (
-                      <MaterialIcons
-                          name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-                          style={styles.iconStyle}
-                      />
-                  )}
-                  data={data}
-                  value={selectedValue}
-                  labelField="label"
-                  valueField="value"
-                  onChange={(item) => {
-                    setSelectedValue(item.value);
-                  }}
-              />
-            </View>
+    <ScrollView>
+      <View>
+        <View style={styles.courseContainer}>
+          <Text style={styles.courseTitle}>Courses</Text>
+          <View style={styles.dropdownContainer}>
+            <Dropdown
+              style={styles.dropdown}
+              selectedTextStyle={styles.selectedTextStyle}
+              renderRightIcon={(isOpened) => (
+                <MaterialIcons
+                  name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+                  style={styles.iconStyle}
+                />
+              )}
+              data={data}
+              value={selectedValue}
+              labelField="label"
+              valueField="value"
+              onChange={(item) => {
+                setSelectedValue(item.value);
+              }}
+            />
           </View>
-          <ScrollView
-              contentContainerStyle={[
-                courseCardView ? styles.gridContainer : null,
-                globalStyle.container,
-              ]}
-          >
-            {subjects?.map(
-                (
-                    subject: {
-                      title: string;
-                      section: string;
-                      subject_id: string;
-                      description: string;
-                    },
-                ) => {
-                  // if (subject.courseType === selectedValue) {
-                  //   return (
-                  //   <View
-                  //     key={index}
-                  //     style={courseCardView ? styles.gridItem : null}
-                  //   >
-                  //     <CourseCard
-                  //     courseTitle={subject.title}
-                  //     courseSection={subject.section}
-                  //     courseId={subject.courseId}
-                  //     courseImage={subject.courseImage}
-                  //     />
-                  //     <Text>{courseCardView}</Text>
-                  //   </View>
-                  //   );
-                  // }
-                  return (
-                      <View
-                          key={subject.subject_id}
-                          style={courseCardView ? styles.gridItem : null}
-                      >
-                        <CourseCard
-                            courseTitle={subject.title}
-                            courseSection={subject.section}
-                            courseId={subject.subject_id}
-                            description={subject.description}
-                            courseImage={require("@/assets/dashImage/language.png")}
-                        />
-                        <Text>{courseCardView}</Text>
-                      </View>
-                  );
-                }
-            )}
-          </ScrollView>
         </View>
-      </ScrollView>
+        <ScrollView
+          contentContainerStyle={[
+            courseCardView ? styles.gridContainer : null,
+            globalStyle.container,
+          ]}
+        >
+          {subjects?.map(
+            (subject: {
+              title: string;
+              section: string;
+              subject_id: string;
+              description: string;
+            }) => {
+              // if (subject.courseType === selectedValue) {
+              //   return (
+              //   <View
+              //     key={index}
+              //     style={courseCardView ? styles.gridItem : null}
+              //   >
+              //     <CourseCard
+              //     courseTitle={subject.title}
+              //     courseSection={subject.section}
+              //     courseId={subject.courseId}
+              //     courseImage={subject.courseImage}
+              //     />
+              //     <Text>{courseCardView}</Text>
+              //   </View>
+              //   );
+              // }
+              return (
+                <View
+                  key={subject.subject_id}
+                  style={courseCardView ? styles.gridItem : null}
+                >
+                  <CourseCard
+                    courseTitle={subject.title}
+                    courseSection={subject.section}
+                    courseId={subject.subject_id}
+                    description={subject.description}
+                    courseImage={require("@/assets/dashImage/language.png")}
+                  />
+                  <Text>{courseCardView}</Text>
+                </View>
+              );
+            }
+          )}
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 
