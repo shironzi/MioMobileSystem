@@ -1,7 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Card } from "@rneui/themed";
+import {useRouter} from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const data = [
   {
@@ -15,6 +17,9 @@ const data = [
 ];
 
 const assDetails = () => {
+  const [lastAttempt, setLastAttempt] = useState("");
+
+  const router = useRouter();
   HeaderConfig("Assignment");
 
   return (
@@ -33,10 +38,25 @@ const assDetails = () => {
               </Text>
               <Text style={styles.attempt}>Attempts: {item.attempt}</Text>
             </View>
-          </Card>
-          <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={()=>router.push("viewAss")}>
             <Text style={styles.buttonText}>Take Quiz</Text>
           </TouchableOpacity>
+          </Card>
+
+          <View style={styles.attemptCard}>
+            <Text style={styles.last}>Last Attempt</Text>
+            <View style={styles.attemptRow}>
+              <Text style={styles.view}>View Answer</Text>
+              <TouchableOpacity>
+              <MaterialIcons name={lastAttempt ? "arrow-drop-up" :  "arrow-drop-down"} 
+              color="#ffbf18" size={25} style={{top:5}}/>
+              </TouchableOpacity>
+              
+            </View>
+            
+
+          </View>
+
         </View>
       ))}
     </View>
@@ -55,8 +75,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     borderWidth: 0,
-    // shadowColor: "transparent",
     elevation:5,
+    paddingBottom:-10,
+    marginBottom:10
   },
   cardContent: {
     display: "flex",
@@ -78,22 +99,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   deadline: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
     marginRight: 10,
   },
   points: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
   },
   availability: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
     marginBottom: 10,
     lineHeight: 20,
   },
   attempt: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
     marginBottom: 10,
   },
@@ -103,13 +124,44 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 50,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: -5,
+    marginBottom:15
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
+  attemptCard: {
+    padding: 15,
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    borderWidth: 0,
+    elevation:5,
+    paddingBottom:-10
+  },
+  last: {
+    left:8,
+    fontSize:16,
+    fontWeight:500,  
+    
+  },
+  view: {
+    left:8,
+    marginTop:8,
+    fontSize:14,
+    color:"#2264dc",
+    textDecorationLine:"underline",
+    marginBottom:15,
+    marginRight:13
+    
+  },
+  attemptRow: {
+    flexDirection: "row"
+
+  }
+    
 });
 
 export default memo(assDetails);
