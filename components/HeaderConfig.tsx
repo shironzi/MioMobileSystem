@@ -1,6 +1,7 @@
-import { useMemo, useCallback, memo } from "react";
+import {useMemo, useCallback, memo, useEffect} from "react";
 import { useNavigation } from "expo-router";
-import { useFocusEffect } from "@react-navigation/native";
+import {StackActions, useFocusEffect} from "@react-navigation/native";
+import {verifyToken} from "@/utils/auth";
 
 function HeaderConfig(title: string, bgColor: string = "#2264DC") {
   const navigation = useNavigation();
