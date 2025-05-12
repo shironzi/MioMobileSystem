@@ -10,6 +10,7 @@ const assCard = (props: {
     time: string;
     score: string;
     type: string;
+    onPress: () => void;
 }) => {
   const router = useRouter();
 
@@ -26,7 +27,8 @@ const assCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(sub-details)/assDetails")}
+      // onPress={() => router.navigate("/(sub-details)/assDetails")}
+      onPress={props.onPress}
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>

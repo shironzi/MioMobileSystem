@@ -13,6 +13,7 @@ const data = [
       points: 50,
       availability: "January 11, 2024 9:00 AM - January 12, 2024 9:00 AM",
       attempt: 1,
+      type:"File Upload"
     },
   ];
 
@@ -38,6 +39,7 @@ const viewAss = () => {
                     Availability: {item.availability}
                   </Text>
                   <Text style={styles.attempt}>Attempts: {item.attempt}</Text>
+                 <Text style={styles.type}>Type: {item.type}</Text>
                 </View>
               </Card>
             <View style={styles.question}>
@@ -54,7 +56,7 @@ const viewAss = () => {
                 />                
 
             </View>
-              <TouchableOpacity style={styles.button} onPress={() => router.push("assDetails")}>
+              <TouchableOpacity style={styles.button} >
                 <Text style={styles.buttonText}>Submit</Text>
               </TouchableOpacity>
              
@@ -118,6 +120,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   attempt: {
+    fontSize: 14,
+    color: "#000",
+    marginBottom: 10,
+  },
+  type: {
     fontSize: 14,
     color: "#000",
     marginBottom: 10,

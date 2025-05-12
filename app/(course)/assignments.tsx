@@ -12,7 +12,7 @@ const data = [
     date: new Date(Date.now()),
     time: "10:00 AM",
     score: 50 + "/50 pts",
-    type: "Quiz",
+    type: "File Upload",
   },
   {
     id: 2,
@@ -40,6 +40,14 @@ const assignments = () => {
               time={item.time}
               score={item.score}
               type={item.type}
+              onPress={() => router.push({
+                pathname: "assDetails",
+                params: {
+                  id: item.id.toString(),
+                  type: item.type
+                }
+              })}
+              
             />
           ))}
         </View>
