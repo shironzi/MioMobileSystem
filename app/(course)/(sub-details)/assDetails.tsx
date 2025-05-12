@@ -42,8 +42,10 @@ const assDetails = () => {
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <Text style={styles.title}>{selectedAssignment.title}</Text>
-          <Text style={styles.deadline}>Deadline: {selectedAssignment.deadline}</Text>
-          <Text style={styles.points}>Points: {selectedAssignment.points}</Text>
+          <View style={styles.row}>
+            <Text style={styles.deadline}>Deadline: {selectedAssignment.deadline}</Text>
+            <Text style={styles.points}>Points: {selectedAssignment.points}</Text>
+          </View>
           <Text style={styles.availability}>Availability: {selectedAssignment.availability}</Text>
           <Text style={styles.attempt}>Attempts: {selectedAssignment.attempt}</Text>
           <Text style={styles.type}>Type: {selectedAssignment.type}</Text>
@@ -69,7 +71,7 @@ const assDetails = () => {
         <Text style={styles.view}>View Answer</Text>
         
         <MaterialIcons
-              name={lastAttemptVisible ? "arrow-drop-down" : "arrow-drop-up"}
+              name={lastAttemptVisible ? "arrow-drop-up" : "arrow-drop-down"}
               color="#ffbf18"
               size={25}
               style={{ top:-2 }}
@@ -150,6 +152,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: -5,
     marginBottom: 15,
+    elevation:5
   },
   buttonText: {
     color: "#fff",
