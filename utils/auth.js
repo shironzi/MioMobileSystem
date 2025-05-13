@@ -38,8 +38,6 @@ export default async function login(email, password) {
     return response
   }
 
-  // Verify token and role
-
 export async function verifyToken() {
   try {
     const { data } = await api.get('/validate/token');
