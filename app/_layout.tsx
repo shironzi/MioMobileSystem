@@ -19,8 +19,6 @@ export default function Layout() {
     async function checkAuth() {
 
       const serverUserId = await verifyToken();
-
-      console.log(serverUserId)
       if (!mounted) return;
 
       if (!serverUserId) {
