@@ -5,7 +5,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
-import { fetchSubjects } from "@/utils/query";
+import { getSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 
 const data = [
@@ -23,17 +23,17 @@ const index = () => {
   useAuthGuard(hasAuthError);
 
   useEffect(() => {
-    async function getSubjects() {
+    async function fetchSubjects() {
       try {
-        const data = await fetchSubjects("GR7");
+        const data = await getSubjects("GR7");
         setSubjects(data.subjects);
         setLoading(false);
       } catch (err) {
-        console.error("error message: ", err);
+        console.error("Error fetching subjects: ", err);
         setHasAuthError(true);
       }
     }
-    getSubjects();
+    fetchSubjects();
   }, []);
 
   const filtered = subjects
