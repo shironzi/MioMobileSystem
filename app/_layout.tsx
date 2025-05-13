@@ -18,31 +18,27 @@ export default function Layout() {
 
     async function checkAuth() {
 
-      const serverUserId = await verifyToken();
-      if (!mounted) return;
+      try{
+        const serverUserId = await verifyToken();
+        const raw = await SecureStore.getItemAsync("sessionData");
 
-      if (!serverUserId) {
+        if (raw != null) {
+          const {userId} = JSON.parse(raw);
+
+          if (userId === serverUserId) {
+            setIsLoggedIn(true);
+          } else {
+            await SecureStore.deleteItemAsync("sessionData");
+            setIsLoggedIn(false);
+            rootNav?.dispatch(StackActions.replace("index"));
+          }
+        }
+
+      }catch (err){
         setIsLoggedIn(false);
         rootNav?.dispatch(StackActions.replace("index"));
+
         return;
-      }
-
-      const raw = await SecureStore.getItemAsync("sessionData");
-      if (!mounted) return;
-
-      if (!raw) {
-        setIsLoggedIn(false);
-        rootNav?.dispatch(StackActions.replace("index"));
-        return;
-      }
-
-      const { userId } = JSON.parse(raw);
-      if (userId === serverUserId) {
-        setIsLoggedIn(true);
-      } else {
-        await SecureStore.deleteItemAsync("sessionData");
-        setIsLoggedIn(false);
-        rootNav?.dispatch(StackActions.replace("index"));
       }
 
       setLoading(false)
