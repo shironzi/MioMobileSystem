@@ -8,79 +8,9 @@ import CourseCard from "@/components/CourseCard";
 import { fetchSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 
-enum courseType {
-  academic = "academic",
-  specialized = "specialized",
-}
-
 const data = [
   { label: "Academic Courses", value: "academic" },
   { label: "Specialized Courses", value: "specialized" },
-];
-
-const courses = [
-  {
-    courseId: 1,
-    title: "Math",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/math.png"),
-  },
-  {
-    courseId: 2,
-    title: "English",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/english.png"),
-  },
-  {
-    courseId: 3,
-    title: "Science",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/science.png"),
-  },
-  {
-    courseId: 4,
-    title: "Speech Training",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/speech.png"),
-  },
-  {
-    courseId: 5,
-    title: "Auditory Training ",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/science.png"),
-  },
-  {
-    courseId: 6,
-    title: "Language Training",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/language.png"),
-  },
-  // {
-  //   courseId: 7,
-  //   title: "Filipino",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  //   courseImage: require("@/assets/dashImage/math.png")
-  // },
-
-  // {
-  //   courseId: 8,
-  //   title: "MAPEH",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  // },
-  // {
-  //   courseId: 9,
-  //   title: "Araling Panlipunan",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  // },
 ];
 
 const index = () => {
@@ -106,6 +36,18 @@ const index = () => {
     getSubjects();
   }, []);
 
+  const filtered = subjects
+    ? subjects.filter(
+        (s: {
+          title: string;
+          section: string;
+          subject_id: string;
+          description: string;
+          subjectType: string;
+        }) => s.subjectType === selectedValue
+      )
+    : [];
+
   if (loading) {
     return (
       <View>
@@ -115,7 +57,7 @@ const index = () => {
   }
 
   return (
-    <ScrollView>
+    <View>
       <View>
         <View style={styles.courseContainer}>
           <Text style={styles.courseTitle}>Courses</Text>
@@ -145,29 +87,31 @@ const index = () => {
             globalStyle.container,
           ]}
         >
-          {subjects?.map(
+          {filtered?.map(
             (subject: {
               title: string;
               section: string;
               subject_id: string;
               description: string;
+              subjectType: string;
             }) => {
-              // if (subject.courseType === selectedValue) {
-              //   return (
-              //   <View
-              //     key={index}
-              //     style={courseCardView ? styles.gridItem : null}
-              //   >
-              //     <CourseCard
-              //     courseTitle={subject.title}
-              //     courseSection={subject.section}
-              //     courseId={subject.courseId}
-              //     courseImage={subject.courseImage}
-              //     />
-              //     <Text>{courseCardView}</Text>
-              //   </View>
-              //   );
-              // }
+              if (subject.subjectType === selectedValue) {
+                return (
+                  <View
+                    key={subject.subject_id}
+                    style={courseCardView ? styles.gridItem : null}
+                  >
+                    <CourseCard
+                      courseTitle={subject.title}
+                      courseSection={subject.section}
+                      courseId={subject.subject_id}
+                      description={subject.description}
+                      courseImage={require("@/assets/dashImage/language.png")}
+                    />
+                    <Text>{courseCardView}</Text>
+                  </View>
+                );
+              }
               return (
                 <View
                   key={subject.subject_id}
@@ -187,7 +131,7 @@ const index = () => {
           )}
         </ScrollView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
