@@ -1,43 +1,77 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import AnnounceCard from "@/components/AnnounceCard";
 import HeaderConfig from "@/components/HeaderConfig";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { getAnnouncements } from "@/utils/query";
+import { useAuthGuard } from "@/utils/useAuthGuard";
 
-const data = [
-  {
-    id: 1,
-    title: "Activity 1: Pitch Perfect and Again",
-    date: new Date(Date.now()),
-    time: "10:00 AM",
-  },
-  {
-    id: 2,
-    title: "No Classes",
-    date: new Date(Date.now()),
-    time: "10:00 AM",
-  },
-];
+type Announcement = {
+  id: string;
+  title: string;
+  description: string;
+  subjectId: string;
+  datePosted: string;
+};
 
-const announcements = () => {
+function Announcements() {
   HeaderConfig("Announcements");
   const router = useRouter();
+  const { subjectId } = useLocalSearchParams();
+
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await getAnnouncements(subjectId);
+        setAnnouncements(response.announcements);
+      } catch (err) {
+        // console.error("Error fetching announcements:", err);
+        useAuthGuard(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnnouncements();
+  }, [subjectId]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading........</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.content}>
-          {data.map((item) => (
+        {announcements.length > 0 ? (
+          announcements.map((item, index) => (
             <AnnounceCard
-              key={item.id}
+              key={index}
               title={item.title}
-              date={item.date}
-              time={item.time}
+              date={item.datePosted}
+              time="09:00 AM"
             />
-          ))}
-        </View>
+          ))
+        ) : (
+          <View>
+            <Text>This subject has no announcements yet.</Text>
+          </View>
+        )}
       </ScrollView>
+
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => router.push("addAnnouncement")}
@@ -46,14 +80,11 @@ const announcements = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  content: {
-    padding: 2,
+    height: "100%",
   },
   addButton: {
     position: "absolute",
@@ -69,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(announcements);
+export default memo(Announcements);
