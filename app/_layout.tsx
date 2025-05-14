@@ -1,77 +1,78 @@
-import {Stack, useNavigation, useRouter} from "expo-router";
+import { Stack, useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { verifyToken } from "@/utils/auth";
 import * as SecureStore from "expo-secure-store";
-import {StackActions} from "@react-navigation/native";
-import {Text, View} from "react-native";
+import { StackActions } from "@react-navigation/native";
+import { Text, View } from "react-native";
+import { useAuthGuard } from "@/utils/useAuthGuard";
 
 export default function Layout() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasAuthError, setHasAuthError] = useState(false);
 
   const rootNav = navigation.getParent();
 
+  useAuthGuard(hasAuthError);
+
   useEffect(() => {
-    let mounted = true;
+    let redirected = false;
 
     async function checkAuth() {
-
-      try{
+      try {
         const serverUserId = await verifyToken();
         const raw = await SecureStore.getItemAsync("sessionData");
 
-        if (raw != null) {
-          const {userId} = JSON.parse(raw);
-
-          if (userId === serverUserId) {
-            setIsLoggedIn(true);
-          } else {
-            await SecureStore.deleteItemAsync("sessionData");
-            setIsLoggedIn(false);
-            rootNav?.dispatch(StackActions.replace("index"));
-          }
+        if (!raw) {
+          throw new Error("No session");
         }
 
-      }catch (err){
-        setIsLoggedIn(false);
-        rootNav?.dispatch(StackActions.replace("index"));
+        const { userId } = JSON.parse(raw);
+        if (userId !== serverUserId) {
+          // session mismatch → clear & redirect
+          await SecureStore.deleteItemAsync("sessionData");
+          redirected = true;
+          rootNav?.dispatch(StackActions.replace("/index"));
+          return;
+        }
 
-        return;
+        // valid session
+        setIsLoggedIn(true);
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        if (!redirected) {
+          setIsLoggedIn(false);
+          rootNav?.dispatch(StackActions.replace("/index"));
+        }
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false)
     }
 
     checkAuth();
-
-    return () => {
-      mounted = false;
-    };
-  }, [router]);
+  }, []); // run once on mount
 
   if (isLoggedIn === null) {
     return null;
   }
 
-  if(loading){
+  if (loading) {
     return (
-        <View>
-          <Text>
-            Loading.......
-          </Text>
-        </View>
-    )
+      <View>
+        <Text>Loading.......</Text>
+      </View>
+    );
   }
 
   return (
-      <Stack screenOptions={{ headerShown: true }}>
-        {isLoggedIn ? (
-            <Stack.Screen name="(drawer)" />
-        ) : (
-            <Stack.Screen name="index" />
-        )}
-      </Stack>
+    <Stack screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="(drawer)" />
+      ) : (
+        <Stack.Screen name="index" />
+      )}
+    </Stack>
   );
 }
