@@ -4,7 +4,7 @@ import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const ModuleCard = (props: { title: string }) => {
+const ModuleCard = (props: { title: string; index: number }) => {
   const router = useRouter();
 
   return (
@@ -17,17 +17,17 @@ const ModuleCard = (props: { title: string }) => {
           <View style={styles.yellowBulletin} />
           <View style={styles.titleContainer}>
             <Text style={styles.title} numberOfLines={3}>
-              {props.title}
+              [Module {props.index + 1}] - {props.title}
             </Text>
           </View>
-          <View style={styles.icons}>
-            <TouchableOpacity>
-              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Entypo name="trash" size={15} color="#aaa" />
-            </TouchableOpacity>
-          </View>
+          {/*<View style={styles.icons}>*/}
+          {/*  <TouchableOpacity>*/}
+          {/*    <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />*/}
+          {/*  </TouchableOpacity>*/}
+          {/*  <TouchableOpacity>*/}
+          {/*    <Entypo name="trash" size={15} color="#aaa" />*/}
+          {/*  </TouchableOpacity>*/}
+          {/*</View>*/}
           <Entypo name="chevron-small-right" size={30} color="#aaa" />
         </View>
       </Card>
@@ -42,10 +42,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 10,
     elevation: 4,
-    top:15
+    top: 15,
   },
   cardContainer: {
-    borderRadius:10,
+    borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 12,
     margin: 0,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   icons: {
     flexDirection: "row",
     marginLeft: 5,
-    marginRight:5,
+    marginRight: 5,
   },
 });
 
