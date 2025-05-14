@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState, memo, useContext, useEffect } from "react";
+import React, { useState, memo, useContext, useEffect, useMemo } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
@@ -9,18 +9,26 @@ import { getSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 
 const data = [
-  { label: "Academic Courses", value: "academic" },
-  { label: "Specialized Courses", value: "specialized" },
+  { label: "All Subjects", value: "all" },
+  { label: "Academic Subjects", value: "academic" },
+  { label: "Specialized Subjects", value: "specialized" },
+  { label: "Previous Subjects", value: "previous" },
 ];
 
+type Subject = {
+  title: string;
+  section: string;
+  subject_id: string;
+  description: string;
+  subjectType: string;
+};
+
 const index = () => {
-  const [selectedValue, setSelectedValue] = useState("academic");
+  const [selectedValue, setSelectedValue] = useState("all");
   const { courseCardView } = useContext(CourseCardViewContext);
-  const [subjects, setSubjects] = useState<Record<string, any> | null>(null);
+  const [subjects, setSubjects] = useState<Subject[] | null>(null);
   const [hasAuthError, setHasAuthError] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  useAuthGuard(hasAuthError);
 
   useEffect(() => {
     async function fetchSubjects() {
@@ -30,23 +38,27 @@ const index = () => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching subjects: ", err);
-        setHasAuthError(true);
+        useAuthGuard(err);
       }
     }
     fetchSubjects();
   }, []);
 
-  const filtered = subjects
-    ? subjects.filter(
-        (s: {
-          title: string;
-          section: string;
-          subject_id: string;
-          description: string;
-          subjectType: string;
-        }) => s.subjectType === selectedValue
-      )
-    : [];
+  const filteredSubjects = useMemo<Subject[] | null>(() => {
+    if (!subjects) return [];
+    switch (selectedValue) {
+      case "academic":
+      case "specialized":
+        return subjects.filter((s) => s.subjectType === selectedValue);
+
+      case "previous":
+        return null;
+
+      case "all":
+      default:
+        return subjects;
+    }
+  }, [subjects, selectedValue]);
 
   if (loading) {
     return (
@@ -60,7 +72,7 @@ const index = () => {
     <View>
       <View>
         <View style={styles.courseContainer}>
-          <Text style={styles.courseTitle}>Courses</Text>
+          <Text style={styles.courseTitle}>Subjects</Text>
           <View style={styles.dropdownContainer}>
             <Dropdown
               style={styles.dropdown}
@@ -87,14 +99,8 @@ const index = () => {
             globalStyle.container,
           ]}
         >
-          {filtered?.map(
-            (subject: {
-              title: string;
-              section: string;
-              subject_id: string;
-              description: string;
-              subjectType: string;
-            }) => {
+          {filteredSubjects ? (
+            filteredSubjects.map((subject: Subject) => {
               if (subject.subjectType === selectedValue) {
                 return (
                   <View
@@ -106,6 +112,7 @@ const index = () => {
                       courseSection={subject.section}
                       courseId={subject.subject_id}
                       description={subject.description}
+                      subjectType={subject.subjectType}
                       courseImage={require("@/assets/dashImage/language.png")}
                     />
                     <Text>{courseCardView}</Text>
@@ -122,12 +129,17 @@ const index = () => {
                     courseSection={subject.section}
                     courseId={subject.subject_id}
                     description={subject.description}
+                    subjectType={subject.subjectType}
                     courseImage={require("@/assets/dashImage/language.png")}
                   />
                   <Text>{courseCardView}</Text>
                 </View>
               );
-            }
+            })
+          ) : (
+            <View>
+              <Text>No {selectedValue} subjects available.</Text>
+            </View>
           )}
         </ScrollView>
       </View>
