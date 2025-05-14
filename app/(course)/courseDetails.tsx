@@ -14,7 +14,7 @@ enum activityCategory {
   academic = "academic",
 }
 
-const courseDetails = async () => {
+const courseDetails = () => {
   const router = useRouter();
   // const [role, setRole] = useState("student");
 
