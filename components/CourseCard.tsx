@@ -24,7 +24,7 @@ const CourseCard = (props: {
             id: props.courseId,
             description: props.description,
             title: props.courseTitle,
-            subjectType: "auditory",
+            subjectType: props.subjectType,
           },
         })
       }

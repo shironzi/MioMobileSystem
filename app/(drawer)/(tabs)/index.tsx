@@ -27,7 +27,6 @@ const index = () => {
   const [selectedValue, setSelectedValue] = useState("all");
   const { courseCardView } = useContext(CourseCardViewContext);
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
-  const [hasAuthError, setHasAuthError] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const index = () => {
     switch (selectedValue) {
       case "academic":
       case "specialized":
-        return subjects.filter((s) => s.subjectType === selectedValue);
+        return subjects.filter((s) => s.subjectType === "auditory" || s.subjectType === "language" || s.subjectType === "speech");
 
       case "previous":
         return null;
