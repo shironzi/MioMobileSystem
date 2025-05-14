@@ -44,6 +44,7 @@ export async function verifyToken() {
 
     return data.user_id;
   } catch (err) {
-    return err;
+    console.error(err)
+    throw err
   }
 }
