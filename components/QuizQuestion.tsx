@@ -1,14 +1,11 @@
-import React, {memo, useState} from "react";
+import React, {memo} from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-
-
 interface Question {
   type: string;
   description: string;
   choices: string[];
 }
-
 interface QuizQuestionProps {
   question: Question;
   qIndex: number;
@@ -19,17 +16,6 @@ interface QuizQuestionProps {
   deleteQuestion: (index: number) => void;
   totalQuestions: number;
 }
-
-const [questions, setQuestions] = useState<any[]>([]);
-
-const addNewQuestion = (type:any) => {
-  const newQuestion = {
-    type,
-    description: "",
-    choices: type === "fillInTheBlank" ? [] : [""],
-  };
-  setQuestions([...questions, newQuestion]);
-};
 
 const QuizQuestion = ({
   question,
@@ -141,6 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 20,
     flex: 1,
+    elevation:5
   },
   questionLabel: {
     fontWeight: "bold",
@@ -201,23 +188,5 @@ const styles = StyleSheet.create({
   blankAnswerInput: {
     color: "#aaa",
   },
-  buttonRow: {
-    flexDirection:"row",
-    justifyContent:"center",
-    alignItems:"center",
- },
-  button: {
-    backgroundColor:"#ffbf18",
-    padding:14,
-    borderRadius:50,
-    elevation:5,
-    margin:20,
-    top:-20
- },
- buttonText: {
-    color:"#fff",
-    fontWeight:"bold",
-    fontSize:16,
-    left:5
- },
+
 });

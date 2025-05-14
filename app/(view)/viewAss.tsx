@@ -53,12 +53,13 @@ const viewAss = () => {
                 multiline={true}
                 value={answer}
                 onChangeText={setAnswer}
-                />                
-
-            </View>
+                />       
               <TouchableOpacity style={styles.button} >
                 <Text style={styles.buttonText}>Submit</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>         
+
+            </View>
+             
              
             </View>
           ))}
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 50,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 0,
   },
   buttonText: {
     color: "#fff",

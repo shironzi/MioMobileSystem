@@ -86,11 +86,12 @@ const viewAssFile = () => {
                 <FontAwesome name="plus" size={12} color="#ffbf18" style={{ top: 0, left: 10 }} />
                 <Text style={styles.addFileText}>Add file</Text>
               </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={styles.button} >
+              <TouchableOpacity style={styles.button} >
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
+            </View>
+
+           
           </View>
         ))}
       </View>
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 50,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
   },
   buttonText: {
     color: "#fff",
