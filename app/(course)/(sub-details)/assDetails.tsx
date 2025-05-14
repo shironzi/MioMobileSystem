@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from "react-native";
 import React, { memo, useState } from "react";
 import { Card } from "@rneui/themed";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+
 
 const data = [
   {
@@ -32,12 +34,14 @@ const assDetails = () => {
   const { id } = useLocalSearchParams();
   const assignmentId = parseInt(id as string);
   const selectedAssignment = data.find((item) => item.id === assignmentId);
+  const answerTemp = "Oralism is an approach to use speaking rather than sign language"
 
   const [lastAttemptVisible, setLastAttemptVisible] = useState(false);
 
   if (!selectedAssignment) return <Text>Assignment not found</Text>;
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
@@ -48,7 +52,7 @@ const assDetails = () => {
           </View>
           <Text style={styles.availability}>Availability: {selectedAssignment.availability}</Text>
           <Text style={styles.attempt}>Attempts: {selectedAssignment.attempt}</Text>
-          <Text style={styles.type}>Type: {selectedAssignment.type}</Text>
+          <Text style={styles.type}>Submission Type: {selectedAssignment.type}</Text>
         </View>
         <TouchableOpacity
           style={styles.button}
@@ -65,10 +69,10 @@ const assDetails = () => {
       </Card>
 
       <View style={styles.attemptCard}>
-      <Text style={styles.last}>Last Attempt</Text>
+      <Text style={styles.last}>Latest Attempt</Text>
         <TouchableOpacity onPress={() => setLastAttemptVisible(!lastAttemptVisible)}>
         <View style={styles.attemptRow}>
-        <Text style={styles.view}>View Answer</Text>
+        <Text style={styles.view}>View Attempt</Text>
         
         <MaterialIcons
               name={lastAttemptVisible ? "arrow-drop-up" : "arrow-drop-down"}
@@ -79,9 +83,50 @@ const assDetails = () => {
            </View>
 
         </TouchableOpacity>
+
+        {lastAttemptVisible && (
+        <>
+          {selectedAssignment.type === 'File Upload' ? (
+            <View style={{marginTop: 10 }}>
+              <View style={{flexDirection:"row", justifyContent:"space-between", top:-5}}>
+                <Text style={{left:10, fontSize:14}}>File 1</Text>
+                <TouchableOpacity>
+                <Text style={{color:"#ffbf18", fontWeight:500,left:-190, textDecorationLine:"underline" }}>image.pdf</Text>
+                <MaterialIcons name="download" size={20} color="#ffbf18" style={{left:43, top:-20}} />
+                </TouchableOpacity>
+
+              </View>
+     
+              <View style={styles.imageContainer}>
+                <Text style={{margin:15, fontSize:14, top:-10, left:-10}}>Preview of image.pdf</Text>
+                <FontAwesome name="times" size={20} color="#808080" style={{ position: "absolute", right: 10, top: 15 }} />
+                
+                <ScrollView style={{ height: 440 }}>
+                  <Image
+                    source={require("@/assets/1.png")}
+                    style={{ width: "100%", height: 800, alignSelf: "center", }}
+                    resizeMode="stretch"
+                  />
+                </ScrollView>
+            </View>
+          
+            </View>
+          ) : (
+            <TextInput
+              style={styles.textInput}
+              value={answerTemp}
+              editable={false}
+              multiline
+            />
+          )}
+        </>
+      )}
       
       </View>
+  
+      
     </View>
+    </ScrollView>
   );
 };
 
@@ -187,6 +232,28 @@ const styles = StyleSheet.create({
     marginBottom:-10
     
   },
+  textInput:{
+    backgroundColor:"#f5f5f5",
+    borderRadius:10,
+    borderColor:"#ddd",
+    borderWidth:1,
+    paddingHorizontal:10,
+    marginHorizontal:5,
+    marginTop:10
+  }, 
+  imageContainer: {
+    backgroundColor: "#eee",
+    borderRadius: 10,
+    top: -10,
+    height: 300,
+    paddingTop: 10,
+    paddingHorizontal: 10,
+    paddingBottom:10,
+    position: "relative",
+    borderColor:"#aaa",
+    borderWidth:1
+  }
+  
 
 });
 
