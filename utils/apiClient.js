@@ -9,26 +9,20 @@ export const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
-        const raw = await SecureStore.getItemAsync('sessionData');
+        const raw = await SecureStore.getItemAsync("sessionData");
         if (raw) {
             const { sessionId } = JSON.parse(raw);
-            config.headers = {
-                ...(config.headers || {}),
-                Authorization: `Bearer ${sessionId}`,
-            };
+            if (!config.headers) config.headers = {};
+            config.headers.Authorization = `Bearer ${sessionId}`;
         }
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-api.interceptors.response.use(
-    response => response,
-    async error => {
-        const status = error.response?.status;
-        if (status === 401 || status === 403) {
-            console.log("status: ", status)
-        }
-        return Promise.reject(error);
-    }
-);
+// api.interceptors.response.use(
+//     response => response,
+//     async error => {
+//         return Promise.reject(error);
+//     }
+// );
