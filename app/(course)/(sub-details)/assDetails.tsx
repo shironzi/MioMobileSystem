@@ -1,44 +1,81 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { Card } from "@rneui/themed";
 import HeaderConfig from "@/components/HeaderConfig";
-
-const data = [
-  {
-    id: 1,
-    title: "Activity 1",
-    deadline: "January 12, 2024",
-    points: 50,
-    availability: "January 11, 2024 9:00 AM - January 12, 2024 9:00 AM",
-    attempt: 1,
-  },
-];
+import { useLocalSearchParams } from "expo-router";
 
 const assDetails = () => {
   HeaderConfig("Assignment");
 
+  const {
+    title,
+    deadline,
+    createdAt,
+    availabilityStart,
+    availabilityEnd,
+
+    attempts,
+    pointsTotal,
+  } = useLocalSearchParams<{
+    title: string;
+    deadline: string;
+    createdAt: string;
+    availabilityStart: string;
+    availabilityEnd: string;
+    attempts: string;
+    pointsTotal: string;
+  }>();
+
+  const formatDate = useCallback(
+    (date: string) => {
+      const newDate = new Date(date);
+      return newDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    },
+    [Date]
+  );
+
+  const formatTime = useCallback(
+    (timeStr: string) => {
+      const [hourStr, minute] = timeStr.split(":");
+      let hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${ampm}`;
+    },
+    [Date]
+  );
+
   return (
     <View style={styles.container}>
-      {data.map((item) => (
-        <View key={item.id}>
-          <Card containerStyle={styles.cardContainer}>
-            <View style={styles.cardContent}>
-              <Text style={styles.title}>{item.title}</Text>
-              <View style={styles.row}>
-                <Text style={styles.deadline}>Deadline: {item.deadline}</Text>
-                <Text style={styles.points}>Points: {item.points}</Text>
-              </View>
-              <Text style={styles.availability}>
-                Availability: {item.availability}
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.row}>
+              <Text style={styles.deadline}>
+                Deadline: {formatDate(deadline)}
               </Text>
-              <Text style={styles.attempt}>Attempts: {item.attempt}</Text>
+              <Text style={styles.points}>Points: {pointsTotal}</Text>
             </View>
-          </Card>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Take Quiz</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
+            <View style={styles.availabilityContainer}>
+              <Text>Availability: </Text>
+              <Text style={styles.availability}>
+                {formatDate(deadline)} {formatTime(availabilityStart)} -{" "}
+                {formatDate(createdAt)} {formatTime(availabilityEnd)}
+              </Text>
+            </View>
+
+            <Text style={styles.attempt}>Attempts: {attempts}</Text>
+          </View>
+        </Card>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Take Quiz</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -56,13 +93,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderWidth: 0,
     // shadowColor: "transparent",
-    elevation:5,
+    elevation: 5,
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    margin:10
+    margin: 10,
   },
   title: {
     fontSize: 20,
@@ -86,11 +123,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
   },
-  availability: {
+  availabilityContainer: {
     fontSize: 16,
     color: "#000",
     marginBottom: 10,
     lineHeight: 20,
+    maxWidth: "80%",
+    flexDirection: "row",
+  },
+  availability: {
+    flexWrap: "wrap",
+    maxWidth: "80%",
   },
   attempt: {
     fontSize: 16,
