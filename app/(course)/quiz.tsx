@@ -58,7 +58,7 @@ const quiz = () => {
       </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("addAssignment")}
+        onPress={() => router.push("addQuiz")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>
