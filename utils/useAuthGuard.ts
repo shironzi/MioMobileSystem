@@ -1,18 +1,23 @@
 import { useEffect } from "react";
-import { useNavigation } from "expo-router";
-import { StackActions } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import type { AxiosError } from "axios";
 
-export function useAuthGuard(shouldLogout: boolean) {
-    const navigation = useNavigation();
-    const rootNav = navigation.getParent();
+export function useAuthGuard(error?: unknown) {
+    const router = useRouter();
 
     useEffect(() => {
-        if (!shouldLogout) return;
+        if (!error) return;
 
-        (async () => {
-            await SecureStore.deleteItemAsync("sessionData");
-            rootNav?.dispatch(StackActions.replace("index"));
-        })();
-    }, [shouldLogout, rootNav]);
+        const status = (error as AxiosError)?.response?.status;
+
+        if (status === 401 || status === 403) {
+            (async () => {
+                await SecureStore.deleteItemAsync("sessionData");
+                router.replace("/");
+            })();
+        } else {
+            console.error(error);
+        }
+    }, [error, router]);
 }
