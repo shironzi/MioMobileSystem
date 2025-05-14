@@ -4,6 +4,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import globalStyle from "@/styles/globalStyle";
 import HeaderConfig from "@/components/HeaderConfig";
+import * as SecureStore from 'expo-secure-store';
 
 enum activityCategory {
   speech = "speech",
@@ -12,8 +13,10 @@ enum activityCategory {
   academic = "academic",
 }
 
-const courseDetails = () => {
+const courseDetails = async () => {
   const router = useRouter();
+  // const [role, setRole] = useState("student");
+
   const { id, description, title, subjectType } = useLocalSearchParams<{
     id: string;
     title: string;
@@ -22,6 +25,18 @@ const courseDetails = () => {
   }>();
 
   HeaderConfig("Course Details");
+
+  // useEffect(() => {
+  //   const getRole = async () => {
+  //     const raw = await SecureStore.getItemAsync("sessionData");
+  //     if (raw != null) {
+  //       const {role} = JSON.parse(raw)
+  //       setRole(role);
+  //     }
+  //   }
+  //
+  //   getRole()
+  // }, [])
 
   return (
     <ScrollView>
