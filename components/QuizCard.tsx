@@ -49,10 +49,10 @@ const QuizCard = (props: {
             </Text> */}
             <View style={styles.icons}>
             <TouchableOpacity>
-              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
+              {/* <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} /> */}
             </TouchableOpacity>
             <TouchableOpacity>
-              <Entypo name="trash" size={15} color="#aaa" />
+              {/* <Entypo name="trash" size={15} color="#aaa" /> */}
             </TouchableOpacity>
           </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />

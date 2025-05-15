@@ -43,10 +43,10 @@ const announceCard = (props: {
           </Text>
           <View style={styles.icons}>
             <TouchableOpacity>
-              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:5}} />
+              {/* <Entypo name="edit" size={15} color="#aaa" style={{marginRight:5}} /> */}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowDeleteCard(true)}>
-                <Entypo name="trash" size={15} color="#aaa" />
+                {/* <Entypo name="trash" size={15} color="#aaa" /> */}
               </TouchableOpacity>
       
           </View>
