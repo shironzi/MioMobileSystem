@@ -195,6 +195,7 @@ const addAssignment = () => {
             </TouchableOpacity>
             </View>
         )}
+         <View style={styles.separator}></View>
 
         <View style={styles.row}>
             <Text style={styles.label}>Title</Text>
@@ -203,7 +204,6 @@ const addAssignment = () => {
             placeholder="Title"
             placeholderTextColor="#aaa"
             multiline={true}
-            numberOfLines={2}
             value={title}
             onChangeText={setTitle}
             />
@@ -241,93 +241,101 @@ const addAssignment = () => {
 export default memo(addAssignment);
 
 const styles = StyleSheet.create({
-    container: {
-        margin: 20,
-        padding: 20,
-        backgroundColor: "#fff",
-        borderRadius: 10,
-        elevation: 5,
-        position: "relative", 
-      },
-      row: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 15,
-      },
-      input:{
+container: {
+    margin: 20,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    elevation: 5,
+    position: "relative", 
+},
+row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+},
+input:{
 
-      },
-      inputRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      },
-      label: {
-        fontSize: 15,
-        color: "#000",
-        fontWeight: "bold",
-      },
-      dropdown: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderWidth: 1,
-        borderColor: "#ddd",
-        padding: 12,
-        borderRadius: 10,
-        backgroundColor: "#f9f9f9",
-        width:"55%"
-      },
-      dropdownButton: {
-        borderWidth: 1,
-        borderColor: "#ddd",
-        borderRadius: 8,
-        padding: 12,
-        backgroundColor: "#f9f9f9",
-        width: "55%",
-      },
-      dropdownButtonText: {
-        color: "#aaa",
-      },
-      selectedText: {
-        color: "#000",
-      },
-      dropdownList: {
-        position: "absolute",
-        top: 75, 
-        left: 161, 
-        width: "55%",
-        borderWidth: 1,
-        borderColor: "#ddd",
-        borderRadius: 10,
-        backgroundColor: "#fff",
-        zIndex: 999,
-      },
-      dropdownItem: {
-        padding: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee",
-      },
-      dropdownItemText: {
-        color: "#333",
-      },
-      buttonRow: {
-        flexDirection:"row",
-        justifyContent:"center",
-        alignItems:"center",
-    },
-    button: {
-        backgroundColor:"#ffbf18",
-        padding:14,
-        borderRadius:50,
-        elevation:5
-    },
-    buttonText: {
-        color:"#fff",
-        fontWeight:"bold",
-        fontSize:16,
-        left:5
-    }
+},
+separator:{
+    height:3,
+    backgroundColor:"#f0f0f0",
+    width:"113%",
+    left:-20,
+    top:5,
+    marginBottom:20
+  },
+inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+},
+label: {
+    fontSize: 15,
+    color: "#000",
+    fontWeight: "bold",
+},
+dropdown: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: "#f9f9f9",
+    width:"55%"
+},
+dropdownButton: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: "#f9f9f9",
+    width: "55%",
+},
+dropdownButtonText: {
+    color: "#aaa",
+},
+selectedText: {
+    color: "#000",
+},
+dropdownList: {
+    position: "absolute",
+    top: 75, 
+    left: 161, 
+    width: "55%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    zIndex: 999,
+},
+dropdownItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+},
+dropdownItemText: {
+    color: "#333",
+},
+buttonRow: {
+    flexDirection:"row",
+    justifyContent:"center",
+    alignItems:"center",
+},
+button: {
+    backgroundColor:"#ffbf18",
+    padding:14,
+    borderRadius:50,
+    elevation:5
+},
+buttonText: {
+    color:"#fff",
+    fontWeight:"bold",
+    fontSize:16,
+    left:5
+}
       
 });

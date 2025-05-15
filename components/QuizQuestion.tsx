@@ -127,7 +127,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 20,
     flex: 1,
-    elevation:5
+    elevation:5,
+    borderWidth:0,
+    borderColor:"none",
+    shadowColor:"none"
   },
   questionLabel: {
     fontWeight: "bold",
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
     width: "113%",
     left: -20,
     top: 5,
-    marginTop: 10,
+    marginTop: 20,
   },
   blankAnswerContainer: {
     borderWidth: 1,

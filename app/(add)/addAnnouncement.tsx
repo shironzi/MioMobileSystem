@@ -8,23 +8,13 @@ const addAnnouncement = () => {
     const [title, setTitle] = useState("");
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [description, setDescription] = useState("");
     HeaderConfig("Add Announcement");
 
   return (
     <View>
         <View style={styles.container}>
-        <View style={styles.row}>
-            <Text style={styles.label}>Title</Text>
-            <TextInput
-            style={styles.textInput}
-            placeholder="Event Title"
-            placeholderTextColor="#aaa"
-            multiline={true}
-            numberOfLines={2}
-            value={title}
-            onChangeText={setTitle}
-            />
-      </View>
+       
       <View style={styles.row}>
         <Text style={styles.label}>Date</Text>
         <TouchableOpacity
@@ -49,6 +39,29 @@ const addAnnouncement = () => {
           />
         )}
       </View>
+      <View style={styles.row}>
+            <Text style={styles.label}>Title</Text>
+            <TextInput
+            style={styles.textInput}
+            placeholder="Event Title"
+            placeholderTextColor="#aaa"
+            multiline={true}
+            value={title}
+            onChangeText={setTitle}
+            />
+      </View>
+      <View style={styles.row}>
+            <Text style={styles.label}>Description</Text>
+            <TextInput
+            style={styles.textInput}
+            placeholder="Description"
+            placeholderTextColor="#aaa"
+            multiline={true}
+            value={description}
+            onChangeText={setDescription}
+            />
+      </View>
+     
       <TouchableOpacity style={styles.button}>
         <View style={styles.buttonRow}>
             <MaterialIcons name="add" size={20} color="#fff" />
@@ -95,7 +108,7 @@ const styles = StyleSheet.create ({
         backgroundColor: "#f9f9f9",
         fontSize: 14,
         textAlignVertical: "top",
-        width:"80%"
+        width:"65%"
     },
     dropdown: {
         flexDirection: "row",
@@ -106,7 +119,7 @@ const styles = StyleSheet.create ({
         padding: 12,
         borderRadius: 10,
         backgroundColor: "#f9f9f9",
-        width:"80%"
+        width:"65%"
       },
     buttonRow: {
         flexDirection:"row",
@@ -116,7 +129,8 @@ const styles = StyleSheet.create ({
     button: {
         backgroundColor:"#ffbf18",
         padding:14,
-        borderRadius:50
+        borderRadius:50,
+        elevation:5
     },
     buttonText: {
         color:"#fff",
