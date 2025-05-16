@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView
 } from "react-native";
 import React, { useState, memo, useCallback } from "react";
 import {
@@ -40,7 +41,10 @@ const auth = () => {
   }, [source, router]);
 
   return (
-    <View style={styles.upper}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, justifyContent: "center" }}
+      behavior="padding">
+            <View style={styles.upper}>
       <View style={styles.first}>
         <View style={styles.second}>
           <View style={styles.container}>
@@ -110,14 +114,17 @@ const auth = () => {
         </View>
       </View>
     </View>
+  </KeyboardAvoidingView>
+
   );
 };
 
 const styles = StyleSheet.create({
   first: {
     padding: 20,
+    marginTop:60,
     backgroundColor: "#4d83e4",
-    top: 200,
+    top: 140,
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: -120,
