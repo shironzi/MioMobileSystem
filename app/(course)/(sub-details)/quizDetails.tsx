@@ -10,26 +10,17 @@ import { FontAwesome } from "@expo/vector-icons";
 const data = [
   {
     id: 1,
-    title: "Activity 1",
+    title: "Quiz 1",
     deadline: "January 12, 2024",
     points: 50,
     availability: "January 11, 2024 9:00 AM - January 12, 2024 9:00 AM",
     attempt: 1,
-    type: "File Upload",
-  },
-  {
-    id: 2,
-    title: "Activity 2",
-    deadline: "January 15, 2024",
-    points: 100,
-    availability: "January 14, 2024 9:00 AM - January 15, 2024 9:00 AM",
-    attempt: 2,
-    type: "Text Entry",
+    type: "Multiple Choice, True/False, Fill in the Blank",
   },
 ];
 
-const assDetails = () => {
-  HeaderConfig("Assignment");
+const quizDetails = () => {
+  HeaderConfig("Quiz");
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const assignmentId = parseInt(id as string);
@@ -52,20 +43,17 @@ const assDetails = () => {
           </View>
           <Text style={styles.availability}>Availability: {selectedAssignment.availability}</Text>
           <Text style={styles.attempt}>Attempts: {selectedAssignment.attempt}</Text>
-          <Text style={styles.type}>Submission Type: {selectedAssignment.type}</Text>
+          <Text style={styles.type}>Quiz Type: {selectedAssignment.type}</Text>
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() =>
-            selectedAssignment.type === "File Upload"
-              ? router.push("viewAssFile")
-              : router.push("viewAss")
-          }
+          onPress={() => router.push("viewQuiz")}
+        
         >
           {/* <Text style={styles.buttonText}>
             {selectedAssignment.type === "File Upload" ? "Upload File" : "Start Assignment"}
           </Text> */}
-          <Text style={styles.buttonText}>Start Assignment</Text>
+          <Text style={styles.buttonText}>Take Quiz</Text>
         </TouchableOpacity>
       </Card>
 
@@ -266,4 +254,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default memo(assDetails);
+export default memo(quizDetails);
