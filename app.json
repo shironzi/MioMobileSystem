@@ -2,7 +2,7 @@
   "expo": {
     "name": "MioMobileApp",
     "slug": "MioMobileApp",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "miomobileapp",
@@ -16,9 +16,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.MioMobileApp",
-      "versionCode": 2
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -35,19 +33,10 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "edb22fb8-01df-407d-bf0f-2c2242b3b2b9"
-      }
     }
   }
 }
