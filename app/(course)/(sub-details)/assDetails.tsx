@@ -24,7 +24,7 @@ const data = [
     points: 100,
     availability: "January 14, 2024 9:00 AM - January 15, 2024 9:00 AM",
     attempt: 2,
-    type: "Quiz",
+    type: "Text Entry",
   },
 ];
 
@@ -62,9 +62,10 @@ const assDetails = () => {
               : router.push("viewAss")
           }
         >
-          <Text style={styles.buttonText}>
-            {selectedAssignment.type === "File Upload" ? "Upload File" : "Take Quiz"}
-          </Text>
+          {/* <Text style={styles.buttonText}>
+            {selectedAssignment.type === "File Upload" ? "Upload File" : "Start Assignment"}
+          </Text> */}
+          <Text style={styles.buttonText}>Start Assignment</Text>
         </TouchableOpacity>
       </Card>
 
@@ -98,16 +99,24 @@ const assDetails = () => {
               </View>
      
               <View style={styles.imageContainer}>
-                <Text style={{margin:15, fontSize:14, top:-10, left:-10}}>Preview of image.pdf</Text>
-                <FontAwesome name="times" size={20} color="#808080" style={{ position: "absolute", right: 10, top: 15 }} />
-                
-                <ScrollView style={{ height: 440 }}>
-                  <Image
-                    source={require("@/assets/1.png")}
-                    style={{ width: "100%", height: 800, alignSelf: "center", }}
-                    resizeMode="stretch"
-                  />
-                </ScrollView>
+              <View style={{backgroundColor:"#eee", height:50, margin:0, padding:0, top:-10,
+                 width:321, left:-10, borderTopLeftRadius:10, borderTopRightRadius:10}}>
+                  <Text style={{ fontSize: 14, top: 15, left: 15, color:"#000" }}>Preview of image.pdf</Text>
+                  </View>
+              
+              <FontAwesome name="times" size={20} color="#808080" style={{ position: "absolute", right: 10, top: 15 }} />
+              
+              <ScrollView
+                style={{ height: 300 }}
+                // contentContainerStyle={{ alignItems: "center" }}
+                showsVerticalScrollIndicator={true}
+              >
+                <Image
+                  source={require("@/assets/1.png")}
+                  style={{ width: "100%" }}
+                  resizeMode="cover"
+                />
+              </ScrollView>
             </View>
           
             </View>
@@ -242,7 +251,7 @@ const styles = StyleSheet.create({
     marginTop:10
   }, 
   imageContainer: {
-    backgroundColor: "#eee",
+    backgroundColor: "#fff",
     borderRadius: 10,
     top: -10,
     height: 300,
