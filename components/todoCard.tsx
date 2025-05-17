@@ -1,6 +1,6 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type TodoCardProps = {
   sub: string;
@@ -21,10 +21,13 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
   return (
     <TouchableOpacity activeOpacity={0.9}>
       <View style={styles.card}>
-        <View style={styles.cardImage}>
-          <MaterialIcons name="image" size={50} color="#FFBF18" />
-        </View>
         <View style={styles.cardContent}>
+          <MaterialIcons
+            name="image"
+            size={50}
+            color="#FFBF18"
+            style={styles.icon}
+          />
           <Text style={styles.sub}>{props.sub}</Text>
           <Text style={styles.title}>{props.title}</Text>
           <View style={styles.row}>
@@ -40,32 +43,33 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
 
 const styles = StyleSheet.create({
   card: {
+    left: -15,
     width: "100%",
     backgroundColor: "#fff",
     borderRadius: 10,
     elevation: 3,
     padding: 20,
-    flexDirection: "row",
-    columnGap: 20,
+    height: 110,
   },
   cardContent: {
     flexDirection: "column",
     justifyContent: "center",
   },
-  cardImage: {
-    width: "20%",
-    marginVertical: "auto",
-  },
   title: {
+    left: 70,
+    top: -50,
     fontSize: 18,
     fontWeight: "bold",
     color: "#2264DC",
+    marginBottom: 2,
   },
   date: {
     fontSize: 14,
     color: "#666",
   },
   sub: {
+    left: 70,
+    top: -50,
     fontSize: 14,
     color: "#666",
   },
@@ -74,13 +78,22 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   type: {
+    left: 70,
+    top: -50,
     fontSize: 14,
     color: "#FFBF18",
   },
   row: {
+    left: 70,
+    top: -50,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 2,
+  },
+  icon: {
+    marginRight: 10,
+    left: 0,
+    top: 20,
   },
 });
 

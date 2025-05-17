@@ -1,5 +1,5 @@
-import { useFocusEffect, useNavigation } from "expo-router";
 import { useCallback } from "react";
+import { useNavigation, useFocusEffect } from "expo-router";
 
 export default function useHeaderConfig(
   title: string,
