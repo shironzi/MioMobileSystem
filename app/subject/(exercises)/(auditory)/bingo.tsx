@@ -1,71 +1,35 @@
-import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
-import HeaderConfig from "@/utils/HeaderConfig";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { memo, useCallback, useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import {
+  View,
+  Text,
   FlatList,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from "react-native";
+import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
+import { FontAwesome6 } from "@expo/vector-icons";
+import HeaderConfig from "@/components/HeaderConfig";
+import { useRouter } from "expo-router";
 
 const Data = [
-  {
-    id: "1",
-    image: require("@/assets/images/flashcards/apple.jpg"),
-    word: "bird",
-  },
-  { id: "2", image: require("@/assets/images/logo.png"), word: "fence" },
+  { id: "1", image: require("@/assets/flashcards/apple.jpg"), word: "bird" },
+  { id: "2", image: require("@/assets/logo.png"), word: "fence" },
   {
     id: "3",
-    image: require("@/assets/images/flashcards/fireExtinguisher.jpg"),
+    image: require("@/assets/flashcards/fireExtinguisher.jpg"),
     word: "fence",
   },
-  {
-    id: "4",
-    image: require("@/assets/images/flashcards/scissors.png"),
-    word: "bird",
-  },
-  {
-    id: "5",
-    image: require("@/assets/images/flashcards/teacher.jpg"),
-    word: "Dog",
-  },
-  {
-    id: "6",
-    image: require("@/assets/images/dashImage/english.png"),
-    word: "fence",
-  },
-  {
-    id: "7",
-    image: require("@/assets/images/dashImage/math.png"),
-    word: "Cat",
-  },
-  {
-    id: "8",
-    image: require("@/assets/images/dashImage/social.png"),
-    word: "Cherry",
-  },
-  {
-    id: "9",
-    image: require("@/assets/images/dashImage/speech.png"),
-    word: "Rabbit",
-  },
-  {
-    id: "10",
-    image: require("@/assets/images/dashImage/speech.png"),
-    word: "Apple",
-  },
-  {
-    id: "11",
-    image: require("@/assets/images/dashImage/speech.png"),
-    word: "Lemon",
-  },
+  { id: "4", image: require("@/assets/flashcards/scissors.png"), word: "bird" },
+  { id: "5", image: require("@/assets/flashcards/teacher.jpg"), word: "Dog" },
+  { id: "6", image: require("@/assets/dashImage/english.png"), word: "fence" },
+  { id: "7", image: require("@/assets/dashImage/math.png"), word: "Cat" },
+  { id: "8", image: require("@/assets/dashImage/social.png"), word: "Cherry" },
+  { id: "9", image: require("@/assets/dashImage/speech.png"), word: "Rabbit" },
+  { id: "10", image: require("@/assets/dashImage/speech.png"), word: "Apple" },
+  { id: "11", image: require("@/assets/dashImage/speech.png"), word: "Lemon" },
   {
     id: "12",
-    image: require("@/assets/images/dashImage/speech.png"),
+    image: require("@/assets/dashImage/speech.png"),
     word: "Cucumber",
   },
 ];
@@ -90,7 +54,7 @@ const bingo = () => {
     if (currentIndex < UNIQUE_WORDS.length - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
-      router.push("/subject/(sub-details)/scoreDetails");
+      router.push("/(course)/(sub-details)/scoreDetails");
     }
   }, [currentIndex, router]);
 

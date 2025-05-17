@@ -1,17 +1,17 @@
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import React, { memo, useEffect, useState } from "react";
 import AssCard from "@/components/AssCard";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 
 interface Availability {
   start: string;

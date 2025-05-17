@@ -1,17 +1,18 @@
-import Entypo from "@expo/vector-icons/Entypo";
-import { useRouter } from "expo-router";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Card } from "@rneui/themed";
+import { useRouter } from "expo-router";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const ModuleCard = (props: { title: string; index: number }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/subject/(sub-details)/moduleDetails")}
+      onPress={() => router.navigate("/(sub-details)/moduleDetails")}
       style={styles.touchableOpacity}
     >
-      <View style={styles.cardContainer}>
+      <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.titleContainer}>
@@ -19,22 +20,17 @@ const ModuleCard = (props: { title: string; index: number }) => {
               [Module {props.index + 1}] - {props.title}
             </Text>
           </View>
-          <View style={styles.icons}>
-            <TouchableOpacity>
-              <Entypo
-                name="edit"
-                size={15}
-                color="#aaa"
-                style={{ marginRight: 8 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Entypo name="trash" size={15} color="#aaa" />
-            </TouchableOpacity>
-          </View>
+          {/*<View style={styles.icons}>*/}
+          {/*  <TouchableOpacity>*/}
+          {/*    <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />*/}
+          {/*  </TouchableOpacity>*/}
+          {/*  <TouchableOpacity>*/}
+          {/*    <Entypo name="trash" size={15} color="#aaa" />*/}
+          {/*  </TouchableOpacity>*/}
+          {/*</View>*/}
           <Entypo name="chevron-small-right" size={30} color="#aaa" />
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 };

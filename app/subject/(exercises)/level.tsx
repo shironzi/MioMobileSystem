@@ -1,8 +1,8 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const level = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const level = () => {
       <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/subject/(exercises)/play")}
+          onPress={() => router.push("/(course)/(exercises)/play")}
         >
           <MaterialIcons
             name="star"

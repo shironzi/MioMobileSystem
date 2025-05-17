@@ -1,7 +1,7 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import PlayCard from "@/components/playCard";
 import React, { memo } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import PlayCard from "@/components/playCard";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const data = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,

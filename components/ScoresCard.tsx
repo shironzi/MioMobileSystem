@@ -1,7 +1,8 @@
-import Entypo from "@expo/vector-icons/Entypo";
-import { useRouter } from "expo-router";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { Card } from "@rneui/themed";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const ScoresCard = (props: {
   name: string;
@@ -13,8 +14,8 @@ const ScoresCard = (props: {
   const router = useRouter();
 
   return (
-    <TouchableOpacity onPress={() => router.push("/subject/scoreNames")}>
-      <View style={styles.card}>
+    <TouchableOpacity onPress={() => router.push("scoreNames")}>
+      <Card containerStyle={styles.card}>
         <View style={styles.row}>
           <View style={styles.flex2}>
             <Text style={[styles.text, styles.wrapText]} numberOfLines={3}>
@@ -38,7 +39,7 @@ const ScoresCard = (props: {
             style={{ left: -10 }}
           />
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 };

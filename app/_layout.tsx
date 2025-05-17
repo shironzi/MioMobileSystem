@@ -1,28 +1,28 @@
-import {
-  FirebaseAuthTypes,
-  getAuth,
-  onAuthStateChanged,
-} from "@react-native-firebase/auth";
-import { Stack, useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import {FirebaseAuthTypes, getAuth,} from "@react-native-firebase/auth";
+import {Stack, useNavigation, useRouter} from "expo-router";
+import {useEffect, useState} from "react";
+import {Text, View} from "react-native";
+import {StackActions} from "@react-navigation/native";
 
 export default function Layout() {
-  const navigation = useNavigation();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const router = useRouter()
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-  function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    setUser(user);
-    setIsLoggedIn(!!user); // Update isLoggedIn based on user presence
-    setLoading(false); // Stop loading once auth state is determined
-  }
+  useEffect(() => {
+    const unsubscribe = getAuth().onAuthStateChanged(u => {
+      setUser(u);
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
-    const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
-    return subscriber; // Unsubscribe on component unmount
-  }, []);
+    if (!loading && user) {
+      // replace so user can’t back-nav to login
+      router.replace('/(drawer)/(tabs)');
+    }
+  }, [loading, user, router]);
 
   if (loading) {
     return (
@@ -33,12 +33,8 @@ export default function Layout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {isLoggedIn ? (
-        <Stack.Screen name="(drawer)" />
-      ) : (
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-      )}
-    </Stack>
+      </Stack>
   );
 }

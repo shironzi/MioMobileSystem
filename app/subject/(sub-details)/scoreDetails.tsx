@@ -1,7 +1,8 @@
-import ScoreDetailsCard from "@/components/ScoreDetailsCard";
-import HeaderConfig from "@/utils/HeaderConfig";
 import React, { memo } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
+import ScoreDetailsCard from "@/components/ScoreDetailsCard";
+import HeaderConfig from "@/components/HeaderConfig";
+import ScoreNamesCard from "@/components/ScoreNamesCard";
 
 const data = [
   {
@@ -13,10 +14,7 @@ const data = [
     scores: 7,
     totalQuestion: 8,
     comments: [
-      {
-        id: 1,
-        word: "Passed! 'Ph' sound softer, like an 'F'. Good pacing, try to pronounce 'Th' sharper.",
-      },
+      { id: 1, word: "Passed! 'Ph' sound softer, like an 'F'. Good pacing, try to pronounce 'Th' sharper." },
       { id: 2, word: "Good pacing, try to pronounce 'Th' sharper." },
       { id: 3, word: "Watch your lip movement in 'V' sounds." },
     ],
@@ -49,7 +47,7 @@ const ScoreDetails = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    marginBottom: 70,
+    marginBottom:70
   },
 });
 
