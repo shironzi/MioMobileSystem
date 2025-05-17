@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const level = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const level = () => {
       <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/(course)/(exercises)/play")}
+          onPress={() => router.push("/subject/(exercises)/play")}
         >
           <MaterialIcons
             name="star"

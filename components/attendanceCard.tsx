@@ -1,7 +1,6 @@
 
 import React, { memo } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
@@ -14,7 +13,7 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
 
   return (
     <TouchableOpacity style={styles.touchableOpacity}>
-      <Card containerStyle={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.titleContainer}>
@@ -27,7 +26,7 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
             </Text>
           </View>
           <View style={styles.icons}>
-            <TouchableOpacity  onPress={() => router.navigate("/(sub-details)/attendanceDetails")}>
+            <TouchableOpacity  onPress={() => router.navigate("/subject/(sub-details)/attendanceDetails")}>
               <Entypo name="edit" size={15} color="#aaa" style={{ marginRight: 8 }} />
             </TouchableOpacity>
             <TouchableOpacity>
@@ -35,7 +34,7 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 };

@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const SpeechTrainingExercise = () => {
   const router = useRouter();
@@ -14,7 +14,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(course)/(exercises)/level")}
+            onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Picture.png")}
@@ -29,7 +29,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(course)/(exercises)/level")}
+            onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Questions.png")}
@@ -44,7 +44,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(course)/(exercises)/level")}
+            onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Dictionary.png")}
@@ -59,7 +59,7 @@ const SpeechTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/(course)/(exercises)/level")}
+            onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}

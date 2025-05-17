@@ -1,8 +1,8 @@
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState, useCallback, useMemo, memo } from "react";
 import HeaderConfig from "@/utils/HeaderConfig";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import React, { memo, useCallback, useMemo, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const formatKey = (d: Date) => d.toISOString().split("T")[0];
 

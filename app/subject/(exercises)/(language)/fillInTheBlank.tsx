@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ActivityProgress from "@/components/activityProgress";
 import Word from "@/components/trainingActivities/language/Word";
 import WordList from "@/components/trainingActivities/language/WordList";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const words = [
   { id: 1, word: "Can" },
@@ -36,36 +36,40 @@ const fillInTheBlank = () => {
 
   return (
     <GestureHandlerRootView>
-      <View style={styles.container}>
-        <View style={styles.progressContainer}>
-          <ActivityProgress
-            difficulty="Easy"
-            totalItems={10}
-            completedItems={0}
-            instruction="Drag the words to complete the sentence"
-          />
-        </View>
+      {/*<View style={styles.container}>*/}
+      {/*  <View style={styles.progressContainer}>*/}
+      {/*    <ActivityProgress*/}
+      {/*      difficulty="Easy"*/}
+      {/*      totalItems={10}*/}
+      {/*      completedItems={0}*/}
+      {/*      instruction="Drag the words to complete the sentence"*/}
+      {/*    />*/}
+      {/*  </View>*/}
 
-        <View style={styles.contentContainer}>
-          <View style={styles.sentenceContainer}>
-            <View style={styles.speakerIcon}>
-              <FontAwesome6 name="volume-high" size={25} color="#fff" />
-            </View>
-            <View style={styles.wordsArea}>
-              <WordList onSentenceChange={handleSentenceChange}>
-                {words.map((word) => (
-                  <Word key={word.id} {...word} />
-                ))}
-              </WordList>
-            </View>
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {/*  <View style={styles.contentContainer}>*/}
+      {/*    <View style={styles.sentenceContainer}>*/}
+      {/*      <View style={styles.speakerIcon}>*/}
+      {/*        <FontAwesome6 name="volume-high" size={25} color="#fff" />*/}
+      {/*      </View>*/}
+      {/*      <View style={styles.wordsArea}>*/}
+      {/*        <WordList onSentenceChange={handleSentenceChange}>*/}
+      {/*          {words.map((word) => (*/}
+      {/*            <Word key={word.id} {...word} />*/}
+      {/*          ))}*/}
+      {/*        </WordList>*/}
+      {/*      </View>*/}
+      {/*    </View>*/}
+      {/*  </View>*/}
+      {/*  <View style={styles.buttonContainer}>*/}
+      {/*    <TouchableOpacity onPress={handleSubmit} style={styles.button}>*/}
+      {/*      <Text style={styles.buttonText}>Submit</Text>*/}
+      {/*    </TouchableOpacity>*/}
+      {/*  </View>*/}
+      {/*</View>*/}
+
+      <Text>
+        Unavailable
+      </Text>
     </GestureHandlerRootView>
   );
 };
