@@ -58,23 +58,21 @@ const courseDetails = () => {
               switch (subjectType) {
                 case activityCategory.speech:
                   router.push({
-                    pathname: "/(exercises)/(auditory)/speechTrainingExercise",
+                    pathname: "/subject/(exercises)/(speech)/speechTrainingExercises",
                   });
                   break;
                 case activityCategory.auditory:
                   router.push({
-                    pathname:
-                      "/(subject)/(exercises)/(auditory)/auditoryTrainingExercise",
+                    pathname: "/subject/(exercises)/(language)/languageTrainingExercises",
                   });
                   break;
                 case activityCategory.language:
                   router.push({
-                    pathname:
-                      "/(subject)/(exercises)/(language)/languageTrainingExercises",
+                    pathname:"/subject/(exercises)/(language)/languageTrainingExercises",
                   });
                   break;
                 default:
-                  router.push("/(subject)/(speech)/speechTrainingExercises");
+                  router.push("/subject/courseDetails");
               }
             }, [router])}
           >
@@ -105,7 +103,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/(subject)/announcements",
+                pathname: "/subject/announcements",
                 params: { subjectId: id },
               }),
             []
@@ -122,7 +120,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/(subject)/assignments",
+                pathname: "/subject/assignments",
                 params: { subjectId: id },
               }),
             []
@@ -136,7 +134,7 @@ const courseDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
-          onPress={useCallback(() => router.push("/(course)/scores"), [])}
+          onPress={useCallback(() => router.push("/subject/scores"), [])}
         >
           <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
@@ -149,7 +147,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/(subject)/modules",
+                pathname: "/subject/modules",
                 params: { subjectId: id },
               }),
             [router]
@@ -164,7 +162,7 @@ const courseDetails = () => {
         <TouchableOpacity
           style={styles.link}
           onPress={useCallback(
-            () => router.push("/(subject)/attendance"),
+            () => router.push("/subject/attendance"),
             [router]
           )}
         >

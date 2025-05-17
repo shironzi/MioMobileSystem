@@ -61,10 +61,9 @@ const Inbox = () => {
   const [selectedType, setSelectedType] = useState<messageType>(
     messageType.inbox
   );
-  const router = useRouter();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <View style={styles.messageContainer}>
         {/* <Text style={styles.messageCateg}>{selectedType}</Text> */}
         <View style={styles.pickerWrapper}>
@@ -113,11 +112,10 @@ const Inbox = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
     backgroundColor: "#fff",
   },
   messageContainer: {
-    // flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
     paddingHorizontal: 25,

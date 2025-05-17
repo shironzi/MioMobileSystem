@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React from "react";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import Talk2MeMessageCard from "@/components/trainingActivities/language/Talk2MeMessageCard";
 
 const talk2Me = () => {

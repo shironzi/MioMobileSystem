@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
@@ -20,10 +19,10 @@ const announceCard = (props: { title: string; date: String; time: string }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push("/(sub-details)/announceDetails")}
+      onPress={() => router.push("/subject/(sub-details)/announceDetails")}
       style={styles.touchableOpacity}
     >
-      <Card containerStyle={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <View style={styles.row}>
           <View style={styles.yellowBulletin}></View>
           <View style={styles.textContainer}>
@@ -51,7 +50,7 @@ const announceCard = (props: { title: string; date: String; time: string }) => {
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 };

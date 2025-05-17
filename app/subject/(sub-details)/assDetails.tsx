@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { memo, useCallback } from "react";
-import { Card } from "@rneui/themed";
 import HeaderConfig from "@/components/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
 
@@ -52,7 +51,7 @@ const assDetails = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Card containerStyle={styles.cardContainer}>
+        <View style={styles.cardContainer}>
           <View style={styles.cardContent}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.row}>
@@ -71,7 +70,7 @@ const assDetails = () => {
 
             <Text style={styles.attempt}>Attempts: {attempts}</Text>
           </View>
-        </Card>
+        </View>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Take Quiz</Text>
         </TouchableOpacity>

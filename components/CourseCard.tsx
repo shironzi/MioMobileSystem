@@ -17,16 +17,15 @@ const CourseCard = (props: {
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() =>
-        // router.push({
-        //   pathname: "/(course)/courseDetails",
-        //   params: {
-        //     id: props.courseId,
-        //     description: props.description,
-        //     title: props.courseTitle,
-        //     subjectType: props.subjectType,
-        //   },
-        // })
-          console.log("push")
+        router.push({
+          pathname: "/subject/courseDetails",
+          params: {
+            id: props.courseId,
+            description: props.description,
+            title: props.courseTitle,
+            subjectType: props.subjectType,
+          },
+        })
       }
     >
       <View
