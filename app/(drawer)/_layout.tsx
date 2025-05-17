@@ -10,7 +10,9 @@ import { useFocusEffect, useNavigation } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
+import {logout} from "@/utils/auth";
+import {StackActions} from "@react-navigation/native";
 
 // import { logout } from "@/utils/auth";
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
@@ -38,16 +40,13 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    // try {
-    //   const response = await logout();
-    //   console.log("Logout successful:", response);
-    //   rootNav?.dispatch(StackActions.replace("index"));
-    //   props.navigation.closeDrawer();
-    // } catch (error) {
-    //   console.error("Logout failed:", error);
-    // }
-
-    console.log("logout");
+    try {
+      await logout();
+      rootNav?.dispatch(StackActions.replace("index"));
+      props.navigation.closeDrawer();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   }, []);
 
   useFocusEffect(
@@ -64,10 +63,10 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <View style={styles.profileContainer}>
-        {/* <Image
+        <Image
           style={styles.profileImage}
-          source={require("@/assets/1.png")}
-        /> */}
+          source={require("@/assets/images/1.png")}
+        />
         <View>
           <Text style={styles.userName}>{userData.name}</Text>
           <Text style={styles.userId}>{userData.id}</Text>
@@ -128,6 +127,7 @@ export default function Layout() {
 
 const styles = StyleSheet.create({
   drawerContent: {
+    backgroundColor: "#2264DC",
     alignContent: "center",
     padding: "auto",
     paddingTop: 106,
