@@ -1,13 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView } from "react-native";
 import React, { memo, useCallback, useState } from "react";
-import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const data = [
   {
     id: 1,
-    image: require("@/assets/1.png"),
+    image: require("@/assets/images/1.png"),
     name: "Ava Samantha Arce",
   },
 ];
@@ -52,7 +51,7 @@ const Edit = () => {
     showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         {data.map((item) => (
-          <Card key={item.id} containerStyle={styles.cardContainer}>
+          <View key={item.id} style={styles.cardContainer}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
             <Image source={item.image} style={styles.profileImage} />
             <TouchableOpacity style={styles.iconWrapper}>
@@ -61,7 +60,7 @@ const Edit = () => {
             <View style={styles.cardContent}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.sectionTitle}>Biography</Text>
-              <Card containerStyle={styles.bio}>
+              <View style={styles.bio}>
                 <TextInput
                   style={styles.textInput}
                   placeholder="I am..."
@@ -70,9 +69,9 @@ const Edit = () => {
                   onChangeText={setBiography}
                   multiline={true}
                 />
-              </Card>
+              </View>
               <Text style={styles.sectionTitle}>Contact</Text>
-              <Card containerStyle={styles.con}>
+              <View style={styles.con}>
                 <TextInput
                   style={styles.textInput}
                   placeholder="name@gmail.com"
@@ -81,7 +80,7 @@ const Edit = () => {
                   onChangeText={setContact}
                   multiline={true}
                 />
-              </Card>
+              </View>
               <Text style={styles.sectionTitle}>Social Links</Text>
               {socialLinks.map((link, index) => (
                 <View key={index} style={styles.row}>
@@ -122,7 +121,7 @@ const Edit = () => {
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Save Profile</Text>
             </TouchableOpacity>
-          </Card>
+          </View>
         ))}
       </View>
     </ScrollView>

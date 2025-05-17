@@ -59,7 +59,6 @@ const data = [
 ];
 
 const Todo = () => {
-  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<todoType | "all">("all");
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -150,9 +149,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    paddingHorizontal: 10,
-    paddingTop: 10,
-    margin:5
+    padding: 10
   },
   dropdownHeader: {
     flexDirection: "row",
@@ -194,7 +191,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   scrollContainer: {
-    paddingBottom: 80,
+    padding: 10,
+    rowGap: 15
   },
   addButton: {
     position: "absolute",

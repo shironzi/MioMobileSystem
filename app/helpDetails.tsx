@@ -6,16 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { Card } from "@rneui/themed";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const helpDetails = () => {
   const [issue, setIssue] = useState("");
 
   HeaderConfig("Help & Support");
   return (
-    <Card containerStyle={styles.cardContainer}>
+    <View style={styles.cardContainer}>
       <View style={styles.cardContent}>
         <Text style={styles.title}>Report an Issue</Text>
         <MaterialIcon
@@ -28,7 +27,7 @@ const helpDetails = () => {
           Is there anything wrong with the app?
         </Text>
       </View>
-      <Card containerStyle={styles.inputCard}>
+      <View style={styles.inputCard}>
         <TextInput
           style={styles.textInput}
           placeholder="State the issue you are experiencing.."
@@ -37,11 +36,11 @@ const helpDetails = () => {
           onChangeText={setIssue}
           multiline={true}
         />
-      </Card>
+      </View>
       <TouchableOpacity>
         <Text style={styles.button}>Submit Report</Text>
       </TouchableOpacity>
-    </Card>
+    </View>
   );
 };
 

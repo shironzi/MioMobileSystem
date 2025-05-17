@@ -12,7 +12,7 @@ const PlayCard = ({ id, label }: PlayCardProps) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push("/(auditory)/MatchingCards")}
+      onPress={() => router.push("/subject/(exercises)/(auditory)/MatchingCards")}
     >
       <View style={styles.borderLeft}></View>
       <View style={styles.linkDecoration}>

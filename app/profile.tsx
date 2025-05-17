@@ -1,9 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
-import { Card } from "@rneui/themed";
 import { FontAwesome } from "@expo/vector-icons";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const data = {
   id: 1,
@@ -24,7 +23,7 @@ const profile = () => {
 
   return (
     <View style={styles.container}>
-      <Card key={data.id} containerStyle={styles.cardContainer}>
+      <View key={data.id} style={styles.cardContainer}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
         <View style={styles.profile}>
           <Image
@@ -50,11 +49,11 @@ const profile = () => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("edit")}
+          onPress={() => router.push("/sidebar/edit")}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
-      </Card>
+      </View>
     </View>
   );
 };

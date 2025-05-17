@@ -40,16 +40,15 @@ export default function Layout() {
     return (
         <CourseCardViewProvider>
             <Tabs
-                screenOptions={({ route }) => ({
+                screenOptions={() => ({
                     tabBarActiveTintColor: "white",
                     tabBarInactiveTintColor: "#CCC",
                     tabBarStyle: {
                         backgroundColor: "#2264DC",
                         borderTopLeftRadius: 15,
                         borderTopRightRadius: 15,
-                        height: 70,
+                        height: 75,
                         paddingTop: 10,
-                        paddingBottom: 10,
                     },
                     headerLeft: () => <DrawerToggleButton tintColor="white" />,
                 })}
@@ -85,6 +84,7 @@ export default function Layout() {
                         headerBackground: () => (
                             <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
                         ),
+
                     }}
                 />
                 <Tabs.Screen

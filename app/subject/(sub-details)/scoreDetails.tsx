@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import ScoreDetailsCard from "@/components/ScoreDetailsCard";
 import HeaderConfig from "@/components/HeaderConfig";
-import ScoreNamesCard from "@/components/ScoreNamesCard";
 
 const data = [
   {

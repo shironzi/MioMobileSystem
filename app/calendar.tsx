@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState, useCallback, useMemo, memo } from "react";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 

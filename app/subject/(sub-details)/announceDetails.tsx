@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { memo } from "react";
-import { Card } from "@rneui/themed";
 import HeaderConfig from "@/components/HeaderConfig";
 
 const data = [
@@ -19,7 +18,7 @@ const announceDetails = () => {
   return (
     <View style={styles.container}>
       {data.map((item) => (
-        <Card key={item.id} containerStyle={styles.cardContainer}>
+        <View key={item.id} style={styles.cardContainer}>
           <View style={styles.cardContent}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.date}>
@@ -32,7 +31,7 @@ const announceDetails = () => {
             </Text>
             <Text style={styles.description}>{item.desc}</Text>
           </View>
-        </Card>
+        </View>
       ))}
     </View>
   );

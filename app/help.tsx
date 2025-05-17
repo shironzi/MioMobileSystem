@@ -3,7 +3,7 @@ import { Text, StyleSheet, ScrollView, TouchableOpacity, View } from "react-nati
 import { useRouter } from "expo-router";
 import HelpCard from "@/components/HelpCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const data = [
   {
@@ -64,7 +64,7 @@ const help = () => {
     </ScrollView>
     <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("helpDetails")}
+        onPress={() => router.push("/sidebar/helpDetails")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>

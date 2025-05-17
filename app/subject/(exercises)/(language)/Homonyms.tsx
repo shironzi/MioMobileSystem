@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { memo, useCallback, useMemo, useState } from "react";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
 import { useRouter } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
@@ -117,7 +117,7 @@ const Homonyms = () => {
         return prevIndex + 1;
       } else {
         router.push({
-          pathname: "/(course)/(sub-details)/scoreDetails",
+          pathname: "/subject/(sub-details)/scoreDetails",
         });
         return prevIndex;
       }

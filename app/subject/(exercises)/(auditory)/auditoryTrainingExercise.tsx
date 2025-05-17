@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderConfig from "@/utils/HeaderConfig";
 
-const SpeechTrainingExercise = () => {
+const auditoryTrainingExercise = () => {
   const router = useRouter();
 
-  HeaderConfig("Language Training Exercise");
+  HeaderConfig("Auditory Training Exercises");
 
   return (
     <View style={styles.courseContainer}>
@@ -17,11 +17,11 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
-              source={require("@/assets/icons/Speaker_Notes.png")}
+              source={require("@/assets/icons/Collectibles.png")}
               style={styles.icon}
             />
             <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Fill in the Blanks
+              Bingo Cards
             </Text>
           </TouchableOpacity>
         </View>
@@ -32,25 +32,12 @@ const SpeechTrainingExercise = () => {
             onPress={() => router.push("/subject/(exercises)/level")}
           >
             <Image
-              source={require("@/assets/icons/Technology_Lifestyle.png")}
+              source={require("@/assets/icons/Red_Card.png")}
               style={styles.icon}
             />
             <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Talk2Me: Responding Questions
+              Matching Card
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
-            <Image
-              source={require("@/assets/icons/homonyms.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>Homonyms</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -112,6 +99,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     backgroundColor: "#fff",
     borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 5,
   },
   icon: {
@@ -120,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(SpeechTrainingExercise);
+export default memo(auditoryTrainingExercise);
