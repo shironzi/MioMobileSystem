@@ -1,9 +1,15 @@
-import ActivityProgress from "@/components/activityProgress";
-import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
-import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import HeaderConfig from "@/components/HeaderConfig";
+import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
+import { useRouter } from "expo-router";
+import ActivityProgress from "@/components/activityProgress";
 
 const Data = [
   {
@@ -111,7 +117,7 @@ const Homonyms = () => {
         return prevIndex + 1;
       } else {
         router.push({
-          pathname: "/subject/(sub-details)/scoreDetails",
+          pathname: "/(course)/(sub-details)/scoreDetails",
         });
         return prevIndex;
       }

@@ -1,7 +1,8 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import { useLocalSearchParams } from "expo-router";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { memo, useCallback } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Card } from "@rneui/themed";
+import HeaderConfig from "@/components/HeaderConfig";
+import { useLocalSearchParams } from "expo-router";
 
 const assDetails = () => {
   HeaderConfig("Assignment");
@@ -12,6 +13,7 @@ const assDetails = () => {
     createdAt,
     availabilityStart,
     availabilityEnd,
+
     attempts,
     pointsTotal,
   } = useLocalSearchParams<{
@@ -50,7 +52,7 @@ const assDetails = () => {
   return (
     <View style={styles.container}>
       <View>
-        <View style={styles.cardContainer}>
+        <Card containerStyle={styles.cardContainer}>
           <View style={styles.cardContent}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.row}>
@@ -69,7 +71,7 @@ const assDetails = () => {
 
             <Text style={styles.attempt}>Attempts: {attempts}</Text>
           </View>
-        </View>
+        </Card>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Take Quiz</Text>
         </TouchableOpacity>

@@ -1,34 +1,34 @@
-import ActivityProgress from "@/components/activityProgress";
-import HeaderConfig from "@/utils/HeaderConfig";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import ActivityProgress from "@/components/activityProgress";
+import HeaderConfig from "@/components/HeaderConfig";
 
 const initialData = [
   {
     id: 1,
-    imageSrc: require("@/assets/images/flashcards/apple.jpg"),
+    imageSrc: require("@/assets/flashcards/apple.jpg"),
     word: "Apple",
   },
   {
     id: 2,
-    imageSrc: require("@/assets/images/flashcards/fireExtinguisher.jpg"),
+    imageSrc: require("@/assets/flashcards/fireExtinguisher.jpg"),
     word: "Banana",
   },
   {
     id: 3,
-    imageSrc: require("@/assets/images/flashcards/scissors.png"),
+    imageSrc: require("@/assets/flashcards/scissors.png"),
     word: "Orange",
   },
   {
     id: 4,
-    imageSrc: require("@/assets/images/flashcards/teacher.jpg"),
+    imageSrc: require("@/assets/flashcards/teacher.jpg"),
     word: "Grapes",
   },
   {
     id: 5,
-    imageSrc: require("@/assets/images/flashcards/whisper.png"),
+    imageSrc: require("@/assets/flashcards/whisper.png"),
     word: "Strawberry",
   },
 ];
@@ -64,7 +64,7 @@ const Picgame = () => {
         setCurrentCardIndex(currentCardIndex + 1);
       } else {
         router.push({
-          pathname: "/subject/(sub-details)/scoreDetails",
+          pathname: "/(course)/(sub-details)/scoreDetails",
         });
       }
     }
@@ -82,7 +82,7 @@ const Picgame = () => {
       <View style={styles.flashcardContainer}>
         <View>
           <Image
-            source={require("@/assets/images/orange.png")}
+            source={require("@/assets/orange.png")}
             style={{ width: 90, height: 50 }}
           />
         </View>

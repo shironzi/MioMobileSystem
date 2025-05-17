@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { Card } from "@rneui/themed";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 type titleProps = {
@@ -38,7 +39,7 @@ const ScoreDetailsCard = ({
         <Text>{attemptNo}</Text>
       </View>
 
-      <View style={styles.cardContainer1}>
+      <Card containerStyle={styles.cardContainer1}>
         <Text style={styles.scoreLabel}>Score</Text>
         <View style={styles.circleContainer}>
           <AnimatedCircularProgress
@@ -59,9 +60,9 @@ const ScoreDetailsCard = ({
           </AnimatedCircularProgress>
           <Text style={styles.label}>Out of {totalQuestion} points</Text>
         </View>
-      </View>
+      </Card>
 
-      <View style={styles.cardContainer2}>
+      <Card containerStyle={styles.cardContainer2}>
         <Text style={[styles.scoreLabel, { left: -10 }]}>Feedback</Text>
         <View style={styles.faceRow}>
           <Image
@@ -82,13 +83,13 @@ const ScoreDetailsCard = ({
           />
         </View>
         <Text style={styles.commentText}>{commentText}</Text>
-      </View>
+      </Card>
       {/* <Card> */}
       {comments.map((item, index) => (
-        <View key={item.id} style={styles.cardContainer3}>
+        <Card key={item.id} containerStyle={styles.cardContainer3}>
           <Text style={styles.noLabel}>Number {index + 1}</Text>
           <Text style={{ left: 10, fontSize: 14 }}>{item.word}</Text>
-        </View>
+        </Card>
       ))}
 
       {/* </Card> */}

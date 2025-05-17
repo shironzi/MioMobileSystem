@@ -1,7 +1,7 @@
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import React, { memo, useCallback } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import HeaderConfig from "@/utils/HeaderConfig";
 
@@ -15,15 +15,26 @@ enum activityCategory {
 const courseDetails = () => {
   const router = useRouter();
 
-  const { id, description, title, subjectType, role } = useLocalSearchParams<{
+  const { id, description, title, subjectType } = useLocalSearchParams<{
     id: string;
     title: string;
     description: string;
     subjectType: keyof typeof activityCategory;
-    role: string;
   }>();
 
   HeaderConfig("Course Details");
+
+  // useEffect(() => {
+  //   const getRole = async () => {
+  //     const raw = await SecureStore.getItemAsync("sessionData");
+  //     if (raw != null) {
+  //       const {role} = JSON.parse(raw)
+  //       setRole(role);
+  //     }
+  //   }
+  //
+  //   getRole()
+  // }, [])
 
   return (
     <View style={styles.container}>
@@ -31,8 +42,12 @@ const courseDetails = () => {
         <View style={styles.courseInfo}></View>
         <View>
           <Text style={[styles.fontSizeOne]}>{id}</Text>
-          <Text style={[styles.fontSizeOne]}>{title}</Text>
-          <Text style={[styles.fontSizeTwo]}>{description}</Text>
+          <Text style={[styles.fontSizeOne]}>
+            {title}
+          </Text>
+          <Text style={[styles.fontSizeTwo]}>
+            {description}
+          </Text>
         </View>
       </View>
       <View style={styles.linksContainer}>
@@ -43,24 +58,23 @@ const courseDetails = () => {
               switch (subjectType) {
                 case activityCategory.speech:
                   router.push({
-                    pathname:
-                      "/subject/(exercises)/(speech)/speechTrainingExercises",
+                    pathname: "/(exercises)/(auditory)/speechTrainingExercise",
                   });
                   break;
                 case activityCategory.auditory:
                   router.push({
                     pathname:
-                      "/subject/(exercises)/(language)/languageTrainingExercises",
+                      "/(subject)/(exercises)/(auditory)/auditoryTrainingExercise",
                   });
                   break;
                 case activityCategory.language:
                   router.push({
                     pathname:
-                      "/subject/(exercises)/(language)/languageTrainingExercises",
+                      "/(subject)/(exercises)/(language)/languageTrainingExercises",
                   });
                   break;
                 default:
-                  router.push("/subject/courseDetails");
+                  router.push("/(subject)/(speech)/speechTrainingExercises");
               }
             }, [router])}
           >
@@ -91,7 +105,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/subject/announcements",
+                pathname: "/(subject)/announcements",
                 params: { subjectId: id },
               }),
             []
@@ -108,7 +122,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/subject/assignments",
+                pathname: "/(subject)/assignments",
                 params: { subjectId: id },
               }),
             []
@@ -122,7 +136,7 @@ const courseDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
-          onPress={useCallback(() => router.push("/subject/scores"), [])}
+          onPress={useCallback(() => router.push("/(course)/scores"), [])}
         >
           <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
@@ -135,7 +149,7 @@ const courseDetails = () => {
           onPress={useCallback(
             () =>
               router.push({
-                pathname: "/subject/modules",
+                pathname: "/(subject)/modules",
                 params: { subjectId: id },
               }),
             [router]
@@ -147,21 +161,19 @@ const courseDetails = () => {
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>
-        {role === "teacher" ? (
-          <TouchableOpacity
-            style={styles.link}
-            onPress={useCallback(
-              () => router.push("/subject/attendance"),
-              [router]
-            )}
-          >
-            <View style={styles.yellowBulletin}></View>
-            <View style={styles.linkDecoration}>
-              <Text style={styles.fontSizeOne}>Attendance</Text>
-              <Entypo name="chevron-small-right" size={30} color="#CCC" />
-            </View>
-          </TouchableOpacity>
-        ) : null}
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(
+            () => router.push("/(subject)/attendance"),
+            [router]
+          )}
+        >
+          <View style={styles.yellowBulletin}></View>
+          <View style={styles.linkDecoration}>
+            <Text style={styles.fontSizeOne}>Attendance</Text>
+            <Entypo name="chevron-small-right" size={30} color="#CCC" />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

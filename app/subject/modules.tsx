@@ -1,17 +1,17 @@
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+} from "react-native";
+import React, { memo, useEffect, useState } from "react";
 import ModuleCard from "@/components/ModuleCard";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { getModules } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
 
 type Module = {
   title: string;
@@ -37,6 +37,7 @@ const ModulesScreen = () => {
         setLoading(false);
       } catch (err) {
         useAuthGuard(err);
+        // console.error("Error fetching modules:", err);
       } finally {
         setLoading(false);
       }
@@ -70,7 +71,7 @@ const ModulesScreen = () => {
         style={styles.addButton}
         onPress={() => {
           // router.push("helpDetails")
-          console.log("modules");
+          console.log("modules")
         }}
       >
         <MaterialIcon name="add" size={30} color="#fff" />

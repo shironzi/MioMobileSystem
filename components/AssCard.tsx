@@ -1,7 +1,8 @@
-import Entypo from "@expo/vector-icons/Entypo";
-import { useRouter } from "expo-router";
 import React, { memo, useCallback } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Card } from "@rneui/themed";
+import { useRouter } from "expo-router";
+import Entypo from "@expo/vector-icons/Entypo";
 
 interface Availability {
   start: string;
@@ -52,7 +53,7 @@ const assCard = (props: {
     <TouchableOpacity
       onPress={() =>
         router.navigate({
-          pathname: "/subject/(sub-details)/assDetails",
+          pathname: "/(sub-details)/assDetails",
           params: {
             assignmentId: props.assignment_id,
             attempts: props.attempts,
@@ -69,7 +70,7 @@ const assCard = (props: {
       }
       style={styles.touchableOpacity}
     >
-      <View style={styles.cardContainer}>
+      <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.textContent}>
@@ -101,7 +102,7 @@ const assCard = (props: {
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 };

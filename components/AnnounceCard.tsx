@@ -1,42 +1,29 @@
-import Entypo from "@expo/vector-icons/Entypo";
+import React, { memo, useCallback } from "react";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
-import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Entypo from "@expo/vector-icons/Entypo";
 
-const announceCard = (props: {
-  subjectId: string;
-  title: string;
-  date: string;
-  time: string;
-  description: string;
-  announcementId: string;
-}) => {
+const announceCard = (props: { title: string; date: String; time: string }) => {
   const router = useRouter();
 
-  const newDate = new Date(props.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  });
+  // const formatDate = useCallback(
+  //     (date: String) => {
+  //     return date.toLocaleDateString("en-US", {
+  //       month: "short",
+  //       day: "2-digit",
+  //       year: "numeric",
+  //     });
+  //   },
+  //   [Date]
+  // );
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        router.push({
-          pathname: "/subject/(sub-details)/announcement/announcementDetails",
-          params: {
-            subjectId: props.subjectId,
-            title: props.title,
-            date: newDate,
-            time: props.time,
-            description: props.description,
-            announcementId: props.announcementId,
-          },
-        })
-      }
+      onPress={() => router.push("/(sub-details)/announceDetails")}
       style={styles.touchableOpacity}
     >
-      <View style={styles.cardContainer}>
+      <Card containerStyle={styles.cardContainer}>
         <View style={styles.row}>
           <View style={styles.yellowBulletin}></View>
           <View style={styles.textContainer}>
@@ -46,12 +33,25 @@ const announceCard = (props: {
           </View>
           <View style={styles.rightSection}>
             <Text style={styles.date}>
-              {newDate} {props.time}
+              {props.date} {props.time}
             </Text>
+            <View style={styles.icons}>
+              <TouchableOpacity>
+                <Entypo
+                  name="edit"
+                  size={15}
+                  color="#aaa"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Entypo name="trash" size={15} color="#aaa" />
+              </TouchableOpacity>
+            </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 };

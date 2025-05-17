@@ -1,7 +1,7 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const data = [
   {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
-    elevation: 5,
+    elevation: 5
   },
   cardContent: {
     flexDirection: "column",
