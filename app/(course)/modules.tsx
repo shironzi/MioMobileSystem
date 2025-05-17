@@ -83,16 +83,4 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
   },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#2264DC",
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-  },
 });

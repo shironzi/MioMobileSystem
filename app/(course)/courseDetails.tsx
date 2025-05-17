@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useLocalSearchParams, useRouter } from "expo-router";
-
 import globalStyle from "@/styles/globalStyle";
 import HeaderConfig from "@/components/HeaderConfig";
 import * as SecureStore from 'expo-secure-store';
@@ -40,7 +39,8 @@ const courseDetails = () => {
   // }, [])
 
   return (
-    <View style={[globalStyle.container, styles.container]}>
+    <ScrollView>
+          <View style={[globalStyle.container, styles.container]}>
       <View style={styles.courseInfoContainer}>
         <View style={styles.courseInfo}></View>
         <View>
@@ -140,6 +140,16 @@ const courseDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
+          onPress={useCallback(() => router.push("/(course)/quiz"), [])}
+        >
+          <View style={styles.yellowBulletin}></View>
+          <View style={styles.linkDecoration}>
+            <Text style={styles.fontSizeOne}>Quizzes</Text>
+            <Entypo name="chevron-small-right" size={30} color="#CCC" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
           onPress={useCallback(() => router.push("/(course)/scores"), [])}
         >
           <View style={styles.yellowBulletin}></View>
@@ -180,6 +190,9 @@ const courseDetails = () => {
         </TouchableOpacity>
       </View>
     </View>
+
+    </ScrollView>
+
   );
 };
 

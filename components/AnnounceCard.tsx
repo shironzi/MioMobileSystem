@@ -1,22 +1,12 @@
-import React, { memo, useCallback } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import React, { memo, useCallback,useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet, Modal } from "react-native";
 import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import DeleteCard from "./deleteCard";
 
 const announceCard = (props: { title: string; date: String; time: string }) => {
   const router = useRouter();
-
-  // const formatDate = useCallback(
-  //     (date: String) => {
-  //     return date.toLocaleDateString("en-US", {
-  //       month: "short",
-  //       day: "2-digit",
-  //       year: "numeric",
-  //     });
-  //   },
-  //   [Date]
-  // );
 
   return (
     <TouchableOpacity
@@ -52,6 +42,19 @@ const announceCard = (props: { title: string; date: String; time: string }) => {
           </View>
         </View>
       </Card>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showDeleteCard}
+        onRequestClose={() => setShowDeleteCard(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <DeleteCard onClose={() => setShowDeleteCard(false)} />
+          </View>
+        </View>
+      </Modal>
+      
     </TouchableOpacity>
   );
 };
@@ -116,6 +119,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 5,
     marginRight: -5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    elevation: 10,
   },
 });
 
