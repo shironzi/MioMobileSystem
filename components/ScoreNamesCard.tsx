@@ -1,6 +1,5 @@
 import React, { memo} from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
@@ -13,10 +12,10 @@ const ScoreNamesCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() => router.navigate("/(sub-details)/scoreDetails")}
+      onPress={() => router.navigate("/subject/(sub-details)/scoreDetails")}
       style={styles.touchableOpacity}
     >
-      <Card containerStyle={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.textContent}>
@@ -30,7 +29,7 @@ const ScoreNamesCard = (props: {
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
 
   );

@@ -3,32 +3,32 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ActivityProgress from "@/components/activityProgress";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const initialData = [
   {
     id: 1,
-    imageSrc: require("@/assets/flashcards/apple.jpg"),
+    imageSrc: require("@/assets/images/flashcards/apple.jpg"),
     word: "Apple",
   },
   {
     id: 2,
-    imageSrc: require("@/assets/flashcards/fireExtinguisher.jpg"),
+    imageSrc: require("@/assets/images/flashcards/fireExtinguisher.jpg"),
     word: "Banana",
   },
   {
     id: 3,
-    imageSrc: require("@/assets/flashcards/scissors.png"),
+    imageSrc: require("@/assets/images/flashcards/scissors.png"),
     word: "Orange",
   },
   {
     id: 4,
-    imageSrc: require("@/assets/flashcards/teacher.jpg"),
+    imageSrc: require("@/assets/images/flashcards/teacher.jpg"),
     word: "Grapes",
   },
   {
     id: 5,
-    imageSrc: require("@/assets/flashcards/whisper.png"),
+    imageSrc: require("@/assets/images/flashcards/whisper.png"),
     word: "Strawberry",
   },
 ];
@@ -64,7 +64,7 @@ const Picgame = () => {
         setCurrentCardIndex(currentCardIndex + 1);
       } else {
         router.push({
-          pathname: "/(course)/(sub-details)/scoreDetails",
+          pathname: "/subject/(sub-details)/scoreDetails",
         });
       }
     }
@@ -82,7 +82,7 @@ const Picgame = () => {
       <View style={styles.flashcardContainer}>
         <View>
           <Image
-            source={require("@/assets/orange.png")}
+            source={require("@/assets/images/orange.png")}
             style={{ width: 90, height: 50 }}
           />
         </View>

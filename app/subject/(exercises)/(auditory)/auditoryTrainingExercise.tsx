@@ -1,7 +1,7 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
 import React, { memo } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { useRouter } from "expo-router";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const auditoryTrainingExercise = () => {
   const router = useRouter();

@@ -1,15 +1,9 @@
-import HelpCard from "@/components/HelpCard";
-import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
 import React, { memo } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, StyleSheet, ScrollView, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import HelpCard from "@/components/HelpCard";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import HeaderConfig from "@/utils/HeaderConfig";
 
 const data = [
   {
@@ -56,24 +50,26 @@ const help = () => {
   return (
     <View>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Reports</Text>
-        {data.map((item) => (
-          <HelpCard
-            key={item.id}
-            name={item.name}
-            time={item.time}
-            msg={item.msg}
-            type={item.type}
-          />
-        ))}
-      </ScrollView>
-      <TouchableOpacity
+      <Text style={styles.header}>Reports</Text>
+      {data.map((item) => (
+        <HelpCard
+          key={item.id}
+          name={item.name}
+          time={item.time}
+          msg={item.msg}
+          type={item.type}
+        />
+      ))}
+    
+    </ScrollView>
+    <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("/helpDetails")}
+        onPress={() => router.push("/sidebar/helpDetails")}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>
     </View>
+    
   );
 };
 
