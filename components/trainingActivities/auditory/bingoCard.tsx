@@ -1,5 +1,6 @@
 import React, { memo } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, Image, StyleSheet, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface BingoCardProps {
   image: any;
