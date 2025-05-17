@@ -1,7 +1,7 @@
-import { FontAwesome6 } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const Talk2Me = () => {
   return (
