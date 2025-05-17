@@ -1,7 +1,5 @@
 import React, { memo } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useNavigation } from "expo-router";
-import { Card } from "@rneui/themed";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 const HelpCard = (props: {
@@ -11,9 +9,9 @@ const HelpCard = (props: {
   type?: string;
 }) => {
   return (
-    <Card containerStyle={styles.cardContainer}>
+    <View style={styles.cardContainer}>
       <View style={styles.row}>
-        <Image source={require("../assets/1.png")} style={styles.image} />
+        <Image source={require("@/assets/images/1.png")} style={styles.image} />
         <View style={styles.textContainer}>
           <View style={styles.row}>
             <Text style={styles.name}>{props.name}</Text>
@@ -31,7 +29,7 @@ const HelpCard = (props: {
           </TouchableOpacity>
         </View>
       </View>
-    </Card>
+    </View>
   );
 };
 

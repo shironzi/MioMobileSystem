@@ -50,7 +50,7 @@ const NotificationCard = (props: {
         <GestureDetector gesture={panGesture}>
           <Animated.View style={[styles.card, animatedStyle]}>
             <Image
-              source={require("@/assets/icons/earthquakeIcon.png")}
+              source={require("@/assets/images/icons/earthquakeIcon.png")}
               style={{ height: 50, width: 50 }}
             />
             <View>

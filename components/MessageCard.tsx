@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from "react";
-import { Card } from "@rneui/themed";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -26,10 +25,13 @@ const MessageCard = (props: {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push("messageDetails") }
+      onPress={() => {
+          // router.push("messageDetails")
+          console.log("message Details")
+      } }
     >
-      <Card
-        containerStyle={{
+      <View
+        style={{
           padding: 0,
           margin: 0,
           backgroundColor: "#fff",
@@ -75,7 +77,7 @@ const MessageCard = (props: {
             </Text>
           </View>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 };

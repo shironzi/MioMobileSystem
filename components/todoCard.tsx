@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Card } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type TodoCardProps = {
@@ -21,7 +20,7 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
   };
   return (
     <TouchableOpacity activeOpacity={0.9}>
-      <Card containerStyle={styles.card}>
+      <View style={styles.card}>
         <View style={styles.cardContent}>
           <MaterialIcons
             name="image"
@@ -37,7 +36,7 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
           </View>
           <Text style={styles.type}>{props.type}</Text>
         </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 };

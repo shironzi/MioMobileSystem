@@ -100,7 +100,10 @@ const Inbox = () => {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push("addMessage")}
+        onPress={() => {
+          // router.push("addMessage")
+          console.log("add message pressed")
+        }}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
       </TouchableOpacity>

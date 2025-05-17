@@ -1,5 +1,4 @@
-import { Text, TouchableOpacity } from "react-native";
-import { Card } from "@rneui/themed";
+import {Image, Text, TouchableOpacity, View} from "react-native";
 import React, { memo } from "react";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -18,19 +17,20 @@ const CourseCard = (props: {
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() =>
-        router.push({
-          pathname: "/(course)/courseDetails",
-          params: {
-            id: props.courseId,
-            description: props.description,
-            title: props.courseTitle,
-            subjectType: props.subjectType,
-          },
-        })
+        // router.push({
+        //   pathname: "/(course)/courseDetails",
+        //   params: {
+        //     id: props.courseId,
+        //     description: props.description,
+        //     title: props.courseTitle,
+        //     subjectType: props.subjectType,
+        //   },
+        // })
+          console.log("push")
       }
     >
-      <Card
-        containerStyle={{
+      <View
+        style={{
           borderRadius: 10,
           backgroundColor: "#fff",
           marginHorizontal: 5,
@@ -41,15 +41,17 @@ const CourseCard = (props: {
           marginBottom: -15,
         }}
       >
-        <Card.Image
-          source={props.courseImage}
-          style={{
-            width: "100%",
-            borderRadius: 10,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-          }}
-        />
+        <View
+
+        >
+            <Image source={props.courseImage}
+                   style={{
+                       width: "100%",
+                       borderRadius: 10,
+                       borderBottomLeftRadius: 0,
+                       borderBottomRightRadius: 0,
+                   }}/>
+        </View>
         <MaterialIcons
           name="circle"
           color="#ffbf18"
@@ -71,7 +73,7 @@ const CourseCard = (props: {
         <Text style={{ color: "#666", marginLeft: 35, marginBottom: 10 }}>
           {props.courseSection}
         </Text>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
 };

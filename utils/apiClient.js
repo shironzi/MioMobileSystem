@@ -9,9 +9,8 @@ export const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
-        const raw = await SecureStore.getItemAsync("sessionData");
-        if (raw) {
-            const { sessionId } = JSON.parse(raw);
+        const sessionId = await SecureStore.getItemAsync("sessionId");
+        if (sessionId) {
             if (!config.headers) config.headers = {};
             config.headers.Authorization = `Bearer ${sessionId}`;
         }

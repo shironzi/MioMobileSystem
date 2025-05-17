@@ -14,7 +14,7 @@ export default async function login(email: string, password: string) {
 
     const token = await user.getIdToken();
 
-    await SecureStorage.setItemAsync('token', token);
+    await SecureStorage.setItemAsync('sessionId', token);
 
     return { status: "success" }
   } catch (error: any) {
