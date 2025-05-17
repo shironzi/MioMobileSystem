@@ -17,7 +17,6 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "googleServicesFile": "./google-services.json",
       "package": "com.anonymous.MioMobileApp"
     },
     "web": {
@@ -37,7 +36,8 @@
         }
       ],
       "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@react-native-firebase/auth",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,29 +1,44 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import {
+  FirebaseAuthTypes,
+  getAuth,
+  onAuthStateChanged,
+} from "@react-native-firebase/auth";
+import { Stack, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+export default function Layout() {
+  const navigation = useNavigation();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    setUser(user);
+    setIsLoggedIn(!!user); // Update isLoggedIn based on user presence
+    setLoading(false); // Stop loading once auth state is determined
+  }
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+  useEffect(() => {
+    const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
+    return subscriber; // Unsubscribe on component unmount
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading.......</Text>
+      </View>
+    );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="(drawer)" />
+      ) : (
+        <Stack.Screen name="index" />
+      )}
+    </Stack>
   );
 }

@@ -1,10 +1,9 @@
 import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { yupResolver } from "@hookform/resolvers/yup";
+// import { CheckBox } from "@rneui/themed";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import React, { memo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import {
   StyleSheet,
   Text,
@@ -12,63 +11,49 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import * as yup from "yup";
+// import validator from "validator";
 
-type FormData = {
-  email: string;
-  password: string;
-};
-
-const schema = yup
-  .object({
-    email: yup
-      .string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    password: yup
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
-  })
-  .required();
+// import login from "@/utils/auth";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
+  const [email, setEmail] = useState<string>("202212079@fit.edu.ph");
+  const [password, setPassword] = useState<string>("2003-07-10");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isCredentialsValid, setIsCredentialsValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    defaultValues: {
-      email: "joshbaon1@gmail.com",
-      password: "2003-07-10",
-    },
-    resolver: yupResolver(schema),
-  });
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
-  const togglePasswordVisibility = () => setIsPasswordVisible((v) => !v);
-
-  const onSubmit = async (data: FormData) => {
+  const handleLogin = async () => {
     setErrorMessage("");
+    setIsCredentialsValid(true);
+    setIsEmailValid(true);
     try {
-      const res = await login(data.email, data.password);
+      const res = await login(email, password);
+
       if (res.status === "success") {
         router.replace("/(drawer)/(tabs)");
       } else {
         setErrorMessage("Login failed. Please try again.");
+        setIsCredentialsValid(false);
       }
-    } catch (e: any) {
-      console.error("Login error:", e.message);
+    } catch (error: any) {
+      console.error("Login error:", error.message);
       setErrorMessage("Failed to log in. Please check your credentials.");
+      setIsCredentialsValid(false);
     }
   };
 
   useFocusEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({
+      headerShown: false,
+    });
   });
 
   return (
@@ -76,101 +61,103 @@ const Index = () => {
       <View style={styles.first}>
         <View style={styles.second}>
           <View style={styles.container}>
-            <Text style={styles.header}>Welcome Back!</Text>
-            <Text style={styles.sub}>Log in to your account</Text>
-            {!!errorMessage && (
+            <View>
+              {/* <Image
+                source={require("@/assets/logo.png")}
+                style={{ width: 100, height: 130, top: 70, right: -265 }}
+              /> */}
+              <Text style={styles.header}>Welcome Back!</Text>
+              <Text style={styles.sub}>Log in to your account</Text>
               <Text
-                style={{ color: "red", textAlign: "center", marginBottom: 10 }}
+                style={
+                  isEmailValid && isCredentialsValid
+                    ? { opacity: 0 }
+                    : { opacity: 100 }
+                }
               >
                 {errorMessage}
               </Text>
-            )}
+            </View>
 
             <View style={{ rowGap: 14 }}>
-              {/* Email */}
-              <Controller
-                control={control}
-                name="email"
-                render={({ field: { value, onChange } }) => (
-                  <>
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        errors.email && { borderColor: "#FF0000" },
-                      ]}
-                    >
-                      <MaterialIcons name="person" size={24} color="#808080" />
-                      <TextInput
-                        placeholder="Email"
-                        value={value}
-                        onChangeText={onChange}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        style={{ width: "100%" }}
-                      />
-                    </View>
-                    {errors.email && (
-                      <Text style={{ color: "red", marginLeft: 25 }}>
-                        {errors.email.message}
-                      </Text>
-                    )}
-                  </>
-                )}
-              />
-
-              {/* Password */}
-              <Controller
-                control={control}
-                name="password"
-                render={({ field: { value, onChange } }) => (
-                  <>
-                    <View
-                      style={[
-                        styles.inputContainer,
-                        errors.password && { borderColor: "#FF0000" },
-                      ]}
-                    >
-                      <MaterialIcons name="lock" size={24} color="#808080" />
-                      <TextInput
-                        placeholder="Password"
-                        secureTextEntry={!isPasswordVisible}
-                        value={value}
-                        onChangeText={onChange}
-                        style={{ width: "77%" }}
-                      />
-                      <TouchableOpacity onPress={togglePasswordVisibility}>
-                        <Ionicons
-                          name={isPasswordVisible ? "eye" : "eye-off"}
-                          size={24}
-                          color="#808080"
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    {errors.password && (
-                      <Text style={{ color: "red", marginLeft: 25 }}>
-                        {errors.password.message}
-                      </Text>
-                    )}
-                  </>
-                )}
-              />
-
-              {/* Actions */}
-              <View style={styles.row}>
-                <Text>Remember me</Text>
-                <TouchableOpacity onPress={() => console.log("forgot")}>
-                  <Text style={styles.forgotText}>Forgot Password?</Text>
+              <View
+                style={[
+                  styles.inputContainer,
+                  isCredentialsValid && isEmailValid
+                    ? { borderColor: "transparent" }
+                    : { borderColor: "#FF0000" },
+                ]}
+              >
+                <MaterialIcons name="person" size={24} color="#808080" />
+                <TextInput
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={(value) => {
+                    setEmail(value);
+                  }}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{ width: "100%" }}
+                />
+              </View>
+              <View
+                style={[
+                  styles.inputContainer,
+                  isCredentialsValid
+                    ? { borderColor: "transparent" }
+                    : { borderColor: "#FF0000" },
+                ]}
+              >
+                <MaterialIcons name="lock" size={24} color="#808080" />
+                <TextInput
+                  placeholder="Password"
+                  secureTextEntry={!isPasswordVisible}
+                  value={password}
+                  onChangeText={setPassword}
+                  style={{ width: "77%" }}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  {isPasswordVisible ? (
+                    <Ionicons name="eye" size={24} color="#808080" />
+                  ) : (
+                    <Ionicons name="eye-off" size={24} color="#808080" />
+                  )}
                 </TouchableOpacity>
               </View>
 
-              {/* Submit */}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleSubmit(onSubmit)}
-                disabled={isSubmitting}
-              >
-                <Text style={styles.buttonText}>
-                  {isSubmitting ? "Logging in..." : "Login"}
+              <View style={styles.row}>
+                <View style={styles.checkboxContainer}>
+                  {/* <CheckBox
+                    size={20}
+                    checked={rememberMe}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    containerStyle={styles.checkbox}
+                  /> */}
+                  <Text>Remember me</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    // router.push({
+                    //   pathname: "/auth",
+                    //   params: { from: "forgot" },
+                    // })
+
+                    console.log("pressed forgot")
+                  }
+                >
+                  <Text style={styles.forgotText}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Login
                 </Text>
               </TouchableOpacity>
             </View>
@@ -214,17 +201,29 @@ const styles = StyleSheet.create({
     padding: 9,
     paddingLeft: 20,
     columnGap: 7,
+    marginBottom: -10,
     margin: 15,
     borderRadius: 20,
     elevation: 2,
     borderWidth: 1,
-    borderColor: "transparent",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     margin: 15,
+  },
+  checkboxContainer: {
+    left: -5,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 0,
+  },
+  checkbox: {
+    padding: 0,
+    margin: 0,
+    marginRight: 5,
+    backgroundColor: "#fff",
   },
   forgotText: {
     textDecorationLine: "underline",
@@ -235,13 +234,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffbf18",
     borderRadius: 40,
     margin: 15,
+    marginTop: 0,
     padding: 15,
-  },
-  buttonText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   header: {
     marginTop: -50,
