@@ -1,17 +1,18 @@
-import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Drawer } from "expo-router/drawer";
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
-import { Image, Text, View, StyleSheet } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import globalStyle from "@/styles/globalStyle";
+import {
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItem,
+} from "@react-navigation/drawer";
 import { useFocusEffect, useNavigation } from "expo-router";
-import {useCallback, useEffect, useState} from "react";
-import { StackActions } from "@react-navigation/native";
-import * as SecureStore from 'expo-secure-store';
+import { Drawer } from "expo-router/drawer";
+import * as SecureStore from "expo-secure-store";
+import { useCallback, useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-import { logout } from "@/utils/auth";
+// import { logout } from "@/utils/auth";
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
 }
@@ -20,31 +21,33 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const navigation = useNavigation();
 
   const [userData, setUserData] = useState({
-      id: 202210920,
-      name: "Ava Samantha Arce",
-  })
+    id: 202210920,
+    name: "Ava Samantha Arce",
+  });
 
-    useEffect(() => {
-        const getUserData = async () => {
-            const storedSessionData = await SecureStore.getItemAsync('sessionData')
+  useEffect(() => {
+    const getUserData = async () => {
+      const storedSessionData = await SecureStore.getItemAsync("sessionData");
 
-            if(storedSessionData){
-                const data = await JSON.parse(storedSessionData)
-                setUserData({ name: data.name, id: data.userId})
-            }
-        }
-        getUserData();
-    }, []);
+      if (storedSessionData) {
+        const data = await JSON.parse(storedSessionData);
+        setUserData({ name: data.name, id: data.userId });
+      }
+    };
+    getUserData();
+  }, []);
 
   const handleLogout = useCallback(async () => {
-    try {
-      const response = await logout();
-      console.log("Logout successful:", response);
-      rootNav?.dispatch(StackActions.replace("index"));
-      props.navigation.closeDrawer();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    // try {
+    //   const response = await logout();
+    //   console.log("Logout successful:", response);
+    //   rootNav?.dispatch(StackActions.replace("index"));
+    //   props.navigation.closeDrawer();
+    // } catch (error) {
+    //   console.error("Logout failed:", error);
+    // }
+
+    console.log("logout");
   }, []);
 
   useFocusEffect(
@@ -61,7 +64,10 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <View style={styles.profileContainer}>
-       <Image style={styles.profileImage} source={require("@/assets/1.png")}></Image>
+        {/* <Image
+          style={styles.profileImage}
+          source={require("@/assets/1.png")}
+        /> */}
         <View>
           <Text style={styles.userName}>{userData.name}</Text>
           <Text style={styles.userId}>{userData.id}</Text>
@@ -122,7 +128,6 @@ export default function Layout() {
 
 const styles = StyleSheet.create({
   drawerContent: {
-    ...globalStyle.primaryBg,
     alignContent: "center",
     padding: "auto",
     paddingTop: 106,
