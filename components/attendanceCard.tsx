@@ -28,12 +28,11 @@ const AttendanceCard = ({ item }: { item: AttendanceItem }) => {
           </View>
           <View style={styles.icons}>
             <TouchableOpacity  onPress={() => router.navigate("/(sub-details)/attendanceDetails")}>
-              {/* <Entypo name="edit" size={15} color="#aaa" style={{ marginRight: 8 }} /> */}
+              <Entypo name="edit" size={15} color="#aaa" style={{ marginRight: 8 }} />
             </TouchableOpacity>
             <TouchableOpacity>
-              {/* <Entypo name="trash" size={15} color="#aaa" /> */}
+              <Entypo name="trash" size={15} color="#aaa" />
             </TouchableOpacity>
-            <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
       </Card>
