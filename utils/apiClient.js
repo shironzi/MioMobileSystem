@@ -1,9 +1,5 @@
-import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-
-async function getSessionId(){
-    return await SecureStore.getItemAsync("sessionId");
-}
+import axios from 'axios';
 
 export const api = axios.create({
     baseURL: 'http://192.168.254.169:8001/api',
@@ -13,12 +9,7 @@ export const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
-        const sessionId = await getSessionId()
-        if(sessionId == null){
-            const sessionId = await getSessionId()
-            if (!config.headers) config.headers = {};
-            config.headers.Authorization = `Bearer ${sessionId}`;
-        }
+        const sessionId = await SecureStore.getItemAsync("sessionId");
         if (sessionId) {
             if (!config.headers) config.headers = {};
             config.headers.Authorization = `Bearer ${sessionId}`;

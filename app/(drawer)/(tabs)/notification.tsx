@@ -1,6 +1,3 @@
-import NotificationCard from "@/components/NotificationCard";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React, { memo, useCallback, useMemo, useRef, useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -9,6 +6,9 @@ import {
   Text,
   View,
 } from "react-native";
+import React, { memo, useMemo, useState, useRef, useCallback } from "react";
+import NotificationCard from "@/components/NotificationCard";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const data = [
   {

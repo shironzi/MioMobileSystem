@@ -1,7 +1,7 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
 import React, { memo, useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const MessageCard = (props: {
   title: string;
@@ -26,9 +26,9 @@ const MessageCard = (props: {
   return (
     <TouchableOpacity
       onPress={() => {
-        // router.push("messageDetails")
-        console.log("message Details");
-      }}
+          // router.push("messageDetails")
+          console.log("message Details")
+      } }
     >
       <View
         style={{
@@ -51,7 +51,7 @@ const MessageCard = (props: {
             name="account-circle"
             size={45}
             color="black"
-            style={{ paddingHorizontal: 20, top: -5 }}
+            style={{ paddingHorizontal: 20, top:-5 }}
           />
           <View>
             <View
@@ -64,7 +64,7 @@ const MessageCard = (props: {
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                 {props.title}
               </Text>
-              <Text style={{ fontSize: 12, marginTop: 5, marginRight: 15 }}>
+              <Text style={{ fontSize: 12, marginTop: 5, marginRight:15}}>
                 {formatDate(props.date)}
               </Text>
             </View>

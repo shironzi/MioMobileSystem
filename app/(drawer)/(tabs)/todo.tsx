@@ -1,16 +1,9 @@
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import TodoCard from "@/components/todoCard";
 import { AntDesign } from "@expo/vector-icons";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import React, { memo, useCallback, useMemo, useState } from "react";
-import {
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { useRouter } from "expo-router";
 
 enum todoType {
   academic = "academic",
@@ -66,9 +59,8 @@ const data = [
 ];
 
 const Todo = () => {
-  const [selectedCategory, setSelectedCategory] = useState<todoType | "all">(
-    "all"
-  );
+  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState<todoType | "all">("all");
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const filteredData = useMemo(() => {
@@ -99,7 +91,7 @@ const Todo = () => {
           name={dropdownVisible ? "up" : "down"}
           size={14}
           color="#FFBF18"
-          style={{ marginLeft: 5, marginRight: 5, marginTop: 5 }}
+          style={{ marginLeft: 5 , marginRight: 5, marginTop: 5}}
         />
       </TouchableOpacity>
 
@@ -108,32 +100,27 @@ const Todo = () => {
           <View style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={styles.dropdownBox}>
-          {["all", todoType.academic, todoType.specialized].map(
-            (type, index) => (
-              <TouchableOpacity
-                key={type}
-                onPress={() => handleSelect(type as todoType | "all")}
-              >
-                <View style={styles.dropdownItem}>
-                  <Text style={styles.dropdownItemText}>
-                    {type === "all"
-                      ? "All"
-                      : type === todoType.academic
-                      ? "Academic"
-                      : "Specialized"}
-                  </Text>
-                  {index < 2 && <View style={styles.divider} />}
-                </View>
-              </TouchableOpacity>
-            )
-          )}
+          {["all", todoType.academic, todoType.specialized].map((type, index) => (
+            <TouchableOpacity
+              key={type}
+              onPress={() => handleSelect(type as todoType | "all")}
+            >
+              <View style={styles.dropdownItem}>
+                <Text style={styles.dropdownItemText}>
+                  {type === "all"
+                    ? "All"
+                    : type === todoType.academic
+                    ? "Academic"
+                    : "Specialized"}
+                </Text>
+                {index < 2 && <View style={styles.divider} />}
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
       </Modal>
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {filteredData.map((item) => (
           <TodoCard
             key={item.id}
@@ -150,7 +137,7 @@ const Todo = () => {
         style={styles.addButton}
         onPress={() => {
           // router.push("addTodo")
-          console.log("add todo");
+          console.log("add todo")
         }}
       >
         <MaterialIcon name="add" size={30} color="#fff" />
@@ -163,7 +150,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    margin:5
   },
   dropdownHeader: {
     flexDirection: "row",
@@ -175,7 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#FFBF18",
     textDecorationLine: "underline",
-    marginTop: 5,
+    marginTop:5
   },
   modalOverlay: {
     flex: 1,
@@ -205,8 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   scrollContainer: {
-    padding: 10,
-    rowGap: 15,
+    paddingBottom: 80,
   },
   addButton: {
     position: "absolute",

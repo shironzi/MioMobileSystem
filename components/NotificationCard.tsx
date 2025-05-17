@@ -1,17 +1,17 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { memo } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import Animated, {
-  runOnJS,
-  useAnimatedStyle,
   useSharedValue,
+  useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const NotificationCard = (props: {
   title: string;
