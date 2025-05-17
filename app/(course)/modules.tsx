@@ -1,62 +1,86 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import React, { memo } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+} from "react-native";
+import React, { memo, useEffect, useState } from "react";
 import ModuleCard from "@/components/ModuleCard";
 import HeaderConfig from "@/components/HeaderConfig";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { getModules } from "@/utils/query";
+import { useAuthGuard } from "@/utils/useAuthGuard";
 
-const data = [
-  {
-    id: 1,
-    title: "[M1 - MAIN]  Speech Development",
-  },
-  {
-    id: 2,
-    title: "[M2 - MAIN]  Intonation Development and Training",
-  },
-  {
-    id: 3,
-    title: "[M3 - MAIN]  Accent Development",
-  },
-  {
-    id: 4,
-    title: "[M4 - MAIN]  Sound Development",
-  },
-];
+type Module = {
+  title: string;
+  description: string;
+};
 
-const modules = () => {
+const ModulesScreen = () => {
+  const router = useRouter();
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+
+  const [moduleList, setModuleList] = useState<Module[]>([]);
+  const [loading, setLoading] = useState(true);
 
   HeaderConfig("Modules");
-  const router = useRouter();
- 
+
+  useEffect(() => {
+    if (!subjectId) return;
+
+    const fetch = async () => {
+      try {
+        const response = await getModules(subjectId);
+        setModuleList(response.modules);
+        setLoading(false);
+      } catch (err) {
+        useAuthGuard(err);
+        // console.error("Error fetching modules:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetch();
+  }, [subjectId]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading modules…</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.content}>
-          {data.map((item) => (
-            <ModuleCard key={item.id} title={item.title} />
-          ))}
-        </View>
+        {moduleList.length > 0 ? (
+          moduleList.map((item, index) => (
+            <ModuleCard key={index} title={item.title} index={index} />
+          ))
+        ) : (
+          <View>
+            <Text>This Subject has no modules yet.</Text>
+          </View>
+        )}
       </ScrollView>
-
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("helpDetails")}
+      >
+        <MaterialIcon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
     </View>
-   
-
   );
 };
 
+export default memo(ModulesScreen);
+
 const styles = StyleSheet.create({
   container: {
-    flex:1
-  },
-  content: {
-    padding: 2,
-  },
-  headerStyle: {
-    backgroundColor: "#2264DC",
+    height: "100%",
   },
 });
-
-
-export default memo(modules);

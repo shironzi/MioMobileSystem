@@ -1,31 +1,20 @@
-import { useMemo, useCallback, memo } from "react";
-import { useNavigation } from "expo-router";
-import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+import { useNavigation, useFocusEffect } from "expo-router";
 
-function HeaderConfig(title: string, bgColor: string = "#2264DC") {
+export default function useHeaderConfig(
+  title: string,
+  bgColor: string = "#2264DC"
+) {
   const navigation = useNavigation();
-
-  const options = useMemo(
-    () => ({
-      headerTitle: title,
-      headerStyle: { backgroundColor: bgColor },
-      headerTintColor: "#fff",
-    }),
-    [title, bgColor]
-  );
 
   useFocusEffect(
     useCallback(() => {
-      navigation.setOptions(options);
-      return () => {
-        navigation.setOptions({
-          headerTitle: "",
-          headerStyle: { backgroundColor: "" },
-          headerTintColor: "",
-        });
-      };
-    }, [navigation, options])
+      navigation.setOptions({
+        headerTitle: title,
+        headerStyle: { backgroundColor: bgColor },
+        headerTintColor: "#fff",
+        headerShown: true,
+      });
+    }, [navigation, title, bgColor])
   );
 }
-
-export default HeaderConfig;

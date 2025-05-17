@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
 
-const SpeechTrainingExercise = () => {
+const auditryTrainingExercise = () => {
   const router = useRouter();
 
   HeaderConfig("Auditory Training Exercises");
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(SpeechTrainingExercise);
+export default memo(auditryTrainingExercise);

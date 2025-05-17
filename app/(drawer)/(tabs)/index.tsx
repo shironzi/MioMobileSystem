@@ -1,113 +1,77 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, {useState, memo, useContext, useEffect} from "react";
+import React, { useState, memo, useContext, useEffect, useMemo } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CourseCardViewContext } from "@/components/contexts/CourseCardViewContext";
 import globalStyle from "@/styles/globalStyle";
 import CourseCard from "@/components/CourseCard";
-import fetchSubjects, {getToken} from "@/utils/query";
-
-enum courseType {
-  academic = "academic",
-  specialized = "specialized",
-}
+import { getSubjects } from "@/utils/query";
+import { useAuthGuard } from "@/utils/useAuthGuard";
 
 const data = [
-  { label: "Academic Courses", value: "academic" },
-  { label: "Specialized Courses", value: "specialized" },
+  { label: "All Subjects", value: "all" },
+  { label: "Academic Subjects", value: "academic" },
+  { label: "Specialized Subjects", value: "specialized" },
+  { label: "Previous Subjects", value: "previous" },
 ];
 
-const courses = [
-  {
-    courseId: 1,
-    title: "Math",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/math.png"),
-  },
-  {
-    courseId: 2,
-    title: "English",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/english.png"),
-  },
-  {
-    courseId: 3,
-    title: "Science",
-    section: "tw23",
-    courseType: courseType.academic,
-    courseImage: require("@/assets/dashImage/science.png"),
-  },
-  {
-    courseId: 4,
-    title: "Speech Training",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/speech.png"),
-  },
-  {
-    courseId: 5,
-    title: "Auditory Training ",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/science.png"),
-  },
-  {
-    courseId: 6,
-    title: "Language Training",
-    section: "tw23",
-    courseType: courseType.specialized,
-    courseImage: require("@/assets/dashImage/language.png"),
-  },
-  // {
-  //   courseId: 7,
-  //   title: "Filipino",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  //   courseImage: require("@/assets/dashImage/math.png")
-  // },
-
-  // {
-  //   courseId: 8,
-  //   title: "MAPEH",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  // },
-  // {
-  //   courseId: 9,
-  //   title: "Araling Panlipunan",
-  //   section: "tw23",
-  //   courseType: courseType.academic,
-  // },
-];
+type Subject = {
+  title: string;
+  section: string;
+  subject_id: string;
+  description: string;
+  subjectType: string;
+};
 
 const index = () => {
-  const [selectedValue, setSelectedValue] = useState("academic");
+  const [selectedValue, setSelectedValue] = useState("all");
   const { courseCardView } = useContext(CourseCardViewContext);
+  const [subjects, setSubjects] = useState<Subject[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      // define an async function inside the effect
-      async function fetchAndLogToken() {
-        try {
-          const token = await fetchSubjects("GR7");
-          console.log(token);
-        } catch (err) {
-          console.error('Error getting token:', err);
-        }
+  useEffect(() => {
+    async function fetchSubjects() {
+      try {
+        const data = await getSubjects("GR7");
+        setSubjects(data.subjects);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching subjects: ", err);
+        useAuthGuard(err);
       }
+    }
+    fetchSubjects();
+  }, []);
 
-      // call it
-      fetchAndLogToken();
+  const filteredSubjects = useMemo<Subject[] | null>(() => {
+    if (!subjects) return [];
+    switch (selectedValue) {
+      case "academic":
+      case "specialized":
+        return subjects.filter((s) => s.subjectType === "auditory" || s.subjectType === "language" || s.subjectType === "speech");
 
-      // (optional) you can return a cleanup function here if needed
-    }, []);  // ← empty deps means “run once on mount”
+      case "previous":
+        return null;
+
+      case "all":
+      default:
+        return subjects;
+    }
+  }, [subjects, selectedValue]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading........</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView>
+    <View>
       <View>
         <View style={styles.courseContainer}>
-          <Text style={styles.courseTitle}>Courses</Text>
+          <Text style={styles.courseTitle}>Subjects</Text>
           <View style={styles.dropdownContainer}>
             <Dropdown
               style={styles.dropdown}
@@ -134,28 +98,51 @@ const index = () => {
             globalStyle.container,
           ]}
         >
-          {courses?.map((course, index) => {
-            if (course.courseType === selectedValue) {
+          {filteredSubjects ? (
+            filteredSubjects.map((subject: Subject) => {
+              if (subject.subjectType === selectedValue) {
+                return (
+                  <View
+                    key={subject.subject_id}
+                    style={courseCardView ? styles.gridItem : null}
+                  >
+                    <CourseCard
+                      courseTitle={subject.title}
+                      courseSection={subject.section}
+                      courseId={subject.subject_id}
+                      description={subject.description}
+                      subjectType={subject.subjectType}
+                      courseImage={require("@/assets/dashImage/language.png")}
+                    />
+                    <Text>{courseCardView}</Text>
+                  </View>
+                );
+              }
               return (
                 <View
-                  key={index}
+                  key={subject.subject_id}
                   style={courseCardView ? styles.gridItem : null}
                 >
                   <CourseCard
-                    courseTitle={course.title}
-                    courseSection={course.section}
-                    courseId={course.courseId}
-                    courseImage={course.courseImage}
+                    courseTitle={subject.title}
+                    courseSection={subject.section}
+                    courseId={subject.subject_id}
+                    description={subject.description}
+                    subjectType={subject.subjectType}
+                    courseImage={require("@/assets/dashImage/language.png")}
                   />
                   <Text>{courseCardView}</Text>
                 </View>
               );
-            }
-            return null;
-          })}
+            })
+          ) : (
+            <View>
+              <Text>No {selectedValue} subjects available.</Text>
+            </View>
+          )}
         </ScrollView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 

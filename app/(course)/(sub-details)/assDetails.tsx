@@ -1,11 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from "react-native";
-import React, { memo, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { memo, useCallback } from "react";
 import { Card } from "@rneui/themed";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
-import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-
+import { useLocalSearchParams } from "expo-router";
 
 const data = [
   {
@@ -40,10 +38,77 @@ const assDetails = () => {
 
   if (!selectedAssignment) return <Text>Assignment not found</Text>;
 
+  const {
+    title,
+    deadline,
+    createdAt,
+    availabilityStart,
+    availabilityEnd,
+
+    attempts,
+    pointsTotal,
+  } = useLocalSearchParams<{
+    title: string;
+    deadline: string;
+    createdAt: string;
+    availabilityStart: string;
+    availabilityEnd: string;
+    attempts: string;
+    pointsTotal: string;
+  }>();
+
+  const formatDate = useCallback(
+    (date: string) => {
+      const newDate = new Date(date);
+      return newDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    },
+    [Date]
+  );
+
+  const formatTime = useCallback(
+    (timeStr: string) => {
+      const [hourStr, minute] = timeStr.split(":");
+      let hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${ampm}`;
+    },
+    [Date]
+  );
+
   return (
     <ScrollView>
     <View style={styles.container}>
-      <Card containerStyle={styles.cardContainer}>
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.row}>
+              <Text style={styles.deadline}>
+                Deadline: {formatDate(deadline)}
+              </Text>
+              <Text style={styles.points}>Points: {pointsTotal}</Text>
+            </View>
+            <View style={styles.availabilityContainer}>
+              <Text>Availability: </Text>
+              <Text style={styles.availability}>
+                {formatDate(deadline)} {formatTime(availabilityStart)} -{" "}
+                {formatDate(createdAt)} {formatTime(availabilityEnd)}
+              </Text>
+            </View>
+
+            <Text style={styles.attempt}>Attempts: {attempts}</Text>
+          </View>
+        </Card>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Take Quiz</Text>
+        </TouchableOpacity>
+      </View>
+<!--       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <Text style={styles.title}>{selectedAssignment.title}</Text>
           <View style={styles.row}>
@@ -131,9 +196,7 @@ const assDetails = () => {
         </>
       )}
       
-      </View>
-  
-      
+      </View> -->
     </View>
     </ScrollView>
   );
@@ -153,7 +216,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderWidth: 0,
     elevation: 5,
-    marginBottom: 10,
   },
   cardContent: {
     flexDirection: "column",
@@ -182,11 +244,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
   },
-  availability: {
-    fontSize: 14,
+  availabilityContainer: {
+    fontSize: 16,
     color: "#000",
     marginBottom: 10,
     lineHeight: 20,
+    maxWidth: "80%",
+    flexDirection: "row",
+  },
+  availability: {
+    flexWrap: "wrap",
+    maxWidth: "80%",
   },
   attempt: {
     fontSize: 14,
@@ -262,8 +330,6 @@ const styles = StyleSheet.create({
     borderColor:"#aaa",
     borderWidth:1
   }
-  
-
 });
 
 export default memo(assDetails);
