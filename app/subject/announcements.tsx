@@ -14,16 +14,16 @@ import {
 } from "react-native";
 
 type Announcement = {
-  id: string;
   title: string;
   description: string;
   subject_id: string;
   date_posted: string;
+  announcement_id: string;
 };
 
 function Announcements() {
   HeaderConfig("Announcements");
-  const { subjectId } = useLocalSearchParams();
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,6 @@ function Announcements() {
       try {
         const response = await getAnnouncements(subjectId);
         setAnnouncements(response.announcements);
-        console.log(response.announcements);
       } catch (err) {
         useAuthGuard(err);
       } finally {
@@ -59,10 +58,12 @@ function Announcements() {
           announcements.map((item, index) => (
             <AnnounceCard
               key={index}
+              subjectId={subjectId}
               title={item.title}
               date={item.date_posted}
               time="09:00 AM"
               description={item.description}
+              announcementId={item.announcement_id}
             />
           ))
         ) : (
