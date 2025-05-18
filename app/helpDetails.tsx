@@ -1,13 +1,13 @@
+import HeaderConfig from "@/utils/HeaderConfig";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import React, { memo, useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import HeaderConfig from "@/utils/HeaderConfig";
 
 const helpDetails = () => {
   const [issue, setIssue] = useState("");

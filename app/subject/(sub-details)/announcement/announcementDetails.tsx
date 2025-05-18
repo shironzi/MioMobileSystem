@@ -1,43 +1,36 @@
-import HeaderConfig from "@/utils/HeaderConfig";
+import React, {memo, useCallback, useState} from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
+import HeaderConfig from "@/components/HeaderConfig";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useState } from "react";
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
 
-const AnnouncementDetails = () => {
+const AnnouncementDetails = ()=> {
   HeaderConfig("Announcement");
   const router = useRouter();
 
-  const { subjectId, title, description, date, time, announcementId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      title: string;
-      description: string;
-      date: string;
-      time: string;
-      announcementId: string;
-    }>();
+  const { title, description, date, time } =
+      useLocalSearchParams<{ title: string; description: string; date: string; time: string }>();
 
+  // Three-dot menu
   const [menuVisible, setMenuVisible] = useState(false);
+  // Confirmation modal
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [confirmType, setConfirmType] = useState<"delete" | "archive" | null>(
-    null
-  );
+  const [confirmType, setConfirmType] = useState<"delete" | "archive" | null>(null);
 
   const onEdit = useCallback(() => {
     setMenuVisible(false);
     router.push({
       pathname: "/subject/(sub-details)/announcement/announcementEdit",
-      params: { subjectId, title, date, time, description, announcementId },
+      params: { title, date, time, description },
     });
-  }, [title, date, time, description, announcementId]);
+  }, [title, date, time, description]);
 
   const requestDelete = useCallback(() => {
     setMenuVisible(false);
@@ -53,8 +46,10 @@ const AnnouncementDetails = () => {
 
   const onConfirm = useCallback(() => {
     if (confirmType === "delete") {
+      // TODO: call delete API
       console.log("Announcement deleted");
     } else if (confirmType === "archive") {
+      // TODO: call archive API
       console.log("Announcement archived");
     }
     setConfirmVisible(false);
@@ -67,90 +62,84 @@ const AnnouncementDetails = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.cardContainer}>
-        <View style={styles.cardContent}>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity
-              onPress={() => setMenuVisible((v) => !v)}
-              style={styles.threeDots}
-            >
-              <Entypo name="dots-three-vertical" size={20} color="#333" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.date}>{date}</Text>
-          <Text style={styles.description}>{description}</Text>
-
-          {/* Action Menu */}
-          <Modal
-            transparent
-            visible={menuVisible}
-            animationType="fade"
-            onRequestClose={() => setMenuVisible(false)}
-          >
-            <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
-              <View style={styles.modalOverlay} />
-            </TouchableWithoutFeedback>
-            <View style={styles.dropdownBox}>
-              <TouchableOpacity onPress={onEdit} style={styles.dropdownItem}>
-                <Text style={styles.dropdownItemText}>Edit</Text>
-              </TouchableOpacity>
-              <View style={styles.divider} />
-
+      <View style={styles.container}>
+        <View style={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{title}</Text>
               <TouchableOpacity
-                onPress={requestDelete}
-                style={styles.dropdownItem}
+                  onPress={() => setMenuVisible((v) => !v)}
+                  style={styles.threeDots}
               >
-                <Text style={styles.dropdownItemText}>Delete</Text>
-              </TouchableOpacity>
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                onPress={requestArchive}
-                style={styles.dropdownItem}
-              >
-                <Text style={styles.dropdownItemText}>Archive</Text>
+                <Entypo name="dots-three-vertical" size={20} color="#333" />
               </TouchableOpacity>
             </View>
-          </Modal>
 
-          {/* Confirmation Modal */}
-          <Modal
-            transparent
-            visible={confirmVisible}
-            animationType="fade"
-            onRequestClose={onCancelConfirm}
-          >
-            <TouchableWithoutFeedback onPress={onCancelConfirm}>
-              <View style={styles.modalOverlay} />
-            </TouchableWithoutFeedback>
-            <View style={styles.confirmBox}>
-              <Text style={styles.confirmText}>
-                Are you sure you want to {confirmType} this announcement?
-              </Text>
-              <View style={styles.confirmButtons}>
-                <TouchableOpacity
-                  onPress={onCancelConfirm}
-                  style={[styles.confirmButton, styles.cancelButton]}
-                >
-                  <Text style={styles.confirmButtonText}>Cancel</Text>
+            <Text style={styles.date}>{date}</Text>
+            <Text style={styles.description}>{description}</Text>
+
+            {/* Action Menu */}
+            <Modal
+                transparent
+                visible={menuVisible}
+                animationType="fade"
+                onRequestClose={() => setMenuVisible(false)}
+            >
+              <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
+                <View style={styles.modalOverlay} />
+              </TouchableWithoutFeedback>
+              <View style={styles.dropdownBox}>
+                <TouchableOpacity onPress={onEdit} style={styles.dropdownItem}>
+                  <Text style={styles.dropdownItemText}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={onConfirm}
-                  style={[styles.confirmButton, styles.confirmActionButton]}
-                >
-                  <Text style={styles.confirmButtonText}>Yes</Text>
+                <View style={styles.divider} />
+
+                <TouchableOpacity onPress={requestDelete} style={styles.dropdownItem}>
+                  <Text style={styles.dropdownItemText}>Delete</Text>
+                </TouchableOpacity>
+                <View style={styles.divider} />
+
+                <TouchableOpacity onPress={requestArchive} style={styles.dropdownItem}>
+                  <Text style={styles.dropdownItemText}>Archive</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+
+            {/* Confirmation Modal */}
+            <Modal
+                transparent
+                visible={confirmVisible}
+                animationType="fade"
+                onRequestClose={onCancelConfirm}
+            >
+              <TouchableWithoutFeedback onPress={onCancelConfirm}>
+                <View style={styles.modalOverlay} />
+              </TouchableWithoutFeedback>
+              <View style={styles.confirmBox}>
+                <Text style={styles.confirmText}>
+                  Are you sure you want to {confirmType} this announcement?
+                </Text>
+                <View style={styles.confirmButtons}>
+                  <TouchableOpacity
+                      onPress={onCancelConfirm}
+                      style={[styles.confirmButton, styles.cancelButton]}
+                  >
+                    <Text style={styles.confirmButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      onPress={onConfirm}
+                      style={[styles.confirmButton, styles.confirmActionButton]}
+                  >
+                    <Text style={styles.confirmButtonText}>Yes</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </View>
         </View>
       </View>
-    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5", padding: 10 },
@@ -187,30 +176,25 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: "#e0e0e0" },
   confirmBox: {
     position: "absolute",
-    top: "40%",
-    left: "10%",
-    right: "10%",
+    top: '40%',
+    left: '10%',
+    right: '10%',
     backgroundColor: "#fff",
     borderRadius: 8,
     padding: 20,
     elevation: 10,
   },
-  confirmText: {
-    fontSize: 16,
-    color: "#333",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  confirmButtons: { flexDirection: "row", justifyContent: "flex-end" },
+  confirmText: { fontSize: 16, color: "#333", marginBottom: 20, textAlign: 'center' },
+  confirmButtons: { flexDirection: 'row', justifyContent: 'flex-end' },
   confirmButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 4,
     marginLeft: 10,
   },
-  cancelButton: { backgroundColor: "#6c757d" },
-  confirmActionButton: { backgroundColor: "#dc3545" },
-  confirmButtonText: { color: "#fff", fontSize: 14, fontWeight: "600" },
+  cancelButton: { backgroundColor: '#6c757d' },
+  confirmActionButton: { backgroundColor: '#dc3545' },
+  confirmButtonText: { color: '#fff', fontSize: 14, fontWeight: '600' },
 });
 
 export default memo(AnnouncementDetails);

@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { memo, useCallback, useMemo, useState } from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { StyleSheet } from "react-native";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const HomonymQuestionCard = (props: {

@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { UnknownOutputParams } from "expo-router";
 
 export async function getSubjects(gradeLevel: string) {
     try {

@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import React, { memo } from "react";
-import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { FontAwesome } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const data = {
   id: 1,
@@ -49,7 +49,7 @@ const profile = () => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/sidebar/edit")}
+          onPress={() => router.push("/edit")}
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>

@@ -1,7 +1,7 @@
-import React, { memo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const ScoresCard = (props: {
   name: string;
