@@ -1,8 +1,8 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { memo } from "react";
-import { useRouter } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import HeaderConfig from "@/utils/HeaderConfig";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const level = () => {
   const router = useRouter();

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import type { AxiosError } from "axios";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import type { AxiosError } from "axios";
+import { useEffect } from "react";
 
 export function useAuthGuard(error?: unknown) {
     const router = useRouter();

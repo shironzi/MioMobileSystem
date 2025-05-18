@@ -1,7 +1,15 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView } from "react-native";
-import React, { memo, useCallback, useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { FontAwesome } from "@expo/vector-icons";
+import React, { memo, useCallback, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const data = [
   {
@@ -47,8 +55,7 @@ const Edit = () => {
   );
 
   return (
-    <ScrollView
-    showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         {data.map((item) => (
           <View key={item.id} style={styles.cardContainer}>
@@ -113,10 +120,18 @@ const Edit = () => {
                   </TouchableOpacity>
                 </View>
               ))}
-                <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={handleAddSocialLink}>
-                <FontAwesome name="plus" size={12} color="#ffbf18" style={{top:0, left:10}}/>
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={handleAddSocialLink}
+              >
+                <FontAwesome
+                  name="plus"
+                  size={12}
+                  color="#ffbf18"
+                  style={{ top: 0, left: 10 }}
+                />
                 <Text style={styles.addLinkText}>Add link</Text>
-                </TouchableOpacity>
+              </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Save Profile</Text>
@@ -230,7 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#aaa",
     marginHorizontal: 5,
-    left:-5
+    left: -5,
   },
   deleteIcon: {
     marginLeft: 5,
@@ -242,8 +257,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textDecorationLine: "underline",
     marginTop: 10,
-    marginBottom:10
-
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#FFBF18",

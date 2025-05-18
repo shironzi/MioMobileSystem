@@ -1,15 +1,9 @@
-import {
-  View,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import React, { memo, useCallback, useMemo, useState } from "react";
-import HeaderConfig from "@/utils/HeaderConfig";
-import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
-import { useRouter } from "expo-router";
 import ActivityProgress from "@/components/activityProgress";
+import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
+import HeaderConfig from "@/utils/HeaderConfig";
+import { useRouter } from "expo-router";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Data = [
   {
