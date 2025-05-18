@@ -4,9 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 
 export default async function login(email: string, password: string) {
   try {
-    const { user } = await getAuth().signInWithEmailAndPassword(email, password);
-    const token = await user.getIdToken();
-    await SecureStore.setItemAsync('sessionId', token);
+    await getAuth().signInWithEmailAndPassword(email, password);
 
     return { status: "success" }
   } catch (error: any) {
