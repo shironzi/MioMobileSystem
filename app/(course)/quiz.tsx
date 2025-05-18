@@ -9,22 +9,14 @@ import QuizCard from "@/components/QuizCard";
 const data = [
   {
     id: 1,
-    title: "Quiz 1: Sound Difference",
+    title: "Quiz 1: Speech Patterns",
     date: new Date(Date.now()),
     time: "10:00 AM",
     score: 20 + " pts",
     question: 20 + " questions",
     type: "File Upload",
   },
-  {
-    id: 2,
-    title: "Quiz 2",
-    date: new Date(Date.now()),
-    time: "10:00 AM",
-    score: 50 + " pts",
-    question: 50 + " questions",
-    type: "Quiz",
-  },
+
 ];
 
 const quiz = () => {
@@ -45,7 +37,7 @@ const quiz = () => {
               question={item.question}
               type={item.type}
               onPress={() => router.push({
-                pathname: "assDetails",
+                pathname: "quizDetails",
                 params: {
                   id: item.id.toString(),
                   type: item.type
