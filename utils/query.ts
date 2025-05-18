@@ -22,13 +22,39 @@ export async function getModules(subjectId: string) {
     }
 }
 
-export async function getAnnouncements(subjectId: string | string[]) {
+export async function getAnnouncements(subjectId: string) {
     try {
         const { data } = await api.get(`/subject/${subjectId}/announcements`)
 
         return data
     } catch (err) {
         console.error(err)
+        throw err;
+    }
+}
+
+export async function editAnnouncements(
+    subjectId: string,
+    announcementId: string,
+    title: string,
+    description: string
+) {
+    try {
+        const payload = JSON.stringify({ title, description });
+
+        const {data} = await api.post(
+            `/subject/${subjectId}/announcements/${announcementId}`,
+            payload,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return data;
+    } catch (err) {
+        console.error(err);
         throw err;
     }
 }
