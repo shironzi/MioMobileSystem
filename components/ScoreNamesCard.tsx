@@ -1,12 +1,12 @@
-import React, { memo} from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const ScoreNamesCard = (props: { 
-    name: string; 
-    score: string;
-    attempt: string;
+const ScoreNamesCard = (props: {
+  name: string;
+  score: string;
+  attempt: string;
 }) => {
   const router = useRouter();
 
@@ -19,7 +19,9 @@ const ScoreNamesCard = (props: {
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.textContent}>
-            <Text style={styles.title} numberOfLines={3}>{props.name}</Text>
+            <Text style={styles.title} numberOfLines={3}>
+              {props.name}
+            </Text>
             <View style={styles.bottomRow}>
               <Text style={styles.score}>{props.score}</Text>
               <Text style={styles.type}> | {props.attempt}</Text>
@@ -31,7 +33,6 @@ const ScoreNamesCard = (props: {
         </View>
       </View>
     </TouchableOpacity>
-
   );
 };
 
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     elevation: 4,
-    top:15,
+    top: 15,
   },
   cardContainer: {
     borderWidth: 0,
@@ -88,12 +89,11 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   rightSection: {
-    flexDirection:"row",
+    flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "center",
     marginLeft: 10,
   },
 });
-
 
 export default memo(ScoreNamesCard);

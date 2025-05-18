@@ -1,6 +1,6 @@
-import React, { memo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type TodoCardProps = {
   sub: string;
@@ -22,11 +22,7 @@ const todoCard: React.FC<TodoCardProps> = (props) => {
     <TouchableOpacity activeOpacity={0.9}>
       <View style={styles.card}>
         <View style={styles.cardImage}>
-          <MaterialIcons
-              name="image"
-              size={50}
-              color="#FFBF18"
-          />
+          <MaterialIcons name="image" size={50} color="#FFBF18" />
         </View>
         <View style={styles.cardContent}>
           <Text style={styles.sub}>{props.sub}</Text>
@@ -50,7 +46,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     padding: 20,
     flexDirection: "row",
-    columnGap: 20
+    columnGap: 20,
   },
   cardContent: {
     flexDirection: "column",
@@ -58,7 +54,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: "20%",
-    marginVertical: "auto"
+    marginVertical: "auto",
   },
   title: {
     fontSize: 18,

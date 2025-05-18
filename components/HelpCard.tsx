@@ -1,6 +1,6 @@
-import React, { memo } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import React, { memo } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const HelpCard = (props: {
   name: string;

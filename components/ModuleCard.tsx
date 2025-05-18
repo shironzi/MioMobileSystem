@@ -1,7 +1,7 @@
-import React, { memo } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const ModuleCard = (props: { title: string; index: number }) => {
   const router = useRouter();
@@ -21,7 +21,12 @@ const ModuleCard = (props: { title: string; index: number }) => {
           </View>
           <View style={styles.icons}>
             <TouchableOpacity>
-              <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />
+              <Entypo
+                name="edit"
+                size={15}
+                color="#aaa"
+                style={{ marginRight: 8 }}
+              />
             </TouchableOpacity>
             <TouchableOpacity>
               <Entypo name="trash" size={15} color="#aaa" />

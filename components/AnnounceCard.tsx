@@ -1,25 +1,35 @@
-import React, { memo, useCallback } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const announceCard = (props: { title: string; date: String; time: string }) => {
+const announceCard = (props: {
+  title: string;
+  date: string;
+  time: string;
+  description: string;
+}) => {
   const router = useRouter();
 
-  // const formatDate = useCallback(
-  //     (date: String) => {
-  //     return date.toLocaleDateString("en-US", {
-  //       month: "short",
-  //       day: "2-digit",
-  //       year: "numeric",
-  //     });
-  //   },
-  //   [Date]
-  // );
+  const newDate = new Date(props.date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
 
   return (
     <TouchableOpacity
-      onPress={() => router.push("/subject/(sub-details)/announceDetails")}
+      onPress={() =>
+        router.push({
+          pathname: "/subject/(sub-details)/announcement/announcementDetails",
+          params: {
+            title: props.title,
+            date: newDate,
+            time: props.time,
+            description: props.description,
+          },
+        })
+      }
       style={styles.touchableOpacity}
     >
       <View style={styles.cardContainer}>
@@ -32,21 +42,8 @@ const announceCard = (props: { title: string; date: String; time: string }) => {
           </View>
           <View style={styles.rightSection}>
             <Text style={styles.date}>
-              {props.date} {props.time}
+              {newDate} {props.time}
             </Text>
-            <View style={styles.icons}>
-              <TouchableOpacity>
-                <Entypo
-                  name="edit"
-                  size={15}
-                  color="#aaa"
-                  style={{ marginRight: 5 }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Entypo name="trash" size={15} color="#aaa" />
-              </TouchableOpacity>
-            </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>

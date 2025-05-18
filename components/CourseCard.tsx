@@ -1,7 +1,7 @@
-import {Image, Text, TouchableOpacity, View} from "react-native";
-import React, { memo } from "react";
-import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 const CourseCard = (props: {
   courseTitle: string;
@@ -10,6 +10,7 @@ const CourseCard = (props: {
   courseImage: any;
   description: string;
   subjectType: string;
+  role: string | null;
 }) => {
   const router = useRouter();
 
@@ -24,6 +25,7 @@ const CourseCard = (props: {
             description: props.description,
             title: props.courseTitle,
             subjectType: props.subjectType,
+            role: props.role,
           },
         })
       }
@@ -40,16 +42,16 @@ const CourseCard = (props: {
           marginBottom: -15,
         }}
       >
-        <View
-
-        >
-            <Image source={props.courseImage}
-                   style={{
-                       width: "100%",
-                       borderRadius: 10,
-                       borderBottomLeftRadius: 0,
-                       borderBottomRightRadius: 0,
-                   }}/>
+        <View>
+          <Image
+            source={props.courseImage}
+            style={{
+              width: "100%",
+              borderRadius: 10,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
+          />
         </View>
         <MaterialIcons
           name="circle"

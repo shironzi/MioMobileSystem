@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 type titleProps = {
