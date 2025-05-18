@@ -4,6 +4,7 @@ import { CourseCardViewContext } from "@/contexts/CourseCardViewContext";
 import CourseCard from "@/components/CourseCard";
 import {getSubjects} from "@/utils/query";
 import {useAuthGuard} from "@/utils/useAuthGuard";
+import globalStyles from "@/styles/globalStyles";
 
 const data = [
     { label: "All Subjects", value: "all" },
@@ -65,8 +66,7 @@ const index = () => {
     }
 
     return (
-        <View>
-            <View>
+            <View style={globalStyles.container}>
                 <View style={styles.courseContainer}>
                     <Text style={styles.courseTitle}>Subjects</Text>
                     <View style={styles.dropdownContainer}>
@@ -138,7 +138,6 @@ const index = () => {
                     )}
                 </ScrollView>
             </View>
-        </View>
     );
 };
 
@@ -148,8 +147,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
-        marginTop: 10,
     },
     courseTitle: {
         fontSize: 20,
