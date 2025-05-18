@@ -4,10 +4,12 @@ import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const announceCard = (props: {
+  subjectId: string;
   title: string;
   date: string;
   time: string;
   description: string;
+  announcementId: string;
 }) => {
   const router = useRouter();
 
@@ -23,10 +25,12 @@ const announceCard = (props: {
         router.push({
           pathname: "/subject/(sub-details)/announcement/announcementDetails",
           params: {
+            subjectId: props.subjectId,
             title: props.title,
             date: newDate,
             time: props.time,
             description: props.description,
+            announcementId: props.announcementId,
           },
         })
       }
