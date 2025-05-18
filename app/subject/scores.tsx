@@ -1,16 +1,16 @@
+import ScoresCard from "@/components/ScoresCard";
+import HeaderConfig from "@/utils/HeaderConfig";
+import { AntDesign } from "@expo/vector-icons";
 import React, { memo, useCallback, useMemo, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
   Modal,
   Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import ScoresCard from "@/components/ScoresCard";
-import { AntDesign } from "@expo/vector-icons";
-import HeaderConfig from "@/utils/HeaderConfig";
 
 enum scoreType {
   assessment = "Assessment",

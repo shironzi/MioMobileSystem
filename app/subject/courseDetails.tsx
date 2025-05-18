@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import React, { memo, useCallback } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { memo, useCallback } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import HeaderConfig from "@/utils/HeaderConfig";
 
@@ -15,26 +15,15 @@ enum activityCategory {
 const courseDetails = () => {
   const router = useRouter();
 
-  const { id, description, title, subjectType } = useLocalSearchParams<{
+  const { id, description, title, subjectType, role } = useLocalSearchParams<{
     id: string;
     title: string;
     description: string;
     subjectType: keyof typeof activityCategory;
+    role: string;
   }>();
 
   HeaderConfig("Course Details");
-
-  // useEffect(() => {
-  //   const getRole = async () => {
-  //     const raw = await SecureStore.getItemAsync("sessionData");
-  //     if (raw != null) {
-  //       const {role} = JSON.parse(raw)
-  //       setRole(role);
-  //     }
-  //   }
-  //
-  //   getRole()
-  // }, [])
 
   return (
     <View style={styles.container}>
@@ -42,12 +31,8 @@ const courseDetails = () => {
         <View style={styles.courseInfo}></View>
         <View>
           <Text style={[styles.fontSizeOne]}>{id}</Text>
-          <Text style={[styles.fontSizeOne]}>
-            {title}
-          </Text>
-          <Text style={[styles.fontSizeTwo]}>
-            {description}
-          </Text>
+          <Text style={[styles.fontSizeOne]}>{title}</Text>
+          <Text style={[styles.fontSizeTwo]}>{description}</Text>
         </View>
       </View>
       <View style={styles.linksContainer}>
@@ -58,17 +43,20 @@ const courseDetails = () => {
               switch (subjectType) {
                 case activityCategory.speech:
                   router.push({
-                    pathname: "/subject/(exercises)/(speech)/speechTrainingExercises",
+                    pathname:
+                      "/subject/(exercises)/(speech)/speechTrainingExercises",
                   });
                   break;
                 case activityCategory.auditory:
                   router.push({
-                    pathname: "/subject/(exercises)/(language)/languageTrainingExercises",
+                    pathname:
+                      "/subject/(exercises)/(language)/languageTrainingExercises",
                   });
                   break;
                 case activityCategory.language:
                   router.push({
-                    pathname:"/subject/(exercises)/(language)/languageTrainingExercises",
+                    pathname:
+                      "/subject/(exercises)/(language)/languageTrainingExercises",
                   });
                   break;
                 default:
@@ -159,19 +147,21 @@ const courseDetails = () => {
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.link}
-          onPress={useCallback(
-            () => router.push("/subject/attendance"),
-            [router]
-          )}
-        >
-          <View style={styles.yellowBulletin}></View>
-          <View style={styles.linkDecoration}>
-            <Text style={styles.fontSizeOne}>Attendance</Text>
-            <Entypo name="chevron-small-right" size={30} color="#CCC" />
-          </View>
-        </TouchableOpacity>
+        {role === "teacher" ? (
+          <TouchableOpacity
+            style={styles.link}
+            onPress={useCallback(
+              () => router.push("/subject/attendance"),
+              [router]
+            )}
+          >
+            <View style={styles.yellowBulletin}></View>
+            <View style={styles.linkDecoration}>
+              <Text style={styles.fontSizeOne}>Attendance</Text>
+              <Entypo name="chevron-small-right" size={30} color="#CCC" />
+            </View>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );

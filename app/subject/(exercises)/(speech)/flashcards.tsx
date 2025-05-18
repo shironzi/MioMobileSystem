@@ -1,9 +1,9 @@
-import { useRouter } from "expo-router";
-import React, { memo, useCallback, useMemo, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import ActivityProgress from "@/components/activityProgress";
 import HeaderConfig from "@/utils/HeaderConfig";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useRouter } from "expo-router";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const initialData = [
   {

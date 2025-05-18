@@ -1,26 +1,38 @@
-import React, { useState, useRef, useCallback } from "react";
+import HeaderConfig from "@/utils/HeaderConfig";
+import { FontAwesome6 } from "@expo/vector-icons";
+import React, { useCallback, useRef, useState } from "react";
 import {
-  View,
+  Dimensions,
   Image,
   StyleSheet,
-  TouchableOpacity,
   Text,
-  Dimensions,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
-import HeaderConfig from "@/utils/HeaderConfig";
 
 const Data = [
-  { id: "1", image: require("@/assets/images/flashcards/apple.jpg"), word: "bird" },
+  {
+    id: "1",
+    image: require("@/assets/images/flashcards/apple.jpg"),
+    word: "bird",
+  },
   { id: "2", image: require("@/assets/images/logo.png"), word: "fence" },
   {
     id: "3",
     image: require("@/assets/images/flashcards/fireExtinguisher.jpg"),
     word: "fence",
   },
-  { id: "4", image: require("@/assets/images/flashcards/scissors.png"), word: "bird" },
-  { id: "5", image: require("@/assets/images/flashcards/teacher.jpg"), word: "Dog" },
+  {
+    id: "4",
+    image: require("@/assets/images/flashcards/scissors.png"),
+    word: "bird",
+  },
+  {
+    id: "5",
+    image: require("@/assets/images/flashcards/teacher.jpg"),
+    word: "Dog",
+  },
 ];
 
 const { width, height } = Dimensions.get("window");

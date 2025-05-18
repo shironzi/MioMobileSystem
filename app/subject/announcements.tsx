@@ -1,29 +1,28 @@
-import React, { memo, useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-} from "react-native";
 import AnnounceCard from "@/components/AnnounceCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { useLocalSearchParams } from "expo-router";
+import React, { memo, useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type Announcement = {
   id: string;
   title: string;
   description: string;
-  subjectId: string;
-  datePosted: string;
+  subject_id: string;
+  date_posted: string;
 };
 
 function Announcements() {
   HeaderConfig("Announcements");
-  const router = useRouter();
   const { subjectId } = useLocalSearchParams();
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -34,8 +33,8 @@ function Announcements() {
       try {
         const response = await getAnnouncements(subjectId);
         setAnnouncements(response.announcements);
+        console.log(response.announcements);
       } catch (err) {
-        // console.error("Error fetching announcements:", err);
         useAuthGuard(err);
       } finally {
         setLoading(false);
@@ -61,8 +60,9 @@ function Announcements() {
             <AnnounceCard
               key={index}
               title={item.title}
-              date={item.datePosted}
+              date={item.date_posted}
               time="09:00 AM"
+              description={item.description}
             />
           ))
         ) : (
@@ -75,8 +75,7 @@ function Announcements() {
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
-        //   router.push("addAnnouncement")
-          console.log("announcement")
+          console.log("announcement");
         }}
       >
         <MaterialIcon name="add" size={30} color="#fff" />

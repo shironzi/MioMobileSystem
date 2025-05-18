@@ -1,7 +1,7 @@
-import React, { memo, useCallback } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+import React, { memo, useCallback } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Availability {
   start: string;

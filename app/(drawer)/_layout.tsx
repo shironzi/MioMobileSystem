@@ -13,8 +13,8 @@ import { useCallback, useEffect, useState } from "react";
 import {Image, StyleSheet, Text, View} from "react-native";
 import {logout} from "@/utils/auth";
 import {StackActions} from "@react-navigation/native";
+import * as Updates from 'expo-updates';
 
-// import { logout } from "@/utils/auth";
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
 }
@@ -44,6 +44,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       await logout();
       rootNav?.dispatch(StackActions.replace("index"));
       props.navigation.closeDrawer();
+      // await Updates.reloadAsync();
     } catch (error) {
       console.error("Logout failed:", error);
     }

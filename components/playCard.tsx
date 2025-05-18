@@ -1,6 +1,6 @@
-import React, { memo } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type PlayCardProps = {
   id: number;
@@ -12,7 +12,9 @@ const PlayCard = ({ id, label }: PlayCardProps) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push("/subject/(exercises)/(auditory)/MatchingCards")}
+      onPress={() =>
+        router.push("/subject/(exercises)/(auditory)/MatchingCards")
+      }
     >
       <View style={styles.borderLeft}></View>
       <View style={styles.linkDecoration}>

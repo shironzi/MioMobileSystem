@@ -1,8 +1,10 @@
 import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import React, { memo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   StyleSheet,
   Text,
@@ -10,19 +12,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 type FormData = {
   email: string;
   password: string;
 };
 
-const schema = yup.object({
-  email: yup.string().email("Invalid email address").required("Email is required"),
-  password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-}).required();
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  })
+  .required();
 
 const Index = () => {
   const router = useRouter();
@@ -30,15 +38,19 @@ const Index = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
     defaultValues: {
-      email: "202212079@fit.edu.ph",
+      email: "joshbaon1@gmail.com",
       password: "2003-07-10",
     },
     resolver: yupResolver(schema),
   });
 
-  const togglePasswordVisibility = () => setIsPasswordVisible(v => !v);
+  const togglePasswordVisibility = () => setIsPasswordVisible((v) => !v);
 
   const onSubmit = async (data: FormData) => {
     setErrorMessage("");
@@ -60,106 +72,112 @@ const Index = () => {
   });
 
   return (
-      <View style={styles.upper}>
-        <View style={styles.first}>
-          <View style={styles.second}>
-            <View style={styles.container}>
-              <Text style={styles.header}>Welcome Back!</Text>
-              <Text style={styles.sub}>Log in to your account</Text>
-              {!!errorMessage && (
-                  <Text style={{ color: "red", textAlign: "center", marginBottom: 10 }}>
-                    {errorMessage}
-                  </Text>
-              )}
+    <View style={styles.upper}>
+      <View style={styles.first}>
+        <View style={styles.second}>
+          <View style={styles.container}>
+            <Text style={styles.header}>Welcome Back!</Text>
+            <Text style={styles.sub}>Log in to your account</Text>
+            {!!errorMessage && (
+              <Text
+                style={{ color: "red", textAlign: "center", marginBottom: 10 }}
+              >
+                {errorMessage}
+              </Text>
+            )}
 
-              <View style={{ rowGap: 14 }}>
-                {/* Email */}
-                <Controller
-                    control={control}
-                    name="email"
-                    render={({ field: { value, onChange } }) => (
-                        <>
-                          <View style={[
-                            styles.inputContainer,
-                            errors.email && { borderColor: "#FF0000" }
-                          ]}>
-                            <MaterialIcons name="person" size={24} color="#808080" />
-                            <TextInput
-                                placeholder="Email"
-                                value={value}
-                                onChangeText={onChange}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                style={{ width: "100%" }}
-                            />
-                          </View>
-                          {errors.email && (
-                              <Text style={{ color: "red", marginLeft: 25 }}>
-                                {errors.email.message}
-                              </Text>
-                          )}
-                        </>
+            <View style={{ rowGap: 14 }}>
+              {/* Email */}
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { value, onChange } }) => (
+                  <>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        errors.email && { borderColor: "#FF0000" },
+                      ]}
+                    >
+                      <MaterialIcons name="person" size={24} color="#808080" />
+                      <TextInput
+                        placeholder="Email"
+                        value={value}
+                        onChangeText={onChange}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ width: "100%" }}
+                      />
+                    </View>
+                    {errors.email && (
+                      <Text style={{ color: "red", marginLeft: 25 }}>
+                        {errors.email.message}
+                      </Text>
                     )}
-                />
+                  </>
+                )}
+              />
 
-                {/* Password */}
-                <Controller
-                    control={control}
-                    name="password"
-                    render={({ field: { value, onChange } }) => (
-                        <>
-                          <View style={[
-                            styles.inputContainer,
-                            errors.password && { borderColor: "#FF0000" }
-                          ]}>
-                            <MaterialIcons name="lock" size={24} color="#808080" />
-                            <TextInput
-                                placeholder="Password"
-                                secureTextEntry={!isPasswordVisible}
-                                value={value}
-                                onChangeText={onChange}
-                                style={{ width: "77%" }}
-                            />
-                            <TouchableOpacity onPress={togglePasswordVisibility}>
-                              <Ionicons
-                                  name={isPasswordVisible ? "eye" : "eye-off"}
-                                  size={24}
-                                  color="#808080"
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          {errors.password && (
-                              <Text style={{ color: "red", marginLeft: 25 }}>
-                                {errors.password.message}
-                              </Text>
-                          )}
-                        </>
+              {/* Password */}
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { value, onChange } }) => (
+                  <>
+                    <View
+                      style={[
+                        styles.inputContainer,
+                        errors.password && { borderColor: "#FF0000" },
+                      ]}
+                    >
+                      <MaterialIcons name="lock" size={24} color="#808080" />
+                      <TextInput
+                        placeholder="Password"
+                        secureTextEntry={!isPasswordVisible}
+                        value={value}
+                        onChangeText={onChange}
+                        style={{ width: "77%" }}
+                      />
+                      <TouchableOpacity onPress={togglePasswordVisibility}>
+                        <Ionicons
+                          name={isPasswordVisible ? "eye" : "eye-off"}
+                          size={24}
+                          color="#808080"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {errors.password && (
+                      <Text style={{ color: "red", marginLeft: 25 }}>
+                        {errors.password.message}
+                      </Text>
                     )}
-                />
+                  </>
+                )}
+              />
 
-                {/* Actions */}
-                <View style={styles.row}>
-                  <Text>Remember me</Text>
-                  <TouchableOpacity onPress={() => console.log("forgot")}>
-                    <Text style={styles.forgotText}>Forgot Password?</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Submit */}
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={isSubmitting}
-                >
-                  <Text style={styles.buttonText}>
-                    {isSubmitting ? "Logging in..." : "Login"}
-                  </Text>
+              {/* Actions */}
+              <View style={styles.row}>
+                <Text>Remember me</Text>
+                <TouchableOpacity onPress={() => console.log("forgot")}>
+                  <Text style={styles.forgotText}>Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
+
+              {/* Submit */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+              >
+                <Text style={styles.buttonText}>
+                  {isSubmitting ? "Logging in..." : "Login"}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
+    </View>
   );
 };
 

@@ -1,11 +1,7 @@
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import React, { useCallback, useState } from "react";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import ActivityProgress from "@/components/activityProgress";
-import Word from "@/components/trainingActivities/language/Word";
-import WordList from "@/components/trainingActivities/language/WordList";
 import HeaderConfig from "@/utils/HeaderConfig";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, Text } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const words = [
   { id: 1, word: "Can" },
@@ -67,9 +63,7 @@ const fillInTheBlank = () => {
       {/*  </View>*/}
       {/*</View>*/}
 
-      <Text>
-        Unavailable
-      </Text>
+      <Text>Unavailable</Text>
     </GestureHandlerRootView>
   );
 };
