@@ -34,8 +34,6 @@ const addAnnouncement = () => {
       setFilename(name);
       setFileUrl(uri);
       setFileType(mimeType);
-
-      console.log(mimeType);
     }
   };
 
