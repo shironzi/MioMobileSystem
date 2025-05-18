@@ -1,8 +1,7 @@
-import { View, StyleSheet, ScrollView } from "react-native";
-import React, { memo } from "react";
 import ScoreNamesCard from "@/components/ScoreNamesCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import React, { memo } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 const data = [
   {

@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React, { memo, useCallback } from "react";
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
+import React, { memo, useCallback } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const assDetails = () => {
   HeaderConfig("Assignment");
@@ -12,7 +12,6 @@ const assDetails = () => {
     createdAt,
     availabilityStart,
     availabilityEnd,
-
     attempts,
     pointsTotal,
   } = useLocalSearchParams<{
