@@ -7,17 +7,25 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 const CourseCard = (props: {
   courseTitle: string;
   courseSection: string;
-  courseId: number;
-  courseImage:any;
+  courseId: string;
+  courseImage: any;
+  description: string;
+  subjectType: string;
 }) => {
   const router = useRouter();
 
   return (
-    <TouchableOpacity activeOpacity={0.9}
+    <TouchableOpacity
+      activeOpacity={0.9}
       onPress={() =>
         router.push({
           pathname: "/(course)/courseDetails",
-          params: { id: props.courseId },
+          params: {
+            id: props.courseId,
+            description: props.description,
+            title: props.courseTitle,
+            subjectType: props.subjectType,
+          },
         })
       }
     >
@@ -29,7 +37,7 @@ const CourseCard = (props: {
           marginVertical: 10,
           elevation: 5,
           marginTop: 10,
-          padding:0,
+          padding: 0,
           marginBottom: -15,
         }}
       >
@@ -40,10 +48,14 @@ const CourseCard = (props: {
             borderRadius: 10,
             borderBottomLeftRadius: 0,
             borderBottomRightRadius: 0,
-            
           }}
         />
-        <MaterialIcons name="circle" color="#ffbf18" size={12} style={{left:13, top:10}}></MaterialIcons>
+        <MaterialIcons
+          name="circle"
+          color="#ffbf18"
+          size={12}
+          style={{ left: 13, top: 10 }}
+        ></MaterialIcons>
         <Text
           style={{
             color: "#333",
@@ -56,7 +68,9 @@ const CourseCard = (props: {
         >
           {props.courseTitle}
         </Text>
-        <Text style={{ color: "#666", marginLeft: 35, marginBottom: 10 }}>{props.courseSection}</Text>
+        <Text style={{ color: "#666", marginLeft: 35, marginBottom: 10 }}>
+          {props.courseSection}
+        </Text>
       </Card>
     </TouchableOpacity>
   );

@@ -19,7 +19,7 @@ import login from "@/utils/auth";
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [email, setEmail] = useState("aaronbaon1@gmail.com");
+  const [email, setEmail] = useState("202212079@fit.edu.ph");
   const [password, setPassword] = useState("2003-07-10");
   const [rememberMe, setRememberMe] = useState(false);
   const [isCredentialsValid, setIsCredentialsValid] = useState(true);
@@ -32,29 +32,26 @@ const Index = () => {
   };
 
   const handleLogin = async () => {
-    router.push("/(drawer)");
+    try {
 
-    // try {
+      if(validator.isEmail(email)){
+        setIsEmailValid(true)
+        const responseStatus = await login(email, password);
+        if(responseStatus === 200){
+          router.push("/(drawer)");
+        }else if(responseStatus === 401){
+          setErrorMessage("Invalid Credentials")
+          setPassword("")
+          setIsCredentialsValid(false);
+        }
+      }else{
+        setErrorMessage("Invalid Email Address")
+        setIsEmailValid(false);
+      }
 
-    //   if(validator.isEmail(email)){
-    //     setIsEmailValid(true)
-    //     const responseStatus = await login(email, password);
-    //     if(responseStatus === 200){
-    //       router.push("/(drawer)");
-    //     }else if(responseStatus === 401){
-    //       setErrorMessage("Invalid Credentials")
-    //       setPassword("")
-    //       setIsCredentialsValid(false);
-    //     }
-
-    //   }else{
-    //     setErrorMessage("Invalid Email Address")
-    //     setIsEmailValid(false);
-    //   }
-
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    // }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   useFocusEffect(() => {

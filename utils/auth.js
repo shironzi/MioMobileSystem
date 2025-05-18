@@ -1,9 +1,9 @@
 import * as SecureStore from 'expo-secure-store';
-import {getItemAsync} from "expo-secure-store";
+import { api } from '@/utils/apiClient';
 
 export default async function login(email, password) {
     try {
-      const response = await fetch("http://192.168.254.171:8001/api/user-login", {
+      const response = await fetch("http://192.168.254.169:8001/api/user-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,18 +32,19 @@ export default async function login(email, password) {
   }
 
   export async function logout() {
-    try {
-      const response = await fetch("http://192.168.254.171:8001/api/logout", {
-        method: "POST",
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = response.json()
-      return data;
-    } catch (error) {
-      console.error("Error during login:", error);
-      throw error;
-    }
+    const {response} = await api.get("/logout");
+
+    await SecureStore.deleteItemAsync('sessionData')
+    return response
   }
+
+export async function verifyToken() {
+  try {
+    const { data } = await api.get('/validate/token');
+
+    return data.user_id;
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

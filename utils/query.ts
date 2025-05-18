@@ -1,36 +1,57 @@
-import * as SecureStore from 'expo-secure-store';
+import { api } from "@/utils/apiClient";
+import { UnknownOutputParams } from "expo-router";
 
-export async function getToken(): Promise<string | null> {
-    const data = await SecureStore.getItemAsync("sessionData")
-    if (data != null) {
-        return JSON.parse(data).sessionId;
+export async function getSubjects(gradeLevel: string) {
+    try {
+        const { data } = await api.get(`/subjects?gradeLevel=${gradeLevel}`);
+
+        return data;
+    } catch (err) {
+        console.error(err)
+        throw err
     }
-
-    return null;
 }
 
-export default async function fetchSubjects(gradeLevel: string) {
-    // 2. Await the token
-    const token = await getToken();
-    if (!token) {
-        throw new Error("No session token found");
+export async function getModules(subjectId: string) {
+    try {
+        const { data } = await api.get(`/subject/${subjectId}/modules`)
+
+        return data
+    } catch (err) {
+        console.error(err)
+        throw err;
     }
+}
 
-    // 3. Encode your filter as a query param (instead of sending a GET body)
-    const url = new URL("http://192.168.254.169:8001/api/subjects");
-    url.searchParams.append("gradeLevel", gradeLevel);
+export async function getAnnouncements(subjectId: string | string[]) {
+    try {
+        const { data } = await api.get(`/subject/${subjectId}/announcements`)
 
-    const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-            "Accept":        "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+        return data
+    } catch (err) {
+        console.error(err)
+        throw err;
     }
+}
 
-    return await response.json();
+export async function getAssignments(subjectId: string | string[]) {
+    try {
+        const { data } = await api.get(`/subject/${subjectId}/assignments`)
+
+        return data
+    } catch (err) {
+        console.error(err)
+        throw err;
+    }
+}
+
+export async function getScores(subjectId: string | string[]) {
+    try {
+        const { data } = await api.get(`/subject/${subjectId}/scores`)
+
+        return data
+    } catch (err) {
+        console.error(err)
+        throw err;
+    }
 }

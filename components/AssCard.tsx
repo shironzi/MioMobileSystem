@@ -4,61 +4,106 @@ import { Card } from "@rneui/themed";
 import { useRouter } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const assCard = (props: { 
-    title: string; 
-    date: Date; 
-    time: string;
-    score: string;
-    type: string;
-    onPress: () => void;
+interface Availability {
+  start: string;
+  end: string;
+}
+
+interface Points {
+  earned: string;
+  total: string;
+}
+
+const assCard = (props: {
+  assignment_id: string;
+  attempts: string;
+  availability: Availability;
+  deadline: string;
+  createdAt: string;
+  description: string;
+  points: Points;
+  title: string;
 }) => {
   const router = useRouter();
 
-  // const formatDate = useCallback(
-  //   (date: Date) => {
-  //     return date.toLocaleDateString("en-US", {
-  //       month: "short",
-  //       day: "2-digit",
-  //       year: "numeric",
-  //     });
-  //   },
-  //   [Date]
-  // );
+  const formatDate = useCallback(
+    (date: string) => {
+      const newDate = new Date(date);
+      return newDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    },
+    [Date]
+  );
+
+  const formatTime = useCallback(
+    (timeStr: string) => {
+      const [hourStr, minute] = timeStr.split(":");
+      let hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${ampm}`;
+    },
+    [Date]
+  );
 
   return (
     <TouchableOpacity
-      // onPress={() => router.navigate("/(sub-details)/assDetails")}
-      onPress={props.onPress}
+      onPress={() =>
+        router.navigate({
+          pathname: "/(sub-details)/assDetails",
+          params: {
+            assignmentId: props.assignment_id,
+            attempts: props.attempts,
+            title: props.title,
+            description: props.description,
+            deadline: props.deadline,
+            createdAt: props.createdAt,
+            availabilityStart: props.availability.start,
+            availabilityEnd: props.availability.end,
+            pointsEarned: props.points.earned,
+            pointsTotal: props.points.total,
+          },
+        })
+      }
       style={styles.touchableOpacity}
     >
       <Card containerStyle={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
           <View style={styles.textContent}>
-            <Text style={styles.title} numberOfLines={3}>{props.title}</Text>
+            <Text style={styles.title} numberOfLines={3}>
+              {props.title}
+            </Text>
             <View style={styles.bottomRow}>
-              <Text style={styles.score}>{props.score}</Text>
-              <Text style={styles.type}> | {props.type}</Text>
+              <Text style={styles.score}>
+                {props.points.earned}\{props.points.total}
+              </Text>
+              {/*<Text style={styles.type}>  |  </Text>*/}
             </View>
           </View>
           <View style={styles.rightSection}>
-            {/* <Text style={styles.date}>
-              {formatDate(props.date)} {props.time}
-            </Text> */}
-            <View style={styles.icons}>
-            <TouchableOpacity>
-              {/* <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} /> */}
-            </TouchableOpacity>
-            <TouchableOpacity>
-              {/* <Entypo name="trash" size={15} color="#aaa" /> */}
-            </TouchableOpacity>
-          </View>
+            {/*  <View style={styles.icons}>*/}
+            {/*  <TouchableOpacity>*/}
+            {/*    <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />*/}
+            {/*  </TouchableOpacity>*/}
+            {/*  <TouchableOpacity>*/}
+            {/*    <Entypo name="trash" size={15} color="#aaa" />*/}
+            {/*  </TouchableOpacity>*/}
+            {/*</View>*/}
+            <View style={styles.deadline}>
+              <Text>
+                {formatDate(props.deadline)}{" "}
+                {formatTime(props.availability.end)}
+              </Text>
+            </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
         </View>
       </Card>
     </TouchableOpacity>
-
   );
 };
 
@@ -69,7 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     elevation: 4,
-    top:15,
+    top: 15,
   },
   cardContainer: {
     borderWidth: 0,
@@ -114,8 +159,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#888",
   },
+  deadline: {
+    marginVertical: "auto",
+  },
   rightSection: {
-    flexDirection:"row",
+    flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "center",
     marginLeft: 10,
@@ -129,10 +177,9 @@ const styles = StyleSheet.create({
   icons: {
     flexDirection: "row",
     marginLeft: 5,
-    marginRight:5,
+    marginRight: 5,
     top: -8,
   },
 });
-
 
 export default memo(assCard);

@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from "react-native";
-import React, { memo, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { memo, useCallback } from "react";
 import { Card } from "@rneui/themed";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import HeaderConfig from "@/components/HeaderConfig";
+import { useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -30,16 +30,37 @@ const data = [
 
 const assDetails = () => {
   HeaderConfig("Assignment");
-  const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const assignmentId = parseInt(id as string);
-  const selectedAssignment = data.find((item) => item.id === assignmentId);
-  const answerTemp = "Oralism is an approach to use speaking rather than sign language"
 
-  const [lastAttemptVisible, setLastAttemptVisible] = useState(false);
+  const {
+    title,
+    deadline,
+    createdAt,
+    availabilityStart,
+    availabilityEnd,
 
-  if (!selectedAssignment) return <Text>Assignment not found</Text>;
+    attempts,
+    pointsTotal,
+  } = useLocalSearchParams<{
+    title: string;
+    deadline: string;
+    createdAt: string;
+    availabilityStart: string;
+    availabilityEnd: string;
+    attempts: string;
+    pointsTotal: string;
+  }>();
 
+  const formatDate = useCallback(
+    (date: string) => {
+      const newDate = new Date(date);
+      return newDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    },
+    [Date]
+  );
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -85,17 +106,28 @@ const assDetails = () => {
 
         </TouchableOpacity>
 
-        {lastAttemptVisible && (
-        <>
-          {selectedAssignment.type === 'File Upload' ? (
-            <View style={{marginTop: 10 }}>
-              <View style={{flexDirection:"row", justifyContent:"space-between", top:-5}}>
-                <Text style={{left:10, fontSize:14}}>File 1</Text>
-                <TouchableOpacity>
-                <Text style={{color:"#ffbf18", fontWeight:500,left:-190, textDecorationLine:"underline" }}>image.pdf</Text>
-                <MaterialIcons name="download" size={20} color="#ffbf18" style={{left:43, top:-20}} />
-                </TouchableOpacity>
+  const formatTime = useCallback(
+    (timeStr: string) => {
+      const [hourStr, minute] = timeStr.split(":");
+      let hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${ampm}`;
+    },
+    [Date]
+  );
 
+  return (
+    <View style={styles.container}>
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.row}>
+              <Text style={styles.deadline}>
+                Deadline: {formatDate(deadline)}
+              </Text>
+              <Text style={styles.points}>Points: {pointsTotal}</Text>
               </View>
      
               <View style={styles.imageContainer}>
@@ -118,27 +150,24 @@ const assDetails = () => {
                 />
               </ScrollView>
             </View>
-          
+            <View style={styles.availabilityContainer}>
+              <Text>Availability: </Text>
+              <Text style={styles.availability}>
+                {formatDate(deadline)} {formatTime(availabilityStart)} -{" "}
+                {formatDate(createdAt)} {formatTime(availabilityEnd)}
+              </Text>
             </View>
-          ) : (
-            <TextInput
-              style={styles.textInput}
-              value={answerTemp}
-              editable={false}
-              multiline
-            />
-          )}
-        </>
-      )}
-      
+
+            <Text style={styles.attempt}>Attempts: {attempts}</Text>
+          </View>
+        </Card>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Take Quiz</Text>
+        </TouchableOpacity>
       </View>
-  
-      
     </View>
-    </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -152,10 +181,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     borderWidth: 0,
+    // shadowColor: "transparent",
     elevation: 5,
-    marginBottom: 10,
   },
   cardContent: {
+    display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     margin: 10,
@@ -174,27 +204,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   deadline: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#000",
     marginRight: 10,
   },
   points: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#000",
   },
-  availability: {
-    fontSize: 14,
+  availabilityContainer: {
+    fontSize: 16,
     color: "#000",
     marginBottom: 10,
     lineHeight: 20,
+    maxWidth: "80%",
+    flexDirection: "row",
+  },
+  availability: {
+    flexWrap: "wrap",
+    maxWidth: "80%",
   },
   attempt: {
-    fontSize: 14,
-    color: "#000",
-    marginBottom: 10,
-  },
-  type: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#000",
     marginBottom: 10,
   },
@@ -204,9 +235,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 50,
     alignItems: "center",
-    marginTop: -5,
-    marginBottom: 15,
-    elevation:5
+    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
@@ -262,8 +291,7 @@ const styles = StyleSheet.create({
     borderColor:"#aaa",
     borderWidth:1
   }
-  
-
+ 
 });
 
 export default memo(assDetails);
