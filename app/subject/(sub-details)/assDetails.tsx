@@ -1,4 +1,4 @@
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -12,7 +12,6 @@ const assDetails = () => {
     createdAt,
     availabilityStart,
     availabilityEnd,
-
     attempts,
     pointsTotal,
   } = useLocalSearchParams<{

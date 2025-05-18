@@ -1,4 +1,4 @@
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { memo, useState } from "react";
 import {

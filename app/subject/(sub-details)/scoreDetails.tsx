@@ -1,5 +1,5 @@
-import HeaderConfig from "@/components/HeaderConfig";
 import ScoreDetailsCard from "@/components/ScoreDetailsCard";
+import HeaderConfig from "@/utils/HeaderConfig";
 import React, { memo } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 

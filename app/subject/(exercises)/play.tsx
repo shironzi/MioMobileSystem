@@ -1,4 +1,4 @@
-import HeaderConfig from "@/components/HeaderConfig";
+import HeaderConfig from "@/utils/HeaderConfig";
 import PlayCard from "@/components/playCard";
 import React, { memo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
