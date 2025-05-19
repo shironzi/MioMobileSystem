@@ -44,7 +44,7 @@ const Index = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      email: "joshbaon1@gmail.com",
+      email: "202212079@fit.edu.ph",
       password: "2003-07-10",
     },
     resolver: yupResolver(schema),

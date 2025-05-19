@@ -1,9 +1,9 @@
-import AssCard from "@/components/AssCard";
+import AssCard from "@/components/assignment/AssCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
@@ -18,25 +18,21 @@ interface Availability {
   end: string;
 }
 
-interface Points {
-  earned: string;
-  total: string;
-}
-
 export interface Assignment {
   assignment_id: string;
   attempts: string;
   availability: Availability;
-  deadline: string;
   createdAt: string;
+  deadline: string;
   description: string;
-  points: Points;
+  publishedAt: string;
+  total: string;
   title: string;
+  submission_type: string;
 }
 
 const assignments = () => {
   HeaderConfig("Assignments");
-  const router = useRouter();
 
   const { subjectId } = useLocalSearchParams();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -78,9 +74,10 @@ const assignments = () => {
                 availability={item.availability}
                 deadline={item.deadline}
                 createdAt={item.createdAt}
-                points={item.points}
+                totalPoints={item.total}
                 attempts={item.attempts}
                 assignment_id={item.assignment_id}
+                submission_type={item.submission_type}
               />
             ))
           ) : (

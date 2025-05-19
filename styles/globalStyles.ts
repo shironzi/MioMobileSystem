@@ -21,6 +21,13 @@ const globalStyles = StyleSheet.create({
     submitButtonText: {
         textAlign: "center",
         color: "#fff"
+    },
+    cardContainer: {
+        paddingHorizontal: 26,
+        paddingVertical: 15,
+        borderRadius: 20,
+        backgroundColor: "#fff",
+        elevation: 5,
     }
 })
 

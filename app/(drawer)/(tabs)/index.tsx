@@ -33,7 +33,7 @@ const index = () => {
       try {
         const data = await getSubjects("GR7");
         setSubjects(data.subjects);
-        setRole(data.user_role);
+        setRole(data.role);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching subjects: ", err);

@@ -8,11 +8,6 @@ interface Availability {
   end: string;
 }
 
-interface Points {
-  earned: string;
-  total: string;
-}
-
 const assCard = (props: {
   assignment_id: string;
   attempts: string;
@@ -20,8 +15,9 @@ const assCard = (props: {
   deadline: string;
   createdAt: string;
   description: string;
-  points: Points;
+  totalPoints: string;
   title: string;
+  submission_type: string;
 }) => {
   const router = useRouter();
 
@@ -37,38 +33,36 @@ const assCard = (props: {
     [Date]
   );
 
-  const formatTime = useCallback(
-    (timeStr: string) => {
-      const [hourStr, minute] = timeStr.split(":");
-      let hour = parseInt(hourStr, 10);
-      const ampm = hour >= 12 ? "PM" : "AM";
-      hour = hour % 12 || 12;
-      return `${hour}:${minute} ${ampm}`;
-    },
-    [Date]
-  );
+  // const formatTime = useCallback(
+  //   (timeStr: string) => {
+  //     const [hourStr, minute] = timeStr.split(":");
+  //     let hour = parseInt(hourStr, 10);
+  //     const ampm = hour >= 12 ? "PM" : "AM";
+  //     hour = hour % 12 || 12;
+  //     return `${hour}:${minute} ${ampm}`;
+  //   },
+  //   [Date]
+  // );
+
+  const handleSelect = () =>
+    router.navigate({
+      pathname: "/subject/(sub-details)/assignment/assignmentDetails",
+      params: {
+        assignmentId: props.assignment_id,
+        attempts: props.attempts,
+        title: props.title,
+        description: props.description,
+        deadline: props.deadline,
+        createdAt: props.createdAt,
+        availabilityStart: props.availability.start,
+        availabilityEnd: props.availability.end,
+        totalPoints: props.totalPoints,
+        submission_type: props.submission_type,
+      },
+    });
 
   return (
-    <TouchableOpacity
-      onPress={() =>
-        router.navigate({
-          pathname: "/subject/(sub-details)/assDetails",
-          params: {
-            assignmentId: props.assignment_id,
-            attempts: props.attempts,
-            title: props.title,
-            description: props.description,
-            deadline: props.deadline,
-            createdAt: props.createdAt,
-            availabilityStart: props.availability.start,
-            availabilityEnd: props.availability.end,
-            pointsEarned: props.points.earned,
-            pointsTotal: props.points.total,
-          },
-        })
-      }
-      style={styles.touchableOpacity}
-    >
+    <TouchableOpacity onPress={handleSelect} style={styles.touchableOpacity}>
       <View style={styles.cardContainer}>
         <View style={styles.cardContent}>
           <View style={styles.yellowBulletin} />
@@ -77,26 +71,12 @@ const assCard = (props: {
               {props.title}
             </Text>
             <View style={styles.bottomRow}>
-              <Text style={styles.score}>
-                {props.points.earned}\{props.points.total}
-              </Text>
-              {/*<Text style={styles.type}>  |  </Text>*/}
+              <Text style={styles.score}>- / {props.totalPoints}</Text>
             </View>
           </View>
           <View style={styles.rightSection}>
-            {/*  <View style={styles.icons}>*/}
-            {/*  <TouchableOpacity>*/}
-            {/*    <Entypo name="edit" size={15} color="#aaa" style={{marginRight:8}} />*/}
-            {/*  </TouchableOpacity>*/}
-            {/*  <TouchableOpacity>*/}
-            {/*    <Entypo name="trash" size={15} color="#aaa" />*/}
-            {/*  </TouchableOpacity>*/}
-            {/*</View>*/}
             <View style={styles.deadline}>
-              <Text>
-                {formatDate(props.deadline)}{" "}
-                {formatTime(props.availability.end)}
-              </Text>
+              <Text style={{ color: "red" }}>Not Yet Submitted</Text>
             </View>
             <Entypo name="chevron-small-right" size={30} color="#aaa" />
           </View>
