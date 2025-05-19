@@ -11,6 +11,16 @@ const globalStyles = StyleSheet.create({
         borderRadius: 6,
         padding: 8,
         backgroundColor: "#fafafa",
+    },
+    submitButton: {
+        backgroundColor: "#FFBF18",
+        borderRadius: 50,
+        paddingVertical: 17,
+        width: "100%"
+    },
+    submitButtonText: {
+        textAlign: "center",
+        color: "#fff"
     }
 })
 
