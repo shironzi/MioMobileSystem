@@ -3,7 +3,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,35 +12,51 @@ import {
   View,
 } from "react-native";
 
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
 const addAnnouncement = () => {
   useHeaderConfig("Announcement");
   const router = useRouter();
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [filename, setFilename] = useState<string | undefined>();
-  const [fileUrl, setFileUrl] = useState<string | undefined>();
-  const [fileType, setFileType] = useState<string | undefined>();
-  const [descHeight, setDescHeight] = useState(0);
+  const [descHeight, setDescHeight] = useState<number>(200);
+  const [files, setFiles] = useState<FileInfo[]>([]);
 
-  const handleFileUpload = async () => {
+  const handleAddFile = () => {
+    setFiles((prev) => [...prev, { uri: "", name: "", mimeType: undefined }]);
+  };
+
+  const handleFileUpload = async (index: number) => {
     const res = await DocumentPicker.getDocumentAsync({
       type: ["image/*", "application/*", "video/*", "audio/*"],
+      copyToCacheDirectory: true,
     });
 
     if (!res.canceled) {
-      const { mimeType, name, size, uri } = res.assets[0];
-
-      setFilename(name);
-      setFileUrl(uri);
-      setFileType(mimeType);
+      const { uri, name, mimeType } = res.assets[0];
+      setFiles((prev) =>
+        prev.map((f, i) => (i === index ? { uri, name, mimeType } : f))
+      );
     }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handlePreview = () => {
     router.push({
       pathname: "/subject/(sub-details)/announcement/announcementPreview",
-      params: { title: title, description: description, fileUrl: fileUrl },
+      params: {
+        title,
+        description,
+        files: JSON.stringify(files),
+      },
     });
   };
 
@@ -49,100 +65,78 @@ const addAnnouncement = () => {
       <View style={{ backgroundColor: "#fff", borderRadius: 20 }}>
         <View style={{ paddingHorizontal: 26, paddingVertical: 18 }}>
           <View>
-            <Text>Title: </Text>
+            <Text>Title:</Text>
             <TextInput
-              placeholder={"Title"}
+              placeholder="Title"
               style={globalStyles.inputContainer}
+              value={title}
               onChangeText={setTitle}
             />
           </View>
+
           <View>
-            <Text>Description: </Text>
+            <Text>Description:</Text>
             <TextInput
               style={[
                 globalStyles.inputContainer,
                 { height: Math.max(200, descHeight) },
               ]}
-              placeholder={"description"}
+              placeholder="Description"
               multiline
               onContentSizeChange={(e) =>
                 setDescHeight(e.nativeEvent.contentSize.height)
               }
               textAlignVertical="top"
+              value={description}
               onChangeText={setDescription}
             />
           </View>
         </View>
+
         <View style={{ rowGap: 18 }}>
-          <View
-            style={{
-              width: "100%",
-              backgroundColor: "#434242",
-              paddingVertical: 9,
-              paddingHorizontal: 26,
-            }}
-          >
-            <Text style={{ color: "#fff" }}>File Upload</Text>
+          <View style={styles.uploadHeader}>
+            <Text style={styles.uploadHeaderText}>File Upload</Text>
           </View>
+
           <View
             style={{ paddingVertical: 9, paddingHorizontal: 26, rowGap: 18 }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <TouchableOpacity
-                onPress={handleFileUpload}
-                style={styles.fileUpload}
-              >
-                <Text>Choose File</Text>
-              </TouchableOpacity>
+            {files.map((file, idx) => (
+              <View key={idx} style={styles.fileRow}>
+                <TouchableOpacity
+                  onPress={() => handleFileUpload(idx)}
+                  style={styles.fileUpload}
+                >
+                  <Text>Choose File</Text>
+                </TouchableOpacity>
 
-              <Text
-                style={[
-                  styles.filename,
-                  filename ? {} : { display: "none" }, // or: { opacity: 0 }
-                ]}
-              >
-                {filename}
-              </Text>
+                {file.name ? (
+                  <Text style={styles.filename}>{file.name}</Text>
+                ) : null}
 
-              <TouchableOpacity
-                onPress={() => setFilename(undefined)}
-                disabled={!filename}
-                style={filename ? {} : { display: "none" }}
-              >
-                <AntDesign name="close" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={{ flexDirection: "row", columnGap: 12 }}>
+                {file.name ? (
+                  <TouchableOpacity onPress={() => handleRemoveFile(idx)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            ))}
+
+            <TouchableOpacity style={styles.addFileRow} onPress={handleAddFile}>
               <AntDesign name="plus" size={24} color="#FFBF18" />
-              <Text style={{ color: "#FFBF18" }}>Add File</Text>
+              <Text style={styles.addFileText}>Add File</Text>
             </TouchableOpacity>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-around" }}
-            >
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#FFBF18",
-                  borderRadius: 50,
-                  paddingHorizontal: 17,
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>Cancel</Text>
+
+            <View style={styles.actionsRow}>
+              <TouchableOpacity style={styles.actionButton}>
+                <Text>Cancel</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
-                style={{
-                  backgroundColor: "#FFBF18",
-                  borderRadius: 50,
-                  paddingHorizontal: 17,
-                }}
+                style={styles.actionButton}
                 onPress={handlePreview}
               >
-                <Text style={{ textAlign: "center" }}>Preview</Text>
+                <Text>Preview</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -153,6 +147,20 @@ const addAnnouncement = () => {
 };
 
 const styles = StyleSheet.create({
+  uploadHeader: {
+    width: "100%",
+    backgroundColor: "#434242",
+    paddingVertical: 9,
+    paddingHorizontal: 26,
+  },
+  uploadHeaderText: {
+    color: "#fff",
+  },
+  fileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   fileUpload: {
     padding: 9,
     borderRadius: 15,
@@ -161,15 +169,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     elevation: 5,
     width: 100,
-  },
-  fileUploadText: {
-    textAlign: "center",
+    alignItems: "center",
   },
   filename: {
     marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
+    flex: 1,
+  },
+  addFileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 12,
+  },
+  addFileText: {
+    color: "#FFBF18",
+  },
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  actionButton: {
+    backgroundColor: "#FFBF18",
+    borderRadius: 50,
+    paddingHorizontal: 17,
+    paddingVertical: 9,
   },
 });
 
-export default addAnnouncement;
+export default memo(addAnnouncement);
