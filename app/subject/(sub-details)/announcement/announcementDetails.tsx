@@ -10,12 +10,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { deleteAnnouncements } from "@/utils/query";
 
 const AnnouncementDetails = () => {
   HeaderConfig("Announcement");
   const router = useRouter();
 
-  const { subjectId, title, description, date, time, announcementId } =
+  const { subjectId, title, description, date, time, announcementId, role } =
     useLocalSearchParams<{
       subjectId: string;
       title: string;
@@ -23,21 +24,29 @@ const AnnouncementDetails = () => {
       date: string;
       time: string;
       announcementId: string;
+      role: string;
     }>();
 
   const [menuVisible, setMenuVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [confirmType, setConfirmType] = useState<"delete" | "archive" | null>(
-    null
+    null,
   );
 
   const onEdit = useCallback(() => {
     setMenuVisible(false);
     router.push({
       pathname: "/subject/(sub-details)/announcement/announcementEdit",
-      params: { subjectId, title, date, time, description, announcementId },
+      params: {
+        subjectId,
+        title,
+        date,
+        time,
+        description,
+        announcementId,
+      },
     });
-  }, [title, date, time, description, announcementId]);
+  }, [title, date, time, description, announcementId, router, subjectId]);
 
   const requestDelete = useCallback(() => {
     setMenuVisible(false);
@@ -51,9 +60,15 @@ const AnnouncementDetails = () => {
     setConfirmVisible(true);
   }, []);
 
+  const handleDelete = async () => {
+    const response = await deleteAnnouncements(subjectId, announcementId);
+
+    console.log(response);
+  };
+
   const onConfirm = useCallback(() => {
     if (confirmType === "delete") {
-      console.log("Announcement deleted");
+      handleDelete();
     } else if (confirmType === "archive") {
       console.log("Announcement archived");
     }
@@ -72,12 +87,14 @@ const AnnouncementDetails = () => {
         <View style={styles.cardContent}>
           <View style={styles.headerRow}>
             <Text style={styles.title}>{title}</Text>
-            <TouchableOpacity
-              onPress={() => setMenuVisible((v) => !v)}
-              style={styles.threeDots}
-            >
-              <Entypo name="dots-three-vertical" size={20} color="#333" />
-            </TouchableOpacity>
+            {role === "teacher" ? (
+              <TouchableOpacity
+                onPress={() => setMenuVisible((v) => !v)}
+                style={styles.threeDots}
+              >
+                <Entypo name="dots-three-vertical" size={20} color="#333" />
+              </TouchableOpacity>
+            ) : null}
           </View>
 
           <Text style={styles.date}>{date}</Text>

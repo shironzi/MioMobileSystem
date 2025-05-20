@@ -10,6 +10,7 @@ const announceCard = (props: {
   time: string;
   description: string;
   announcementId: string;
+  role: string;
 }) => {
   const router = useRouter();
 
@@ -31,6 +32,7 @@ const announceCard = (props: {
             time: props.time,
             description: props.description,
             announcementId: props.announcementId,
+            role: props.role,
           },
         })
       }

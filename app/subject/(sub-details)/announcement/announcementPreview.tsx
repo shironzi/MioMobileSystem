@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { createAnnouncement } from "@/utils/query";
 
 interface FileInfo {
   uri: string;
@@ -20,15 +21,22 @@ interface FileInfo {
 const AnnouncementPreview = () => {
   useHeaderConfig("Announcement Preview");
 
-  const { title, description, files } = useLocalSearchParams<{
+  const { title, description, files, subjectId } = useLocalSearchParams<{
     title: string;
     description: string;
     files?: string;
+    subjectId: string;
   }>();
 
   const fileList: FileInfo[] = files ? JSON.parse(files) : [];
 
   const [localUris, setLocalUris] = useState<string[]>([]);
+
+  const handleCreateAnnouncement = async () => {
+    const response = await createAnnouncement(subjectId, title, description);
+
+    console.log(response);
+  };
 
   useEffect(() => {
     (async () => {
@@ -40,7 +48,7 @@ const AnnouncementPreview = () => {
           } catch {
             return file.uri;
           }
-        })
+        }),
       );
       setLocalUris(uris);
     })();
@@ -73,8 +81,11 @@ const AnnouncementPreview = () => {
           </View>
         );
       })}
-      <TouchableOpacity style={globalStyles.submitButton}>
-        <Text style={globalStyles.submitButtonText}>Save</Text>
+      <TouchableOpacity
+        style={globalStyles.submitButton}
+        onPress={handleCreateAnnouncement}
+      >
+        <Text style={globalStyles.submitButtonText}>Create</Text>
       </TouchableOpacity>
     </ScrollView>
   );

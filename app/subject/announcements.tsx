@@ -3,7 +3,7 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
@@ -25,7 +25,10 @@ function Announcements() {
   HeaderConfig("Announcements");
   const router = useRouter();
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +69,7 @@ function Announcements() {
               time="09:00 AM"
               description={item.description}
               announcementId={item.announcement_id}
+              role={role}
             />
           ))
         ) : (
@@ -75,16 +79,19 @@ function Announcements() {
         )}
       </ScrollView>
 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          router.push({
-            pathname: "/subject/(sub-details)/announcement/addAnnouncement"
-          })
-        }}
-      >
-        <MaterialIcon name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      {role === "teacher" ? (
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            router.push({
+              pathname: "/subject/(sub-details)/announcement/addAnnouncement",
+              params: { subjectId: subjectId },
+            });
+          }}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }

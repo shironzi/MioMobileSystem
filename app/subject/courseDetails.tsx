@@ -70,10 +70,10 @@ const courseDetails = () => {
                   subjectType === activityCategory.speech
                     ? require("@/assets/icons/speech.png")
                     : subjectType === activityCategory.auditory
-                    ? require("@/assets/icons/auditory.png")
-                    : subjectType === activityCategory.language
-                    ? require("@/assets/icons/language.png")
-                    : null
+                      ? require("@/assets/icons/auditory.png")
+                      : subjectType === activityCategory.language
+                        ? require("@/assets/icons/language.png")
+                        : null
                 }
                 style={{ width: 37, height: 37 }}
               />
@@ -92,9 +92,9 @@ const courseDetails = () => {
             () =>
               router.push({
                 pathname: "/subject/announcements",
-                params: { subjectId: id },
+                params: { subjectId: id, role: role },
               }),
-            []
+            [],
           )}
         >
           <View style={styles.yellowBulletin}></View>
@@ -111,7 +111,7 @@ const courseDetails = () => {
                 pathname: "/subject/assignments",
                 params: { subjectId: id },
               }),
-            []
+            [],
           )}
         >
           <View style={styles.yellowBulletin}></View>
@@ -138,7 +138,7 @@ const courseDetails = () => {
                 pathname: "/subject/modules",
                 params: { subjectId: id },
               }),
-            [router]
+            [router],
           )}
         >
           <View style={styles.yellowBulletin}></View>
@@ -152,7 +152,7 @@ const courseDetails = () => {
             style={styles.link}
             onPress={useCallback(
               () => router.push("/subject/attendance"),
-              [router]
+              [router],
             )}
           >
             <View style={styles.yellowBulletin}></View>

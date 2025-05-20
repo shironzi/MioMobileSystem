@@ -1,107 +1,126 @@
 import { api } from "@/utils/apiClient";
 
 export async function getSubjects(gradeLevel: string) {
-    try {
-        const { data } = await api.get(`/subjects?gradeLevel=${gradeLevel}`);
+  try {
+    const { data } = await api.get(`/subjects?gradeLevel=${gradeLevel}`);
 
-        return data;
-    } catch (err) {
-        console.error(err)
-        throw err
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function getModules(subjectId: string) {
-    try {
-        const { data } = await api.get(`/subject/${subjectId}/modules`)
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/modules`);
 
-        return data
-    } catch (err) {
-        console.error(err)
-        throw err;
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function getAnnouncements(subjectId: string) {
-    try {
-        const { data } = await api.get(`/subject/${subjectId}/announcements`)
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/announcements`);
 
-        return data
-    } catch (err) {
-        console.error(err)
-        throw err;
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function editAnnouncements(
-    subjectId: string,
-    announcementId: string,
-    title: string,
-    description: string
+  subjectId: string,
+  announcementId: string,
+  title: string,
+  description: string,
 ) {
-    try {
-        const payload = JSON.stringify({ title, description });
+  try {
+    const payload = JSON.stringify({ title, description });
 
-        const {data} = await api.post(
-            `/subject/${subjectId}/announcements/${announcementId}`,
-            payload,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+    const { data } = await api.put(
+      `/subject/${subjectId}/announcement/${announcementId}/edit`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
-        return data;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
-export async function createAnnouncement(subjectId: string, title: string, description: string){
+export async function createAnnouncement(
+  subjectId: string,
+  title: string,
+  description: string,
+) {
+  try {
+    const payload = JSON.stringify({
+      title: title,
+      description: description,
+    });
 
-    try{
-        const payload = JSON.stringify({
-            title: title,
-            description: description
-        })
+    const { data } = await api.post(
+      `/subject/${subjectId}/announcement/create`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
-        const {data} = await api.post(
-            `/subject/${subjectId}/announcements/}`,
-            payload,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
 
-        return data;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+export async function deleteAnnouncements(
+  subjectId: string,
+  announcementId: string,
+) {
+  try {
+    const { data } = await api.delete(
+      `/subject/${subjectId}/announcement/${announcementId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function getAssignments(subjectId: string | string[]) {
-    try {
-        const { data } = await api.get(`/subject/${subjectId}/assignments`)
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/assignments`);
 
-        return data
-    } catch (err) {
-        console.error(err)
-        throw err;
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 export async function getScores(subjectId: string | string[]) {
-    try {
-        const { data } = await api.get(`/subject/${subjectId}/scores`)
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/scores`);
 
-        return data
-    } catch (err) {
-        console.error(err)
-        throw err;
-    }
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }

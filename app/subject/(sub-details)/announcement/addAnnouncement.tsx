@@ -1,7 +1,7 @@
 import FileUpload from "@/components/FileUpload";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useState } from "react";
 import {
   StyleSheet,
@@ -26,6 +26,8 @@ const addAnnouncement = () => {
   const [descHeight, setDescHeight] = useState<number>(200);
   const [files, setFiles] = useState<FileInfo[]>([]);
 
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+
   const handlePreview = () => {
     router.push({
       pathname: "/subject/(sub-details)/announcement/announcementPreview",
@@ -33,6 +35,7 @@ const addAnnouncement = () => {
         title,
         description,
         files: JSON.stringify(files),
+        subjectId,
       },
     });
   };
