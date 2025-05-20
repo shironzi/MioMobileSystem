@@ -3,7 +3,7 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
@@ -15,7 +15,7 @@ import {
 
 interface Availability {
   start: string;
-  end: string;
+  deadline: string;
 }
 
 export interface Assignment {
@@ -23,7 +23,6 @@ export interface Assignment {
   attempts: string;
   availability: Availability;
   createdAt: string;
-  deadline: string;
   description: string;
   publishedAt: string;
   total: string;
@@ -34,7 +33,9 @@ export interface Assignment {
 const assignments = () => {
   HeaderConfig("Assignments");
 
-  const { subjectId } = useLocalSearchParams();
+  const router = useRouter();
+
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -72,7 +73,6 @@ const assignments = () => {
                 title={item.title}
                 description={item.description}
                 availability={item.availability}
-                deadline={item.deadline}
                 createdAt={item.createdAt}
                 totalPoints={item.total}
                 attempts={item.attempts}
@@ -90,8 +90,10 @@ const assignments = () => {
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
-          // router.push("addAssignment")
-          console.log("assignment");
+          router.push({
+            pathname: "/subject/(sub-details)/assignment/addAssignment",
+            params: { subjectId: subjectId },
+          });
         }}
       >
         <MaterialIcon name="add" size={30} color="#fff" />

@@ -5,14 +5,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Availability {
   start: string;
-  end: string;
+  deadline: string;
 }
 
 const assCard = (props: {
   assignment_id: string;
   attempts: string;
   availability: Availability;
-  deadline: string;
   createdAt: string;
   description: string;
   totalPoints: string;
@@ -30,7 +29,7 @@ const assCard = (props: {
         year: "numeric",
       });
     },
-    [Date]
+    [Date],
   );
 
   // const formatTime = useCallback(
@@ -52,10 +51,9 @@ const assCard = (props: {
         attempts: props.attempts,
         title: props.title,
         description: props.description,
-        deadline: props.deadline,
         createdAt: props.createdAt,
         availabilityStart: props.availability.start,
-        availabilityEnd: props.availability.end,
+        availabilityEnd: props.availability.deadline,
         totalPoints: props.totalPoints,
         submission_type: props.submission_type,
       },

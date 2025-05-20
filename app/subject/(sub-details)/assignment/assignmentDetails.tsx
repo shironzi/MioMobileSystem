@@ -24,7 +24,6 @@ const assignmentDetails = () => {
   const {
     title,
     deadline,
-    createdAt,
     availabilityStart,
     availabilityEnd,
     attempts,
@@ -33,7 +32,6 @@ const assignmentDetails = () => {
   } = useLocalSearchParams<{
     title: string;
     deadline: string;
-    createdAt: string;
     availabilityStart: string;
     availabilityEnd: string;
     attempts: string;
@@ -45,8 +43,7 @@ const assignmentDetails = () => {
   const [assignmentStatus, setAssignmentStatus] = useState<
     "notStarted" | "inProgress" | "completed"
   >("notStarted");
-  const [files, setFiles] = useState<FileInfo[]>();
-  const [answer, setAnswer] = useState<string | string[] | null>();
+  const [answer, setAnswer] = useState<string | string[] | FileInfo[] | null>();
   const choices: Record<string, string>[] = [
     { A: "choice 1" },
     { B: "choice 2" },
@@ -54,28 +51,18 @@ const assignmentDetails = () => {
     { D: "choice 4" },
   ];
 
-  const formatDate = useCallback(
-    (date: string) => {
-      const newDate = new Date(date);
-      return newDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      });
-    },
-    [Date],
-  );
-
-  const formatTime = useCallback(
-    (timeStr: string) => {
-      const [hourStr, minute] = timeStr.split(":");
-      let hour = parseInt(hourStr, 10);
-      const ampm = hour >= 12 ? "PM" : "AM";
-      hour = hour % 12 || 12;
-      return `${hour}:${minute} ${ampm}`;
-    },
-    [Date],
-  );
+  const formatDateTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  };
 
   const handleTakeAssignment = () => {
     // request from the backend first
@@ -83,18 +70,16 @@ const assignmentDetails = () => {
     setAssignmentStatus("inProgress");
   };
 
-  const handleSubmit = (answer: string) => {
-    console.log("Submitted");
+  const handleSubmit = () => {
     console.log(answer);
   };
 
   const handleFileUpload = (files: FileInfo[]) => {
-    setFiles(files);
+    setAnswer(files);
   };
 
   const handleChoice = (choice: string | string[]) => {
     setAnswer(choice);
-    console.log(answer);
   };
 
   return (
@@ -106,15 +91,15 @@ const assignmentDetails = () => {
             Deadline:{" "}
             {deadline === null || deadline === ""
               ? "No Due Date"
-              : formatDate(deadline)}
+              : formatDateTime(deadline)}
           </Text>
           <Text style={styles.points}>Points: {totalPoints}</Text>
         </View>
         <View style={styles.availabilityContainer}>
           <Text>Availability: </Text>
           <Text style={styles.availability}>
-            {formatDate(deadline)} {formatTime(availabilityStart)} -{" "}
-            {formatDate(createdAt)} {formatTime(availabilityEnd)}
+            {formatDateTime(availabilityStart)} -{" "}
+            {formatDateTime(availabilityEnd)}
           </Text>
         </View>
 
@@ -147,28 +132,44 @@ const assignmentDetails = () => {
           What is your opinion about...?
         </Text>
         {assignmentStatus === "inProgress" ? (
-          <View style={globalStyles.contentPadding}>
-            <MultipleChoiceQuestion
-              choices={choices}
-              handleChoice={handleChoice}
-              allowsMultipleChoice={false}
-            />
-            {/*<TextInput style={[globalStyles.inputContainer, { height: 50 }]} />*/}
-            {/*<TextInput*/}
-            {/*  placeholder="Your Answer Here"*/}
-            {/*  onChangeText={setAnswer}*/}
-            {/*  style={[*/}
-            {/*    globalStyles.inputContainer,*/}
-            {/*    { height: Math.max(200, descHeight) },*/}
-            {/*  ]}*/}
-            {/*  multiline*/}
-            {/*  onContentSizeChange={(e) =>*/}
-            {/*    setDescHeight(e.nativeEvent.contentSize.height)*/}
-            {/*  }*/}
-            {/*  textAlignVertical="top"*/}
-            {/*/>*/}
-            {/*<FileUpload handleFiles={handleFileUpload} />*/}
-            <TouchableOpacity style={[globalStyles.submitButton]}>
+          <View style={[globalStyles.contentPadding, { rowGap: 15 }]}>
+            {submission_type === "quiz" ? (
+              <MultipleChoiceQuestion
+                choices={choices}
+                handleChoice={handleChoice}
+                allowsMultipleChoice={false}
+              />
+            ) : submission_type === "text" ? (
+              <>
+                {/*<TextInput*/}
+                {/*  style={[globalStyles.inputContainer, { height: 50 }]}*/}
+                {/*/>*/}
+                <TextInput
+                  placeholder="Your Answer Here"
+                  onChangeText={setAnswer}
+                  style={[
+                    globalStyles.inputContainer,
+                    { height: Math.max(200, descHeight) },
+                  ]}
+                  multiline
+                  onContentSizeChange={(e) =>
+                    setDescHeight(e.nativeEvent.contentSize.height)
+                  }
+                  textAlignVertical="top"
+                />
+              </>
+            ) : submission_type === "file" ? (
+              <FileUpload handleFiles={handleFileUpload} />
+            ) : (
+              <>
+                <Text>Error</Text>
+              </>
+            )}
+
+            <TouchableOpacity
+              style={[globalStyles.submitButton]}
+              onPress={handleSubmit}
+            >
               <Text style={globalStyles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   },
   availability: {
     flexWrap: "wrap",
-    maxWidth: "80%",
+    maxWidth: "70%",
   },
   attempt: {
     fontSize: 16,

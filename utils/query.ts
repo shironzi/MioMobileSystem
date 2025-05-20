@@ -114,6 +114,43 @@ export async function getAssignments(subjectId: string | string[]) {
   }
 }
 
+export async function createAssignment(
+  subjectId: string,
+  availability: { from: Date | null; to: Date | null },
+  title: string,
+  description: string,
+  attempts: number,
+  submissionType: string,
+  deadline: Date | null,
+) {
+  try {
+    const payload = JSON.stringify({
+      availability,
+      attempts,
+      title,
+      description,
+      total: 0,
+      submission_type: submissionType,
+      deadline,
+    });
+
+    const { data } = await api.post(
+      `/subject/${subjectId}/assignments/`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 export async function getScores(subjectId: string | string[]) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/scores`);
