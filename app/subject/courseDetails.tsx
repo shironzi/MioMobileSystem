@@ -30,9 +30,9 @@ const courseDetails = () => {
       <View style={styles.courseInfoContainer}>
         <View style={styles.courseInfo}></View>
         <View>
-          <Text style={[styles.fontSizeOne]}>{id}</Text>
-          <Text style={[styles.fontSizeOne]}>{title}</Text>
-          <Text style={[styles.fontSizeTwo]}>{description}</Text>
+          <Text style={[styles.fontSizeTwo,{color:"#fff"}]}>{id}</Text>
+          <Text style={[styles.fontSizeOne, {color:"#fff"}]}>{title}</Text>
+          <Text style={[styles.fontSizeTwo, {color:"#fff"}]}>{description}</Text>
         </View>
       </View>
       <View style={styles.linksContainer}>
@@ -169,7 +169,7 @@ const courseDetails = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 22,
+    margin: 15,
   },
   courseInfoContainer: {
     backgroundColor: "#1F1F1F",
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   fontSizeTwo: {
-    fontSize: 15,
+    fontSize: 12,
   },
   linkDecoration: {
     display: "flex",

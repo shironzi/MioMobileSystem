@@ -3,14 +3,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useState, } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import * as yup from "yup";
 
@@ -72,7 +73,8 @@ const Index = () => {
   });
 
   return (
-    <View style={styles.upper}>
+    <KeyboardAvoidingView behavior="padding" style={{flex:1}}>
+      <View style={styles.upper}>
       <View style={styles.first}>
         <View style={styles.second}>
           <View style={styles.container}>
@@ -86,7 +88,7 @@ const Index = () => {
               </Text>
             )}
 
-            <View style={{ rowGap: 14 }}>
+            <View style={{ rowGap: -10 }}>
               {/* Email */}
               <Controller
                 control={control}
@@ -140,6 +142,7 @@ const Index = () => {
                       />
                       <TouchableOpacity onPress={togglePasswordVisibility}>
                         <Ionicons
+                          style={{left:-5}}
                           name={isPasswordVisible ? "eye" : "eye-off"}
                           size={24}
                           color="#808080"
@@ -178,6 +181,9 @@ const Index = () => {
         </View>
       </View>
     </View>
+
+    </KeyboardAvoidingView>
+    
   );
 };
 
@@ -185,7 +191,7 @@ const styles = StyleSheet.create({
   first: {
     padding: 20,
     backgroundColor: "#4d83e4",
-    top: 200,
+    top: 135,
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: -120,
@@ -203,22 +209,22 @@ const styles = StyleSheet.create({
   container: {
     padding: 60,
     justifyContent: "center",
-    top: -110,
+    top: -10,
     margin: 10,
     marginLeft: 15,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f2f5f5",
+    backgroundColor: "#f5f5f5",
     padding: 9,
     paddingLeft: 20,
-    columnGap: 7,
+    columnGap: 5,
     margin: 15,
     borderRadius: 20,
     elevation: 2,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "transparent"
   },
   row: {
     flexDirection: "row",
@@ -236,6 +242,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     margin: 15,
     padding: 15,
+    elevation:5
   },
   buttonText: {
     textAlign: "center",
