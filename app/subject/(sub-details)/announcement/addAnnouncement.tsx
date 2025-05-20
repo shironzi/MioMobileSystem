@@ -1,7 +1,6 @@
+import FileUpload from "@/components/FileUpload";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import React, { memo, useState } from "react";
 import {
@@ -27,28 +26,6 @@ const addAnnouncement = () => {
   const [descHeight, setDescHeight] = useState<number>(200);
   const [files, setFiles] = useState<FileInfo[]>([]);
 
-  const handleAddFile = () => {
-    setFiles((prev) => [...prev, { uri: "", name: "", mimeType: undefined }]);
-  };
-
-  const handleFileUpload = async (index: number) => {
-    const res = await DocumentPicker.getDocumentAsync({
-      type: ["image/*", "application/*", "video/*", "audio/*"],
-      copyToCacheDirectory: true,
-    });
-
-    if (!res.canceled) {
-      const { uri, name, mimeType } = res.assets[0];
-      setFiles((prev) =>
-        prev.map((f, i) => (i === index ? { uri, name, mimeType } : f))
-      );
-    }
-  };
-
-  const handleRemoveFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const handlePreview = () => {
     router.push({
       pathname: "/subject/(sub-details)/announcement/announcementPreview",
@@ -60,85 +37,60 @@ const addAnnouncement = () => {
     });
   };
 
-  return (
-    <View style={{ padding: 20 }}>
-      <View style={{ backgroundColor: "#fff", borderRadius: 20 }}>
-        <View style={{ paddingHorizontal: 26, paddingVertical: 18 }}>
-          <View>
-            <Text>Title:</Text>
-            <TextInput
-              placeholder="Title"
-              style={globalStyles.inputContainer}
-              value={title}
-              onChangeText={setTitle}
-            />
-          </View>
+  const handleFileUpload = (files: FileInfo[]) => {
+    setFiles(files);
+  };
 
-          <View>
-            <Text>Description:</Text>
-            <TextInput
-              style={[
-                globalStyles.inputContainer,
-                { height: Math.max(200, descHeight) },
-              ]}
-              placeholder="Description"
-              multiline
-              onContentSizeChange={(e) =>
-                setDescHeight(e.nativeEvent.contentSize.height)
-              }
-              textAlignVertical="top"
-              value={description}
-              onChangeText={setDescription}
-            />
-          </View>
+  return (
+    <View style={{ padding: 20, rowGap: 15 }}>
+      <View style={[globalStyles.contentPadding, globalStyles.cardContainer]}>
+        <View>
+          <Text>Title:</Text>
+          <TextInput
+            placeholder="Title"
+            style={globalStyles.inputContainer}
+            value={title}
+            onChangeText={setTitle}
+          />
         </View>
 
-        <View style={{ rowGap: 18 }}>
-          <View style={styles.uploadHeader}>
-            <Text style={styles.uploadHeaderText}>File Upload</Text>
-          </View>
+        <View>
+          <Text>Description:</Text>
+          <TextInput
+            style={[
+              globalStyles.inputContainer,
+              { height: Math.max(200, descHeight) },
+            ]}
+            placeholder="Description"
+            multiline
+            onContentSizeChange={(e) =>
+              setDescHeight(e.nativeEvent.contentSize.height)
+            }
+            textAlignVertical="top"
+            value={description}
+            onChangeText={setDescription}
+          />
+        </View>
+      </View>
+      <View style={[globalStyles.cardContainer, globalStyles.cardBody]}>
+        <Text style={globalStyles.sectionHeader}>File Upload</Text>
 
-          <View
-            style={{ paddingVertical: 9, paddingHorizontal: 26, rowGap: 18 }}
-          >
-            {files.map((file, idx) => (
-              <View key={idx} style={styles.fileRow}>
-                <TouchableOpacity
-                  onPress={() => handleFileUpload(idx)}
-                  style={styles.fileUpload}
-                >
-                  <Text>Choose File</Text>
-                </TouchableOpacity>
+        <View style={globalStyles.contentPadding}>
+          <FileUpload handleFiles={handleFileUpload} />
 
-                {file.name ? (
-                  <Text style={styles.filename}>{file.name}</Text>
-                ) : null}
-
-                {file.name ? (
-                  <TouchableOpacity onPress={() => handleRemoveFile(idx)}>
-                    <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            ))}
-
-            <TouchableOpacity style={styles.addFileRow} onPress={handleAddFile}>
-              <AntDesign name="plus" size={24} color="#FFBF18" />
-              <Text style={styles.addFileText}>Add File</Text>
+          <View style={styles.actionsRow}>
+            <TouchableOpacity
+              style={[globalStyles.submitButton, { width: "47%" }]}
+            >
+              <Text style={globalStyles.submitButtonText}>Cancel</Text>
             </TouchableOpacity>
 
-            <View style={styles.actionsRow}>
-              <TouchableOpacity style={styles.actionButton}>
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handlePreview}
-              >
-                <Text>Preview</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[globalStyles.submitButton, { width: "47%" }]}
+              onPress={handlePreview}
+            >
+              <Text style={globalStyles.submitButtonText}>Preview</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -186,12 +138,6 @@ const styles = StyleSheet.create({
   actionsRow: {
     flexDirection: "row",
     justifyContent: "space-around",
-  },
-  actionButton: {
-    backgroundColor: "#FFBF18",
-    borderRadius: 50,
-    paddingHorizontal: 17,
-    paddingVertical: 9,
   },
 });
 

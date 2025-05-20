@@ -1,4 +1,3 @@
-import TextInputAssignment from "@/components/assignment/TextInputAssignment";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
@@ -10,6 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import FileUpload from "@/components/FileUpload";
+import MultipleChoiceQuestion from "@/components/assignment/MultipleChoiceQuestion";
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
 
 const assignmentDetails = () => {
   HeaderConfig("Assignment");
@@ -38,6 +45,14 @@ const assignmentDetails = () => {
   const [assignmentStatus, setAssignmentStatus] = useState<
     "notStarted" | "inProgress" | "completed"
   >("notStarted");
+  const [files, setFiles] = useState<FileInfo[]>();
+  const [answer, setAnswer] = useState<string | string[] | null>();
+  const choices: Record<string, string>[] = [
+    { A: "choice 1" },
+    { B: "choice 2" },
+    { C: "choice 3" },
+    { D: "choice 4" },
+  ];
 
   const formatDate = useCallback(
     (date: string) => {
@@ -48,7 +63,7 @@ const assignmentDetails = () => {
         year: "numeric",
       });
     },
-    [Date]
+    [Date],
   );
 
   const formatTime = useCallback(
@@ -59,7 +74,7 @@ const assignmentDetails = () => {
       hour = hour % 12 || 12;
       return `${hour}:${minute} ${ampm}`;
     },
-    [Date]
+    [Date],
   );
 
   const handleTakeAssignment = () => {
@@ -73,8 +88,17 @@ const assignmentDetails = () => {
     console.log(answer);
   };
 
+  const handleFileUpload = (files: FileInfo[]) => {
+    setFiles(files);
+  };
+
+  const handleChoice = (choice: string | string[]) => {
+    setAnswer(choice);
+    console.log(answer);
+  };
+
   return (
-    <View style={[globalStyles.container, { rowGap: 12 }]}>
+    <View style={[globalStyles.container, { rowGap: 15 }]}>
       <View style={globalStyles.cardContainer}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.row}>
@@ -109,30 +133,48 @@ const assignmentDetails = () => {
       <View
         style={[
           globalStyles.cardContainer,
-          { paddingHorizontal: 0, paddingVertical: 0 },
+          globalStyles.cardBody,
+          { minHeight: 100 },
         ]}
       >
+        <Text style={globalStyles.sectionHeader}>Question</Text>
         <Text
           style={{
-            backgroundColor: "#434242",
-            width: "100%",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
             paddingHorizontal: 26,
-            paddingVertical: 15,
-            color: "#fff",
+            marginTop: 15,
           }}
         >
-          Question
-        </Text>
-        <Text style={{ marginVertical: 20, marginHorizontal: 26 }}>
           What is your opinion about...?
         </Text>
+        {assignmentStatus === "inProgress" ? (
+          <View style={globalStyles.contentPadding}>
+            <MultipleChoiceQuestion
+              choices={choices}
+              handleChoice={handleChoice}
+              allowsMultipleChoice={false}
+            />
+            {/*<TextInput style={[globalStyles.inputContainer, { height: 50 }]} />*/}
+            {/*<TextInput*/}
+            {/*  placeholder="Your Answer Here"*/}
+            {/*  onChangeText={setAnswer}*/}
+            {/*  style={[*/}
+            {/*    globalStyles.inputContainer,*/}
+            {/*    { height: Math.max(200, descHeight) },*/}
+            {/*  ]}*/}
+            {/*  multiline*/}
+            {/*  onContentSizeChange={(e) =>*/}
+            {/*    setDescHeight(e.nativeEvent.contentSize.height)*/}
+            {/*  }*/}
+            {/*  textAlignVertical="top"*/}
+            {/*/>*/}
+            {/*<FileUpload handleFiles={handleFileUpload} />*/}
+            <TouchableOpacity style={[globalStyles.submitButton]}>
+              <Text style={globalStyles.submitButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
-
-      {assignmentStatus === "inProgress" ? (
-        <TextInputAssignment handleSubmit={handleSubmit} />
-      ) : (
+      {assignmentStatus !== "inProgress" ? (
         <View style={[globalStyles.cardContainer, { rowGap: 20 }]}>
           <Text>Latest Attempt</Text>
           <Text>Dropdown (View Attempt)</Text>
@@ -149,7 +191,7 @@ const assignmentDetails = () => {
             textAlignVertical="top"
           />
         </View>
-      )}
+      ) : null}
     </View>
   );
 };
