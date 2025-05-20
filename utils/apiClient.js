@@ -1,8 +1,8 @@
+import { getAuth } from "@react-native-firebase/auth";
 import axios from 'axios';
-import {getAuth} from "@react-native-firebase/auth";
 
 export const api = axios.create({
-    baseURL: 'http://192.168.254.169:8001/api',
+    baseURL: 'http://192.168.1.33:8000/api',
     headers: { Accept: 'application/json' },
     timeout: 10_000,
 });

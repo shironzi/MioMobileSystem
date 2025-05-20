@@ -1,16 +1,15 @@
 import AnnounceCard from "@/components/AnnounceCard";
+import Fab from "@/components/fab";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 type Announcement = {
@@ -32,6 +31,7 @@ function Announcements() {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toggleOpen, setToggleOpen] = useState(false);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -47,6 +47,29 @@ function Announcements() {
 
     fetchAnnouncements();
   }, [subjectId]);
+
+  const toggle = () => {
+    setToggleOpen((prev) => !prev);
+  };
+
+  const handleAdd = () => {
+    router.push({
+      pathname: "/subject/(sub-details)/announcement/addAnnouncement",
+      params: { subjectId },
+    });
+  };
+
+  const handleEdit = () => {
+    return (
+      <Text>Bleh</Text>
+    )
+  };
+
+  const handleDelete = () => {
+    return (
+      <Text>Bleh</Text>
+    )
+  };
 
   if (loading) {
     return (
@@ -78,40 +101,25 @@ function Announcements() {
           </View>
         )}
       </ScrollView>
-
-      {role === "teacher" ? (
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            router.push({
-              pathname: "/subject/(sub-details)/announcement/addAnnouncement",
-              params: { subjectId: subjectId },
-            });
-          }}
-        >
-          <MaterialIcon name="add" size={30} color="#fff" />
-        </TouchableOpacity>
-      ) : null}
+      
+      {role === "teacher" && (
+      <Fab
+        open={toggleOpen}
+        onToggle={toggle}
+        onAdd={handleAdd}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
+    flex:1
   },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#2264DC",
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-  },
+
 });
 
 export default memo(Announcements);
