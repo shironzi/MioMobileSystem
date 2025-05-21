@@ -139,15 +139,17 @@ const Inbox = () => {
 						(msg) =>
 							msg.messageType.toLowerCase() === selectedType.toLowerCase()
 					)
-					.map((msg) => (
-						<MessageCard
-							key={msg.id}
-							name={msg.name}
-							date={msg.date}
-							desc={msg.desc}
-							type={msg.messageType}
-							time={msg.date.toLocaleDateString()}
-						/>
+					.map((msg, idx, arr) => (
+						<React.Fragment key={msg.id}>
+							<MessageCard
+								name={msg.name}
+								date={msg.date}
+								desc={msg.desc}
+								type={msg.messageType}
+								time={msg.date.toLocaleDateString()}
+							/>
+							{idx < arr.length - 1 && <View style={styles.separator} />}
+						</React.Fragment>
 					))}
 			</ScrollView>
 
@@ -242,6 +244,13 @@ const styles = StyleSheet.create({
 		borderBottomColor: "#ffffff99",
 		borderBottomWidth: 1,
 		marginHorizontal: 10,
+	},
+	separator: {
+		height: 1,
+		backgroundColor: "#ddd",
+		marginTop: 10,
+		marginVertical: 10,
+		marginHorizontal: 0,
 	},
 });
 
