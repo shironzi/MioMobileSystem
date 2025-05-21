@@ -33,7 +33,6 @@ function Announcements() {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [toggleOpen, setToggleOpen] = useState(false);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -50,23 +49,11 @@ function Announcements() {
     fetchAnnouncements();
   }, [subjectId]);
 
-  const toggle = () => {
-    setToggleOpen((prev) => !prev);
-  };
-
   const handleAdd = () => {
     router.push({
       pathname: "/subject/(sub-details)/announcement/addAnnouncement",
       params: { subjectId },
     });
-  };
-
-  const handleEdit = () => {
-    return <Text>Bleh</Text>;
-  };
-
-  const handleDelete = () => {
-    return <Text>Bleh</Text>;
   };
 
   if (loading) {
@@ -101,15 +88,7 @@ function Announcements() {
       </ScrollView>
 
       {role === "teacher" && (
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            router.push({
-              pathname: "/subject/(sub-details)/assignment/addAssignment",
-              params: { subjectId: subjectId },
-            });
-          }}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
           <MaterialIcon name="add" size={30} color="#fff" />
         </TouchableOpacity>
       )}

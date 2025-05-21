@@ -2,7 +2,7 @@ import FileUpload from "@/components/FileUpload";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { getAnnouncementById } from "@/utils/query";
 
 interface FileInfo {
   uri: string;
@@ -21,12 +22,16 @@ const addAnnouncement = () => {
   useHeaderConfig("Announcement");
   const router = useRouter();
 
+  const { subjectId, announcementId } = useLocalSearchParams<{
+    subjectId: string;
+    announcementId: string;
+  }>();
+
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [descHeight, setDescHeight] = useState<number>(200);
   const [files, setFiles] = useState<FileInfo[]>([]);
-
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handlePreview = () => {
     router.push({
@@ -36,6 +41,7 @@ const addAnnouncement = () => {
         description,
         files: JSON.stringify(files),
         subjectId,
+        announcementId,
       },
     });
   };
@@ -43,6 +49,31 @@ const addAnnouncement = () => {
   const handleFileUpload = (files: FileInfo[]) => {
     setFiles(files);
   };
+
+  useEffect(() => {
+    if (!announcementId) return;
+
+    setLoading(true);
+    (async () => {
+      try {
+        const res = await getAnnouncementById(subjectId, announcementId);
+        setTitle(res.assignment.title);
+        setDescription(res.assignment.description);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [subjectId, announcementId]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading......</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ padding: 20, rowGap: 15 }}>
@@ -83,13 +114,14 @@ const addAnnouncement = () => {
 
           <View style={styles.actionsRow}>
             <TouchableOpacity
-              style={[globalStyles.submitButton, { width: "47%" }]}
+              style={[globalStyles.submitButton, { width: "48%" }]}
+              onPress={() => router.back()}
             >
               <Text style={globalStyles.submitButtonText}>Cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[globalStyles.submitButton, { width: "47%" }]}
+              style={[globalStyles.submitButton, { width: "48%" }]}
               onPress={handlePreview}
             >
               <Text style={globalStyles.submitButtonText}>Preview</Text>

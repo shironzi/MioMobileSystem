@@ -1,6 +1,6 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface Availability {
@@ -10,6 +10,7 @@ interface Availability {
 
 const assCard = (props: {
   assignment_id: string;
+  subjectId: string;
   attempts: string;
   availability: Availability;
   createdAt: string;
@@ -17,47 +18,36 @@ const assCard = (props: {
   totalPoints: string;
   title: string;
   submission_type: string;
+  role: string;
 }) => {
   const router = useRouter();
 
-  // const formatDate = useCallback(
-  //   (date: string) => {
-  //     const newDate = new Date(date);
-  //     return newDate.toLocaleDateString("en-US", {
-  //       month: "short",
-  //       day: "2-digit",
-  //       year: "numeric",
-  //     });
-  //   },
-  //   [Date],
-  // );
-
-  // const formatTime = useCallback(
-  //   (timeStr: string) => {
-  //     const [hourStr, minute] = timeStr.split(":");
-  //     let hour = parseInt(hourStr, 10);
-  //     const ampm = hour >= 12 ? "PM" : "AM";
-  //     hour = hour % 12 || 12;
-  //     return `${hour}:${minute} ${ampm}`;
-  //   },
-  //   [Date]
-  // );
-
-  const handleSelect = () =>
-    router.navigate({
-      pathname: "/subject/(sub-details)/assignment/assignmentDetails",
-      params: {
-        assignmentId: props.assignment_id,
-        attempts: props.attempts,
-        title: props.title,
-        description: props.description,
-        createdAt: props.createdAt,
-        availabilityStart: props.availability.start,
-        availabilityEnd: props.availability.deadline,
-        totalPoints: props.totalPoints,
-        submission_type: props.submission_type,
-      },
-    });
+  const handleSelect = () => {
+    if (props.role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/assignment/addAssignment",
+        params: {
+          subjectId: props.subjectId,
+          assignmentId: props.assignment_id,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/assignment/assignmentDetails",
+        params: {
+          assignmentId: props.assignment_id,
+          attempts: props.attempts,
+          title: props.title,
+          description: props.description,
+          createdAt: props.createdAt,
+          availabilityStart: props.availability.start,
+          availabilityEnd: props.availability.deadline,
+          totalPoints: props.totalPoints,
+          submission_type: props.submission_type,
+        },
+      });
+    }
+  };
 
   return (
     <TouchableOpacity onPress={handleSelect} style={styles.touchableOpacity}>

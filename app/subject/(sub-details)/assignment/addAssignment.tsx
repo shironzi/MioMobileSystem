@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { MaterialIcons } from "@expo/vector-icons";
-import { createAssignment } from "@/utils/query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { DatePickerField } from "@/components/DatePickerField";
 import globalStyles from "@/styles/globalStyles";
+import { getAssignmentById } from "@/utils/query";
+import { boolean } from "yup";
 
 interface InputErrorState {
   submissionType: boolean;
@@ -36,6 +37,8 @@ const addAssignment = () => {
   HeaderConfig("Add Assignment");
   const router = useRouter();
 
+  const { assignmentId } = useLocalSearchParams<{ assignmentId: string }>();
+
   const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
   const [submissionType, setSubmissionType] = useState<SubmissionOptions>(
     SubmissionOptions.TEXT_ENTRY,
@@ -49,6 +52,7 @@ const addAssignment = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [descHeight, setDescHeight] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [error, setError] = useState<InputErrorState>({
     submissionType: false,
@@ -154,11 +158,54 @@ const addAssignment = () => {
         attempt: attempt.toString(),
         points: points.toString(),
         submissionType: submissionType,
+        assignmentId: assignmentId,
       },
     });
   };
 
   const optionValues = Object.values(SubmissionOptions) as SubmissionOption[];
+
+  useEffect(() => {
+    if (assignmentId != null) {
+      setLoading(true);
+
+      const fetchAssignment = async () => {
+        try {
+          const res = await getAssignmentById(subjectId, assignmentId);
+
+          const data = res.assignment;
+
+          setSubmissionType(data.submission_type as SubmissionOption);
+          setDeadline(data.deadline ? new Date(data.deadline) : null);
+          setAvailabilityFrom(
+            data.availability.start ? new Date(data.availability.start) : null,
+          );
+          setAvailabilityTo(
+            data.availability.deadline
+              ? new Date(data.availability.deadline)
+              : null,
+          );
+          setAttempt(data.attempts);
+          setPoints(data.total);
+          setTitle(data.title);
+          setDescription(data.description);
+
+          setLoading(false);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchAssignment();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading..........</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={globalStyles.container}>

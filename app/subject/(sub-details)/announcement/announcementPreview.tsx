@@ -1,7 +1,7 @@
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { Image as ExpoImage } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { createAnnouncement } from "@/utils/query";
+import { createAnnouncement, editAnnouncement } from "@/utils/query";
 
 interface FileInfo {
   uri: string;
@@ -21,21 +21,53 @@ interface FileInfo {
 const AnnouncementPreview = () => {
   useHeaderConfig("Announcement Preview");
 
-  const { title, description, files, subjectId } = useLocalSearchParams<{
-    title: string;
-    description: string;
-    files?: string;
-    subjectId: string;
-  }>();
+  const router = useRouter();
+
+  const { title, description, files, subjectId, announcementId } =
+    useLocalSearchParams<{
+      title: string;
+      description: string;
+      files?: string;
+      subjectId: string;
+      announcementId: string;
+    }>();
 
   const fileList: FileInfo[] = files ? JSON.parse(files) : [];
 
   const [localUris, setLocalUris] = useState<string[]>([]);
 
   const handleCreateAnnouncement = async () => {
-    const response = await createAnnouncement(subjectId, title, description);
+    let isSuccess = false;
+    if (announcementId !== null) {
+      try {
+        const res = await editAnnouncement(
+          subjectId,
+          announcementId,
+          title,
+          description,
+        );
 
-    console.log(response);
+        isSuccess = res.success;
+
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      try {
+        const res = await createAnnouncement(subjectId, title, description);
+        isSuccess = res.success;
+
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (!isSuccess) return;
+
+    router.back();
+    router.back();
   };
 
   useEffect(() => {
@@ -81,12 +113,21 @@ const AnnouncementPreview = () => {
           </View>
         );
       })}
-      <TouchableOpacity
-        style={globalStyles.submitButton}
-        onPress={handleCreateAnnouncement}
-      >
-        <Text style={globalStyles.submitButtonText}>Create</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={() => router.back()}
+        >
+          <Text style={globalStyles.submitButtonText}>Cancel</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={handleCreateAnnouncement}
+        >
+          <Text style={globalStyles.submitButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };

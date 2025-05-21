@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Fab from "@/components/fab";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 interface Availability {
@@ -42,23 +41,6 @@ const assignments = () => {
   }>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [toggleOpen, setToggleOpen] = useState(false);
-
-  const toggle = () => {
-    setToggleOpen((prev) => !prev);
-  };
-
-  const handleAdd = () => {
-    router.push("/subject/(sub-details)/assignment/addAssignment");
-  };
-
-  const handleEditSelection = () => {
-    console.log("selected");
-  };
-
-  const handleDelete = () => {
-    console.log("delete assignment");
-  };
 
   useEffect(() => {
     const fetchAssignments = async () => {
@@ -91,6 +73,7 @@ const assignments = () => {
             assignments.map((item) => (
               <AssCard
                 key={item.assignment_id}
+                subjectId={subjectId}
                 title={item.title}
                 description={item.description}
                 availability={item.availability}
@@ -99,6 +82,7 @@ const assignments = () => {
                 attempts={item.attempts}
                 assignment_id={item.assignment_id}
                 submission_type={item.submission_type}
+                role={role}
               />
             ))
           ) : (
@@ -108,17 +92,19 @@ const assignments = () => {
           )}
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          router.push({
-            pathname: "/subject/(sub-details)/assignment/addAssignment",
-            params: { subjectId: subjectId },
-          });
-        }}
-      >
-        <MaterialIcon name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      {role === "teacher" ? (
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            router.push({
+              pathname: "/subject/(sub-details)/assignment/addAssignment",
+              params: { subjectId: subjectId },
+            });
+          }}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };

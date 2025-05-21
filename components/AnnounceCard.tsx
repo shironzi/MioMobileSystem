@@ -20,24 +20,33 @@ const announceCard = (props: {
     year: "numeric",
   });
 
+  const handleNavigate = () => {
+    if (props.role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/announcement/addAnnouncement",
+        params: {
+          subjectId: props.subjectId,
+          announcementId: props.announcementId,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/announcement/announcementDetails",
+        params: {
+          subjectId: props.subjectId,
+          title: props.title,
+          date: newDate,
+          time: props.time,
+          description: props.description,
+          announcementId: props.announcementId,
+          role: props.role,
+        },
+      });
+    }
+  };
+
   return (
-    <TouchableOpacity
-      onPress={() =>
-        router.push({
-          pathname: "/subject/(sub-details)/announcement/announcementDetails",
-          params: {
-            subjectId: props.subjectId,
-            title: props.title,
-            date: newDate,
-            time: props.time,
-            description: props.description,
-            announcementId: props.announcementId,
-            role: props.role,
-          },
-        })
-      }
-      style={styles.touchableOpacity}
-    >
+    <TouchableOpacity onPress={handleNavigate} style={styles.touchableOpacity}>
       <View style={styles.cardContainer}>
         <View style={styles.row}>
           <View style={styles.yellowBulletin}></View>
