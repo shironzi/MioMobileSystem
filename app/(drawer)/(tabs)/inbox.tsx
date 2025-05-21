@@ -121,7 +121,6 @@ const Inbox = () => {
 													{item}
 												</Text>
 											</TouchableOpacity>
-											{/* Divider except after last item */}
 											{index < Object.values(messageType).length - 1 && (
 												<View style={styles.divider} />
 											)}
@@ -147,7 +146,7 @@ const Inbox = () => {
 							date={msg.date}
 							desc={msg.desc}
 							type={msg.messageType}
-							time={msg.date.toLocaleTimeString()}
+							time={msg.date.toLocaleDateString()}
 						/>
 					))}
 			</ScrollView>
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
 		marginLeft: -20,
 	},
 	modalOverlay: {
-		backgroundColor: "rgba(0,0,0,0.2)",
+		// backgroundColor: "rgba(0,0,0,0.2)",
 	},
 	modalContent: {
 		backgroundColor: "#2264dc",

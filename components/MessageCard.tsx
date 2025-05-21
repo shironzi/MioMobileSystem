@@ -72,7 +72,7 @@ const MessageCard = (props: {
 								{props.name}
 							</Text>
 							<Text style={{ fontSize: 12, marginTop: 5, marginRight: 15 }}>
-								{props.time}
+								{formatDate(props.date)}
 							</Text>
 						</View>
 						<Text
