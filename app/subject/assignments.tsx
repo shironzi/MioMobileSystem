@@ -2,7 +2,6 @@ import AssCard from "@/components/assignment/AssCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -12,6 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Fab from "@/components/fab";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 interface Availability {
   start: string;
@@ -35,9 +36,29 @@ const assignments = () => {
 
   const router = useRouter();
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toggleOpen, setToggleOpen] = useState(false);
+
+  const toggle = () => {
+    setToggleOpen((prev) => !prev);
+  };
+
+  const handleAdd = () => {
+    router.push("/subject/(sub-details)/assignment/addAssignment");
+  };
+
+  const handleEditSelection = () => {
+    console.log("selected");
+  };
+
+  const handleDelete = () => {
+    console.log("delete assignment");
+  };
 
   useEffect(() => {
     const fetchAssignments = async () => {

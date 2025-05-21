@@ -9,97 +9,177 @@ import {
 import React, { memo, useState } from "react";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { MaterialIcons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { createAssignment } from "@/utils/query";
-import { string } from "yup";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { DatePickerField } from "@/components/DatePickerField";
+import globalStyles from "@/styles/globalStyles";
 
-interface Availability {
-  start: string;
-  deadline: string;
+interface InputErrorState {
+  submissionType: boolean;
+  deadline: boolean;
+  availabilityFrom: boolean;
+  availabilityTo: boolean;
+  attempt: boolean;
+  title: boolean;
+  description: boolean;
 }
 
+enum SubmissionOptions {
+  TEXT_ENTRY = "Text Entry",
+  FILE_UPLOAD = "File Upload",
+}
+
+type SubmissionOption =
+  (typeof SubmissionOptions)[keyof typeof SubmissionOptions];
+
 const addAssignment = () => {
+  HeaderConfig("Add Assignment");
+  const router = useRouter();
+
   const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
-  const [submissionType, setSubmissionType] = useState("");
+  const [submissionType, setSubmissionType] = useState<SubmissionOptions>(
+    SubmissionOptions.TEXT_ENTRY,
+  );
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deadline, setDeadline] = useState<Date | null>(null);
   const [availabilityFrom, setAvailabilityFrom] = useState<Date | null>(null);
   const [availabilityTo, setAvailabilityTo] = useState<Date | null>(null);
-  const [showDatePickerDeadline, setShowDatePickerDeadline] = useState(false);
-  const [showDatePickerFrom, setShowDatePickerFrom] = useState(false);
-  const [showDatePickerTo, setShowDatePickerTo] = useState(false);
-  const [attempt, setAttempt] = useState<string>("3");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [attempt, setAttempt] = useState<number>(1);
+  const [points, setPoints] = useState<number>(1);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [descHeight, setDescHeight] = useState<number>(0);
+
+  const [error, setError] = useState<InputErrorState>({
+    submissionType: false,
+    deadline: false,
+    availabilityFrom: false,
+    availabilityTo: false,
+    attempt: false,
+    title: false,
+    description: false,
+  });
 
   const handleAddAttempt = () => {
-    setAttempt((parseInt(attempt) + 1).toString());
+    setAttempt(attempt + 1);
   };
+
   const handleMinusAttempt = () => {
-    if (parseInt(attempt) > 1) {
-      setAttempt((parseInt(attempt) - 1).toString());
+    if (attempt > 1) {
+      setAttempt(attempt - 1);
     }
   };
 
-  const handleAttemptInput = (value: string) => {
-    const num = parseInt(value);
-    if (!/^\d*$/.test(value)) return; // Prevent non-numeric input
+  const sanitizeAttemptInput = (raw: string, prev: number): number => {
+    if (raw === "") return 1;
 
-    if (num < 1 && value !== "") {
-      setAttempt("1");
-    } else {
-      setAttempt(value);
+    const digitsOnly = raw.replace(/\D/g, "");
+    if (digitsOnly === "") {
+      return 1;
     }
+
+    const n = parseInt(digitsOnly, 10);
+    const clamped = n < 1 ? 1 : n;
+
+    return clamped;
   };
 
   //   const [quizItems, setQuizItems] = useState<{ question: string; answer: string }[]>([]);
 
-  const submissionOptions = ["Text Entry", "File Upload"];
+  const handlePreviewAssignment = async () => {
+    setError({
+      submissionType: false,
+      deadline: false,
+      availabilityFrom: false,
+      availabilityTo: false,
+      attempt: false,
+      title: false,
+      description: false,
+    });
 
-  HeaderConfig("Add Assignment");
+    let hasError = false;
 
-  const handleAddAssignment = async () => {
-    // should not require null values also the dates should be type of string
-    try {
-      const { data } = await createAssignment(
-        subjectId,
-        {
-          from: availabilityFrom,
-          to: availabilityTo,
-        },
-        title,
-        description,
-        parseInt(attempt),
-        submissionType,
-        deadline,
-      );
-
-      console.log(data);
-    } catch (err) {
-      console.error(err);
+    if (!(deadline instanceof Date) || isNaN(deadline.getTime())) {
+      setError((prev) => ({ ...prev, deadline: true }));
+      hasError = true;
     }
+
+    if (
+      !(availabilityFrom instanceof Date) ||
+      isNaN(availabilityFrom.getTime())
+    ) {
+      setError((prev) => ({ ...prev, availabilityFrom: true }));
+      hasError = true;
+    }
+
+    if (!(availabilityTo instanceof Date) || isNaN(availabilityTo.getTime())) {
+      setError((prev) => ({ ...prev, availabilityTo: true }));
+      hasError = true;
+    }
+
+    if (
+      !title ||
+      title.trim().length === 0 ||
+      description.trim().length > 250
+    ) {
+      setError((prev) => ({ ...prev, title: true }));
+      hasError = true;
+    }
+
+    if (
+      !description ||
+      description.trim().length === 0 ||
+      description.trim().length > 1000
+    ) {
+      setError((prev) => ({ ...prev, description: true }));
+      hasError = true;
+    }
+
+    if (!attempt || attempt < 1) {
+      setError((prev) => ({ ...prev, attempt: true }));
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    router.push({
+      pathname: "/subject/(sub-details)/assignment/AssignmentPreview",
+      params: {
+        subjectId,
+        availabilityFrom: availabilityFrom?.toISOString() ?? null,
+        availabilityTo: availabilityTo?.toISOString() ?? null,
+        deadline: deadline?.toISOString() ?? null,
+        title: title,
+        description: description,
+        attempt: attempt.toString(),
+        points: points.toString(),
+        submissionType: submissionType,
+      },
+    });
   };
 
+  const optionValues = Object.values(SubmissionOptions) as SubmissionOption[];
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <ScrollView style={globalStyles.container}>
+      <View style={[globalStyles.cardContainer, { rowGap: 15 }]}>
         <View style={styles.row}>
-          <Text style={styles.label}>Submission Type</Text>
+          <Text style={globalStyles.textLabel}>Submission Type</Text>
 
           <TouchableOpacity
-            style={styles.dropdownButton}
+            style={[
+              styles.dropdownButton,
+              error.submissionType
+                ? { borderColor: "red", borderWidth: 1 }
+                : null,
+            ]}
             onPress={() => setDropdownVisible(!dropdownVisible)}
           >
             <View style={styles.inputRow}>
               <Text
-                style={
-                  submissionType
-                    ? styles.selectedText
-                    : styles.dropdownButtonText
-                }
+                style={submissionType ? { color: "#000" } : { color: "#333" }}
               >
-                {submissionType || "Text Entry"}
+                {submissionType}
               </Text>
               <MaterialIcons
                 name={dropdownVisible ? "arrow-drop-up" : "arrow-drop-down"}
@@ -112,7 +192,7 @@ const addAssignment = () => {
 
         {dropdownVisible && (
           <View style={styles.dropdownList}>
-            {submissionOptions.map((option) => (
+            {optionValues.map((option) => (
               <TouchableOpacity
                 key={option}
                 style={styles.dropdownItem}
@@ -121,87 +201,40 @@ const addAssignment = () => {
                   setDropdownVisible(false);
                 }}
               >
-                <Text style={styles.dropdownItemText}>{option}</Text>
+                <Text style={{ color: "#333" }}>{option}</Text>
               </TouchableOpacity>
             ))}
           </View>
         )}
 
         <View style={styles.row}>
-          <Text style={styles.label}>Deadline</Text>
-          <TouchableOpacity
+          <Text style={globalStyles.textLabel}>Deadline</Text>
+          <DatePickerField
+            date={deadline}
+            onChange={setDeadline}
+            error={error.deadline}
             style={styles.dropdown}
-            onPress={() => setShowDatePickerDeadline(true)}
-          >
-            <Text style={{ color: deadline ? "#000" : "#aaa" }}>
-              {deadline ? deadline.toDateString() : "Select deadline"}
-            </Text>
-            <MaterialIcons name="date-range" size={22} color="#ffbf18" />
-          </TouchableOpacity>
-
-          {showDatePickerDeadline && (
-            <DateTimePicker
-              value={deadline || new Date()}
-              mode="date"
-              display={"default"}
-              onChange={(event, selected) => {
-                setShowDatePickerDeadline(false);
-                if (selected) setDeadline(selected);
-              }}
-            />
-          )}
+          />
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Availability From</Text>
-          <TouchableOpacity
+          <Text style={globalStyles.textLabel}>Availability From</Text>
+          <DatePickerField
+            date={availabilityFrom}
+            onChange={setAvailabilityFrom}
+            error={error.availabilityFrom}
             style={styles.dropdown}
-            onPress={() => setShowDatePickerFrom(true)}
-          >
-            <Text style={{ color: availabilityFrom ? "#000" : "#aaa" }}>
-              {availabilityFrom
-                ? availabilityFrom.toDateString()
-                : "Select date"}
-            </Text>
-            <MaterialIcons name="date-range" size={22} color="#ffbf18" />
-          </TouchableOpacity>
-
-          {showDatePickerFrom && (
-            <DateTimePicker
-              value={availabilityFrom || new Date()}
-              mode="date"
-              display={"default"}
-              onChange={(event, selected) => {
-                setShowDatePickerFrom(false);
-                if (selected) setAvailabilityFrom(selected);
-              }}
-            />
-          )}
+          />
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Availability To</Text>
-          <TouchableOpacity
+          <Text style={globalStyles.textLabel}>Availability To</Text>
+          <DatePickerField
+            date={availabilityTo}
+            onChange={setAvailabilityTo}
+            error={error.availabilityTo}
             style={styles.dropdown}
-            onPress={() => setShowDatePickerTo(true)}
-          >
-            <Text style={{ color: availabilityTo ? "#000" : "#aaa" }}>
-              {availabilityTo ? availabilityTo.toDateString() : "Select date"}
-            </Text>
-            <MaterialIcons name="date-range" size={22} color="#ffbf18" />
-          </TouchableOpacity>
-
-          {showDatePickerTo && (
-            <DateTimePicker
-              value={availabilityTo || new Date()}
-              mode="date"
-              display={"default"}
-              onChange={(event, selected) => {
-                setShowDatePickerTo(false);
-                if (selected) setAvailabilityTo(selected);
-              }}
-            />
-          )}
+          />
         </View>
         <View
           style={{
@@ -211,23 +244,29 @@ const addAssignment = () => {
             alignItems: "center",
           }}
         >
-          <Text style={styles.label}>Attempts</Text>
+          <Text style={globalStyles.textLabel}>Attempts</Text>
           <View
-            style={{
-              width: "55%",
-              borderWidth: 1,
-              borderColor: "#ddd",
-              paddingHorizontal: 10,
-              borderRadius: 10,
-              backgroundColor: "#f9f9f9",
-              flexDirection: "row",
-              height: 50,
-            }}
+            style={[
+              {
+                width: "55%",
+                borderWidth: 1,
+                paddingHorizontal: 10,
+                borderRadius: 10,
+                backgroundColor: "#f9f9f9",
+                flexDirection: "row",
+                height: 50,
+              },
+              error.attempt
+                ? { borderColor: "red", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
           >
             <TextInput
               style={{ width: "85%" }}
-              value={attempt}
-              onChangeText={(value) => handleAttemptInput(value)}
+              value={attempt.toString()}
+              onChangeText={(text) =>
+                setAttempt((prev: number) => sanitizeAttemptInput(text, prev))
+              }
               keyboardType={"numeric"}
             />
             <View style={{ marginVertical: "auto" }}>
@@ -251,12 +290,35 @@ const addAssignment = () => {
           </View>
         </View>
 
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Points</Text>
+          <TextInput
+            style={[
+              styles.dropdown,
+              error.title
+                ? { borderColor: "red", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
+            placeholder="Title"
+            placeholderTextColor="#aaa"
+            value={points.toString()}
+            onChangeText={(text) =>
+              setPoints((prev: number) => sanitizeAttemptInput(text, prev))
+            }
+          />
+        </View>
+
         <View style={styles.separator}></View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Title</Text>
+          <Text style={globalStyles.textLabel}>Title</Text>
           <TextInput
-            style={styles.dropdown}
+            style={[
+              styles.dropdown,
+              error.title
+                ? { borderColor: "red", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
             placeholder="Title"
             placeholderTextColor="#aaa"
             multiline={true}
@@ -265,10 +327,20 @@ const addAssignment = () => {
           />
         </View>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Description</Text>
+        <View style={{ rowGap: 5 }}>
+          <Text style={globalStyles.textLabel}>Description</Text>
           <TextInput
-            style={styles.dropdown}
+            style={[
+              globalStyles.inputContainer,
+              { height: Math.max(150, descHeight) },
+              error.description
+                ? { borderColor: "red", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
+            onContentSizeChange={(e) =>
+              setDescHeight(e.nativeEvent.contentSize.height)
+            }
+            textAlignVertical="top"
             placeholder="Description"
             placeholderTextColor="#aaa"
             multiline={true}
@@ -277,59 +349,40 @@ const addAssignment = () => {
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleAddAssignment}>
-          <View style={styles.buttonRow}>
-            <MaterialIcons name="add" size={20} color="#fff" />
-            <Text style={styles.buttonText}>Add Assignment</Text>
-          </View>
+        <TouchableOpacity
+          style={[
+            globalStyles.submitButton,
+            { flexDirection: "row", justifyContent: "center" },
+          ]}
+          onPress={handlePreviewAssignment}
+        >
+          <Text style={globalStyles.submitButtonText}>Preview</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
-export default memo(addAssignment);
-
 const styles = StyleSheet.create({
-  container: {
-    margin: 20,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    elevation: 5,
-    position: "relative",
-  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
   },
-  input: {},
   separator: {
     height: 3,
     backgroundColor: "#f0f0f0",
-    width: "113%",
-    left: -20,
-    top: 5,
-    marginBottom: 20,
   },
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  label: {
-    fontSize: 15,
-    color: "#000",
-    fontWeight: "bold",
-  },
   dropdown: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 1,
-    borderColor: "#ddd",
     padding: 12,
     borderRadius: 10,
     backgroundColor: "#f9f9f9",
@@ -342,12 +395,6 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: "#f9f9f9",
     width: "55%",
-  },
-  dropdownButtonText: {
-    color: "#aaa",
-  },
-  selectedText: {
-    color: "#000",
   },
   dropdownList: {
     position: "absolute",
@@ -365,24 +412,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  dropdownItemText: {
-    color: "#333",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#ffbf18",
-    padding: 14,
-    borderRadius: 50,
-    elevation: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    left: 5,
-  },
 });
+
+export default memo(addAssignment);

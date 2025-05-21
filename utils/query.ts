@@ -43,7 +43,7 @@ export async function editAnnouncements(
     const payload = JSON.stringify({ title, description });
 
     const { data } = await api.put(
-      `/subject/${subjectId}/announcement/${announcementId}/edit`,
+      `/subject/${subjectId}/announcement/${announcementId}`,
       payload,
       {
         headers: {
@@ -71,11 +71,12 @@ export async function createAnnouncement(
     });
 
     const { data } = await api.post(
-      `/subject/${subjectId}/announcement/create`,
+      `/subject/${subjectId}/announcement`,
       payload,
       {
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       },
     );
@@ -116,30 +117,36 @@ export async function getAssignments(subjectId: string | string[]) {
 
 export async function createAssignment(
   subjectId: string,
-  availability: { from: Date | null; to: Date | null },
+  availability: { start: string | null; end: string | null },
   title: string,
   description: string,
   attempts: number,
   submissionType: string,
-  deadline: Date | null,
+  deadline: string | null,
+  points: number,
 ) {
   try {
     const payload = JSON.stringify({
-      availability,
-      attempts,
-      title,
-      description,
-      total: 0,
+      availability: {
+        start: availability.start,
+        end: availability.end,
+      },
+      attempts: attempts,
+      title: title,
+      description: description,
+      total: points,
       submission_type: submissionType,
-      deadline,
+      deadline: deadline,
+      published_at: null,
     });
 
     const { data } = await api.post(
-      `/subject/${subjectId}/assignments/`,
+      `/subject/${subjectId}/assignment/`,
       payload,
       {
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       },
     );

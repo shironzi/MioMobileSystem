@@ -30,9 +30,11 @@ const courseDetails = () => {
       <View style={styles.courseInfoContainer}>
         <View style={styles.courseInfo}></View>
         <View>
-          <Text style={[styles.fontSizeTwo,{color:"#fff"}]}>{id}</Text>
-          <Text style={[styles.fontSizeOne, {color:"#fff"}]}>{title}</Text>
-          <Text style={[styles.fontSizeTwo, {color:"#fff"}]}>{description}</Text>
+          <Text style={[styles.fontSizeTwo, { color: "#fff" }]}>{id}</Text>
+          <Text style={[styles.fontSizeOne, { color: "#fff" }]}>{title}</Text>
+          <Text style={[styles.fontSizeTwo, { color: "#fff" }]}>
+            {description}
+          </Text>
         </View>
       </View>
       <View style={styles.linksContainer}>
@@ -109,7 +111,7 @@ const courseDetails = () => {
             () =>
               router.push({
                 pathname: "/subject/assignments",
-                params: { subjectId: id },
+                params: { subjectId: id, role: role },
               }),
             [],
           )}

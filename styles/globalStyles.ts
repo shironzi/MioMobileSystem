@@ -46,6 +46,11 @@ const globalStyles = StyleSheet.create({
     paddingHorizontal: 26,
     paddingVertical: 15,
   },
+  textLabel: {
+    fontSize: 15,
+    color: "#000",
+    fontWeight: "bold",
+  },
 });
 
 export default globalStyles;

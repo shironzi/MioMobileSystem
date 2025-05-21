@@ -20,17 +20,17 @@ const assCard = (props: {
 }) => {
   const router = useRouter();
 
-  const formatDate = useCallback(
-    (date: string) => {
-      const newDate = new Date(date);
-      return newDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      });
-    },
-    [Date],
-  );
+  // const formatDate = useCallback(
+  //   (date: string) => {
+  //     const newDate = new Date(date);
+  //     return newDate.toLocaleDateString("en-US", {
+  //       month: "short",
+  //       day: "2-digit",
+  //       year: "numeric",
+  //     });
+  //   },
+  //   [Date],
+  // );
 
   // const formatTime = useCallback(
   //   (timeStr: string) => {

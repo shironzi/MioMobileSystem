@@ -9,8 +9,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  TouchableOpacity,
+  View,
 } from "react-native";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 type Announcement = {
   title: string;
@@ -60,15 +62,11 @@ function Announcements() {
   };
 
   const handleEdit = () => {
-    return (
-      <Text>Bleh</Text>
-    )
+    return <Text>Bleh</Text>;
   };
 
   const handleDelete = () => {
-    return (
-      <Text>Bleh</Text>
-    )
+    return <Text>Bleh</Text>;
   };
 
   if (loading) {
@@ -101,25 +99,40 @@ function Announcements() {
           </View>
         )}
       </ScrollView>
-      
+
       {role === "teacher" && (
-      <Fab
-        open={toggleOpen}
-        onToggle={toggle}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-    )}
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            router.push({
+              pathname: "/subject/(sub-details)/assignment/addAssignment",
+              params: { subjectId: subjectId },
+            });
+          }}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex:1
+    flex: 1,
   },
-
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+  },
 });
 
 export default memo(Announcements);
