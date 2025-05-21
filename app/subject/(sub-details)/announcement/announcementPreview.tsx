@@ -42,9 +42,9 @@ const AnnouncementPreview = () => {
       try {
         const res = await editAnnouncement(
           subjectId,
-          announcementId,
           title,
           description,
+          announcementId,
         );
 
         isSuccess = res.success;
