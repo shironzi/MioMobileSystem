@@ -2,6 +2,14 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface Availability {
   start: string;
@@ -19,6 +27,7 @@ const assCard = (props: {
   title: string;
   submission_type: string;
   role: string;
+  handleDelete: () => void;
 }) => {
   const router = useRouter();
 
@@ -49,62 +58,86 @@ const assCard = (props: {
     }
   };
 
+  const translatedX = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      if (e.translationX < 0 && e.translationX > -110) {
+        translatedX.value = e.translationX;
+      }
+    })
+    .onEnd(() => {
+      if (translatedX.value < -90) {
+        translatedX.value = withTiming(-1000, { duration: 1500 });
+        runOnJS(props.handleDelete)();
+      }
+      translatedX.value = withTiming(0, { duration: 700 });
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translatedX.value }],
+  }));
+
   return (
-    <TouchableOpacity onPress={handleSelect} style={styles.touchableOpacity}>
-      <View style={styles.cardContainer}>
-        <View style={styles.cardContent}>
-          <View style={styles.yellowBulletin} />
-          <View style={styles.textContent}>
-            <Text style={styles.title} numberOfLines={3}>
-              {props.title}
-            </Text>
-            <View style={styles.bottomRow}>
+    <View style={{ marginHorizontal: 20 }}>
+      {props.role === "teacher" && (
+        <View style={styles.deleteBackground}>
+          <MaterialIcons name="delete" size={28} color="white" />
+        </View>
+      )}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View style={[animatedStyle]}>
+          <TouchableOpacity
+            onPress={handleSelect}
+            style={styles.touchableOpacity}
+          >
+            <View style={styles.yellowBulletin} />
+            <View style={styles.textContent}>
+              <Text style={styles.title} numberOfLines={3}>
+                {props.title}
+              </Text>
               <Text style={styles.score}>- / {props.totalPoints}</Text>
             </View>
-          </View>
-          <View style={styles.rightSection}>
-            <View style={styles.deadline}>
-              <Text style={{ color: "red" }}>Not Yet Submitted</Text>
+            <View style={styles.rightSection}>
+              <View style={styles.deadline}>
+                <Text style={{ color: "red" }}>Not Yet Submitted</Text>
+              </View>
+              <Entypo name="chevron-small-right" size={30} color="#aaa" />
             </View>
-            <Entypo name="chevron-small-right" size={30} color="#aaa" />
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
+          </TouchableOpacity>
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   touchableOpacity: {
-    marginHorizontal: 15,
-    marginBottom: 15,
-    borderRadius: 10,
     backgroundColor: "#fff",
-    elevation: 4,
-    top: 15,
-  },
-  cardContainer: {
-    borderWidth: 0,
-    margin: 0,
-    padding: 0,
-    borderRadius: 16,
-    shadowColor: "transparent",
-  },
-  cardContent: {
+    padding: 15,
+    borderRadius: 10,
+    elevation: 5,
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+  },
+  deleteBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#FF5646",
+    paddingHorizontal: 30,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    borderRadius: 10,
+    zIndex: 0,
   },
   yellowBulletin: {
-    width: "1.5%",
-    height: 55,
     backgroundColor: "#FFBF18",
-    borderRadius: 3,
-    marginRight: 12,
+    height: 45,
+    width: "1.5%",
+    borderRadius: 100,
+    marginRight: 20,
   },
   textContent: {
     flex: 1,
-    flexDirection: "column",
   },
   title: {
     fontSize: 16,
@@ -114,15 +147,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexWrap: "wrap",
   },
-  bottomRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   score: {
-    fontSize: 13,
-    color: "#888",
-  },
-  type: {
     fontSize: 13,
     color: "#888",
   },
@@ -133,20 +158,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "center",
-    marginLeft: 10,
   },
-  date: {
-    fontSize: 12,
-    color: "#888",
-    marginBottom: 5,
-    textAlign: "right",
-  },
-  icons: {
-    flexDirection: "row",
-    marginLeft: 5,
-    marginRight: 5,
-    top: -8,
-  },
+  // date: {
+  //   fontSize: 12,
+  //   color: "#888",
+  //   marginBottom: 5,
+  //   textAlign: "right",
+  // },
+  // icons: {
+  //   flexDirection: "row",
+  //   marginLeft: 5,
+  //   marginRight: 5,
+  //   top: -8,
+  // },
 });
 
 export default memo(assCard);

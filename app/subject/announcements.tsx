@@ -1,11 +1,12 @@
 import AnnounceCard from "@/components/AnnounceCard";
 import Fab from "@/components/fab";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { getAnnouncements } from "@/utils/query";
+import { deleteAnnouncements, getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +14,8 @@ import {
   View,
 } from "react-native";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 type Announcement = {
   title: string;
@@ -33,6 +36,10 @@ function Announcements() {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
+  const [targetAnnouncement, setTargetAnnouncement] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -64,28 +71,58 @@ function Announcements() {
     );
   }
 
+  const handleDelete = async () => {
+    if (targetAnnouncement === null) return;
+
+    try {
+      const res = await deleteAnnouncements(subjectId, targetAnnouncement);
+
+      console.log(res);
+      setDeleteConfirm(false);
+      setTargetAnnouncement(null);
+    } catch (err) {
+      console.error("Deleting error: " + err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         {announcements.length > 0 ? (
-          announcements.map((item, index) => (
-            <AnnounceCard
-              key={index}
-              subjectId={subjectId}
-              title={item.title}
-              date={item.date_posted}
-              time="09:00 AM"
-              description={item.description}
-              announcementId={item.announcement_id}
-              role={role}
-            />
-          ))
+          <View style={{ rowGap: 15 }}>
+            {announcements.map((item, index) => (
+              <GestureHandlerRootView key={index}>
+                <AnnounceCard
+                  subjectId={subjectId}
+                  title={item.title}
+                  date={item.date_posted}
+                  time="09:00 AM"
+                  description={item.description}
+                  announcementId={item.announcement_id}
+                  role={role}
+                  handleDelete={() => {
+                    setDeleteConfirm(true);
+                    setTargetAnnouncement(item.announcement_id);
+                  }}
+                />
+              </GestureHandlerRootView>
+            ))}
+          </View>
         ) : (
           <View>
             <Text>This subject has no announcements yet.</Text>
           </View>
         )}
       </ScrollView>
+
+      <ConfirmationModal
+        isVisible={deleteConfirm}
+        description={"Are you sure you want to delete this announcement?"}
+        cancelDisplay={"Cancel"}
+        approveDisplay={"Delete"}
+        handleCancel={() => setDeleteConfirm(false)}
+        handleApprove={() => handleDelete()}
+      />
 
       {role === "teacher" && (
         <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
@@ -99,6 +136,7 @@ function Announcements() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical: 20,
   },
   addButton: {
     position: "absolute",

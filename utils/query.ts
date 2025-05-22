@@ -129,9 +129,25 @@ export async function deleteAnnouncements(
   }
 }
 
-export async function getAssignments(subjectId: string | string[]) {
+export async function getAssignments(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/assignments`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function deleteAssignment(
+  subjectId: string,
+  assignmentId: string,
+) {
+  try {
+    const { data } = await api.delete(
+      `/subject/${subjectId}/assignment/${assignmentId}`,
+    );
 
     return data;
   } catch (err) {

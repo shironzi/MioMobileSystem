@@ -1,10 +1,11 @@
 import AssCard from "@/components/assignment/AssCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { getAssignments } from "@/utils/query";
+import { deleteAssignment, getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +13,8 @@ import {
   View,
 } from "react-native";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import ConfirmationModal from "@/components/ConfirmationModal";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface Availability {
   start: string;
@@ -41,6 +44,8 @@ const assignments = () => {
   }>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
+  const [targetAssignment, setTargetAssignment] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAssignments = async () => {
@@ -65,26 +70,49 @@ const assignments = () => {
     );
   }
 
+  const handleDelete = async () => {
+    if (targetAssignment === null) return;
+
+    console.log(targetAssignment);
+
+    try {
+      const res = await deleteAssignment(subjectId, targetAssignment);
+
+      console.log(res);
+      setDeleteConfirm(false);
+      setTargetAssignment(null);
+    } catch (err) {
+      console.error("Deleting error: " + err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.content}>
           {assignments.length > 0 ? (
-            assignments.map((item) => (
-              <AssCard
-                key={item.assignment_id}
-                subjectId={subjectId}
-                title={item.title}
-                description={item.description}
-                availability={item.availability}
-                createdAt={item.createdAt}
-                totalPoints={item.total}
-                attempts={item.attempts}
-                assignment_id={item.assignment_id}
-                submission_type={item.submission_type}
-                role={role}
-              />
-            ))
+            <View style={{ rowGap: 15 }}>
+              {assignments.map((item) => (
+                <GestureHandlerRootView key={item.assignment_id}>
+                  <AssCard
+                    subjectId={subjectId}
+                    title={item.title}
+                    description={item.description}
+                    availability={item.availability}
+                    createdAt={item.createdAt}
+                    totalPoints={item.total}
+                    attempts={item.attempts}
+                    assignment_id={item.assignment_id}
+                    submission_type={item.submission_type}
+                    role={role}
+                    handleDelete={() => {
+                      setDeleteConfirm(true);
+                      setTargetAssignment(item.assignment_id);
+                    }}
+                  />
+                </GestureHandlerRootView>
+              ))}
+            </View>
           ) : (
             <View>
               <Text>This subject has no assignments yet.</Text>
@@ -92,7 +120,17 @@ const assignments = () => {
           )}
         </View>
       </ScrollView>
-      {role === "teacher" ? (
+
+      <ConfirmationModal
+        isVisible={deleteConfirm}
+        description={"Are you sure you want to delete this assignment?"}
+        cancelDisplay={"Cancel"}
+        approveDisplay={"Delete"}
+        handleCancel={() => setDeleteConfirm(false)}
+        handleApprove={() => handleDelete()}
+      />
+
+      {role === "teacher" && (
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
@@ -104,7 +142,7 @@ const assignments = () => {
         >
           <MaterialIcon name="add" size={30} color="#fff" />
         </TouchableOpacity>
-      ) : null}
+      )}
     </View>
   );
 };
@@ -115,6 +153,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 2,
+    paddingVertical: 20,
   },
   headerStyle: {
     backgroundColor: "#2264DC",

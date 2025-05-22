@@ -2,6 +2,14 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const announceCard = (props: {
   subjectId: string;
@@ -11,6 +19,7 @@ const announceCard = (props: {
   description: string;
   announcementId: string;
   role: string;
+  handleDelete: () => void;
 }) => {
   const router = useRouter();
 
@@ -45,25 +54,58 @@ const announceCard = (props: {
     }
   };
 
+  const translatedX = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      if (e.translationX < 0 && e.translationX > -110) {
+        translatedX.value = e.translationX;
+      }
+    })
+    .onEnd(() => {
+      if (translatedX.value < -90) {
+        translatedX.value = withTiming(-1000, { duration: 1500 });
+        runOnJS(props.handleDelete)();
+      }
+      translatedX.value = withTiming(0, { duration: 700 });
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translatedX.value }],
+  }));
+
   return (
-    <TouchableOpacity onPress={handleNavigate} style={styles.touchableOpacity}>
-      <View style={styles.cardContainer}>
-        <View style={styles.row}>
-          <View style={styles.yellowBulletin}></View>
-          <View style={styles.textContainer}>
-            <Text style={styles.title} numberOfLines={3}>
-              {props.title}
-            </Text>
-          </View>
-          <View style={styles.rightSection}>
-            <Text style={styles.date}>
-              {newDate} {props.time}
-            </Text>
-            <Entypo name="chevron-small-right" size={30} color="#aaa" />
-          </View>
+    <View style={{ marginHorizontal: 20 }}>
+      {props.role === "teacher" && (
+        <View style={styles.deleteBackground}>
+          <MaterialIcons name="delete" size={28} color="white" />
         </View>
-      </View>
-    </TouchableOpacity>
+      )}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View style={[animatedStyle]}>
+          <TouchableOpacity
+            onPress={handleNavigate}
+            style={styles.touchableOpacity}
+            activeOpacity={100}
+          >
+            <View style={styles.row}>
+              <View style={styles.yellowBulletin}></View>
+              <View style={styles.textContainer}>
+                <Text style={styles.title} numberOfLines={3}>
+                  {props.title}
+                </Text>
+              </View>
+              <View style={styles.rightSection}>
+                <Text style={styles.date}>
+                  {newDate} {props.time}
+                </Text>
+                <Entypo name="chevron-small-right" size={30} color="#aaa" />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
 
@@ -71,62 +113,48 @@ const styles = StyleSheet.create({
   touchableOpacity: {
     backgroundColor: "#fff",
     padding: 15,
-    paddingEnd: 0,
-    margin: 15,
-    marginBottom: 0,
     borderRadius: 10,
     elevation: 5,
   },
-  cardContainer: {
-    padding: 0,
-    margin: 0,
-    borderWidth: 0,
-    shadowColor: "transparent",
+  deleteBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#FF5646",
+    paddingHorizontal: 30,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    borderRadius: 10,
+    zIndex: 0,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
   },
   title: {
     fontSize: 16,
-    left: -5,
     fontWeight: "500",
   },
   date: {
     fontSize: 12,
     color: "#888",
   },
-  linkDecoration: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingRight: 18,
-  },
   rightSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    right: -10,
   },
   yellowBulletin: {
-    borderColor: "#FFBF18",
     backgroundColor: "#FFBF18",
     height: 45,
     width: "1.5%",
     borderRadius: 100,
-    left: -20,
+    marginRight: 20,
   },
   textContainer: {
     flex: 1,
-    paddingHorizontal: -20,
   },
   icons: {
     flexDirection: "row",
-    marginLeft: 5,
-    marginRight: -5,
   },
 });
 
