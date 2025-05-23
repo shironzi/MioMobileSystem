@@ -1,116 +1,211 @@
-import React, {memo} from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet} from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
-interface Question {
-  type: string;
-  description: string;
-  choices: string[];
-}
-interface QuizQuestionProps {
-  question: Question;
-  qIndex: number;
-  updateQuestionDescription: (index: number, text: string) => void;
-  handleChoiceChange: (qIndex: number, cIndex: number, text: string) => void;
-  addChoice: (qIndex: number) => void;
-  removeChoice: (qIndex: number, cIndex: number) => void;
-  deleteQuestion: (index: number) => void;
-  totalQuestions: number;
-}
+import React, { memo, useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Picker } from "@react-native-picker/picker";
+import useDebouncedCallback from "@/utils/useDebounceCallback";
+import { string } from "yup";
 
-const QuizQuestion = ({
-  question,
-  qIndex,
-  updateQuestionDescription,
-  handleChoiceChange,
-  addChoice,
-  removeChoice,
-  deleteQuestion,
-  totalQuestions,
-}: QuizQuestionProps) => {
+const QuizQuestion = (props: {
+  questionData: {
+    question: string;
+    options: string[];
+    answer: string;
+    type: string;
+  };
+  questionIndex: number;
+  handleAddQuestion: (
+    question: string,
+    options: string[],
+    answer: string,
+    type: string,
+  ) => void;
+}) => {
+  const [options, setOptions] = useState<string[]>([""]);
+  const [answer, setAnswer] = useState<string>("");
+  const [question, setQuestion] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [emptyFilled, setEmptyFilled] = useState<boolean>(false);
+
+  const handleAddChoice = useCallback(() => {
+    if (options[options.length - 1].trim() === "") {
+      setEmptyFilled(true);
+      return;
+    }
+
+    setEmptyFilled(false);
+    setOptions((prev) => [...prev, ""]);
+  }, [options]);
+
+  const handleChoiceChange = useCallback((index: number, text: string) => {
+    setOptions((prev) => prev.map((c, i) => (i === index ? text : c)));
+  }, []);
+
+  const handleRemoveChoice = (index: number) => {
+    setOptions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const debouncedNotify = useDebouncedCallback(
+    (question: string, choices: string[], answer: string, type: string) => {
+      props.handleAddQuestion(question, choices, answer, type);
+    },
+    500,
+  );
+
+  useEffect(() => {
+    debouncedNotify(question, options, answer, selectedType);
+  }, [selectedType, question, options, answer, debouncedNotify]);
+
+  useEffect(() => {
+    if (props.questionData) {
+      setQuestion(props.questionData.question || "");
+      setOptions(
+        props.questionData.options.length ? props.questionData.options : [""],
+      );
+      setAnswer(props.questionData.answer || "");
+      setSelectedType(props.questionData.type || "");
+    }
+  }, [props.questionData]);
+
   return (
-    <View style={styles.questionContainer}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={styles.questionLabel}>Question {qIndex + 1}</Text>
-        <TouchableOpacity onPress={() => deleteQuestion(qIndex)}>
-          <FontAwesome name="times" size={15} color="#aaa" style={{ top: 3 }} />
-        </TouchableOpacity>
-      </View>
-
+    <View style={{ rowGap: 15, paddingVertical: 20 }}>
+      <Text>Question {props.questionIndex + 1}</Text>
       <TextInput
-        style={styles.descriptionInput}
-        placeholder="Description"
-        placeholderTextColor="#aaa"
-        value={question.description}
-        onChangeText={(text) => updateQuestionDescription(qIndex, text)}
+        value={question}
+        style={{ borderBottomWidth: 1 }}
+        placeholder="Your question… Description"
+        onChangeText={setQuestion}
       />
 
-      {question.type === "multipleChoice" && (
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flex: 1,
+        }}
+      >
+        <Text>Quiz Type</Text>
+        <Picker
+          selectedValue={selectedType}
+          onValueChange={(itemValue) => setSelectedType(itemValue)}
+          dropdownIconColor="#333"
+          placeholder={"Select Quiz Type"}
+          mode="dropdown"
+          style={{ width: "80%", justifyContent: "flex-end" }}
+        >
+          <Picker.Item label="Select" value="" />
+          <Picker.Item label="Multiple choice" value="multiple_choice" />
+          <Picker.Item label="True or False" value="true_false" />
+          <Picker.Item label="Identification" value="identification" />
+        </Picker>
+      </View>
+
+      {selectedType === "multiple_choice" ? (
         <>
-          {question.choices.map((choice, cIndex) => (
-            <View key={cIndex} style={styles.choiceRow}>
-              <TextInput
-                style={styles.choiceInput}
-                placeholder={`Choice ${cIndex + 1}`}
-                placeholderTextColor="#aaa"
-                value={choice}
-                onChangeText={(text) =>
-                  handleChoiceChange(qIndex, cIndex, text)
-                }
-              />
-              <TouchableOpacity onPress={() => removeChoice(qIndex, cIndex)}>
-                <FontAwesome
-                  name="times"
-                  size={20}
-                  color="#aaa"
-                  style={styles.removeIcon}
+          <View>
+            {options.map((choice, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 15,
+                }}
+              >
+                <TextInput
+                  style={[
+                    styles.choiceInput,
+                    emptyFilled ? { borderColor: "red" } : {},
+                  ]}
+                  placeholder={`Choice ${index + 1}`}
+                  value={choice}
+                  onChangeText={(text) => handleChoiceChange(index, text)}
                 />
-              </TouchableOpacity>
-            </View>
-          ))}
-          <TouchableOpacity onPress={() => addChoice(qIndex)}>
-            <View style={{ flexDirection: "row" }}>
-              <FontAwesome
-                name="plus"
-                size={12}
-                color="#ffbf18"
-                style={{ top: 13, left: 0 }}
-              />
-              <Text style={styles.addChoiceText}>Add Choice</Text>
-            </View>
-            {qIndex < totalQuestions - 1 && (
-              <View style={styles.questionSeparator}></View>
-            )}
-          </TouchableOpacity>
-        </>
-      )}
+                {options.length > 1 && (
+                  <TouchableOpacity onPress={() => handleRemoveChoice(index)}>
+                    <AntDesign name="close" size={20} color="red" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
 
-      {question.type === "trueFalse" && (
-        <>
-          {["True", "False"].map((option, tfIndex) => (
-            <View key={tfIndex} style={styles.blankAnswerContainer}>
-              <TextInput
-                style={{ color: "#aaa" }}
-                value={option}
-                editable={false}
-              />
-            </View>
-          ))}
-          {qIndex < totalQuestions - 1 && (
-            <View style={styles.questionSeparator}></View>
-          )}
+            <TouchableOpacity
+              onPress={handleAddChoice}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                columnGap: 10,
+              }}
+            >
+              <FontAwesome6 name="add" size={20} color="black" />
+              <Text>Add Choice</Text>
+            </TouchableOpacity>
+          </View>
         </>
-      )}
-
-      {question.type === "fillInTheBlank" && (
-        <View style={styles.blankAnswerContainer}>
+      ) : selectedType === "identification" ? (
+        <View>
           <TextInput
-            style={styles.blankAnswerInput}
-            placeholder="Written answer"
-            placeholderTextColor="#aaa"
-            editable={false}
+            placeholder={"answer"}
+            style={{ borderWidth: 1 }}
+            value={answer}
+            onChangeText={setAnswer}
           />
         </View>
-      )}
+      ) : null}
+
+      {selectedType.trim() !== "" ? (
+        selectedType === "true_false" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>Answer: </Text>
+            <Picker
+              selectedValue={answer}
+              onValueChange={(itemValue) => setAnswer(itemValue)}
+              dropdownIconColor="#333"
+              placeholder={"Select Answer"}
+              mode="dropdown"
+              style={{ width: "80%", justifyContent: "flex-end" }}
+            >
+              <Picker.Item label={"True"} value={"true"} />
+              <Picker.Item label={"False"} value={"false"} />
+            </Picker>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>Answer: </Text>
+            <Picker
+              selectedValue={answer}
+              onValueChange={(itemValue) => setAnswer(itemValue)}
+              dropdownIconColor="#333"
+              placeholder={"Select Answer"}
+              mode="dropdown"
+              style={{ width: "80%", justifyContent: "flex-end" }}
+            >
+              {options.map((choice, index) => (
+                <Picker.Item label={choice} value={choice} key={index} />
+              ))}
+            </Picker>
+          </View>
+        )
+      ) : null}
     </View>
   );
 };
@@ -127,10 +222,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 20,
     flex: 1,
-    elevation:5,
-    borderWidth:0,
-    borderColor:"none",
-    shadowColor:"none"
+    elevation: 5,
+    borderWidth: 0,
+    borderColor: "none",
+    shadowColor: "none",
   },
   questionLabel: {
     fontWeight: "bold",
@@ -159,6 +254,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     color: "#000",
+    borderWidth: 1,
+    borderRadius: 15,
   },
   removeIcon: {
     color: "#808080",
@@ -191,5 +288,4 @@ const styles = StyleSheet.create({
   blankAnswerInput: {
     color: "#aaa",
   },
-
 });
