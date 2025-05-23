@@ -124,6 +124,23 @@ const courseDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
+          onPress={useCallback(
+            () =>
+              router.push({
+                pathname: "/subject/Quizzes",
+                params: { subjectId: id, role: role },
+              }),
+            [],
+          )}
+        >
+          <View style={styles.yellowBulletin}></View>
+          <View style={styles.linkDecoration}>
+            <Text style={styles.fontSizeOne}>Quiz</Text>
+            <Entypo name="chevron-small-right" size={30} color="#CCC" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.link}
           onPress={useCallback(() => router.push("/subject/scores"), [])}
         >
           <View style={styles.yellowBulletin}></View>
