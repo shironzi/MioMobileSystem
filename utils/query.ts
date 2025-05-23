@@ -258,6 +258,26 @@ export async function editAssignment(
   }
 }
 
+export async function getQuizzes(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/quizzes`);
+
+    return data;
+  } catch (err) {
+    console.error("Get Quizzes Error: " + err);
+  }
+}
+
+export async function getQuizById(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
+
+    return data;
+  } catch (err) {
+    console.error("Get Quizzes Error: " + err);
+  }
+}
+
 export async function getScores(subjectId: string | string[]) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/scores`);
