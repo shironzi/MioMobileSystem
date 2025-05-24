@@ -9,7 +9,7 @@ enum activityCategory {
   speech = "speech",
   auditory = "auditory",
   language = "language",
-  academic = "academic",
+  academics = "academics",
 }
 
 const courseDetails = () => {
@@ -22,6 +22,8 @@ const courseDetails = () => {
     subjectType: keyof typeof activityCategory;
     role: string;
   }>();
+
+  console.log(subjectType);
 
   HeaderConfig("Course Details");
 
@@ -38,7 +40,7 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        {subjectType !== "academic" ? (
+        {subjectType !== "academics" ? (
           <TouchableOpacity
             style={styles.link}
             onPress={useCallback(() => {
