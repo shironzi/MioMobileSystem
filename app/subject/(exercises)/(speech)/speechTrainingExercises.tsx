@@ -1,5 +1,5 @@
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -8,10 +8,41 @@ const SpeechTrainingExercise = () => {
 
   HeaderConfig("Speech Training Exercises");
 
-  const handleFlashcardRoute = () => {
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+
+  const handlePictureRoute = () => {
     router.push({
       pathname: "/subject/(exercises)/level",
-      params: { activity: "flashcards", category: "speech" },
+      params: { subjectId: subjectId, activity: "picture", category: "speech" },
+    });
+  };
+
+  const handleQuestionRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: {
+        subjectId: subjectId,
+        activity: "question",
+        category: "speech",
+      },
+    });
+  };
+
+  const handlePhraseRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: { subjectId: subjectId, activity: "phrase", category: "speech" },
+    });
+  };
+
+  const handlePronunciationRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: {
+        subjectId: subjectId,
+        activity: "pronunciation",
+        category: "speech",
+      },
     });
   };
 
@@ -19,15 +50,7 @@ const SpeechTrainingExercise = () => {
     <View style={styles.courseContainer}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() =>
-              router.push({
-                pathname: "/subject/(exercises)/level",
-                params: { activity: "picture_flashcards", category: "speech" },
-              })
-            }
-          >
+          <TouchableOpacity style={styles.card} onPress={handlePictureRoute}>
             <Image
               source={require("@/assets/icons/Picture.png")}
               style={styles.icon}
@@ -39,7 +62,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
+          <TouchableOpacity style={styles.card} onPress={handleQuestionRoute}>
             <Image
               source={require("@/assets/icons/Questions.png")}
               style={styles.icon}
@@ -51,7 +74,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
+          <TouchableOpacity style={styles.card} onPress={handlePhraseRoute}>
             <Image
               source={require("@/assets/icons/Dictionary.png")}
               style={styles.icon}
@@ -63,7 +86,10 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={handlePronunciationRoute}
+          >
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}

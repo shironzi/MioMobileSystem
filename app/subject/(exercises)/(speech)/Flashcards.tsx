@@ -1,9 +1,10 @@
 import ActivityProgress from "@/components/activityProgress";
 import HeaderConfig from "@/utils/HeaderConfig";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useRouter } from "expo-router";
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { getActivityById } from "@/utils/specialized";
 
 const initialData = [
   {
@@ -32,10 +33,20 @@ const Flashcards = () => {
   HeaderConfig("Picture Flashcards");
   const router = useRouter();
 
+  const { subjectId, difficulty, activityType, category, activityId } =
+    useLocalSearchParams<{
+      activityType: string;
+      difficulty: string;
+      category: string;
+      subjectId: string;
+      activityId: string;
+    }>();
+
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [cards, setCards] = useState(initialData);
+  const [cards, setCards] = useState<{ id: string; word: string }[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const currentCard = useMemo(() => {
     return cards[currentCardIndex];
@@ -63,7 +74,40 @@ const Flashcards = () => {
         });
       }
     }
-  }, [router]);
+  }, [router, isRecording, currentCardIndex, cards.length]);
+
+  useEffect(() => {
+    const fetchActivity = async () => {
+      const res = await getActivityById(
+        subjectId,
+        activityType,
+        difficulty,
+        activityId,
+      );
+
+      const data = res.activities;
+
+      const formattedData = Object.entries(data).map(([id, value]) => ({
+        id,
+        // @ts-ignore
+        word: value.value,
+      }));
+
+      setCards(formattedData);
+
+      setLoading(false);
+    };
+
+    fetchActivity();
+  });
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading........</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

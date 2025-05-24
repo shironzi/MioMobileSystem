@@ -47,18 +47,21 @@ const courseDetails = () => {
                   router.push({
                     pathname:
                       "/subject/(exercises)/(speech)/speechTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 case activityCategory.auditory:
                   router.push({
                     pathname:
                       "/subject/(exercises)/(language)/languageTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 case activityCategory.language:
                   router.push({
                     pathname:
                       "/subject/(exercises)/(language)/languageTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 default:

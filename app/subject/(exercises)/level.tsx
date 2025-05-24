@@ -7,30 +7,63 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const level = () => {
   const router = useRouter();
 
-  const { activity, category } = useLocalSearchParams<{
+  const { activity, category, subjectId } = useLocalSearchParams<{
     activity: string;
     category: string;
+    subjectId: string;
   }>();
 
   HeaderConfig("Levels");
+
+  const handleEasyRoute = () =>
+    router.push({
+      pathname: "/subject/(exercises)/play",
+      params: {
+        subjectId: subjectId,
+        activityType: activity,
+        difficulty: "easy",
+        category: category,
+      },
+    });
+
+  const handleAverageRoute = () =>
+    router.push({
+      pathname: "/subject/(exercises)/play",
+      params: {
+        subjectId: subjectId,
+        activityType: activity,
+        difficulty: "Average",
+        category: category,
+      },
+    });
+
+  const handleDifficultRoute = () =>
+    router.push({
+      pathname: "/subject/(exercises)/play",
+      params: {
+        subjectId: subjectId,
+        activityType: activity,
+        difficulty: "Difficult",
+        category: category,
+      },
+    });
+
+  const handleChallengeRoute = () =>
+    router.push({
+      pathname: "/subject/(exercises)/play",
+      params: {
+        subjectId: subjectId,
+        activityType: activity,
+        difficulty: "Challenge",
+        category: category,
+      },
+    });
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select a Difficulty Level</Text>
       <View style={styles.cardContainer}>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() =>
-            router.push({
-              pathname: "/subject/(exercises)/play",
-              params: {
-                activity: activity,
-                difficulty: "easy",
-                category: category,
-              },
-            })
-          }
-        >
+        <TouchableOpacity style={styles.card} onPress={handleEasyRoute}>
           <MaterialIcons
             name="star"
             size={50}
@@ -39,19 +72,7 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#009c41" }]}>Easy</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() =>
-            router.push({
-              pathname: "/subject/(exercises)/play",
-              params: {
-                activity: activity,
-                difficulty: "Average",
-                category: category,
-              },
-            })
-          }
-        >
+        <TouchableOpacity style={styles.card} onPress={handleAverageRoute}>
           <MaterialIcons
             name="star"
             size={50}
@@ -60,19 +81,7 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#FFda03" }]}>Average</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() =>
-            router.push({
-              pathname: "/subject/(exercises)/play",
-              params: {
-                activity: activity,
-                difficulty: "Difficult",
-                category: category,
-              },
-            })
-          }
-        >
+        <TouchableOpacity style={styles.card} onPress={handleDifficultRoute}>
           <MaterialIcons
             name="star"
             size={50}
@@ -81,19 +90,7 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#FFa700" }]}>Difficult</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() =>
-            router.push({
-              pathname: "/subject/(exercises)/play",
-              params: {
-                activity: activity,
-                difficulty: "Challenge",
-                category: category,
-              },
-            })
-          }
-        >
+        <TouchableOpacity style={styles.card} onPress={handleChallengeRoute}>
           <MaterialIcons
             name="star"
             size={50}
