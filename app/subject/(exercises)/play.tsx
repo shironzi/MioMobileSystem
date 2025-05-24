@@ -2,20 +2,34 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import PlayCard from "@/components/playCard";
 import React, { memo } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-
-const data = Array.from({ length: 12 }, (_, index) => ({
-  id: index + 1,
-}));
+import globalStyles from "@/styles/globalStyles";
+import { useLocalSearchParams } from "expo-router";
 
 const Play = () => {
   HeaderConfig("Play");
 
+  const { activity, difficulty, category } = useLocalSearchParams<{
+    activity: string;
+    difficulty: string;
+    category: string;
+  }>();
+
+  const data = Array.from({ length: 12 }, (_, index) => ({
+    id: index + 1,
+  }));
+
   const renderItem = ({ item }: { item: { id: number } }) => (
-    <PlayCard id={item.id} label="Play" />
+    <PlayCard
+      id={item.id}
+      label="Play"
+      activity={activity}
+      difficulty={difficulty}
+      category={category}
+    />
   );
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Text style={styles.title}>Easy</Text>
       <FlatList
         data={data}
@@ -31,11 +45,6 @@ const Play = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 20,
-  },
   title: {
     fontSize: 24,
     fontWeight: "bold",

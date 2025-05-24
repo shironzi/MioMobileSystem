@@ -1,11 +1,16 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const level = () => {
   const router = useRouter();
+
+  const { activity, category } = useLocalSearchParams<{
+    activity: string;
+    category: string;
+  }>();
 
   HeaderConfig("Levels");
 
@@ -15,7 +20,16 @@ const level = () => {
       <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/subject/(exercises)/play")}
+          onPress={() =>
+            router.push({
+              pathname: "/subject/(exercises)/play",
+              params: {
+                activity: activity,
+                difficulty: "easy",
+                category: category,
+              },
+            })
+          }
         >
           <MaterialIcons
             name="star"
@@ -25,7 +39,19 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#009c41" }]}>Easy</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() =>
+            router.push({
+              pathname: "/subject/(exercises)/play",
+              params: {
+                activity: activity,
+                difficulty: "Average",
+                category: category,
+              },
+            })
+          }
+        >
           <MaterialIcons
             name="star"
             size={50}
@@ -34,7 +60,19 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#FFda03" }]}>Average</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() =>
+            router.push({
+              pathname: "/subject/(exercises)/play",
+              params: {
+                activity: activity,
+                difficulty: "Difficult",
+                category: category,
+              },
+            })
+          }
+        >
           <MaterialIcons
             name="star"
             size={50}
@@ -43,7 +81,19 @@ const level = () => {
           />
           <Text style={[styles.cardText, { color: "#FFa700" }]}>Difficult</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() =>
+            router.push({
+              pathname: "/subject/(exercises)/play",
+              params: {
+                activity: activity,
+                difficulty: "Challenge",
+                category: category,
+              },
+            })
+          }
+        >
           <MaterialIcons
             name="star"
             size={50}

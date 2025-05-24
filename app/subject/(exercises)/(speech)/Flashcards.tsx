@@ -8,32 +8,27 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const initialData = [
   {
     id: 1,
-    imageSrc: require("@/assets/images/flashcards/apple.jpg"),
-    word: "Apple",
+    word: "Mio A Web and Mobile Oralism Based Learning Management System with Online Enrollment, Speech and Auditory using Automatic Speech Recognition based Recurrent Neural Network for Philippine Institute for the Deaf.",
   },
   {
     id: 2,
-    imageSrc: require("@/assets/images/flashcards/fireExtinguisher.jpg"),
     word: "Banana",
   },
   {
     id: 3,
-    imageSrc: require("@/assets/images/flashcards/scissors.png"),
     word: "Orange",
   },
   {
     id: 4,
-    imageSrc: require("@/assets/images/flashcards/teacher.jpg"),
     word: "Grapes",
   },
   {
     id: 5,
-    imageSrc: require("@/assets/images/flashcards/whisper.png"),
     word: "Strawberry",
   },
 ];
 
-const Picgame = () => {
+const Flashcards = () => {
   HeaderConfig("Picture Flashcards");
   const router = useRouter();
 
@@ -80,18 +75,12 @@ const Picgame = () => {
       />
 
       <View style={styles.flashcardContainer}>
-        <View>
-          <Image
-            source={require("@/assets/images/orange.png")}
-            style={{ width: 90, height: 50 }}
-          />
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            source={currentCard.imageSrc}
-            style={styles.cardImage}
-            resizeMode="contain"
-          />
+        <Image
+          source={require("@/assets/images/orange.png")}
+          style={{ width: 90, height: 50 }}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.flashcardText}>{currentCard.word}</Text>
         </View>
       </View>
 
@@ -142,18 +131,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
+
   flashcardContainer: {
-    backgroundColor: "white",
-    borderRadius: 15,
+    backgroundColor: "#fff",
+    flex: 1,
     padding: 20,
-    elevation: 5,
-    marginBottom: 0,
     height: 300,
+    borderRadius: 15,
   },
-  imageContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
+  textContainer: {
+    margin: "auto",
+    textAlign: "center",
+  },
+  flashcardText: {
+    fontSize: 24,
+    flexWrap: "wrap",
   },
   cardImage: {
     width: 200,
@@ -198,4 +190,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Picgame);
+export default memo(Flashcards);

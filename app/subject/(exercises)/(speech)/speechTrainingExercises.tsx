@@ -8,13 +8,25 @@ const SpeechTrainingExercise = () => {
 
   HeaderConfig("Speech Training Exercises");
 
+  const handleFlashcardRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: { activity: "flashcards", category: "speech" },
+    });
+  };
+
   return (
     <View style={styles.courseContainer}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
+            onPress={() =>
+              router.push({
+                pathname: "/subject/(exercises)/level",
+                params: { activity: "picture_flashcards", category: "speech" },
+              })
+            }
           >
             <Image
               source={require("@/assets/icons/Picture.png")}
@@ -27,10 +39,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
             <Image
               source={require("@/assets/icons/Questions.png")}
               style={styles.icon}
@@ -42,10 +51,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
             <Image
               source={require("@/assets/icons/Dictionary.png")}
               style={styles.icon}
@@ -57,10 +63,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleFlashcardRoute}>
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
