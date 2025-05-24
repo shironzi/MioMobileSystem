@@ -43,7 +43,7 @@ const Index = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
