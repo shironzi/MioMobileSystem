@@ -358,22 +358,23 @@ const addAssignment = () => {
 
 				<View style={styles.separator}></View>
 
-				<View style={styles.row}>
-					<Text style={globalStyles.textLabel}>Title</Text>
-					<TextInput
-						style={[
-							styles.dropdown,
-							error.title
-								? { borderColor: "#ee6b6e", borderWidth: 1 }
-								: { borderColor: "#ddd" },
-						]}
-						placeholder="Enter title"
-						placeholderTextColor="#aaa"
-						multiline={true}
-						value={title}
-						onChangeText={setTitle}
-					/>
-				</View>
+				{/* <View style={styles.row}> */}
+				<Text style={[globalStyles.textLabel]}>Title</Text>
+				<TextInput
+					style={[
+						styles.dropdown,
+						error.title
+							? { borderColor: "#ee6b6e", borderWidth: 1 }
+							: { borderColor: "#ddd" },
+						{ width: 300 },
+					]}
+					placeholder="Enter title"
+					placeholderTextColor="#aaa"
+					multiline={true}
+					value={title}
+					onChangeText={setTitle}
+				/>
+				{/* </View> */}
 
 				<View style={{ rowGap: 5 }}>
 					<Text style={globalStyles.textLabel}>Description</Text>
