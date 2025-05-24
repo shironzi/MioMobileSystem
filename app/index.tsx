@@ -123,21 +123,21 @@ const Index = () => {
 							width: 110,
 							height: 100,
 							resizeMode: "contain",
-							top: 20,
+							top: 40,
 							alignSelf: "center",
 							left: -5,
 						}}
 					/>
 					<Image
 						source={current.image}
-						style={{ width: 400, height: 400, resizeMode: "contain" }}
+						style={{ width: 400, height: 400, resizeMode: "contain", top: 10 }}
 					/>
 					<Text
 						style={{
 							fontSize: 22,
 							fontWeight: "bold",
 							marginVertical: 10,
-							top: -65,
+							top: -45,
 						}}
 					>
 						{current.title}
@@ -148,7 +148,7 @@ const Index = () => {
 							marginVertical: 15,
 							lineHeight: 25,
 							marginHorizontal: 20,
-							top: -70,
+							top: -50,
 						}}
 					>
 						{current.description}
@@ -160,7 +160,7 @@ const Index = () => {
 							backgroundColor: "#eee",
 							borderRadius: 5,
 							marginBottom: 20,
-							top: -50,
+							top: -30,
 							alignSelf: "center",
 						}}
 					>
@@ -183,7 +183,7 @@ const Index = () => {
 							borderRadius: 50,
 							width: "70%",
 							alignItems: "center",
-							bottom: 30,
+							bottom: 10,
 							marginBottom: 30,
 							elevation: 5,
 						}}
@@ -196,7 +196,7 @@ const Index = () => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={() => setOnboardingIndex(-1)}
-						style={{ top: -60 }}
+						style={{ top: -40 }}
 					>
 						<Text style={{ marginTop: 15, color: "#808080", fontSize: 15 }}>
 							Skip
