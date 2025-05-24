@@ -10,10 +10,10 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Picker } from "@react-native-picker/picker";
 import useDebouncedCallback from "@/utils/useDebounceCallback";
-import { string } from "yup";
 
 const QuizQuestion = (props: {
   questionData: {
+    questionId: string | null;
     question: string;
     options: string[];
     answer: string;
@@ -21,6 +21,7 @@ const QuizQuestion = (props: {
   };
   questionIndex: number;
   handleAddQuestion: (
+    questionId: string | null,
     question: string,
     options: string[],
     answer: string,
@@ -53,7 +54,13 @@ const QuizQuestion = (props: {
 
   const debouncedNotify = useDebouncedCallback(
     (question: string, choices: string[], answer: string, type: string) => {
-      props.handleAddQuestion(question, choices, answer, type);
+      props.handleAddQuestion(
+        props.questionData.questionId,
+        question,
+        choices,
+        answer,
+        type,
+      );
     },
     500,
   );

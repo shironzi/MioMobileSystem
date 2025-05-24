@@ -1,4 +1,10 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import React, { memo, useEffect, useState } from "react";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -15,6 +21,7 @@ const Quiz = () => {
     role: string;
   }>();
 
+  const [loading, setLoading] = useState<boolean>(true);
   const [quizzes, setQuizzes] = useState<
     {
       quiz_id: string;
@@ -29,6 +36,7 @@ const Quiz = () => {
         const res = await getQuizzes(subjectId);
 
         setQuizzes(res.quizzes);
+        setLoading(false);
       } catch (err) {
         console.error("Fetch Quizzes Error: " + err);
       }
@@ -37,21 +45,35 @@ const Quiz = () => {
     fetchQuizzes();
   }, []);
 
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading.......</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.content}>
-          {quizzes.map((item, index) => (
-            <QuizCard
-              key={index}
-              title={item.title}
-              quizId={item.quiz_id}
-              total={item.total}
-              subjectId={subjectId}
-              role={role}
-            />
-          ))}
-        </View>
+        {quizzes.length > 0 ? (
+          <View style={styles.content}>
+            {quizzes.map((item, index) => (
+              <QuizCard
+                key={index}
+                title={item.title}
+                quizId={item.quiz_id}
+                total={item.total}
+                subjectId={subjectId}
+                role={role}
+              />
+            ))}
+          </View>
+        ) : (
+          <View>
+            <Text>no quizzes yet</Text>
+          </View>
+        )}
       </ScrollView>
       {role === "teacher" && (
         <TouchableOpacity

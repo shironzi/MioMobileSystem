@@ -24,13 +24,6 @@ interface InputErrorState {
   description: boolean;
 }
 
-type QuizQuestionType = {
-  answer: string;
-  options: string[];
-  question: string;
-  type: string;
-};
-
 const AddQuiz = () => {
   useHeaderConfig("Quiz");
   const router = useRouter();
@@ -49,10 +42,15 @@ const AddQuiz = () => {
   const [description, setDescription] = useState<string>("");
   const [descHeight, setDescHeight] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [quizNum, setQuizNum] = useState<number>(1);
   const [questions, setQuestions] = useState<
-    { question: string; options: string[]; answer: string; type: string }[]
-  >([{ question: "", options: [], answer: "", type: "" }]);
+    {
+      questionId: string | null;
+      question: string;
+      options: string[];
+      answer: string;
+      type: string;
+    }[]
+  >([{ questionId: null, question: "", options: [], answer: "", type: "" }]);
 
   const [error, setError] = useState<InputErrorState>({
     deadline: false,
@@ -163,6 +161,7 @@ const AddQuiz = () => {
   const handleAddQuiz = useCallback(
     (
       item: {
+        questionId: string | null;
         question: string;
         options: string[];
         answer: string;
@@ -182,7 +181,7 @@ const AddQuiz = () => {
   const handleAddQuestion = useCallback(() => {
     setQuestions((prev) => [
       ...prev,
-      { question: "", options: [], answer: "", type: "" },
+      { questionId: null, question: "", options: [], answer: "", type: "" },
     ]);
   }, []);
 
@@ -201,27 +200,52 @@ const AddQuiz = () => {
           const res = await getQuizById(subjectId, quizId);
           const data = res.quiz;
 
+          // console.log(data);
+
           setTitle(data.title);
           setDescription(data.description);
           setAttempt(data.attempt ?? 1);
           setPoints(data.total ?? 1);
           setDeadline(data.deadline ? new Date(data.deadline) : null);
 
-          setQuestions(
-            data.questions.map(
-              (item: {
-                question: string;
-                options: string[];
-                answer: string;
-                type: string;
-              }) => ({
-                question: item.question,
-                options: item.options,
-                answer: item.answer,
-                type: item.type,
-              }),
-            ),
+          // console.log(data.questions);
+
+          const questionsArray = Object.entries(data.questions).map(
+            ([questionId, q]) => ({
+              questionId: questionId,
+              // @ts-ignore
+              question: q.question,
+              // @ts-ignore
+              options: q.options,
+              // @ts-ignore
+              answer: q.answer,
+              // @ts-ignore
+              type: q.type,
+            }),
           );
+
+          setQuestions(questionsArray);
+
+          // console.log(questionsArray);
+          // data.questions.map((item: Object) => {
+          //   console.log(item);
+          //   console.log();
+          // });
+          // setQuestions(
+          //   data.options.map(
+          //     (item: {
+          //       question: string;
+          //       options: string[];
+          //       answer: string;
+          //       type: string;
+          //     }) => ({
+          //       question: item.question,
+          //       options: item.options,
+          //       answer: item.answer,
+          //       type: item.type,
+          //     }),
+          //   ),
+          // );
         } catch (err) {
           console.error("Fetch Quiz By Id Failed:", err);
         }
@@ -398,9 +422,15 @@ const AddQuiz = () => {
               questionData={data}
               key={index}
               questionIndex={index}
-              handleAddQuestion={(question, choices, answer, type) => {
+              handleAddQuestion={(
+                questionId: string | null,
+                question,
+                choices,
+                answer,
+                type,
+              ) => {
                 handleAddQuiz(
-                  { question, options: choices, answer, type },
+                  { questionId, question, options: choices, answer, type },
                   index,
                 );
               }}

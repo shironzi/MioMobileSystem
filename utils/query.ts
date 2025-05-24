@@ -185,20 +185,21 @@ export async function createAssignment(
   try {
     const payload = JSON.stringify({
       availability: {
-        start: availability.start,
-        end: availability.end,
+        start: "2025-06-01T08:00:00Z",
+        end: "2025-06-10T23:59:59Z",
       },
-      attempts: attempts,
-      title: title,
-      description: description,
-      total: points,
-      submission_type: submissionType,
-      deadline: deadline,
-      published_at: null,
+      attempts: 2,
+      title: "Midterm Essay Submission",
+      description:
+        "Please submit your midterm essay as a PDF. Late submissions will be penalized.",
+      total: 50,
+      submission_type: "file",
+      published_at: "2025-05-31T12:00:00Z",
+      deadline: "2025-06-10T23:59:59Z",
     });
 
-    const { data } = await api.post(
-      `/subject/${subjectId}/assignment/`,
+    const { data } = await api.put(
+      `/subject/${subjectId}/assignment`,
       payload,
       {
         headers: {
@@ -240,7 +241,7 @@ export async function editAssignment(
       published_at: null,
     });
 
-    const { data } = await api.put(
+    const { data } = await api.post(
       `/subject/${subjectId}/assignment/`,
       payload,
       {
