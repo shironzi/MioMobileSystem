@@ -125,24 +125,29 @@ const AnnouncementPreview = () => {
 					justifyContent: "space-between",
 					top: 10,
 					marginTop: 20,
-					marginBottom: 20,
+					// marginBottom: 20,
 				}}
 			>
 				<TouchableOpacity
-					style={{
-						width: "49%",
-						borderWidth: 1,
-						borderColor: "#ffbf18",
-						padding: 10,
-						borderRadius: 50,
-						backgroundColor: "#fff",
-					}}
+					style={[
+						globalStyles.submitButton,
+						{
+							width: "49%",
+							borderWidth: 1,
+							borderColor: "#ffbf18",
+							backgroundColor: "#fff",
+							elevation: 5,
+							// // padding: 10,
+							// paddingVertical: 10,
+							// borderRadius: 40,
+						},
+					]}
 					onPress={() => router.back()}
 				>
 					<Text
 						style={[
 							globalStyles.submitButtonText,
-							{ color: "#ffbf18", top: 5, fontSize: 16 },
+							{ color: "#ffbf18", fontSize: 16 },
 						]}
 					>
 						Cancel
@@ -150,7 +155,7 @@ const AnnouncementPreview = () => {
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					style={[globalStyles.submitButton, { width: "49%" }]}
+					style={[globalStyles.submitButton, { width: "49%", elevation: 5 }]}
 					onPress={handleCreateAnnouncement}
 				>
 					<Text style={globalStyles.submitButtonText}>Save</Text>

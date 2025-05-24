@@ -142,10 +142,12 @@ const addAnnouncement = () => {
 					</View>
 				</View>
 				<TouchableOpacity
-					style={[globalStyles.submitButton, { width: "100%" }]}
+					style={[globalStyles.submitButton, { width: "100%", elevation: 5 }]}
 					onPress={handlePreview}
 				>
-					<Text style={globalStyles.submitButtonText}>Preview</Text>
+					<Text style={[globalStyles.submitButtonText, { fontWeight: "bold" }]}>
+						Preview
+					</Text>
 				</TouchableOpacity>
 				{/* </View> */}
 			</View>
@@ -168,20 +170,20 @@ const styles = StyleSheet.create({
 		width: 300,
 		alignSelf: "center",
 	},
-	uploadHeader: {
-		width: "100%",
-		backgroundColor: "#434242",
-		paddingVertical: 9,
-		paddingHorizontal: 26,
-	},
-	uploadHeaderText: {
-		color: "#fff",
-	},
-	fileRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-	},
+	// uploadHeader: {
+	// 	width: "100%",
+	// 	backgroundColor: "#434242",
+	// 	paddingVertical: 9,
+	// 	paddingHorizontal: 26,
+	// },
+	// uploadHeaderText: {
+	// 	color: "#fff",
+	// },
+	// fileRow: {
+	// 	flexDirection: "row",
+	// 	alignItems: "center",
+	// 	justifyContent: "space-between",
+	// },
 	fileUpload: {
 		padding: 9,
 		borderRadius: 15,
