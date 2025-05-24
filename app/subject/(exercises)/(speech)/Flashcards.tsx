@@ -2,7 +2,14 @@ import ActivityProgress from "@/components/activityProgress";
 import HeaderConfig from "@/utils/HeaderConfig";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getActivityById } from "@/utils/specialized";
 
@@ -48,6 +55,8 @@ const Flashcards = () => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const timerRef = useRef<number | null>(null);
+
   const currentCard = useMemo(() => {
     return cards[currentCardIndex];
   }, [cards, currentCardIndex]);
@@ -55,12 +64,10 @@ const Flashcards = () => {
   const handleMicPress = useCallback(() => {
     setIsRecording(true);
 
-    const timer = setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setIsRecording(false);
       setIsAnswered(true);
     }, 8000);
-
-    return () => clearTimeout(timer);
   }, []);
 
   const handleNext = useCallback(() => {
@@ -87,11 +94,12 @@ const Flashcards = () => {
 
       const data = res.activities;
 
-      const formattedData = Object.entries(data).map(([id, value]) => ({
-        id,
-        // @ts-ignore
-        word: value.value,
-      }));
+      const formattedData = Object.entries(data).map(
+        ([id, value]: [string, any]) => ({
+          id,
+          word: value.value,
+        }),
+      );
 
       setCards(formattedData);
 
@@ -99,7 +107,13 @@ const Flashcards = () => {
     };
 
     fetchActivity();
-  });
+  }, [subjectId, activityType, difficulty, activityId]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -109,10 +123,18 @@ const Flashcards = () => {
     );
   }
 
+  if (!currentCard) {
+    return (
+      <View style={styles.container}>
+        <Text>No flashcards available.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <ActivityProgress
-        difficulty="Easy"
+        difficulty={difficulty}
         totalItems={cards.length}
         completedItems={currentCardIndex}
         instruction="Guess the picture"
