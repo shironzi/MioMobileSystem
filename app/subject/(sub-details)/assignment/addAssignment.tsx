@@ -13,7 +13,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { DatePickerField } from "@/components/DatePickerField";
 import globalStyles from "@/styles/globalStyles";
 import { getAssignmentById } from "@/utils/query";
-import { boolean } from "yup";
 
 interface InputErrorState {
   submissionType: boolean;
