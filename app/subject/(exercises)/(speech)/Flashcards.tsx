@@ -1,43 +1,25 @@
 import ActivityProgress from "@/components/activityProgress";
 import HeaderConfig from "@/utils/HeaderConfig";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { getActivityById } from "@/utils/specialized";
-
-const initialData = [
-  {
-    id: 1,
-    word: "Mio A Web and Mobile Oralism Based Learning Management System with Online Enrollment, Speech and Auditory using Automatic Speech Recognition based Recurrent Neural Network for Philippine Institute for the Deaf.",
-  },
-  {
-    id: 2,
-    word: "Banana",
-  },
-  {
-    id: 3,
-    word: "Orange",
-  },
-  {
-    id: 4,
-    word: "Grapes",
-  },
-  {
-    id: 5,
-    word: "Strawberry",
-  },
-];
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  finishActivity,
+  getActivityById,
+  startActivity,
+  submitAnswer,
+} from "@/utils/specialized";
+import Recording from "@/components/trainingActivities/Recording";
 
 const Flashcards = () => {
-  HeaderConfig("Picture Flashcards");
+  HeaderConfig("Flashcards");
   const router = useRouter();
 
   const { subjectId, difficulty, activityType, category, activityId } =
@@ -50,68 +32,130 @@ const Flashcards = () => {
     }>();
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [cards, setCards] = useState<{ id: string; word: string }[]>([]);
+  const [cards, setCards] = useState<{ flashcard_id: string; word: string }[]>(
+    [],
+  );
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [recordingAudio, setRecordingAudio] = useState<string | null>();
   const [loading, setLoading] = useState(true);
-
-  const timerRef = useRef<number | null>(null);
+  const [attemptId, setAttemptId] = useState<string | undefined>();
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const currentCard = useMemo(() => {
     return cards[currentCardIndex];
   }, [cards, currentCardIndex]);
 
-  const handleMicPress = useCallback(() => {
-    setIsRecording(true);
-
-    timerRef.current = setTimeout(() => {
-      setIsRecording(false);
-      setIsAnswered(true);
-    }, 8000);
-  }, []);
-
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     if (!isRecording) {
-      if (currentCardIndex < cards.length - 1) {
-        setIsAnswered(false);
-        setCurrentCardIndex(currentCardIndex + 1);
+      if (currentCardIndex <= cards.length - 1) {
+        try {
+          if (!attemptId) {
+            console.error("No attemptId available");
+            return;
+          }
+
+          if (!recordingAudio) {
+            console.error("No recording audio");
+            return;
+          }
+
+          setSubmitting(true);
+          const res = await submitAnswer(
+            subjectId,
+            activityType,
+            difficulty,
+            activityId,
+            attemptId,
+            cards[currentCardIndex].flashcard_id,
+            recordingAudio,
+          );
+
+          if (res.success) {
+            console.log("success");
+            setIsAnswered(false);
+            setCurrentCardIndex(currentCardIndex + 1);
+            setSubmitting(false);
+          }
+        } catch (err) {
+          console.error("Failed to save: " + err);
+        }
       } else {
-        router.push({
-          pathname: "/subject/(sub-details)/scoreDetails",
-        });
+        try {
+          if (attemptId) {
+            const res = await finishActivity(
+              subjectId,
+              activityType,
+              difficulty,
+              activityId,
+              attemptId,
+            );
+            if (res.success) {
+              router.push({
+                pathname: "/subject/(sub-details)/scoreDetails",
+                params: { subjectId, activityId, attemptId },
+              });
+            } else {
+              Alert.alert("failed to submit");
+            }
+          }
+        } catch (err) {
+          console.error("Failed to submit");
+        }
       }
     }
-  }, [router, isRecording, currentCardIndex, cards.length]);
+  }, [
+    router,
+    isRecording,
+    currentCardIndex,
+    attemptId,
+    recordingAudio,
+    subjectId,
+    activityType,
+    difficulty,
+    activityId,
+    cards,
+  ]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchActivity = async () => {
-      const res = await getActivityById(
-        subjectId,
-        activityType,
-        difficulty,
-        activityId,
-      );
+      try {
+        const res = await getActivityById(
+          subjectId,
+          activityType,
+          difficulty,
+          activityId,
+        );
 
-      const data = res.activities;
+        const start = await startActivity(
+          subjectId,
+          activityType,
+          difficulty,
+          activityId,
+        );
 
-      const formattedData = Object.entries(data).map(
-        ([id, value]: [string, any]) => ({
-          id,
-          word: value.value,
-        }),
-      );
+        setAttemptId(start.attemptId);
+        setCards(res.activities);
 
-      setCards(formattedData);
-
-      setLoading(false);
+        if (!isMounted) return;
+      } catch (error) {
+        console.error("Error loading activity:", error);
+        if (isMounted) {
+          Alert.alert(
+            "Error",
+            "Unable to load activity. Please check your connection.",
+          );
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     };
 
     fetchActivity();
-  }, [subjectId, activityType, difficulty, activityId]);
 
-  useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      isMounted = false;
     };
   }, []);
 
@@ -150,26 +194,17 @@ const Flashcards = () => {
         </View>
       </View>
 
-      <View style={styles.micContainer}>
-        <TouchableOpacity
-          style={[styles.micButton, isRecording && styles.recordingButton]}
-          onPress={handleMicPress}
-        >
-          <FontAwesome
-            name="microphone"
-            size={50}
-            color={isRecording ? "#fff" : "black"}
-          />
-        </TouchableOpacity>
-        <Text
-          style={[
-            styles.recordingText,
-            isRecording ? { opacity: 100 } : { opacity: 0 },
-          ]}
-        >
-          Listening...
-        </Text>
-      </View>
+      <Recording
+        onStart={() => {
+          setIsRecording(true);
+          setIsAnswered(false);
+        }}
+        onStop={(uri) => {
+          setIsRecording(false);
+          setIsAnswered(true);
+          setRecordingAudio(uri);
+        }}
+      />
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -180,10 +215,14 @@ const Flashcards = () => {
               : { backgroundColor: "#E0E0E0" },
           ]}
           onPress={handleNext}
-          disabled={!isAnswered || isRecording}
+          disabled={!isAnswered || isRecording || submitting}
         >
           <Text style={styles.continueButtonText}>
-            {currentCardIndex === cards.length - 1 ? "Submit" : "Continue"}
+            {currentCardIndex === cards.length - 1
+              ? "Submit"
+              : submitting
+                ? "Submitting..."
+                : "Continue"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -218,28 +257,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginTop: -90,
-  },
-  micContainer: {
-    alignItems: "center",
-    marginTop: 40,
-    display: "flex",
-    flexDirection: "column",
-  },
-  micButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#E0E0E0",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  recordingButton: {
-    backgroundColor: "#FFBF18",
-  },
-  recordingText: {
-    marginTop: 15,
-    color: "#FFBF18",
-    fontWeight: "500",
   },
   buttonContainer: {
     marginTop: 70,

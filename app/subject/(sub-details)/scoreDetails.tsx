@@ -1,46 +1,99 @@
 import ScoreDetailsCard from "@/components/ScoreDetailsCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import React, { memo } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+} from "react-native";
+import { getActivityScore } from "@/utils/specialized";
+import { useLocalSearchParams } from "expo-router";
 
-const data = [
-  {
-    id: 1,
-    title: "Speech Flashcard Activity",
-    difficulty: "Challenge",
-    actNo: "Exercise 1",
-    attemptNo: "Latest Attempt",
-    scores: 7,
-    totalQuestion: 8,
-    comments: [
-      {
-        id: 1,
-        word: "Passed! 'Ph' sound softer, like an 'F'. Good pacing, try to pronounce 'Th' sharper.",
-      },
-      { id: 2, word: "Good pacing, try to pronounce 'Th' sharper." },
-      { id: 3, word: "Watch your lip movement in 'V' sounds." },
-    ],
-  },
-];
+type ScoreEntry = {
+  word: string;
+  pronunciation_score: number;
+};
 
 const ScoreDetails = () => {
   HeaderConfig("Score");
 
+  const { subjectId, activityId, attemptId } = useLocalSearchParams<{
+    subjectId: string;
+    activityId: string;
+    attemptId: string;
+  }>();
+
+  const [average, setAverage] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const [flashcardScores, setFlashcardScores] = useState<ScoreEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!subjectId || !activityId || !attemptId) return;
+
+    const fetchScores = async () => {
+      try {
+        const res = await getActivityScore(subjectId, activityId, attemptId);
+
+        if (res.success) {
+          setAverage(res.average);
+          setTotal(res.totalItems);
+
+          const scores: ScoreEntry[] = Object.values(res.detailedScores).map(
+            (entry: any) => ({
+              word: entry.word,
+              pronunciation_score: entry.pronunciation_score,
+            }),
+          );
+
+          setFlashcardScores(scores);
+        } else {
+          console.error("Failed to load scores:", res);
+        }
+      } catch (err) {
+        console.error("Fetch scores error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScores();
+  }, [subjectId, activityId, attemptId]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
-        {data.map((item) => (
-          <ScoreDetailsCard
-            key={item.id}
-            title={item.title}
-            difficulty={item.difficulty}
-            actNo={item.actNo}
-            attemptNo={item.attemptNo}
-            score={item.scores}
-            totalQuestion={item.totalQuestion}
-            comments={item.comments}
-          />
-        ))}
+        {flashcardScores.length === 0 ? (
+          <Text>No scores available.</Text>
+        ) : (
+          flashcardScores.map((fc, idx) => (
+            <ScoreDetailsCard
+              key={idx}
+              title={fc.word}
+              difficulty="" // or pass real difficulty if you have it
+              actNo={`Attempt ${attemptId}`}
+              attemptNo={`Card ${idx + 1}/${flashcardScores.length}`}
+              score={fc.pronunciation_score}
+              totalQuestion={total}
+              comments={[
+                {
+                  id: idx,
+                  word: `Pronunciation: ${fc.pronunciation_score}`,
+                },
+              ]}
+            />
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -50,6 +103,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     marginBottom: 70,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
