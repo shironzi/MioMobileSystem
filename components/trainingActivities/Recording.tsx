@@ -43,6 +43,7 @@ const Recording = (props: {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
     setIsRecording(true);
+    props.onStart();
 
     // timerRef.current = setTimeout(() => {
     //   setIsRecording(false);

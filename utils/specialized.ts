@@ -16,23 +16,6 @@ export async function getActivities(
   }
 }
 
-export async function getActivityById(
-  subjectId: string,
-  activityType: string,
-  difficulty: string,
-  activityId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}`,
-    );
-
-    return data;
-  } catch (err) {
-    console.error("Get Activity by Id Fetch Failed: " + err);
-  }
-}
-
 export async function startActivity(
   subjectId: string,
   activityType: string,
@@ -50,42 +33,6 @@ export async function startActivity(
   }
 }
 
-// export async function submitAnswer(
-//   subjectId: string,
-//   activityType: string,
-//   difficulty: string,
-//   activityId: string,
-//   attemptId: string,
-//   flashcardId: string,
-//   fileUri: string,
-// ) {
-//   try {
-//     // // Derive name + type
-//     // const fileUri =
-//     //   "file:///data/…/recording-8143cd9c-d360-414a-b419-7246b0bb3a4f.m4a";
-//     // const filename = fileUri.split("/").pop()!; // "recording-8143cd9c-d360-414a-b419-7246b0bb3a4f.m4a"
-//     // const mimeType = `audio/${filename.split(".").pop()}`; // "audio/m4a"
-//     //
-//     // const formData = new FormData();
-//     // formData.append("audio_file", {
-//     //   uri: fileUri,
-//     //   name: filename,
-//     //   type: mimeType,
-//     // } as any);
-//     //
-//     // console.log(attemptId);
-//     //
-//     // const url = `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}/${attemptId}/${flashcardId}`;
-//     // console.log(url);
-//     //
-//     // const response = await api.post(url);
-//     // return response.data;
-//   } catch (err) {
-//     console.error("Failed to save", err);
-//     throw err;
-//   }
-// }
-
 import { getAuth } from "@react-native-firebase/auth";
 
 export async function submitAnswer(
@@ -97,7 +44,7 @@ export async function submitAnswer(
   flashcardId: string,
   fileUri: string,
 ) {
-  const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}/${attemptId}/${flashcardId}`;
+  const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/${activityType}/${activityId}/${attemptId}`;
 
   const filename = fileUri.split("/").pop()!;
   const ext = filename.split(".").pop()!;
@@ -109,6 +56,7 @@ export async function submitAnswer(
     name: filename,
     type: mimeType,
   } as any);
+  formData.append("flashcardId", flashcardId);
 
   const token = await getAuth().currentUser?.getIdToken(true);
 
@@ -126,6 +74,8 @@ export async function submitAnswer(
     const text = await response.text();
     throw new Error(`Upload failed ${response.status}: ${text}`);
   }
+
+  console.log(response);
 
   return await response.json();
 }

@@ -10,12 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  finishActivity,
-  getActivityById,
-  startActivity,
-  submitAnswer,
-} from "@/utils/specialized";
+import { startActivity, submitAnswer } from "@/utils/specialized";
 import Recording from "@/components/trainingActivities/Recording";
 
 const Flashcards = () => {
@@ -31,7 +26,6 @@ const Flashcards = () => {
       activityId: string;
     }>();
 
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [cards, setCards] = useState<{ flashcard_id: string; word: string }[]>(
     [],
   );
@@ -41,102 +35,49 @@ const Flashcards = () => {
   const [loading, setLoading] = useState(true);
   const [attemptId, setAttemptId] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [currentCard, setCurrentCard] = useState<number>(0);
 
-  const currentCard = useMemo(() => {
-    return cards[currentCardIndex];
-  }, [cards, currentCardIndex]);
+  const handleNextCard = async () => {
+    if (!attemptId) return;
+    if (!recordingAudio) return;
 
-  const handleNext = useCallback(async () => {
-    if (!isRecording) {
-      if (currentCardIndex <= cards.length - 1) {
-        try {
-          if (!attemptId) {
-            console.error("No attemptId available");
-            return;
-          }
+    const res = await submitAnswer(
+      subjectId,
+      activityType,
+      difficulty,
+      activityId,
+      attemptId,
+      cards[currentCard].flashcard_id,
+      recordingAudio,
+    );
 
-          if (!recordingAudio) {
-            console.error("No recording audio");
-            return;
-          }
+    console.log(res);
 
-          setSubmitting(true);
-          const res = await submitAnswer(
-            subjectId,
-            activityType,
-            difficulty,
-            activityId,
-            attemptId,
-            cards[currentCardIndex].flashcard_id,
-            recordingAudio,
-          );
-
-          if (res.success) {
-            console.log("success");
-            setIsAnswered(false);
-            setCurrentCardIndex(currentCardIndex + 1);
-            setSubmitting(false);
-          }
-        } catch (err) {
-          console.error("Failed to save: " + err);
-        }
-      } else {
-        try {
-          if (attemptId) {
-            const res = await finishActivity(
-              subjectId,
-              activityType,
-              difficulty,
-              activityId,
-              attemptId,
-            );
-            if (res.success) {
-              router.push({
-                pathname: "/subject/(sub-details)/scoreDetails",
-                params: { subjectId, activityId, attemptId },
-              });
-            } else {
-              Alert.alert("failed to submit");
-            }
-          }
-        } catch (err) {
-          console.error("Failed to submit");
-        }
-      }
+    if (res.success) {
+      setCurrentCard(currentCard + 1);
+      setIsAnswered(false);
+      setSubmitting(false);
     }
-  }, [
-    router,
-    isRecording,
-    currentCardIndex,
-    attemptId,
-    recordingAudio,
-    subjectId,
-    activityType,
-    difficulty,
-    activityId,
-    cards,
-  ]);
+  };
 
   useEffect(() => {
     let isMounted = true;
     const fetchActivity = async () => {
       try {
-        const res = await getActivityById(
+        const res = await startActivity(
           subjectId,
           activityType,
           difficulty,
           activityId,
         );
 
-        const start = await startActivity(
-          subjectId,
-          activityType,
-          difficulty,
-          activityId,
-        );
-
-        setAttemptId(start.attemptId);
-        setCards(res.activities);
+        if (res.success) {
+          setAttemptId(res.attemptId);
+          setCards(res.flashcards);
+        } else {
+          Alert.alert("Failed to start the activity");
+          router.back();
+        }
 
         if (!isMounted) return;
       } catch (error) {
@@ -167,7 +108,7 @@ const Flashcards = () => {
     );
   }
 
-  if (!currentCard) {
+  if (!cards) {
     return (
       <View style={styles.container}>
         <Text>No flashcards available.</Text>
@@ -180,7 +121,7 @@ const Flashcards = () => {
       <ActivityProgress
         difficulty={difficulty}
         totalItems={cards.length}
-        completedItems={currentCardIndex}
+        completedItems={currentCard}
         instruction="Guess the picture"
       />
 
@@ -190,7 +131,7 @@ const Flashcards = () => {
           style={{ width: 90, height: 50 }}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.flashcardText}>{currentCard.word}</Text>
+          <Text style={styles.flashcardText}>{cards[currentCard].word}</Text>
         </View>
       </View>
 
@@ -214,15 +155,11 @@ const Flashcards = () => {
               ? { backgroundColor: "#FFBF18" }
               : { backgroundColor: "#E0E0E0" },
           ]}
-          onPress={handleNext}
           disabled={!isAnswered || isRecording || submitting}
+          onPress={handleNextCard}
         >
           <Text style={styles.continueButtonText}>
-            {currentCardIndex === cards.length - 1
-              ? "Submit"
-              : submitting
-                ? "Submitting..."
-                : "Continue"}
+            {submitting ? "loading...." : "Next"}
           </Text>
         </TouchableOpacity>
       </View>
