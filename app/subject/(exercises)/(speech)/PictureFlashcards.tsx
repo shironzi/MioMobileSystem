@@ -33,7 +33,7 @@ const initialData = [
   },
 ];
 
-const Picgame = () => {
+const PictureFlashcards = () => {
   HeaderConfig("Picture Flashcards");
   const router = useRouter();
 
@@ -198,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Picgame);
+export default memo(PictureFlashcards);

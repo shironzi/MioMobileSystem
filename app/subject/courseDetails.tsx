@@ -9,7 +9,7 @@ enum activityCategory {
   speech = "speech",
   auditory = "auditory",
   language = "language",
-  academics = "academics",
+  academic = "academic",
 }
 
 const courseDetails = () => {
@@ -22,8 +22,6 @@ const courseDetails = () => {
     subjectType: keyof typeof activityCategory;
     role: string;
   }>();
-
-  console.log(subjectType);
 
   HeaderConfig("Course Details");
 
@@ -40,7 +38,7 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        {subjectType !== "academics" ? (
+        {subjectType !== "academic" ? (
           <TouchableOpacity
             style={styles.link}
             onPress={useCallback(() => {
@@ -49,18 +47,21 @@ const courseDetails = () => {
                   router.push({
                     pathname:
                       "/subject/(exercises)/(speech)/speechTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 case activityCategory.auditory:
                   router.push({
                     pathname:
                       "/subject/(exercises)/(language)/languageTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 case activityCategory.language:
                   router.push({
                     pathname:
                       "/subject/(exercises)/(language)/languageTrainingExercises",
+                    params: { subjectId: id },
                   });
                   break;
                 default:
@@ -121,23 +122,6 @@ const courseDetails = () => {
           <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>
             <Text style={styles.fontSizeOne}>Assignments</Text>
-            <Entypo name="chevron-small-right" size={30} color="#CCC" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.link}
-          onPress={useCallback(
-            () =>
-              router.push({
-                pathname: "/subject/Quizzes",
-                params: { subjectId: id, role: role },
-              }),
-            [],
-          )}
-        >
-          <View style={styles.yellowBulletin}></View>
-          <View style={styles.linkDecoration}>
-            <Text style={styles.fontSizeOne}>Quiz</Text>
             <Entypo name="chevron-small-right" size={30} color="#CCC" />
           </View>
         </TouchableOpacity>

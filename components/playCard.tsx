@@ -2,24 +2,56 @@ import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-type PlayCardProps = {
+const PlayCard = (props: {
   id: number;
   label: string;
-};
-
-const PlayCard = ({ id, label }: PlayCardProps) => {
+  activityType: string;
+  difficulty: string;
+  category: string;
+  subjectId: string;
+  activityId: string;
+}) => {
   const router = useRouter();
-  return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() =>
-        router.push("/subject/(exercises)/(auditory)/MatchingCards")
+  const handleCategory = () => {
+    if (props.category === "speech") {
+      if (props.activityType === "picture_flashcards") {
+        router.push({
+          pathname: "/subject/(exercises)/(speech)/PictureFlashcards",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
       }
-    >
+
+      if (
+        props.activityType === "phrase" ||
+        props.activityType === "question" ||
+        props.activityType === "pronunciation"
+      ) {
+        router.push({
+          pathname: "/subject/(exercises)/(speech)/Flashcards",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+    }
+  };
+
+  return (
+    <TouchableOpacity style={styles.card} onPress={handleCategory}>
       <View style={styles.borderLeft}></View>
       <View style={styles.linkDecoration}>
-        <Text style={styles.cardNumber}>{id}</Text>
-        <Text style={styles.cardWord}>{label}</Text>
+        <Text style={styles.cardNumber}>{props.id + 1}</Text>
+        <Text style={styles.cardWord}>{props.label}</Text>
       </View>
     </TouchableOpacity>
   );

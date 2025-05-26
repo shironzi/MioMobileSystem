@@ -1,28 +1,82 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import PlayCard from "@/components/playCard";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-
-const data = Array.from({ length: 12 }, (_, index) => ({
-  id: index + 1,
-}));
+import globalStyles from "@/styles/globalStyles";
+import { useLocalSearchParams } from "expo-router";
+import { getActivities } from "@/utils/specialized";
 
 const Play = () => {
   HeaderConfig("Play");
 
-  const renderItem = ({ item }: { item: { id: number } }) => (
-    <PlayCard id={item.id} label="Play" />
+  const { activityType, difficulty, category, subjectId } =
+    useLocalSearchParams<{
+      subjectId: string;
+      activityType: string;
+      difficulty: string;
+      category: string;
+    }>();
+
+  const [activities, setActivities] = useState<string[]>();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const res = await getActivities(subjectId, activityType, difficulty);
+
+        setActivities(res.activities);
+        setLoading(false);
+      } catch (err) {
+        console.error("Get Activities Fetch Failed: " + err);
+      }
+    };
+
+    fetchActivities();
+  }, [subjectId, activityType, difficulty]);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading.......</Text>
+      </View>
+    );
+  }
+
+  if (!activities || activities.length === 0) {
+    return (
+      <View style={globalStyles.container}>
+        <Text>No activities found.</Text>
+      </View>
+    );
+  }
+
+  const renderItem = (item: { item: string; index: number }) => (
+    <PlayCard
+      id={item.index}
+      label="Play"
+      activityType={activityType}
+      difficulty={difficulty}
+      category={category}
+      subjectId={subjectId}
+      activityId={item.item}
+    />
   );
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Text style={styles.title}>Easy</Text>
       <FlatList
-        data={data}
+        data={activities}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item}
         numColumns={3}
-        columnWrapperStyle={styles.row}
+        columnWrapperStyle={[
+          styles.row,
+          activities.length >= 3
+            ? { justifyContent: "space-between" }
+            : { columnGap: 20 },
+        ]}
         contentContainerStyle={styles.listContainer}
         style={{ paddingHorizontal: 5 }}
       />
@@ -31,11 +85,6 @@ const Play = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 20,
-  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -46,7 +95,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   row: {
-    justifyContent: "space-between",
     marginBottom: 15,
   },
 });
