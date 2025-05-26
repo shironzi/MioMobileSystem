@@ -44,7 +44,7 @@ export async function submitAnswer(
   flashcardId: string,
   fileUri: string,
 ) {
-  const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/${activityType}/${activityId}/${attemptId}`;
+  const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
   const filename = fileUri.split("/").pop()!;
   const ext = filename.split(".").pop()!;
@@ -56,7 +56,6 @@ export async function submitAnswer(
     name: filename,
     type: mimeType,
   } as any);
-  formData.append("flashcardId", flashcardId);
 
   const token = await getAuth().currentUser?.getIdToken(true);
 
@@ -74,8 +73,6 @@ export async function submitAnswer(
     const text = await response.text();
     throw new Error(`Upload failed ${response.status}: ${text}`);
   }
-
-  console.log(response);
 
   return await response.json();
 }
