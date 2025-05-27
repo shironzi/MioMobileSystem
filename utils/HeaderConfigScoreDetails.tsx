@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import React, { useCallback } from "react";
 import { Alert, TouchableOpacity } from "react-native";
 import Feather from "@expo/vector-icons/Feather";

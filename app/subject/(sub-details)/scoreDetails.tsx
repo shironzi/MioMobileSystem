@@ -50,30 +50,6 @@ const ScoreDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: "Score",
-        headerStyle: { backgroundColor: "#2264DC" }, // don’t forget the “#”
-        headerTintColor: "#fff",
-        headerShown: true,
-
-        headerLeft: () => (
-          <TouchableOpacity
-            style={{ paddingHorizontal: 14 }}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Feather name="arrow-left" size={20} color="#fff" />
-          </TouchableOpacity>
-        ),
-
-        headerBackTitleVisible: false,
-      });
-    }, [navigation]),
-  );
-
   useEffect(() => {
     if (!subjectId || !activityId || !attemptId) return;
 
