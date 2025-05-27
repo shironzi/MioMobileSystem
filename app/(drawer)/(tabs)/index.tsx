@@ -104,7 +104,9 @@ const index = () => {
 	}
 
 	return (
-		<View style={globalStyles.container}>
+		<View
+			style={[globalStyles.container, { backgroundColor: "#fff", flex: 1 }]}
+		>
 			<View style={styles.courseContainer}>
 				<Text style={styles.courseTitle}>Subjects</Text>
 				<View style={styles.dropdownContainer}>
@@ -199,6 +201,10 @@ const styles = StyleSheet.create({
 	},
 	courseTitle: {
 		fontSize: 20,
+		fontWeight: 500,
+		marginBottom: 5,
+		left: 5,
+		// marginTop: 15,
 	},
 	dropdownContainer: {
 		width: 200,

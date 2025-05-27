@@ -3,6 +3,8 @@ import { StyleSheet } from "react-native";
 const globalStyles = StyleSheet.create({
 	container: {
 		padding: 20,
+		backgroundColor: "#fff",
+		// height: 900,
 	},
 	inputContainer: {
 		fontSize: 16,
