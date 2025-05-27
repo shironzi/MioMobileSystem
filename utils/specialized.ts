@@ -84,9 +84,6 @@ export async function finishActivity(
   activityId: string,
   attemptId: string,
 ) {
-  console.log(
-    `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}/${attemptId}`,
-  );
   try {
     const { data } = await api.patch(
       `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}/${attemptId}`,

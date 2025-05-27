@@ -1,15 +1,24 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   View,
   Text,
   ActivityIndicator,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 import { finishActivity } from "@/utils/specialized";
-import { useLocalSearchParams } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import globalStyles from "@/styles/globalStyles";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
+import Feather from "@expo/vector-icons/Feather";
+import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
+import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
 
 interface PhoneEntry {
   phone: string;
@@ -23,7 +32,8 @@ interface EvalEntry {
 }
 
 const ScoreDetails = () => {
-  HeaderConfig("Score");
+  headerConfigScoreDetails("Score Details");
+  const navigation = useNavigation();
 
   const { subjectId, activityType, difficulty, activityId, attemptId } =
     useLocalSearchParams<{
@@ -35,8 +45,34 @@ const ScoreDetails = () => {
     }>();
 
   const [evaluationsScore, setEvaluationsScore] = useState<EvalEntry[]>([]);
+  const [overallScore, setOverallScore] = useState<number>();
+  const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerTitle: "Score",
+        headerStyle: { backgroundColor: "#2264DC" }, // don’t forget the “#”
+        headerTintColor: "#fff",
+        headerShown: true,
+
+        headerLeft: () => (
+          <TouchableOpacity
+            style={{ paddingHorizontal: 14 }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Feather name="arrow-left" size={20} color="#fff" />
+          </TouchableOpacity>
+        ),
+
+        headerBackTitleVisible: false,
+      });
+    }, [navigation]),
+  );
 
   useEffect(() => {
     if (!subjectId || !activityId || !attemptId) return;
@@ -62,8 +98,9 @@ const ScoreDetails = () => {
           }),
         );
 
-        console.log(entries);
+        setTotal(entries.length * 100);
 
+        setOverallScore(res.overall_score);
         setEvaluationsScore(entries);
       } catch (err: any) {
         console.error(err);
@@ -100,29 +137,158 @@ const ScoreDetails = () => {
     );
   }
 
+  const percentage =
+    total > 0
+      ? Math.min(Math.max(((overallScore ?? 0) / total) * 100, 0), 100)
+      : 0;
+
   return (
     <ScrollView>
-      <View style={globalStyles.container}>
-        {evaluationsScore.map((entry, idx) => (
-          <View key={entry.id} style={styles.cardContainer}>
-            {/* You might want to show the word itself here, if you have it */}
-            <Text style={styles.wordTitle}>Flashcard {idx + 1}</Text>
-            {entry.phones.map((phoneEntry, i) => {
-              const { phone, sound_most_like } = phoneEntry;
-              const isCorrect = phone === sound_most_like;
-              return (
-                <Text
-                  key={i}
-                  style={isCorrect ? styles.correctText : styles.incorrectText}
-                >
-                  {isCorrect
-                    ? `Great! You pronounced “${phone}” correctly.`
-                    : `Almost! That sounded like “${sound_most_like}” instead of “${phone}.”`}
-                </Text>
-              );
-            })}
+      <View style={[globalStyles.container, { rowGap: 20 }]}>
+        <View>
+          <Text
+            style={{
+              color: "#1F1F1F",
+              lineHeight: 28,
+              fontWeight: 500,
+              fontSize: 18,
+            }}
+          >
+            {activityType === "picture" && "Picture Flashcards"}
+
+            {activityType === "pronunciation" &&
+              "ReadMe: Pronunciation Challenge"}
+
+            {activityType === "phrases" && "Phrase Flashcards"}
+
+            {activityType === "question" && "Question Flashcards"}
+          </Text>
+
+          <View>
+            <Text style={{ fontSize: 16, fontWeight: 500, lineHeight: 28 }}>
+              {difficulty}
+            </Text>
           </View>
-        ))}
+        </View>
+
+        <View style={[globalStyles.cardContainer, { paddingVertical: 25 }]}>
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Score</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+              paddingHorizontal: 20,
+            }}
+          >
+            <AnimatedCircularProgress
+              size={150}
+              width={10}
+              fill={percentage}
+              tintColor="#2264DC"
+              backgroundColor="#e7eaea"
+              rotation={0}
+              lineCap="round"
+            >
+              {(percentage: number) => (
+                <>
+                  <Text style={{ fontSize: 24, color: "#1F1F1F" }}>
+                    {(overallScore ?? 0) / 100}
+                  </Text>
+                  <Text>Points</Text>
+                </>
+              )}
+            </AnimatedCircularProgress>
+            <Text>Out of {total / 100} points</Text>
+          </View>
+        </View>
+
+        <View style={[globalStyles.cardContainer, { rowGap: 10 }]}>
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Feedback</Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={require("@/assets/images/face/red.png")}
+              style={
+                percentage < 40
+                  ? styles.feedbackIconSelectedStyle
+                  : styles.feedbackIconStyle
+              }
+            />
+
+            <Image
+              source={require("@/assets/images/face/yellow.png")}
+              style={
+                percentage >= 40 && percentage < 60
+                  ? styles.feedbackIconSelectedStyle
+                  : styles.feedbackIconStyle
+              }
+            />
+
+            <Image
+              source={require("@/assets/images/face/blue.png")}
+              style={
+                percentage >= 60 && percentage < 85
+                  ? styles.feedbackIconSelectedStyle
+                  : styles.feedbackIconStyle
+              }
+            />
+
+            <Image
+              source={require("@/assets/images/face/green.png")}
+              style={
+                percentage >= 85
+                  ? styles.feedbackIconSelectedStyle
+                  : styles.feedbackIconStyle
+              }
+            />
+          </View>
+          <Text
+            style={{
+              paddingHorizontal: 20,
+              textAlign: "center",
+              color: "#1F1F1F",
+              fontSize: 16,
+              lineHeight: 28,
+            }}
+          >
+            Great effort! Keep practicing and paying attention to details—you're
+            getting better! Try again and see if you can improve your score.
+            You're on the right track!
+          </Text>
+        </View>
+
+        {/*
+
+        FOR TEACHER ONLY
+
+        */}
+
+        {/*{evaluationsScore.map((entry, idx) => (*/}
+        {/*  <View key={entry.id} style={styles.cardContainer}>*/}
+        {/*    <Text style={styles.wordTitle}>Flashcard {idx + 1}</Text>*/}
+        {/*    {entry.phones.map((phoneEntry, i) => {*/}
+        {/*      const { phone, sound_most_like } = phoneEntry;*/}
+        {/*      const isCorrect = phone === sound_most_like;*/}
+        {/*      return (*/}
+        {/*        <Text*/}
+        {/*          key={i}*/}
+        {/*          style={isCorrect ? styles.correctText : styles.incorrectText}*/}
+        {/*        >*/}
+        {/*          {isCorrect*/}
+        {/*            ? `Great! You pronounced “${phone}” correctly.`*/}
+        {/*            : `Almost! That sounded like “${sound_most_like}” instead of “${phone}.”`}*/}
+        {/*        </Text>*/}
+        {/*      );*/}
+        {/*    })}*/}
+        {/*  </View>*/}
+        {/*))}*/}
       </View>
     </ScrollView>
   );
@@ -134,7 +300,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
     borderRadius: 8,
-    // ...any other card styling
   },
   wordTitle: {
     fontSize: 18,
@@ -151,6 +316,19 @@ const styles = StyleSheet.create({
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { color: "red" },
+
+  feedbackIconStyle: {
+    width: "20%",
+    height: 80,
+    resizeMode: "contain",
+  },
+
+  feedbackIconSelectedStyle: {
+    width: "30%",
+    paddingHorizontal: 10,
+    height: 120,
+    resizeMode: "contain",
+  },
 });
 
 export default memo(ScoreDetails);

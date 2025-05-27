@@ -1,7 +1,6 @@
 import ActivityProgress from "@/components/activityProgress";
-import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -10,16 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  finishActivity,
-  startActivity,
-  submitAnswer,
-} from "@/utils/specialized";
+import { startActivity, submitAnswer } from "@/utils/specialized";
 import Recording from "@/components/trainingActivities/Recording";
+import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 
 const Flashcards = () => {
-  HeaderConfig("Flashcards");
   const router = useRouter();
+
+  HeaderConfigQuiz("Flashcards");
 
   const { subjectId, difficulty, activityType, category, activityId } =
     useLocalSearchParams<{
@@ -55,14 +52,12 @@ const Flashcards = () => {
       recordingAudio,
     );
 
-    console.log(res);
-
     if (currentCard === cards.length - 1) {
-      console.log("submitting");
       router.push({
         pathname: "/subject/(sub-details)/scoreDetails",
         params: { subjectId, activityType, difficulty, activityId, attemptId },
       });
+
       return;
     }
 

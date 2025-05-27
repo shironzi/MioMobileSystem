@@ -14,7 +14,7 @@ const PlayCard = (props: {
   const router = useRouter();
   const handleCategory = () => {
     if (props.category === "speech") {
-      if (props.activityType === "picture_flashcards") {
+      if (props.activityType === "picture") {
         router.push({
           pathname: "/subject/(exercises)/(speech)/PictureFlashcards",
           params: {
