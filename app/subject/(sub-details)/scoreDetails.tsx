@@ -1,4 +1,3 @@
-import ScoreDetailsCard from "@/components/ScoreDetailsCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -8,52 +7,67 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native";
-import { getActivityScore } from "@/utils/specialized";
+import { finishActivity } from "@/utils/specialized";
 import { useLocalSearchParams } from "expo-router";
+import globalStyles from "@/styles/globalStyles";
 
-type ScoreEntry = {
-  word: string;
-  pronunciation_score: number;
-};
+interface PhoneEntry {
+  phone: string;
+  quality_score: number;
+  sound_most_like: string;
+}
+
+interface EvalEntry {
+  id: string;
+  phones: PhoneEntry[];
+}
 
 const ScoreDetails = () => {
   HeaderConfig("Score");
 
-  const { subjectId, activityId, attemptId } = useLocalSearchParams<{
-    subjectId: string;
-    activityId: string;
-    attemptId: string;
-  }>();
+  const { subjectId, activityType, difficulty, activityId, attemptId } =
+    useLocalSearchParams<{
+      subjectId: string;
+      activityType: string;
+      difficulty: string;
+      activityId: string;
+      attemptId: string;
+    }>();
 
-  const [average, setAverage] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
-  const [flashcardScores, setFlashcardScores] = useState<ScoreEntry[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [evaluationsScore, setEvaluationsScore] = useState<EvalEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!subjectId || !activityId || !attemptId) return;
 
     const fetchScores = async () => {
+      setLoading(true);
       try {
-        const res = await getActivityScore(subjectId, activityId, attemptId);
-
-        if (res.success) {
-          setAverage(res.average);
-          setTotal(res.totalItems);
-
-          const scores: ScoreEntry[] = Object.values(res.detailedScores).map(
-            (entry: any) => ({
-              word: entry.word,
-              pronunciation_score: entry.pronunciation_score,
-            }),
-          );
-
-          setFlashcardScores(scores);
-        } else {
-          console.error("Failed to load scores:", res);
+        const res = await finishActivity(
+          subjectId,
+          activityType,
+          difficulty,
+          activityId,
+          attemptId,
+        );
+        if (!res.success) {
+          throw new Error(res.error || "Failed to load scores");
         }
-      } catch (err) {
-        console.error("Fetch scores error:", err);
+
+        const entries: EvalEntry[] = Object.entries(res.scores || {}).map(
+          ([id, data]: [string, any]) => ({
+            id,
+            phones: data.phones ?? [],
+          }),
+        );
+
+        console.log(entries);
+
+        setEvaluationsScore(entries);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || "Unexpected error");
       } finally {
         setLoading(false);
       }
@@ -70,45 +84,73 @@ const ScoreDetails = () => {
     );
   }
 
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (evaluationsScore.length === 0) {
+    return (
+      <View style={styles.center}>
+        <Text>No score data available.</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView>
-      <View style={styles.container}>
-        {flashcardScores.length === 0 ? (
-          <Text>No scores available.</Text>
-        ) : (
-          flashcardScores.map((fc, idx) => (
-            <ScoreDetailsCard
-              key={idx}
-              title={fc.word}
-              difficulty="" // or pass real difficulty if you have it
-              actNo={`Attempt ${attemptId}`}
-              attemptNo={`Card ${idx + 1}/${flashcardScores.length}`}
-              score={fc.pronunciation_score}
-              totalQuestion={total}
-              comments={[
-                {
-                  id: idx,
-                  word: `Pronunciation: ${fc.pronunciation_score}`,
-                },
-              ]}
-            />
-          ))
-        )}
+      <View style={globalStyles.container}>
+        {evaluationsScore.map((entry, idx) => (
+          <View key={entry.id} style={styles.cardContainer}>
+            {/* You might want to show the word itself here, if you have it */}
+            <Text style={styles.wordTitle}>Flashcard {idx + 1}</Text>
+            {entry.phones.map((phoneEntry, i) => {
+              const { phone, sound_most_like } = phoneEntry;
+              const isCorrect = phone === sound_most_like;
+              return (
+                <Text
+                  key={i}
+                  style={isCorrect ? styles.correctText : styles.incorrectText}
+                >
+                  {isCorrect
+                    ? `Great! You pronounced “${phone}” correctly.`
+                    : `Almost! That sounded like “${sound_most_like}” instead of “${phone}.”`}
+                </Text>
+              );
+            })}
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  cardContainer: {
+    marginBottom: 24,
     padding: 16,
-    marginBottom: 70,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    // ...any other card styling
   },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  wordTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
   },
+  correctText: {
+    color: "green",
+    marginBottom: 4,
+  },
+  incorrectText: {
+    color: "red",
+    marginBottom: 4,
+  },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  errorText: { color: "red" },
 });
 
 export default memo(ScoreDetails);

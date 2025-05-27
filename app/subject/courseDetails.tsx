@@ -15,13 +15,22 @@ enum activityCategory {
 const courseDetails = () => {
   const router = useRouter();
 
-  const { id, description, title, subjectType, role } = useLocalSearchParams<{
+  // const { id, description, title, subjectType, role } = useLocalSearchParams<{
+  //   id: string;
+  //   title: string;
+  //   description: string;
+  //   subjectType: keyof typeof activityCategory;
+  //   role: string;
+  // }>();
+
+  const { id, description, title, role } = useLocalSearchParams<{
     id: string;
     title: string;
     description: string;
-    subjectType: keyof typeof activityCategory;
     role: string;
   }>();
+
+  const subjectType = activityCategory.speech;
 
   HeaderConfig("Course Details");
 
@@ -38,59 +47,58 @@ const courseDetails = () => {
         </View>
       </View>
       <View style={styles.linksContainer}>
-        {subjectType !== "academic" ? (
-          <TouchableOpacity
-            style={styles.link}
-            onPress={useCallback(() => {
-              switch (subjectType) {
-                case activityCategory.speech:
-                  router.push({
-                    pathname:
-                      "/subject/(exercises)/(speech)/speechTrainingExercises",
-                    params: { subjectId: id },
-                  });
-                  break;
-                case activityCategory.auditory:
-                  router.push({
-                    pathname:
-                      "/subject/(exercises)/(language)/languageTrainingExercises",
-                    params: { subjectId: id },
-                  });
-                  break;
-                case activityCategory.language:
-                  router.push({
-                    pathname:
-                      "/subject/(exercises)/(language)/languageTrainingExercises",
-                    params: { subjectId: id },
-                  });
-                  break;
-                default:
-                  router.push("/subject/courseDetails");
+        {/*{subjectType !== "academic" ? (*/}
+        <TouchableOpacity
+          style={styles.link}
+          onPress={useCallback(() => {
+            // switch (subjectType) {
+            //   case activityCategory.speech:
+            router.push({
+              pathname: "/subject/(exercises)/(speech)/speechTrainingExercises",
+              params: { subjectId: id },
+            });
+            //     break;
+            //   case activityCategory.auditory:
+            //     router.push({
+            //       pathname:
+            //         "/subject/(exercises)/(language)/languageTrainingExercises",
+            //       params: { subjectId: id },
+            //     });
+            //     break;
+            //   case activityCategory.language:
+            //     router.push({
+            //       pathname:
+            //         "/subject/(exercises)/(language)/languageTrainingExercises",
+            //       params: { subjectId: id },
+            //     });
+            //     break;
+            //   default:
+            //     router.push("/subject/courseDetails");
+            // }
+          }, [router])}
+        >
+          <View style={styles.linkContent}>
+            <Image
+              source={
+                subjectType === activityCategory.speech
+                  ? require("@/assets/icons/speech.png")
+                  : subjectType === activityCategory.auditory
+                    ? require("@/assets/icons/auditory.png")
+                    : subjectType === activityCategory.language
+                      ? require("@/assets/icons/language.png")
+                      : null
               }
-            }, [router])}
-          >
-            <View style={styles.linkContent}>
-              <Image
-                source={
-                  subjectType === activityCategory.speech
-                    ? require("@/assets/icons/speech.png")
-                    : subjectType === activityCategory.auditory
-                      ? require("@/assets/icons/auditory.png")
-                      : subjectType === activityCategory.language
-                        ? require("@/assets/icons/language.png")
-                        : null
-                }
-                style={{ width: 37, height: 37 }}
-              />
-              <View style={styles.linkTextContainer}>
-                <Text style={styles.fontSizeOne}>
-                  {subjectType} Training Exercises
-                </Text>
-                <Entypo name="chevron-small-right" size={30} color="#CCC" />
-              </View>
+              style={{ width: 37, height: 37 }}
+            />
+            <View style={styles.linkTextContainer}>
+              <Text style={styles.fontSizeOne}>
+                {subjectType} Training Exercises
+              </Text>
+              <Entypo name="chevron-small-right" size={30} color="#CCC" />
             </View>
-          </TouchableOpacity>
-        ) : null}
+          </View>
+        </TouchableOpacity>
+        {/*) : null}*/}
         <TouchableOpacity
           style={styles.link}
           onPress={useCallback(

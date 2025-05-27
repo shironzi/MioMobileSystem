@@ -59,7 +59,10 @@ const Flashcards = () => {
 
     if (currentCard === cards.length - 1) {
       console.log("submitting");
-
+      router.push({
+        pathname: "/subject/(sub-details)/scoreDetails",
+        params: { subjectId, activityType, difficulty, activityId, attemptId },
+      });
       return;
     }
 
