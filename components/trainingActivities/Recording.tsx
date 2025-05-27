@@ -54,7 +54,6 @@ const Recording = (props: {
     await audioRecorder.stop();
 
     const recordingUri = audioRecorder.uri;
-    console.log(audioRecorder.getStatus());
     props.onStop(recordingUri);
     setIsRecording(false);
   };
@@ -66,10 +65,6 @@ const Recording = (props: {
         Alert.alert("Permission to access microphone was denied");
       }
     })();
-
-    // return () => {
-    //   if (timerRef.current) clearTimeout(timerRef.current);
-    // };
   }, []);
 
   return (

@@ -10,7 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { startActivity, submitAnswer } from "@/utils/specialized";
+import {
+  finishActivity,
+  startActivity,
+  submitAnswer,
+} from "@/utils/specialized";
 import Recording from "@/components/trainingActivities/Recording";
 
 const Flashcards = () => {
@@ -52,6 +56,12 @@ const Flashcards = () => {
     );
 
     console.log(res);
+
+    if (currentCard === cards.length - 1) {
+      console.log("submitting");
+
+      return;
+    }
 
     if (res.success) {
       setCurrentCard(currentCard + 1);
