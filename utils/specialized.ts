@@ -7,7 +7,7 @@ export async function getActivities(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}`,
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}`,
     );
 
     return data;
@@ -24,7 +24,7 @@ export async function startActivity(
 ) {
   try {
     const { data } = await api.post(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}`,
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
     );
 
     return data;
@@ -44,37 +44,41 @@ export async function submitAnswer(
   flashcardId: string,
   fileUri: string,
 ) {
-  const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+  try {
+    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
-  const filename = fileUri.split("/").pop()!;
-  const ext = filename.split(".").pop()!;
-  const mimeType = `audio/${ext}`;
+    const filename = fileUri.split("/").pop()!;
+    const ext = filename.split(".").pop()!;
+    const mimeType = `audio/${ext}`;
 
-  const formData = new FormData();
-  formData.append("audio_file", {
-    uri: fileUri,
-    name: filename,
-    type: mimeType,
-  } as any);
+    const formData = new FormData();
+    formData.append("audio_file", {
+      uri: fileUri,
+      name: filename,
+      type: mimeType,
+    } as any);
 
-  const token = await getAuth().currentUser?.getIdToken(true);
+    const token = await getAuth().currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: formData,
-  });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Upload failed ${response.status}: ${text}`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Upload failed ${response.status}: ${text}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error(err);
   }
-
-  return await response.json();
 }
 
 export async function finishActivity(
@@ -86,27 +90,11 @@ export async function finishActivity(
 ) {
   try {
     const { data } = await api.patch(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}/${attemptId}`,
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
     );
 
     return data;
   } catch (err) {
     console.error("Submit Activity Failed: " + err);
-  }
-}
-
-export async function getActivityScore(
-  subjectId: string,
-  activityId: string,
-  attemptId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activityId}/${attemptId}`,
-    );
-
-    return data;
-  } catch (err) {
-    console.error("Get Activity Scores Failed" + err);
   }
 }
