@@ -60,7 +60,7 @@ const ScoresScreen = () => {
     return selectedCategory === "all"
       ? data
       : data.filter((item) => item.category === selectedCategory);
-  }, [data, selectedCategory]);
+  }, [selectedCategory]);
 
   const handleSelect = useCallback((value: scoreType | "all") => {
     setSelectedCategory(value);
