@@ -50,7 +50,7 @@ const data = [
 
 const ScoresScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState<scoreType | "all">(
-    "all"
+    "all",
   );
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -60,7 +60,7 @@ const ScoresScreen = () => {
     return selectedCategory === "all"
       ? data
       : data.filter((item) => item.category === selectedCategory);
-  }, [data, selectedCategory]);
+  }, [selectedCategory]);
 
   const handleSelect = useCallback((value: scoreType | "all") => {
     setSelectedCategory(value);

@@ -1,8 +1,8 @@
 import { api } from "@/utils/apiClient";
 
-export async function getSubjects(gradeLevel: string) {
+export async function getSubjects() {
   try {
-    const { data } = await api.get(`/subjects?gradeLevel=${gradeLevel}`);
+    const { data } = await api.get(`/subjects`);
 
     return data;
   } catch (err) {

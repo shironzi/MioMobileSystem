@@ -69,7 +69,7 @@ const AnswerQuizCard = (props: {
 
       {props.type === "multiple_choice" && (
         <View>
-          {props.choices.map((choice, index) => (
+          {props.choices.map((choice) => (
             <View>
               <TouchableOpacity
                 onPress={() => handleAnswer(choice)}

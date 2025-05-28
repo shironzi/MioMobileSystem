@@ -19,7 +19,6 @@ type Module = {
 };
 
 const ModulesScreen = () => {
-  const router = useRouter();
   const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
 
   const [moduleList, setModuleList] = useState<Module[]>([]);
@@ -79,8 +78,6 @@ const ModulesScreen = () => {
   );
 };
 
-export default memo(ModulesScreen);
-
 const styles = StyleSheet.create({
   container: {
     height: "100%",
@@ -98,3 +95,5 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+export default memo(ModulesScreen);

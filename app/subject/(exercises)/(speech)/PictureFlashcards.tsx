@@ -24,11 +24,10 @@ const PictureFlashcards = () => {
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activityType, category, activityId } =
+  const { subjectId, difficulty, activityType, activityId } =
     useLocalSearchParams<{
       activityType: string;
       difficulty: string;
-      category: string;
       subjectId: string;
       activityId: string;
     }>();

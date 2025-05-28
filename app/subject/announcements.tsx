@@ -1,12 +1,10 @@
 import AnnounceCard from "@/components/AnnounceCard";
-import Fab from "@/components/fab";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAnnouncements, getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
-  Modal,
   ScrollView,
   StyleSheet,
   Text,

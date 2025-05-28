@@ -102,7 +102,7 @@ const Calendar = () => {
       setSelectedDate(newDate);
       setWeekDates(calculateWeekDates(newDate));
     },
-    [weekDates, calculateWeekDates]
+    [weekDates, calculateWeekDates],
   );
 
   const handleMonthChange = useCallback(() => {
@@ -110,13 +110,13 @@ const Calendar = () => {
       selectedDate.setFullYear(
         selectedDate.getFullYear(),
         months.indexOf(value),
-        selectedDate.getDate()
-      )
+        selectedDate.getDate(),
+      ),
     );
 
     setSelectedDate(newDate);
     setWeekDates(calculateWeekDates(newDate));
-  }, [selectedDate]);
+  }, [selectedDate, value, calculateWeekDates]);
 
   return (
     <View style={{ padding: 20 }}>
@@ -215,7 +215,7 @@ const Calendar = () => {
                 </Text>
               </View>
             </View>
-          )
+          ),
         )
       ) : (
         <Text>No available activity</Text>

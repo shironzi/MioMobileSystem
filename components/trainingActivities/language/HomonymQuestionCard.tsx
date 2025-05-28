@@ -15,7 +15,7 @@ const HomonymQuestionCard = (props: {
         label: choice,
         value: choice,
       })),
-    [props.choices]
+    [props.choices],
   );
 
   const [selectedAnswers, setSelectedAnswers] = useState<
@@ -23,7 +23,7 @@ const HomonymQuestionCard = (props: {
   >({});
 
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
 
   const handleToggleDropdown = useCallback((key: string, isOpen: boolean) => {
@@ -45,7 +45,7 @@ const HomonymQuestionCard = (props: {
         return updated;
       });
     },
-    [props.onAnswerChange]
+    [props],
   );
 
   const handleAudioPlay = () => {
@@ -83,7 +83,7 @@ const HomonymQuestionCard = (props: {
                       value={selectedAnswers[dropdownKey]}
                       setValue={(callback) => {
                         const newValue = callback(
-                          selectedAnswers[dropdownKey] || null
+                          selectedAnswers[dropdownKey] || null,
                         );
                         handleSelect(dropdownKey, newValue as string);
                       }}

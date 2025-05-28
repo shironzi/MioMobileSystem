@@ -10,6 +10,7 @@ const CourseCard = (props: {
   courseImage: any;
   description: string;
   subjectType: string;
+  specializedType: string | null;
   role: string | null;
 }) => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const CourseCard = (props: {
             title: props.courseTitle,
             subjectType: props.subjectType,
             role: props.role,
+            specializedType: props.specializedType,
           },
         })
       }
