@@ -48,7 +48,7 @@ const courseDetails = () => {
                 case "auditory":
                   router.push({
                     pathname:
-                      "/subject/(exercises)/(language)/languageTrainingExercises",
+                      "/subject/(exercises)/(auditory)/auditoryTrainingExercise",
                     params: { subjectId: id },
                   });
                   break;
@@ -79,7 +79,7 @@ const courseDetails = () => {
               />
               <View style={styles.linkTextContainer}>
                 <Text style={styles.fontSizeOne}>
-                  {subjectType} Training Exercises
+                  {specializedType} Training Exercises
                 </Text>
                 <Entypo name="chevron-small-right" size={30} color="#CCC" />
               </View>

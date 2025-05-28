@@ -44,6 +44,34 @@ const PlayCard = (props: {
         });
       }
     }
+
+    if (props.category === "auditory") {
+      if (props.activityType === "bingo") {
+        router.push({
+          pathname: "/subject/(exercises)/(auditory)/bingo",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+
+      if (props.activityType === "matching") {
+        router.push({
+          pathname: "/subject/(exercises)/(auditory)/MatchingCards",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+    }
   };
 
   return (
