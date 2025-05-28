@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -6,18 +6,11 @@ import {
   Text,
   ActivityIndicator,
   Image,
-  TouchableOpacity,
 } from "react-native";
 import { finishActivity } from "@/utils/specialized";
-import {
-  useFocusEffect,
-  useLocalSearchParams,
-  useNavigation,
-} from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import Feather from "@expo/vector-icons/Feather";
-import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
 
 interface PhoneEntry {
@@ -33,7 +26,6 @@ interface EvalEntry {
 
 const ScoreDetails = () => {
   headerConfigScoreDetails("Score Details");
-  const navigation = useNavigation();
 
   const { subjectId, activityType, difficulty, activityId, attemptId } =
     useLocalSearchParams<{
@@ -74,7 +66,7 @@ const ScoreDetails = () => {
           }),
         );
 
-        setTotal(entries.length * 100);
+        setTotal(100);
 
         setOverallScore(res.overall_score);
         setEvaluationsScore(entries);
@@ -169,13 +161,13 @@ const ScoreDetails = () => {
               {(percentage: number) => (
                 <>
                   <Text style={{ fontSize: 24, color: "#1F1F1F" }}>
-                    {(overallScore ?? 0) / 100}
+                    {overallScore ?? 0}
                   </Text>
                   <Text>Points</Text>
                 </>
               )}
             </AnimatedCircularProgress>
-            <Text>Out of {total / 100} points</Text>
+            <Text>Out of {total} points</Text>
           </View>
         </View>
 
