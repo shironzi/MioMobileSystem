@@ -9,7 +9,7 @@ interface BingoCardProps {
 
 const BingoCard: React.FC<BingoCardProps> = ({ image, isMatched, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
-    <Image source={image} style={styles.image} />
+    <Image source={{ uri: image }} style={styles.image} />
     {isMatched && (
       <View style={styles.overlay}>
         <Image
@@ -24,14 +24,13 @@ const BingoCard: React.FC<BingoCardProps> = ({ image, isMatched, onPress }) => (
 
 const styles = StyleSheet.create({
   card: {
-    width: 110,
+    width: "30%",
     height: 115,
-    marginHorizontal: 5,
-    marginVertical: 5,
     padding: 5,
     borderRadius: 20,
     backgroundColor: "#fff",
     elevation: 5,
+    margin: 5,
   },
   image: {
     width: "100%",

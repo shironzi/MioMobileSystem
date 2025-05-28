@@ -1,5 +1,5 @@
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -8,13 +8,24 @@ const auditoryTrainingExercise = () => {
 
   HeaderConfig("Auditory Training Exercises");
 
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+
   return (
     <View style={styles.courseContainer}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
+            onPress={() =>
+              router.push({
+                pathname: "/subject/(exercises)/level",
+                params: {
+                  subjectId: subjectId,
+                  activity: "bingo",
+                  category: "auditory",
+                },
+              })
+            }
           >
             <Image
               source={require("@/assets/icons/Collectibles.png")}
@@ -29,7 +40,16 @@ const auditoryTrainingExercise = () => {
         <View style={styles.gridItem}>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
+            onPress={() =>
+              router.push({
+                pathname: "/subject/(exercises)/level",
+                params: {
+                  subjectId: subjectId,
+                  activity: "matching",
+                  category: "auditory",
+                },
+              })
+            }
           >
             <Image
               source={require("@/assets/icons/Red_Card.png")}
