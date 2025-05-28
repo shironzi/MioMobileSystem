@@ -91,7 +91,7 @@ const PictureFlashcards = () => {
         }
 
         const app = getApp();
-        const storage = getStorage(app, "gs://miolms.firebasestorage.app");
+        const storage = getStorage(app);
 
         const flashcards = await Promise.all(
           Object.values(res.flashcards).map(async (card: any) => {
