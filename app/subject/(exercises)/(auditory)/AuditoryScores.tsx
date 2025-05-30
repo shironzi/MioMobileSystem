@@ -5,25 +5,14 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Image,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
+import ScoreFeedback from "@/components/ScoreFeedback";
 
-interface PhoneEntry {
-  phone: string;
-  quality_score: number;
-  sound_most_like: string;
-}
-
-interface EvalEntry {
-  id: string;
-  phones: PhoneEntry[];
-}
-
-const ViewScores = () => {
+const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
 
   const { score, totalScore, activityType, difficulty } = useLocalSearchParams<{
@@ -36,7 +25,6 @@ const ViewScores = () => {
   const [loading, setLoading] = useState(true);
   const [overallScore, setOverallScore] = useState(0);
   const [total, setTotal] = useState(0);
-  const [evaluationsScore, setEvaluationsScore] = useState<EvalEntry[]>([]);
 
   useEffect(() => {
     const s = Number(score ?? 0);
@@ -67,6 +55,7 @@ const ViewScores = () => {
             {activityType === "phrases" && "Phrase Flashcards"}
             {activityType === "question" && "Question Flashcards"}
             {activityType === "bingo" && "Bingo Cards"}
+            {activityType === "matching" && "Matching Cards"}
           </Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
         </View>
@@ -94,48 +83,7 @@ const ViewScores = () => {
           </View>
         </View>
 
-        <View style={[globalStyles.cardContainer, { rowGap: 10 }]}>
-          <Text style={styles.sectionTitle}>Feedback</Text>
-          <View style={styles.feedbackRow}>
-            <Image
-              source={require("@/assets/images/face/red.png")}
-              style={
-                percentage < 40
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-            <Image
-              source={require("@/assets/images/face/yellow.png")}
-              style={
-                percentage >= 40 && percentage < 60
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-            <Image
-              source={require("@/assets/images/face/blue.png")}
-              style={
-                percentage >= 60 && percentage < 85
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-            <Image
-              source={require("@/assets/images/face/green.png")}
-              style={
-                percentage >= 85
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-          </View>
-          <Text style={styles.feedbackText}>
-            Great effort! Keep practicing and paying attention to details—you're
-            getting better! Try again and see if you can improve your score.
-            You're on the right track!
-          </Text>
-        </View>
+        <ScoreFeedback percentage={percentage} />
       </View>
     </ScrollView>
   );
@@ -216,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ViewScores);
+export default memo(AuditoryScores);
