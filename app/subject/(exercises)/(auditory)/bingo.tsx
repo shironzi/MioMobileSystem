@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import { submitAuditoryActivity, takeAuditoryActivity } from "@/utils/auditory";
+import { submitBingoActivity, takeAuditoryActivity } from "@/utils/auditory";
 import { getApp } from "@react-native-firebase/app";
 import {
   getDownloadURL,
@@ -32,25 +32,18 @@ const bingo = () => {
     }>();
 
   const [activityData, setActivityData] = useState<
-    {
-      image_no: number;
-      image_path: string;
-      answer: string | null;
-    }[]
-  >([]);
-  const [result, setResult] = useState<
-    { image_no: number; is_correct: boolean }[]
+    { image_id: string; image_url: string }[]
   >([]);
   const [audioFiles, setAudioFiles] = useState<string[]>([]);
   const [currentAudio, setCurrentAudio] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>();
-  const [matchedIds, setMatchedIds] = useState<number[]>([]);
+  const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   const player = useAudioPlayer();
 
-  const handleCardPress = (image_no: number): void => {
+  const handleCardPress = (image_no: string): void => {
     if (!matchedIds.includes(image_no)) {
       setMatchedIds([...matchedIds, image_no]);
     }
@@ -61,28 +54,20 @@ const bingo = () => {
       if (!attemptId) return;
 
       const payload = {
-        activity: activityData.map((card) => ({
-          image_no: card.image_no,
-          answer: matchedIds.includes(card.image_no) ? "true" : "false",
-        })),
+        answers: matchedIds.map((image_id) => ({ image_id })),
       };
 
-      const res = await submitAuditoryActivity(
+      const res = await submitBingoActivity(
         subjectId,
-        activityType,
         difficulty,
         activityId,
         attemptId,
         payload,
       );
 
-      console.log(res);
-
       if (res.success) {
-        setResult(res.results);
-
         router.push({
-          pathname: "/subject/(exercises)/(auditory)/ViewScores",
+          pathname: "/subject/(exercises)/(auditory)/AuditoryScores",
           params: {
             score: res.score,
             totalScore: activityData.length,
@@ -103,11 +88,14 @@ const bingo = () => {
 
     player.play();
 
+    setIsPlaying(false);
     if (currentAudio >= audioFiles.length - 1) {
       setCurrentAudio(0);
     } else {
       setCurrentAudio(currentAudio + 1);
     }
+
+    setIsPlaying(false);
   }, [player, currentAudio, audioFiles]);
 
   useEffect(() => {
@@ -129,32 +117,15 @@ const bingo = () => {
         const app = getApp();
         const storage = getStorage(app);
 
-        const cardsWithUrls = await Promise.all(
-          res.activity.map(
-            async (card: {
-              image_no: number;
-              image_path: string;
-              answer: string | null;
-            }) => {
-              const imageRef = ref(storage, card.image_path);
-              const imageUrl = await getDownloadURL(imageRef);
-              return {
-                ...card,
-                image_path: imageUrl,
-              };
-            },
-          ),
-        );
-
         const audioCards = await Promise.all(
-          res.audio_files.map(
-            async (file: { audio_files: string }) =>
-              await getDownloadURL(ref(storage, file.audio_files)),
+          res.audio_paths.map(
+            async (file: { audio_path: string }) =>
+              await getDownloadURL(ref(storage, file.audio_path)),
           ),
         );
 
         if (isMounted) {
-          setActivityData(cardsWithUrls);
+          setActivityData(res.items);
           setAudioFiles(audioCards);
           setLoading(false);
         }
@@ -195,9 +166,9 @@ const bingo = () => {
         numColumns={3}
         renderItem={({ item }) => (
           <BingoCard
-            image={item.image_path}
-            isMatched={matchedIds.includes(item.image_no)}
-            onPress={() => handleCardPress(item.image_no)}
+            image={item.image_url}
+            isMatched={matchedIds.includes(item.image_id)}
+            onPress={() => handleCardPress(item.image_id)}
           />
         )}
       />
@@ -225,10 +196,7 @@ const bingo = () => {
         ]}
         disabled={isPlaying}
       >
-        <Text style={styles.nextText}>
-          {/*{currentIndex < activityData.length - 1 ? "Next" : "Submit"}*/}
-          Submit
-        </Text>
+        <Text style={styles.nextText}>Submit</Text>
       </TouchableOpacity>
     </View>
   );

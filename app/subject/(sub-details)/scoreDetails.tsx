@@ -12,6 +12,7 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
+import ScoreFeedback from "@/components/ScoreFeedback";
 
 interface PhoneEntry {
   phone: string;
@@ -158,7 +159,7 @@ const ScoreDetails = () => {
               rotation={0}
               lineCap="round"
             >
-              {(percentage: number) => (
+              {() => (
                 <>
                   <Text style={{ fontSize: 24, color: "#1F1F1F" }}>
                     {overallScore ?? 0}
@@ -171,66 +172,7 @@ const ScoreDetails = () => {
           </View>
         </View>
 
-        <View style={[globalStyles.cardContainer, { rowGap: 10 }]}>
-          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Feedback</Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("@/assets/images/face/red.png")}
-              style={
-                percentage < 40
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-
-            <Image
-              source={require("@/assets/images/face/yellow.png")}
-              style={
-                percentage >= 40 && percentage < 60
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-
-            <Image
-              source={require("@/assets/images/face/blue.png")}
-              style={
-                percentage >= 60 && percentage < 85
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-
-            <Image
-              source={require("@/assets/images/face/green.png")}
-              style={
-                percentage >= 85
-                  ? styles.feedbackIconSelectedStyle
-                  : styles.feedbackIconStyle
-              }
-            />
-          </View>
-          <Text
-            style={{
-              paddingHorizontal: 20,
-              textAlign: "center",
-              color: "#1F1F1F",
-              fontSize: 16,
-              lineHeight: 28,
-            }}
-          >
-            Great effort! Keep practicing and paying attention to details—you're
-            getting better! Try again and see if you can improve your score.
-            You're on the right track!
-          </Text>
-        </View>
+        <ScoreFeedback percentage={percentage} />
 
         {/*
 
@@ -284,19 +226,6 @@ const styles = StyleSheet.create({
   },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { color: "red" },
-
-  feedbackIconStyle: {
-    width: "20%",
-    height: 80,
-    resizeMode: "contain",
-  },
-
-  feedbackIconSelectedStyle: {
-    width: "30%",
-    paddingHorizontal: 10,
-    height: 120,
-    resizeMode: "contain",
-  },
 });
 
 export default memo(ScoreDetails);

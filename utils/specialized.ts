@@ -47,9 +47,15 @@ export async function submitAnswer(
   try {
     const url = `http://192.168.254.169:8001/api/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
+    const mimeMap: Record<string, string> = {
+      mp3: "audio/mpeg",
+      m4a: "audio/mp4",
+      webm: "audio/webm",
+    };
+
     const filename = fileUri.split("/").pop()!;
     const ext = filename.split(".").pop()!;
-    const mimeType = `audio/${ext}`;
+    const mimeType = mimeMap[ext] || `audio/${ext}`;
 
     const formData = new FormData();
     formData.append("audio_file", {

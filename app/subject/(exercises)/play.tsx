@@ -65,7 +65,7 @@ const Play = () => {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={styles.title}>Easy</Text>
+      <Text style={styles.title}>{difficulty}</Text>
       <FlatList
         data={activities}
         renderItem={renderItem}

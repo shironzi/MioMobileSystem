@@ -14,7 +14,7 @@ const Recording = (props: {
   onStop: (uri: string | null) => void;
 }) => {
   RecordingPresets.HIGH_QUALITY = {
-    extension: ".wav",
+    extension: ".mp3",
     sampleRate: 44100,
     numberOfChannels: 2,
     bitRate: 128000,

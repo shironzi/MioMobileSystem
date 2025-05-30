@@ -22,11 +22,11 @@ export async function submitBingoActivity(
   difficulty: string,
   activityId: string,
   attemptId: string,
-  payload: { activity: { image_no: number; answer: string }[] },
+  payload: { answers: { image_id: string }[] },
 ) {
   try {
     const { data } = await api.patch(
-      `/subject/${subjectId}/auditory/Bingo/${difficulty}/${activityId}/${attemptId}`,
+      `/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
       payload,
     );
 
