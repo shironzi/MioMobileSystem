@@ -57,6 +57,8 @@ const PictureFlashcards = () => {
       recordingAudio,
     );
 
+    console.log(res);
+
     if (currentCard === cards.length - 1) {
       router.push({
         pathname: "/subject/(sub-details)/scoreDetails",
