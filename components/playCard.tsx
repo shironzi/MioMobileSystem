@@ -72,6 +72,47 @@ const PlayCard = (props: {
         });
       }
     }
+
+    if (props.category === "language") {
+      if (props.activityType === "fill") {
+        router.push({
+          pathname: "/subject/(exercises)/(language)/fillInTheBlank",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+
+      if (props.activityType === "talk2me") {
+        router.push({
+          pathname: "/subject/(exercises)/(language)/talk2Me",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+
+      if (props.activityType === "homonyms") {
+        router.push({
+          pathname: "/subject/(exercises)/(language)/Homonyms",
+          params: {
+            subjectId: props.subjectId,
+            activityType: props.activityType,
+            difficulty: props.difficulty,
+            category: props.category,
+            activityId: props.activityId,
+          },
+        });
+      }
+    }
   };
 
   return (

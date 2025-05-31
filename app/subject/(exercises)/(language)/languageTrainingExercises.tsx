@@ -1,21 +1,52 @@
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const SpeechTrainingExercise = () => {
   const router = useRouter();
-
   HeaderConfig("Language Training Exercise");
+
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+
+  const handleFillRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: {
+        subjectId: subjectId,
+        activity: "fill",
+        category: "language",
+      },
+    });
+  };
+
+  const handleHomonymsRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: {
+        subjectId: subjectId,
+        activity: "homonyms",
+        category: "language",
+      },
+    });
+  };
+
+  const handleTalk2MeRoute = () => {
+    router.push({
+      pathname: "/subject/(exercises)/level",
+      params: {
+        subjectId: subjectId,
+        activity: "talk2me",
+        category: "language",
+      },
+    });
+  };
 
   return (
     <View style={styles.courseContainer}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleFillRoute}>
             <Image
               source={require("@/assets/icons/Speaker_Notes.png")}
               style={styles.icon}
@@ -27,10 +58,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleTalk2MeRoute}>
             <Image
               source={require("@/assets/icons/Technology_Lifestyle.png")}
               style={styles.icon}
@@ -42,10 +70,7 @@ const SpeechTrainingExercise = () => {
         </View>
 
         <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push("/subject/(exercises)/level")}
-          >
+          <TouchableOpacity style={styles.card} onPress={handleHomonymsRoute}>
             <Image
               source={require("@/assets/icons/homonyms.png")}
               style={styles.icon}
