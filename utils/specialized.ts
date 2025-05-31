@@ -7,7 +7,7 @@ export async function getActivities(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}`,
+      `/subject/${subjectId}/specialized/${activityType}/${difficulty}`,
     );
 
     return data;
@@ -54,8 +54,7 @@ export async function submitAnswer(
     };
 
     const filename = fileUri.split("/").pop()!;
-    const ext = filename.split(".").pop()!;
-    const mimeType = mimeMap[ext] || `audio/${ext}`;
+    const mimeType = "audio/mpeg";
 
     const formData = new FormData();
     formData.append("audio_file", {
