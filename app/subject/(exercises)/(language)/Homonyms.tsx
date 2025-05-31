@@ -1,167 +1,330 @@
 import ActivityProgress from "@/components/activityProgress";
-import HomonymQuestionCard from "@/components/trainingActivities/language/HomonymQuestionCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useRouter } from "expo-router";
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-const Data = [
-  {
-    questions: [
-      "Let's BLANK tomorrow to finalize the details. Let's tomorrow to finalize the details.",
-      "I want to buy fresh BLANK for the barbecue.",
-    ],
-    choices: ["meet", "meat"],
-  },
-  {
-    questions: [
-      "The BLANK is shining brightly today.",
-      "I need to BLANK this letter to my friend.",
-    ],
-    choices: ["sun", "son"],
-  },
-  {
-    questions: [
-      "She will BLANK the gift with a beautiful ribbon.",
-      "We took a walk around the BLANK.",
-    ],
-    choices: ["wrap", "rap"],
-  },
-  {
-    questions: [
-      "The BLANK of the story was very exciting.",
-      "I need to BLANK the package before sending it.",
-    ],
-    choices: ["plot", "knot"],
-  },
-  {
-    questions: [
-      "The BLANK is too high to climb.",
-      "I will BLANK the letter to my friend tomorrow.",
-    ],
-    choices: ["mail", "male"],
-  },
-  {
-    questions: [
-      "The BLANK is grazing in the field.",
-      "I need to BLANK the fabric for my project.",
-    ],
-    choices: ["shear", "sheer"],
-  },
-  {
-    questions: [
-      "The BLANK is barking loudly.",
-      "We will BLANK the boat at the dock.",
-    ],
-    choices: ["bark", "park"],
-  },
-  {
-    questions: [
-      "The BLANK is flying high in the sky.",
-      "I need to BLANK the table before dinner.",
-    ],
-    choices: ["plane", "plain"],
-  },
-  {
-    questions: [
-      "The BLANK is flowing gently through the valley.",
-      "I need to BLANK the movie before it starts.",
-    ],
-    choices: ["stream", "scream"],
-  },
-  {
-    questions: [
-      "The BLANK is very sharp and can cut easily.",
-      "I will BLANK the rope to secure the package.",
-    ],
-    choices: ["tie", "die"],
-  },
-];
+import {
+  startHomonymsActivity,
+  submitHomonymsActivity,
+} from "@/utils/language";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
+import globalStyles from "@/styles/globalStyles";
+import { getApp } from "@react-native-firebase/app";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+} from "@react-native-firebase/storage";
+import { useAudioPlayer } from "expo-audio";
 
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const router = useRouter();
-  const [currentItemIndex, setCurrentItemIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { subjectId, activityType, difficulty, category, activityId } =
+    useLocalSearchParams<{
+      subjectId: string;
+      activityType: string;
+      difficulty: string;
+      category: string;
+      activityId: string;
+    }>();
 
-  const currentItem = useMemo(
-    () => Data[currentItemIndex] || { questions: [], choices: [] },
-    [currentItemIndex]
-  );
+  const [activity, setActivity] = useState<
+    { sentence: string; sentence_id: string; audio_path: string }[][]
+  >([]);
+  const [choices, setChoices] = useState<string[][]>([]);
+  const [itemId, setItemId] = useState<string[]>([]);
+  const [attemptId, setAttemptId] = useState<string>();
+  const [currentItem, setCurrentItem] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [answers, setAnswers] = useState<
+    { item_id: string; answers: { sentence_id: string; answer: string }[] }[]
+  >([]);
 
-  const totalBlanks = useMemo(
-    () =>
-      currentItem.questions.reduce(
-        (count, sentence) => count + (sentence.match(/BLANK/g) || []).length,
-        0
-      ),
-    [currentItem]
-  );
+  const handleAnswer = (answer: string, sentence_id: string) => {
+    setAnswers((prevAnswers) => {
+      const currentItemKey = itemId[currentItem];
 
-  const isAnswered = useMemo(
-    () => Object.keys(answers).length < totalBlanks,
-    [answers, totalBlanks]
-  );
+      const existingIndex = prevAnswers.findIndex(
+        (entry) => entry.item_id === currentItemKey,
+      );
 
-  const handleNext = useCallback(() => {
-    setCurrentItemIndex((prevIndex) => {
-      if (prevIndex < Data.length - 1) {
-        return prevIndex + 1;
+      if (existingIndex !== -1) {
+        const updatedAnswers = [...prevAnswers];
+        const existingAnswers = updatedAnswers[existingIndex].answers;
+
+        const sentenceIndex = existingAnswers.findIndex(
+          (a) => a.sentence_id === sentence_id,
+        );
+
+        if (sentenceIndex !== -1) {
+          existingAnswers[sentenceIndex].answer = answer;
+        } else {
+          existingAnswers.push({ sentence_id, answer });
+        }
+
+        return updatedAnswers;
       } else {
-        router.push({
-          pathname: "/subject/(sub-details)/scoreDetails",
-        });
-        return prevIndex;
+        return [
+          ...prevAnswers,
+          {
+            item_id: currentItemKey,
+            answers: [{ sentence_id, answer }],
+          },
+        ];
       }
     });
-  }, [router]);
+  };
 
-  const handleAnswerChange = useCallback(
-    (updatedAnswers: Record<string, string>) => {
-      setAnswers((prevAnswers) => ({
-        ...prevAnswers,
-        ...updatedAnswers,
-      }));
-    },
-    []
-  );
+  const player = useAudioPlayer();
 
-  const handleAudioPlay = useCallback(() => {
-    setIsPlaying((prev) => !prev);
+  const handleAudioPlay = async (index: number) => {
+    player.remove();
+    const app = getApp();
+    const storage = getStorage(app);
+
+    const localUri = await getDownloadURL(
+      ref(storage, activity[currentItem][index].audio_path),
+    );
+
+    if (!localUri) {
+      console.warn("No preloaded audio found.");
+      return;
+    }
+
+    player.replace({ uri: localUri });
+
+    setTimeout(() => {
+      player.play();
+    }, 200); // 200ms is usually enough, or tweak as needed
+  };
+
+  const [emptyInput, setEmptyInput] = useState<boolean>(false);
+
+  const handleNext = async () => {
+    const isLastItem = currentItem >= activity.length - 1;
+    const currentAnswers = answers.find(
+      (a) => a.item_id === itemId[currentItem],
+    );
+
+    const hasIncomplete = activity[currentItem].some((sentence) => {
+      return !currentAnswers?.answers?.some(
+        (a) => a.sentence_id === sentence.sentence_id && a.answer.trim() !== "",
+      );
+    });
+
+    if (hasIncomplete) {
+      setEmptyInput(true);
+      return;
+    }
+
+    if (isLastItem) {
+      if (!attemptId) {
+        console.error("No Attempt ID");
+        return;
+      }
+
+      try {
+        const res = await submitHomonymsActivity(
+          subjectId,
+          difficulty,
+          activityId,
+          attemptId,
+          answers,
+        );
+
+        if (res.success) {
+          router.push({
+            pathname: "/subject/(exercises)/AuditoryScores",
+            params: {
+              score: res.score,
+              totalItems: activity[currentItem].length * activity.length,
+              activity: activityType,
+              difficulty: difficulty,
+            },
+          });
+        } else {
+          console.error("Unable to submit", res);
+        }
+      } catch (err) {
+        console.error("Submission error:", err);
+      }
+
+      return;
+    }
+
+    setCurrentItem((prev) => prev + 1);
+    setEmptyInput(false);
+  };
+
+  useEffect(() => {
+    const fetchActivity = async () => {
+      const res = await startHomonymsActivity(
+        subjectId,
+        difficulty,
+        activityId,
+      );
+
+      const ids: string[] = [];
+      const acts: any[][] = [];
+      const chs: string[][] = [];
+
+      await Promise.all(
+        Object.entries(res.activity).map(async ([id, data]: [string, any]) => {
+          ids.push(id);
+          acts.push(data.homonyms);
+          chs.push(data.choices);
+        }),
+      );
+      setAttemptId(res.attempt_id);
+      setItemId(ids);
+      setActivity(acts);
+      setChoices(chs);
+      setCurrentItem(0);
+      setLoading(false);
+    };
+
+    fetchActivity();
   }, []);
 
-  const getButtonStyle = useMemo(() => {
-    return isAnswered && !isPlaying
-      ? styles.disabledButton
-      : styles.activeButton;
-  }, [isAnswered, isPlaying]);
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading.......</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <View style={styles.questionsContainer}>
         <ActivityProgress
           difficulty="Easy"
-          totalItems={Data.length}
-          completedItems={currentItemIndex}
+          totalItems={activity.length}
+          completedItems={currentItem}
           instruction="Guess the picture"
         />
-        <HomonymQuestionCard
-          question={currentItem.questions}
-          choices={currentItem.choices}
-          onAnswerChange={handleAnswerChange}
-          onAudioPlay={handleAudioPlay}
-        />
+
+        <View style={{ width: "120%" }}>
+          {activity[currentItem].map((value, index) => {
+            const words = value.sentence.split(" ");
+
+            return (
+              <View
+                key={index}
+                style={{
+                  marginBottom: 20,
+                  columnGap: 20,
+                  flexDirection: "row",
+                  borderWidth: 1,
+                  borderColor: "#00000024",
+                  padding: 9,
+                  marginHorizontal: 40,
+                  borderRadius: 20,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#FFBF18",
+                    padding: 20,
+                    borderRadius: 15,
+                  }}
+                  onPress={() => handleAudioPlay(index)}
+                >
+                  <FontAwesome6 name="volume-high" size={25} color="#fff" />
+                </TouchableOpacity>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    marginVertical: "auto",
+                    maxWidth: "75%",
+                  }}
+                >
+                  {words.map((word, i) => {
+                    if (word === "_____") {
+                      return (
+                        <View
+                          key={`picker-${i}`}
+                          style={[
+                            {
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              marginRight: 10,
+                              marginLeft: 5,
+                              flexDirection: "row",
+                              alignItems: "center",
+                            },
+                            emptyInput
+                              ? { borderColor: "red" }
+                              : { borderColor: "#00000024" },
+                          ]}
+                        >
+                          <Text style={{ position: "absolute", left: 10 }}>
+                            {answers
+                              .find((a) => a.item_id === itemId[currentItem])
+                              ?.answers.find(
+                                (ans) => ans.sentence_id === value.sentence_id,
+                              )?.answer || ""}
+                          </Text>
+                          <Picker
+                            selectedValue={
+                              answers
+                                .find((a) => a.item_id === itemId[currentItem])
+                                ?.answers.find(
+                                  (ans) =>
+                                    ans.sentence_id === value.sentence_id,
+                                )?.answer || ""
+                            }
+                            placeholder={"hello"}
+                            dropdownIconColor={"#FFBF19"}
+                            style={{
+                              width: 125,
+                              height: 30,
+                            }}
+                            onValueChange={(itemValue) =>
+                              handleAnswer(itemValue, value.sentence_id)
+                            }
+                            mode={"dropdown"}
+                          >
+                            {choices[currentItem].map((choice) => (
+                              <Picker.Item
+                                label={choice}
+                                value={choice}
+                                key={choice}
+                              />
+                            ))}
+                          </Picker>
+                        </View>
+                      );
+                    } else {
+                      return (
+                        <Text
+                          key={`word-${i}`}
+                          style={{ marginRight: 5, fontSize: 16 }}
+                        >
+                          {word}
+                        </Text>
+                      );
+                    }
+                  })}
+                </View>
+              </View>
+            );
+          })}
+        </View>
 
         <View style={{ width: "100%" }}>
           <TouchableOpacity
             onPress={handleNext}
-            style={[styles.button, getButtonStyle]}
-            disabled={isAnswered && !isPlaying}
+            style={[styles.button, globalStyles.submitButton]}
+            // disabled={isAnswered && !isPlaying}
           >
             <Text style={styles.buttonText}>
-              {currentItemIndex < Data.length - 1 ? "Continue" : "Submit"}
+              {currentItem < activity.length - 1 ? "Continue" : "Submit"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -200,4 +363,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Homonyms);
+export default Homonyms;
