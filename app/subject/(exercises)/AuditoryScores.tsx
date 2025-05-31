@@ -15,9 +15,9 @@ import ScoreFeedback from "@/components/ScoreFeedback";
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { score, totalScore, activityType, difficulty } = useLocalSearchParams<{
+  const { score, totalItems, activityType, difficulty } = useLocalSearchParams<{
     score: string;
-    totalScore: string;
+    totalItems: string;
     activityType: string;
     difficulty: string;
   }>();
@@ -28,11 +28,11 @@ const AuditoryScores = () => {
 
   useEffect(() => {
     const s = Number(score ?? 0);
-    const t = Number(totalScore ?? 0);
+    const t = Number(totalItems ?? 0);
     setOverallScore(s);
     setTotal(t);
     setLoading(false);
-  }, [score, totalScore]);
+  }, [score, totalItems]);
 
   const percentage = total > 0 ? (overallScore / total) * 100 : 0;
 
