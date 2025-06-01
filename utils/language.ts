@@ -53,3 +53,24 @@ export async function submitHomonymsActivity(
     console.error("Take Activity Failed");
   }
 }
+
+export async function submitFillActivity(
+  subjectId: string,
+  difficulty: string,
+  activityId: string,
+  attemptId: string,
+  payload: { item_id: string; sentence: string }[],
+) {
+  try {
+    console.log(payload);
+
+    const { data } = await api.patch(
+      `/subject/${subjectId}/language/fill/${difficulty}/${activityId}/${attemptId}`,
+      { answers: payload },
+    );
+
+    return data;
+  } catch (err) {
+    console.error("Take Activity Failed");
+  }
+}

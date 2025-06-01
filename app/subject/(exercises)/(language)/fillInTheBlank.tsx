@@ -1,18 +1,14 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import ActivityProgress from "@/components/activityProgress";
 import globalStyles from "@/styles/globalStyles";
-import { useLocalSearchParams } from "expo-router";
-import { startFillActivity } from "@/utils/language";
+import { router, useLocalSearchParams } from "expo-router";
+import { startFillActivity, submitFillActivity } from "@/utils/language";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useAudioPlayer } from "expo-audio";
 
 const fillInTheBlank = () => {
   HeaderConfig("Fill in the Blank");
@@ -27,7 +23,7 @@ const fillInTheBlank = () => {
     }>();
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [attemptId, setAttemptId] = useState<string[]>([]);
+  const [attemptId, setAttemptId] = useState<string>();
   const [activity, setActivity] = useState<
     { sentence: string; audio_path: string }[]
   >([]);
@@ -37,10 +33,38 @@ const fillInTheBlank = () => {
     { item_id: string; sentence: string }[]
   >([]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (currentItem >= activity.length - 1) {
-      console.log("submit");
-      console.log(answers);
+      try {
+        if (!attemptId) {
+          console.error("Attempt id is empty");
+          return;
+        }
+
+        const res = await submitFillActivity(
+          subjectId,
+          difficulty,
+          activityId,
+          attemptId,
+          answers,
+        );
+
+        if (res.success) {
+          router.push({
+            pathname: "/subject/(exercises)/AuditoryScores",
+            params: {
+              score: res.score,
+              totalItems: activity.length,
+              activity: activityType,
+              difficulty: difficulty,
+            },
+          });
+        } else {
+          console.error("Unable to submit", res);
+        }
+      } catch (err) {
+        console.error("failed to submit: " + err);
+      }
       return;
     }
 
@@ -78,6 +102,16 @@ const fillInTheBlank = () => {
     [itemId, currentItem],
   );
 
+  const player = useAudioPlayer();
+
+  const handleAudioPlay = async () => {
+    await player.seekTo(0);
+    if (player.isLoaded) {
+      player.play();
+      console.log(player.isBuffering);
+    }
+  };
+
   useEffect(() => {
     const fetchActivity = async () => {
       const res = await startFillActivity(subjectId, difficulty, activityId);
@@ -91,12 +125,19 @@ const fillInTheBlank = () => {
       });
 
       setAttemptId(res.attempt_id);
-
       setLoading(false);
+
+      setCurrentItem(0);
     };
 
     fetchActivity();
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    player.replace({ uri: activity[currentItem].audio_path });
+    player.pause();
+  }, [currentItem, loading]);
 
   if (loading) {
     return (
@@ -114,6 +155,16 @@ const fillInTheBlank = () => {
         completedItems={currentItem}
         instruction="Guess the picture"
       />
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#FFBF18",
+          padding: 20,
+          borderRadius: 15,
+        }}
+        onPress={handleAudioPlay}
+      >
+        <FontAwesome6 name="volume-high" size={25} color="#fff" />
+      </TouchableOpacity>
 
       <FillInTheBlanks
         key={currentItem}

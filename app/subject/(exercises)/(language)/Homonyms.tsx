@@ -121,7 +121,7 @@ const Homonyms = () => {
 
     if (isLastItem) {
       if (!attemptId) {
-        console.error("No Attempt ID");
+        console.error("Attempt id is empty");
         return;
       }
 
