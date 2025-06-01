@@ -13,7 +13,6 @@ api.interceptors.request.use(
     if (sessionId) {
       if (!config.headers) config.headers = {};
       config.headers.Authorization = `Bearer ${sessionId}`;
-      config.headers.Accept = "application/json";
     }
     return config;
   },
