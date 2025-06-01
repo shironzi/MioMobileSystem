@@ -5,21 +5,25 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const PlayCard = (props: {
   id: number;
   label: string;
-  activityType: string;
+  activity_type: string;
   difficulty: string;
   category: string;
   subjectId: string;
   activityId: string;
+  role: string;
 }) => {
   const router = useRouter();
   const handleCategory = () => {
     if (props.category === "speech") {
-      if (props.activityType === "picture") {
+      if (props.activity_type === "picture") {
         router.push({
-          pathname: "/subject/(exercises)/(speech)/PictureFlashcards",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/(exercises)/(speech)/AddSpeechTrainingExercise"
+              : "/subject/(exercises)/(speech)/PictureFlashcards",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -28,15 +32,18 @@ const PlayCard = (props: {
       }
 
       if (
-        props.activityType === "phrase" ||
-        props.activityType === "question" ||
-        props.activityType === "pronunciation"
+        props.activity_type === "phrase" ||
+        props.activity_type === "question" ||
+        props.activity_type === "pronunciation"
       ) {
         router.push({
-          pathname: "/subject/(exercises)/(speech)/Flashcards",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/(exercises)/(speech)/AddSpeechTrainingExercise"
+              : "/subject/(exercises)/(speech)/Flashcards",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -46,12 +53,12 @@ const PlayCard = (props: {
     }
 
     if (props.category === "auditory") {
-      if (props.activityType === "bingo") {
+      if (props.activity_type === "bingo") {
         router.push({
           pathname: "/subject/(exercises)/(auditory)/bingo",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activityType: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -59,12 +66,12 @@ const PlayCard = (props: {
         });
       }
 
-      if (props.activityType === "matching") {
+      if (props.activity_type === "matching") {
         router.push({
           pathname: "/subject/(exercises)/(auditory)/MatchingCards",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activityType: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -74,12 +81,12 @@ const PlayCard = (props: {
     }
 
     if (props.category === "language") {
-      if (props.activityType === "fill") {
+      if (props.activity_type === "fill") {
         router.push({
           pathname: "/subject/(exercises)/(language)/fillInTheBlank",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activityType: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -87,12 +94,12 @@ const PlayCard = (props: {
         });
       }
 
-      if (props.activityType === "talk2me") {
+      if (props.activity_type === "talk2me") {
         router.push({
           pathname: "/subject/(exercises)/(language)/talk2Me",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activityType: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -100,12 +107,12 @@ const PlayCard = (props: {
         });
       }
 
-      if (props.activityType === "homonyms") {
+      if (props.activity_type === "homonyms") {
         router.push({
           pathname: "/subject/(exercises)/(language)/Homonyms",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activityType,
+            activityType: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,

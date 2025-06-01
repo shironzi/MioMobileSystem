@@ -18,15 +18,15 @@ const Flashcards = () => {
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activityType, activityId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
     }>();
 
-  const [cards, setCards] = useState<{ flashcard_id: string; word: string }[]>(
+  const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
     [],
   );
   const [isRecording, setIsRecording] = useState(false);
@@ -43,7 +43,7 @@ const Flashcards = () => {
 
     const res = await submitAnswer(
       subjectId,
-      activityType,
+      activity_type,
       difficulty,
       activityId,
       attemptId,
@@ -54,7 +54,7 @@ const Flashcards = () => {
     if (currentCard === cards.length - 1) {
       router.push({
         pathname: "/subject/(sub-details)/scoreDetails",
-        params: { subjectId, activityType, difficulty, activityId, attemptId },
+        params: { subjectId, activity_type, difficulty, activityId, attemptId },
       });
 
       return;
@@ -73,7 +73,7 @@ const Flashcards = () => {
       try {
         const res = await startActivity(
           subjectId,
-          activityType,
+          activity_type,
           difficulty,
           activityId,
         );
@@ -138,7 +138,7 @@ const Flashcards = () => {
           style={{ width: 90, height: 50 }}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.flashcardText}>{cards[currentCard].word}</Text>
+          <Text style={styles.flashcardText}>{cards[currentCard].text}</Text>
         </View>
       </View>
 

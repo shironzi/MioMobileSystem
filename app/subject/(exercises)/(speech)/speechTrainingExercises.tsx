@@ -2,18 +2,28 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import globalStyles from "@/styles/globalStyles";
 
 const SpeechTrainingExercise = () => {
   const router = useRouter();
 
   HeaderConfig("Speech Training Exercises");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
 
   const handlePictureRoute = () => {
     router.push({
       pathname: "/subject/(exercises)/level",
-      params: { subjectId: subjectId, activity: "picture", category: "speech" },
+      params: {
+        subjectId: subjectId,
+        activity_type: "picture",
+        category: "speech",
+        role: role,
+      },
     });
   };
 
@@ -22,8 +32,9 @@ const SpeechTrainingExercise = () => {
       pathname: "/subject/(exercises)/level",
       params: {
         subjectId: subjectId,
-        activity: "question",
+        activity_type: "question",
         category: "speech",
+        role: role,
       },
     });
   };
@@ -31,7 +42,12 @@ const SpeechTrainingExercise = () => {
   const handlePhraseRoute = () => {
     router.push({
       pathname: "/subject/(exercises)/level",
-      params: { subjectId: subjectId, activity: "phrase", category: "speech" },
+      params: {
+        subjectId: subjectId,
+        activity_type: "phrase",
+        category: "speech",
+        role: role,
+      },
     });
   };
 
@@ -40,14 +56,22 @@ const SpeechTrainingExercise = () => {
       pathname: "/subject/(exercises)/level",
       params: {
         subjectId: subjectId,
-        activity: "pronunciation",
+        activity_type: "pronunciation",
         category: "speech",
+        role: role,
       },
     });
   };
 
+  const handleAdd = () => {
+    router.push({
+      pathname: "/subject/(exercises)/(speech)/AddSpeechTrainingExercise",
+      params: { subjectId: subjectId },
+    });
+  };
+
   return (
-    <View style={styles.courseContainer}>
+    <View style={[globalStyles.container, { flex: 1 }]}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
           <TouchableOpacity style={styles.card} onPress={handlePictureRoute}>
@@ -100,19 +124,17 @@ const SpeechTrainingExercise = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {role === "teacher" && (
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  courseContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
   courseTitle: {
     fontSize: 20,
   },
@@ -140,7 +162,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: "100%",
     justifyContent: "space-between",
-    marginTop: 20,
   },
   gridItem: {
     width: "48%",
@@ -163,6 +184,18 @@ const styles = StyleSheet.create({
   icon: {
     width: 60,
     height: 60,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
 });
 

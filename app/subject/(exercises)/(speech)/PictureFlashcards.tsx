@@ -24,9 +24,9 @@ const PictureFlashcards = () => {
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activityType, activityId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
@@ -49,7 +49,7 @@ const PictureFlashcards = () => {
 
     const res = await submitAnswer(
       subjectId,
-      activityType,
+      activity_type,
       difficulty,
       activityId,
       attemptId,
@@ -57,12 +57,10 @@ const PictureFlashcards = () => {
       recordingAudio,
     );
 
-    console.log(res);
-
     if (currentCard === cards.length - 1) {
       router.push({
         pathname: "/subject/(sub-details)/scoreDetails",
-        params: { subjectId, activityType, difficulty, activityId, attemptId },
+        params: { subjectId, activity_type, difficulty, activityId, attemptId },
       });
 
       return;
@@ -82,7 +80,7 @@ const PictureFlashcards = () => {
       try {
         const res = await startActivity(
           subjectId,
-          activityType,
+          activity_type,
           difficulty,
           activityId,
         );

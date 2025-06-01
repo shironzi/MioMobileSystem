@@ -7,10 +7,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const level = () => {
   const router = useRouter();
 
-  const { activity, category, subjectId } = useLocalSearchParams<{
-    activity: string;
+  const { activity_type, category, subjectId, role } = useLocalSearchParams<{
+    activity_type: string;
     category: string;
     subjectId: string;
+    role: string;
   }>();
 
   HeaderConfig("Levels");
@@ -20,9 +21,10 @@ const level = () => {
       pathname: "/subject/(exercises)/play",
       params: {
         subjectId: subjectId,
-        activityType: activity,
+        activity_type: activity_type,
         difficulty: "easy",
         category: category,
+        role: role,
       },
     });
 
@@ -31,9 +33,10 @@ const level = () => {
       pathname: "/subject/(exercises)/play",
       params: {
         subjectId: subjectId,
-        activityType: activity,
+        activity_type: activity_type,
         difficulty: "Average",
         category: category,
+        role: role,
       },
     });
 
@@ -42,9 +45,10 @@ const level = () => {
       pathname: "/subject/(exercises)/play",
       params: {
         subjectId: subjectId,
-        activityType: activity,
+        activity_type: activity_type,
         difficulty: "Difficult",
         category: category,
+        role: role,
       },
     });
 
@@ -53,9 +57,10 @@ const level = () => {
       pathname: "/subject/(exercises)/play",
       params: {
         subjectId: subjectId,
-        activityType: activity,
+        activity_type: activity_type,
         difficulty: "Challenge",
         category: category,
+        role: role,
       },
     });
 

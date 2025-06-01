@@ -9,12 +9,13 @@ import { getActivities } from "@/utils/specialized";
 const Play = () => {
   HeaderConfig("Play");
 
-  const { activityType, difficulty, category, subjectId } =
+  const { activity_type, difficulty, category, subjectId, role } =
     useLocalSearchParams<{
       subjectId: string;
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       category: string;
+      role: string;
     }>();
 
   const [activities, setActivities] = useState<string[]>();
@@ -23,7 +24,7 @@ const Play = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const res = await getActivities(subjectId, activityType, difficulty);
+        const res = await getActivities(subjectId, activity_type, difficulty);
 
         setActivities(res.activities);
         setLoading(false);
@@ -33,7 +34,7 @@ const Play = () => {
     };
 
     fetchActivities();
-  }, [subjectId, activityType, difficulty]);
+  }, [subjectId, activity_type, difficulty]);
 
   if (loading) {
     return (
@@ -55,11 +56,12 @@ const Play = () => {
     <PlayCard
       id={item.index}
       label="Play"
-      activityType={activityType}
+      activity_type={activity_type}
       difficulty={difficulty}
       category={category}
       subjectId={subjectId}
       activityId={item.item}
+      role={role}
     />
   );
 

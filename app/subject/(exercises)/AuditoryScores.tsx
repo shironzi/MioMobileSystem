@@ -15,12 +15,13 @@ import ScoreFeedback from "@/components/ScoreFeedback";
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { score, totalItems, activityType, difficulty } = useLocalSearchParams<{
-    score: string;
-    totalItems: string;
-    activityType: string;
-    difficulty: string;
-  }>();
+  const { score, totalItems, activity_type, difficulty } =
+    useLocalSearchParams<{
+      score: string;
+      totalItems: string;
+      activity_type: string;
+      difficulty: string;
+    }>();
 
   const [loading, setLoading] = useState(true);
   const [overallScore, setOverallScore] = useState(0);
@@ -49,13 +50,13 @@ const AuditoryScores = () => {
       <View style={[globalStyles.container, { rowGap: 20 }]}>
         <View>
           <Text style={styles.title}>
-            {activityType === "picture" && "Picture Flashcards"}
-            {activityType === "pronunciation" &&
+            {activity_type === "picture" && "Picture Flashcards"}
+            {activity_type === "pronunciation" &&
               "ReadMe: Pronunciation Challenge"}
-            {activityType === "phrases" && "Phrase Flashcards"}
-            {activityType === "question" && "Question Flashcards"}
-            {activityType === "bingo" && "Bingo Cards"}
-            {activityType === "matching" && "Matching Cards"}
+            {activity_type === "phrases" && "Phrase Flashcards"}
+            {activity_type === "question" && "Question Flashcards"}
+            {activity_type === "bingo" && "Bingo Cards"}
+            {activity_type === "matching" && "Matching Cards"}
           </Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
         </View>

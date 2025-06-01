@@ -28,10 +28,10 @@ interface EvalEntry {
 const ScoreDetails = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { subjectId, activityType, difficulty, activityId, attemptId } =
+  const { subjectId, activity_type, difficulty, activityId, attemptId } =
     useLocalSearchParams<{
       subjectId: string;
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       activityId: string;
       attemptId: string;
@@ -51,7 +51,7 @@ const ScoreDetails = () => {
       try {
         const res = await finishActivity(
           subjectId,
-          activityType,
+          activity_type,
           difficulty,
           activityId,
           attemptId,
@@ -123,14 +123,14 @@ const ScoreDetails = () => {
               fontSize: 18,
             }}
           >
-            {activityType === "picture" && "Picture Flashcards"}
+            {activity_type === "picture" && "Picture Flashcards"}
 
-            {activityType === "pronunciation" &&
+            {activity_type === "pronunciation" &&
               "ReadMe: Pronunciation Challenge"}
 
-            {activityType === "phrases" && "Phrase Flashcards"}
+            {activity_type === "phrases" && "Phrase Flashcards"}
 
-            {activityType === "question" && "Question Flashcards"}
+            {activity_type === "question" && "Question Flashcards"}
           </Text>
 
           <View>

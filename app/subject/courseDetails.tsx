@@ -42,27 +42,27 @@ const courseDetails = () => {
                   router.push({
                     pathname:
                       "/subject/(exercises)/(speech)/speechTrainingExercises",
-                    params: { subjectId: id },
+                    params: { subjectId: id, role: role },
                   });
                   break;
                 case "auditory":
                   router.push({
                     pathname:
                       "/subject/(exercises)/(auditory)/auditoryTrainingExercise",
-                    params: { subjectId: id },
+                    params: { subjectId: id, role: role },
                   });
                   break;
                 case "language":
                   router.push({
                     pathname:
                       "/subject/(exercises)/(language)/languageTrainingExercises",
-                    params: { subjectId: id },
+                    params: { subjectId: id, role: role },
                   });
                   break;
                 default:
                   router.push("/subject/courseDetails");
               }
-            }, [router, specializedType, id])}
+            }, [router, specializedType, id, role])}
           >
             <View style={styles.linkContent}>
               <Image
