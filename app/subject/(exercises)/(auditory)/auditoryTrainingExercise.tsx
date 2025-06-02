@@ -2,15 +2,25 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 const auditoryTrainingExercise = () => {
   const router = useRouter();
 
   HeaderConfig("Auditory Training Exercises");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{ subjectId: string, role:string }>();
+
+  const handleAdd = () => {
+    router.push({
+      pathname: "/subject/(exercises)/(auditory)/AddAuditoryActivity",
+      params: { subjectId: subjectId },
+    });
+  };
 
   return (
+
+      <View style={{flex: 1}}>
     <View style={styles.courseContainer}>
       <View style={styles.gridContainer}>
         <View style={styles.gridItem}>
@@ -62,6 +72,13 @@ const auditoryTrainingExercise = () => {
         </View>
       </View>
     </View>
+
+        {role === "teacher" && (
+            <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+              <MaterialIcon name="add" size={30} color="#fff" />
+            </TouchableOpacity>
+        )}
+      </View>
   );
 };
 
@@ -128,6 +145,18 @@ const styles = StyleSheet.create({
   icon: {
     width: 60,
     height: 60,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
 });
 

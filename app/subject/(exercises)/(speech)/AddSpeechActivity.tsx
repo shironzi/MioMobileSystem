@@ -29,7 +29,7 @@ interface FileInfo {
   mimeType?: string;
 }
 
-const AddSpeechTrainingExercise = () => {
+const AddSpeechActivity = () => {
   useHeaderConfig("Add Speech Activity");
 
   const { subjectId, activity_type, difficulty, category, activityId } =
@@ -665,4 +665,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(AddSpeechTrainingExercise);
+export default memo(AddSpeechActivity);
