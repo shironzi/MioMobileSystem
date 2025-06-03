@@ -1,27 +1,38 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Dimensions,
   Image,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { router, useLocalSearchParams } from "expo-router";
-import { submitMatchingActivity, takeAuditoryActivity } from "@/utils/auditory";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-} from "@react-native-firebase/storage";
-import { getApp } from "@react-native-firebase/app";
+import { createMatchingActivity } from "@/utils/auditory";
 import globalStyles from "@/styles/globalStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
 import { useAudioPlayer } from "expo-audio";
 
 const { width, height } = Dimensions.get("window");
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
+interface Items {
+  id: string;
+  file: FileInfo | null;
+  image_path: string | null;
+}
+
+interface Audio {
+  audio_path: string | null;
+  audio: FileInfo | null;
+}
 
 interface Connection {
   x1: number;
@@ -41,36 +52,29 @@ interface ImageRef {
   y: number;
 }
 
-const MatchingCards = () => {
+const MatchingPreview = () => {
   HeaderConfigQuiz("Matching Cards");
 
-  const { subjectId, activityType, difficulty, category, activityId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activityType: string;
-      difficulty: string;
-      category: string;
-      activityId: string;
-    }>();
+  const {
+    subjectId,
+    activityType,
+    activityDifficulty,
+    matchingAudio,
+    matchingItems,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activityType: string;
+    activityDifficulty: string;
+    matchingAudio: string;
+    matchingItems: string;
+  }>();
 
-  const [images, setImages] = useState<string[]>([]);
-  const [audioFiles, setAudioFiles] = useState<string[]>([]);
-  const [originalImagesPaths, setOriginalImagesPaths] = useState<
-    {
-      image_ids: string;
-    }[]
-  >([]);
-  const [originalAudioPaths, setOriginalAudioPaths] = useState<
-    {
-      audio_ids: string;
-    }[]
-  >([]);
-  const [total, setTotal] = useState<number>(0);
-  const [attemptId, setAttemptId] = useState<string>();
+  const parsedMatchingAudio: Audio[] = JSON.parse(matchingAudio);
+  const parsedMatchingItems: Items[] = JSON.parse(matchingItems);
+
   const [answers, setAnswers] = useState<
-    { image_id: string; audio_id: string }[]
+    { image_id: string; audio_id: string; image: FileInfo; audio: FileInfo }[]
   >([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedAudio, setSelectedAudio] = useState<number | null>(null);
@@ -82,7 +86,8 @@ const MatchingCards = () => {
   const player = useAudioPlayer();
 
   const handlePlayAudio = async (index: number) => {
-    const uri = audioFiles[index];
+    const uri = parsedMatchingAudio[index].audio?.uri;
+    if (!uri) return;
 
     player.replace({ uri });
 
@@ -90,37 +95,48 @@ const MatchingCards = () => {
   };
 
   const handleSubmit = async () => {
+    if (answers.length !== 5) {
+      console.error("all items must be have connections");
+      return;
+    }
+
+    if (answers.some((a) => !a.image_id || !a.audio_id)) {
+      Alert.alert(
+        "Error",
+        "Each connection must have both an image and an audio.",
+      );
+      return;
+    }
+
     try {
-      if (!attemptId) return;
-
-      const payload = {
-        answers,
-      };
-
-      const res = await submitMatchingActivity(
+      const res = await createMatchingActivity(
         subjectId,
-        difficulty,
-        activityId,
-        attemptId,
-        payload,
+        activityType,
+        activityDifficulty,
+        answers,
       );
 
-      if (!res.success) {
-        console.error("failed to submit");
-        return;
+      if (res.success) {
+        Alert.alert(
+          "Success",
+          "Successfully created the activity",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
       }
-
-      router.push({
-        pathname: "/subject/(exercises)/AuditoryScores",
-        params: {
-          score: res.score,
-          totalScore: total,
-          activityType,
-          difficulty,
-        },
-      });
     } catch (err) {
-      console.error("Submission failed:", err);
+      console.error("Submission error:", err);
+      Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
 
@@ -146,15 +162,31 @@ const MatchingCards = () => {
       }
 
       setAnswers((prev) => {
+        const audio_id = parsedMatchingAudio[selectedAudio].audio?.uri;
+        const image_id = parsedMatchingItems[selectedImage].file?.uri;
+
+        if (
+          !audio_id ||
+          !image_id ||
+          !parsedMatchingItems[selectedImage].file ||
+          !parsedMatchingAudio[selectedAudio].audio
+        )
+          return prev;
+
         const newEntry = {
-          audio_id: originalAudioPaths[selectedAudio!].audio_ids,
-          image_id: originalImagesPaths[selectedImage!].image_ids,
+          audio_id,
+          image_id,
+          image: parsedMatchingItems[selectedImage].file,
+          audio: parsedMatchingAudio[selectedAudio].audio,
         };
 
-        const exists = prev.some((a) => a.audio_id === newEntry.audio_id);
-        if (exists) {
-          return prev;
-        }
+        const exists = prev.some(
+          (a) =>
+            a.audio_id === newEntry.audio_id ||
+            a.image_id === newEntry.image_id,
+        );
+
+        if (exists) return prev;
 
         return [...prev, newEntry];
       });
@@ -163,78 +195,8 @@ const MatchingCards = () => {
       setSelectedImage(null);
     }
   }, [selectedAudio, selectedImage]);
-
-  useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const res = await takeAuditoryActivity(
-          subjectId,
-          activityType,
-          difficulty,
-          activityId,
-        );
-
-        const images_url: string[] = [];
-        const originalImages: { image_ids: string }[] = [];
-        const originalAudios: { audio_ids: string }[] = [];
-
-        const app = getApp();
-        const storage = getStorage(app);
-
-        const audioPromises = res.items.map(async (item: any) => {
-          images_url.push(item.image_url);
-          originalImages.push({ image_ids: item.image_ids });
-          originalAudios.push({ audio_ids: item.audio_ids });
-
-          const audioRef = ref(storage, item.audio_path);
-          return await getDownloadURL(audioRef);
-        });
-
-        const audioURLs = await Promise.all(audioPromises);
-
-        setImages(images_url);
-        setAudioFiles(audioURLs);
-        setOriginalImagesPaths(originalImages);
-        setOriginalAudioPaths(originalAudios);
-        setAttemptId(res.attemptId);
-        setTotal(res.total);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch activity:", error);
-      }
-    };
-
-    fetchActivity();
-  }, []);
-
-  if (!audioFiles) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>audio available.</Text>
-      </View>
-    );
-  }
-
-  if (!images) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>image available.</Text>
-      </View>
-    );
-  }
-
-  if (loading) {
-    return (
-      <View>
-        <Text>loading.......</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={[globalStyles.container, { height: "100%" }]}>
-      <Text style={styles.difficulty}>{difficulty}</Text>
-
       <View style={{ flex: 1 }}>
         <Svg
           height={height}
@@ -266,7 +228,7 @@ const MatchingCards = () => {
           }}
         >
           <View style={{ flexDirection: "column", rowGap: 10 }}>
-            {audioFiles.map((value, index) => (
+            {parsedMatchingAudio.map((_, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => {
@@ -288,7 +250,7 @@ const MatchingCards = () => {
                     : { borderColor: "#00000024" },
                 ]}
                 onLayout={(e) => {
-                  const { x, y, width, height } = e.nativeEvent.layout;
+                  const { x, y, height } = e.nativeEvent.layout;
                   audioPositions.current[index] = {
                     x: x + 120,
                     y: y + height / 2,
@@ -309,7 +271,7 @@ const MatchingCards = () => {
             ))}
           </View>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
-            {images.map((imageUrl, index) => (
+            {parsedMatchingItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => {
@@ -330,7 +292,7 @@ const MatchingCards = () => {
                     : { borderColor: "#00000024" },
                 ]}
                 onLayout={(e) => {
-                  const { x, y, width, height } = e.nativeEvent.layout;
+                  const { x, y, height } = e.nativeEvent.layout;
                   imagePositions.current[index] = {
                     x: x + 260,
                     y: y + height / 2,
@@ -338,8 +300,7 @@ const MatchingCards = () => {
                 }}
               >
                 <Image
-                  key={index}
-                  source={{ uri: imageUrl }}
+                  source={{ uri: item.file?.uri || item.image_path || "" }}
                   style={{
                     width: 105,
                     height: 97,
@@ -350,32 +311,15 @@ const MatchingCards = () => {
             ))}
           </View>
         </View>
-
-        <View>
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text>Submit</Text>
-          </TouchableOpacity>
-        </View>
       </View>
+      <TouchableOpacity
+        style={globalStyles.submitButton}
+        onPress={handleSubmit}
+      >
+        <Text style={globalStyles.submitButtonText}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  difficulty: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "left",
-    height: "5%",
-    left: 5,
-  },
-  speakerIcon: {
-    borderRadius: 180,
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    padding: 100,
-  },
-});
-
-export default memo(MatchingCards);
+export default memo(MatchingPreview);

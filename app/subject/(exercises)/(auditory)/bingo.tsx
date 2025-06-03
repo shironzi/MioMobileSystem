@@ -57,6 +57,8 @@ const bingo = () => {
         answers: matchedIds.map((image_id) => ({ image_id })),
       };
 
+      console.log(payload);
+
       const res = await submitBingoActivity(
         subjectId,
         difficulty,
@@ -67,7 +69,7 @@ const bingo = () => {
 
       if (res.success) {
         router.push({
-          pathname: "/subject/(exercises)/(auditory)/AuditoryScores",
+          pathname: "/subject/(exercises)/AuditoryScores",
           params: {
             score: res.score,
             totalScore: activityData.length,

@@ -233,7 +233,6 @@ export async function updatePictureActivity(
         } as any);
       }
 
-      // Optional remote path
       if (!item.file && item.firebase_path) {
         formData.append(`flashcards[${index}][remotePath]`, item.firebase_path);
       }

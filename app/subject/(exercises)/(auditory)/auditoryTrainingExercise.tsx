@@ -9,76 +9,79 @@ const auditoryTrainingExercise = () => {
 
   HeaderConfig("Auditory Training Exercises");
 
-  const { subjectId, role } = useLocalSearchParams<{ subjectId: string, role:string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
 
   const handleAdd = () => {
     router.push({
-      pathname: "/subject/(exercises)/(auditory)/AddAuditoryActivity",
+      pathname:
+        "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity",
       params: { subjectId: subjectId },
     });
   };
 
   return (
-
-      <View style={{flex: 1}}>
-    <View style={styles.courseContainer}>
-      <View style={styles.gridContainer}>
-        <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() =>
-              router.push({
-                pathname: "/subject/(exercises)/level",
-                params: {
-                  subjectId: subjectId,
-                  activity: "bingo",
-                  category: "auditory",
-                },
-              })
-            }
-          >
-            <Image
-              source={require("@/assets/icons/Collectibles.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Bingo Cards
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() =>
-              router.push({
-                pathname: "/subject/(exercises)/level",
-                params: {
-                  subjectId: subjectId,
-                  activity: "matching",
-                  category: "auditory",
-                },
-              })
-            }
-          >
-            <Image
-              source={require("@/assets/icons/Red_Card.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Matching Card
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-
-        {role === "teacher" && (
-            <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-              <MaterialIcon name="add" size={30} color="#fff" />
+    <View style={{ flex: 1 }}>
+      <View style={styles.courseContainer}>
+        <View style={styles.gridContainer}>
+          <View style={styles.gridItem}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                router.push({
+                  pathname: "/subject/(exercises)/level",
+                  params: {
+                    subjectId: subjectId,
+                    activity_type: "bingo",
+                    category: "auditory",
+                  },
+                })
+              }
+            >
+              <Image
+                source={require("@/assets/icons/Collectibles.png")}
+                style={styles.icon}
+              />
+              <Text style={{ textAlign: "center", marginTop: 5 }}>
+                Bingo Cards
+              </Text>
             </TouchableOpacity>
-        )}
+          </View>
+
+          <View style={styles.gridItem}>
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                router.push({
+                  pathname: "/subject/(exercises)/level",
+                  params: {
+                    subjectId: subjectId,
+                    activity_type: "matching",
+                    category: "auditory",
+                  },
+                })
+              }
+            >
+              <Image
+                source={require("@/assets/icons/Red_Card.png")}
+                style={styles.icon}
+              />
+              <Text style={{ textAlign: "center", marginTop: 5 }}>
+                Matching Card
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
+
+      {role === "teacher" && (
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 
