@@ -14,7 +14,7 @@ const SpeechTrainingExercise = () => {
       pathname: "/subject/(exercises)/level",
       params: {
         subjectId: subjectId,
-        activity: "fill",
+        activity_type: "fill",
         category: "language",
       },
     });
@@ -25,7 +25,7 @@ const SpeechTrainingExercise = () => {
       pathname: "/subject/(exercises)/level",
       params: {
         subjectId: subjectId,
-        activity: "homonyms",
+        activity_type: "homonyms",
         category: "language",
       },
     });
@@ -36,7 +36,7 @@ const SpeechTrainingExercise = () => {
       pathname: "/subject/(exercises)/level",
       params: {
         subjectId: subjectId,
-        activity: "talk2me",
+        activity_type: "talk2me",
         category: "language",
       },
     });

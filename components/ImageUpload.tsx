@@ -15,8 +15,10 @@ interface FileInfo {
 const ImageUpload = (props: {
   handleFiles: (file: FileInfo) => void;
   handleImageRemove: () => void;
-  imageUri: string | null;
+  imageUri: FileInfo | null;
   isError: boolean;
+  showPreview: boolean;
+  index: number;
 }) => {
   const [file, setFile] = useState<FileInfo | null>(null);
 
@@ -42,34 +44,59 @@ const ImageUpload = (props: {
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>
         {props.imageUri !== null ? (
-          <View style={styles.fileRow}>
-            <Image
-              source={props.imageUri}
-              style={{ width: 150, height: 150 }}
-              contentFit="contain"
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                width: "100%",
-              }}
-            >
-              <TouchableOpacity
-                onPress={handleFileUpload}
-                style={styles.fileUpload}
+          <View style={[styles.fileRow]}>
+            {props.showPreview ? (
+              <View>
+                <Image
+                  source={props.imageUri.uri}
+                  style={{ width: 150, height: 150, marginHorizontal: "auto" }}
+                  contentFit="contain"
+                />
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                    width: "100%",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={handleFileUpload}
+                    style={styles.fileUpload}
+                  >
+                    <MaterialIcons name="edit" size={24} color="#FFBF18" />
+                    <Text style={{ color: "#FFBF18" }}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={props.handleImageRemove}
+                    style={styles.fileUpload}
+                  >
+                    <AntDesign name="close" size={24} color="red" />
+                    <Text style={{ color: "red" }}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "125%",
+                  marginVertical: -10,
+                }}
               >
-                <MaterialIcons name="edit" size={24} color="#FFBF18" />
-                <Text style={{ color: "#FFBF18" }}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={props.handleImageRemove}
-                style={styles.fileUpload}
-              >
-                <AntDesign name="close" size={24} color="red" />
-                <Text style={{ color: "red" }}>Remove</Text>
-              </TouchableOpacity>
-            </View>
+                <Text>
+                  {props.index + 1}. {props.imageUri.name}
+                </Text>
+                <TouchableOpacity
+                  onPress={props.handleImageRemove}
+                  style={[styles.fileUpload]}
+                >
+                  <AntDesign name="close" size={24} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         ) : (
           <TouchableOpacity
@@ -92,7 +119,6 @@ const ImageUpload = (props: {
 
 const styles = StyleSheet.create({
   uploadHeader: {
-    width: "100%",
     backgroundColor: "#434242",
     paddingVertical: 9,
     paddingHorizontal: 26,
@@ -101,7 +127,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   fileRow: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
   },
   fileUpload: {

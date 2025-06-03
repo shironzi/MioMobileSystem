@@ -13,10 +13,10 @@ import { useAudioPlayer } from "expo-audio";
 const fillInTheBlank = () => {
   HeaderConfig("Fill in the Blank");
 
-  const { subjectId, activityType, difficulty, category, activityId } =
+  const { subjectId, activity_type, difficulty, category, activityId } =
     useLocalSearchParams<{
       subjectId: string;
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       category: string;
       activityId: string;
@@ -55,7 +55,7 @@ const fillInTheBlank = () => {
             params: {
               score: res.score,
               totalItems: activity.length,
-              activity: activityType,
+              activity: activity_type,
               difficulty: difficulty,
             },
           });
