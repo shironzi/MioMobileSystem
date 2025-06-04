@@ -1,12 +1,11 @@
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
 import globalStyles from "@/styles/globalStyles";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
 
 interface FileInfo {
@@ -20,6 +19,8 @@ interface AddBingoAudioProps {
   handleFileUpload: (file: FileInfo) => void;
   handleFileRemove: () => void;
   audio: FileInfo | null;
+  audio_path: string | null;
+  filename: string | null;
 }
 
 const AddBingoAudio = ({
@@ -27,6 +28,8 @@ const AddBingoAudio = ({
   handleFileUpload,
   handleFileRemove,
   audio,
+  audio_path,
+  filename,
 }: AddBingoAudioProps) => {
   return (
     <Animated.View
@@ -45,7 +48,7 @@ const AddBingoAudio = ({
         {isFirst && (
           <View>
             <Text style={[globalStyles.text1, { paddingVertical: 10 }]}>
-              Card Audio
+              Audio
             </Text>
             <View style={styles.divider} />
           </View>
@@ -54,6 +57,8 @@ const AddBingoAudio = ({
           handleFiles={handleFileUpload}
           handleAudioRemove={handleFileRemove}
           audioUri={audio ?? null}
+          audio_path={audio_path}
+          filename={filename}
           isError={false}
         />
       </View>

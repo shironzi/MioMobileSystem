@@ -7,20 +7,21 @@ interface BingoCardProps {
   onPress: () => void;
 }
 
-const BingoCard: React.FC<BingoCardProps> = ({ image, isMatched, onPress }) => (
-  <TouchableOpacity style={styles.card} onPress={onPress}>
-    <Image source={{ uri: image }} style={styles.image} />
-    {isMatched && (
-      <View style={styles.overlay}>
-        <Image
-          source={require("@/assets/face/yellow.png")}
-          style={{ width: 50, height: 50 }}
-        />
-        {/* <MaterialIcons name='stars' size={60} style={styles.star}/> */}
-      </View>
-    )}
-  </TouchableOpacity>
-);
+const BingoCard: React.FC<BingoCardProps> = ({ image, isMatched, onPress }) => {
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Image source={{ uri: image }} style={styles.image} />
+      {isMatched && (
+        <View style={styles.overlay}>
+          <Image
+            source={require("@/assets/face/yellow.png")}
+            style={{ width: 50, height: 50 }}
+          />
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   card: {

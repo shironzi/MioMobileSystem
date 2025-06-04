@@ -13,7 +13,7 @@ import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer } from "expo-audio";
 import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { createBingoActivity } from "@/utils/auditory";
+import { createBingoActivity, updateBingoActivity } from "@/utils/auditory";
 
 interface FileInfo {
   uri: string;
@@ -25,6 +25,7 @@ interface BingoItem {
   id: string;
   file: FileInfo | null;
   image_path: string | null;
+  image_id: string | null;
 }
 
 interface AudioItem {
@@ -38,12 +39,14 @@ const BingoPreview = () => {
   const {
     subjectId,
     activityType,
+    activityId,
     activityDifficulty,
     bingoItems,
     bingoAudio,
   } = useLocalSearchParams<{
     subjectId: string;
     activityType: string;
+    activityId: string;
     activityDifficulty: string;
     bingoItems: string;
     bingoAudio: string;
@@ -56,6 +59,8 @@ const BingoPreview = () => {
       return [];
     }
   }, [bingoItems]);
+
+  console.log(parsedBingoItems[0]);
 
   const parsedBingoAudio = useMemo<AudioItem[]>(() => {
     try {
@@ -87,7 +92,9 @@ const BingoPreview = () => {
   };
 
   const playAudio = useCallback(async () => {
-    const uri = parsedBingoAudio[currentAudio].audio?.uri;
+    const uri =
+      parsedBingoAudio[currentAudio].audio?.uri ??
+      parsedBingoAudio[currentAudio].audio_path;
     if (!uri) return;
 
     player.replace({ uri });
@@ -107,18 +114,28 @@ const BingoPreview = () => {
       return {
         file: item.file,
         image_path: item.image_path,
+        image_id: item.image_id,
         is_answer: matchedIds.includes(item.id),
       };
     });
 
     try {
-      const res = await createBingoActivity(
-        subjectId,
-        activityType,
-        activityDifficulty,
-        activity,
-        parsedBingoAudio,
-      );
+      const res = activityId
+        ? await updateBingoActivity(
+            subjectId,
+            activityType,
+            activityDifficulty,
+            activityId,
+            activity,
+            parsedBingoAudio,
+          )
+        : await createBingoActivity(
+            subjectId,
+            activityType,
+            activityDifficulty,
+            activity,
+            parsedBingoAudio,
+          );
 
       if (res.success) {
         Alert.alert(
@@ -181,7 +198,9 @@ const BingoPreview = () => {
         style={globalStyles.submitButton}
         onPress={handleSubmit}
       >
-        <Text style={globalStyles.submitButtonText}>Create Bingo Activity</Text>
+        <Text style={globalStyles.submitButtonText}>
+          {activityId ? "Update Bingo Activity" : "Create Bingo Activity"}
+        </Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,12 +1,11 @@
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
 import globalStyles from "@/styles/globalStyles";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import ImageUpload from "@/components/ImageUpload";
 
 interface FileInfo {
@@ -21,6 +20,7 @@ const AddBingoCards = (props: {
   handleFileUpload: (file: FileInfo) => void;
   handleFileRemove: () => void;
   image: FileInfo | null;
+  image_path: string | null;
 }) => {
   return (
     <Animated.View
@@ -44,7 +44,7 @@ const AddBingoCards = (props: {
         {props.isFirst && (
           <View>
             <Text style={[globalStyles.text1, { paddingVertical: 10 }]}>
-              Bingo Images
+              Images
             </Text>
             <View style={styles.divider} />
           </View>
@@ -52,9 +52,10 @@ const AddBingoCards = (props: {
         <ImageUpload
           handleFiles={(file: FileInfo) => props.handleFileUpload(file)}
           imageUri={props.image}
+          image_path={props.image_path}
           handleImageRemove={() => props.handleFileRemove()}
           isError={false}
-          showPreview={false}
+          showPreview={!!props.image_path}
           index={props.index}
         />
       </View>

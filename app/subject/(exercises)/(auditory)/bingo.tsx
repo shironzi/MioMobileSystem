@@ -11,21 +11,16 @@ import {
 } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { submitBingoActivity, takeAuditoryActivity } from "@/utils/auditory";
-import { getApp } from "@react-native-firebase/app";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-} from "@react-native-firebase/storage";
 import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer } from "expo-audio";
+import getCurrentDateTime from "@/utils/DateFormat";
 
 const bingo = () => {
   HeaderConfigQuiz("Bingo Cards");
 
-  const { subjectId, difficulty, activityType, activityId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
@@ -34,18 +29,32 @@ const bingo = () => {
   const [activityData, setActivityData] = useState<
     { image_id: string; image_url: string }[]
   >([]);
-  const [audioFiles, setAudioFiles] = useState<string[]>([]);
+  const [audioFiles, setAudioFiles] = useState<
+    { audio_id: string; audio_url: string }[]
+  >([]);
   const [currentAudio, setCurrentAudio] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>();
   const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [totalPlay, setTotalPlay] = useState<
+    { audio_id: string; total: number; played_at: string[] }[]
+  >([]);
+  const [answers, setAnswers] = useState<
+    { image_id: string; selected_at: string }[]
+  >([]);
 
   const player = useAudioPlayer();
 
-  const handleCardPress = (image_no: string): void => {
-    if (!matchedIds.includes(image_no)) {
-      setMatchedIds([...matchedIds, image_no]);
+  const handleCardPress = (image_id: string): void => {
+    const date = getCurrentDateTime();
+
+    if (
+      !matchedIds.includes(image_id) &&
+      !answers.some((entry) => entry.image_id === image_id)
+    ) {
+      setMatchedIds((prev) => [...prev, image_id]);
+      setAnswers((prev) => [...prev, { image_id, selected_at: date }]);
     }
   };
 
@@ -54,10 +63,9 @@ const bingo = () => {
       if (!attemptId) return;
 
       const payload = {
-        answers: matchedIds.map((image_id) => ({ image_id })),
+        answers: answers,
+        audio_played: totalPlay,
       };
-
-      console.log(payload);
 
       const res = await submitBingoActivity(
         subjectId,
@@ -72,8 +80,8 @@ const bingo = () => {
           pathname: "/subject/(exercises)/AuditoryScores",
           params: {
             score: res.score,
-            totalScore: activityData.length,
-            activityType: activityType,
+            totalItems: activityData.length,
+            activityType: activity_type,
             difficulty: difficulty,
           },
         });
@@ -84,8 +92,34 @@ const bingo = () => {
   };
 
   const playAudio = useCallback(() => {
+    const audioId = audioFiles[currentAudio].audio_id;
+    const date = getCurrentDateTime();
+
+    setTotalPlay((prev) => {
+      const existingIndex = prev.findIndex((item) => item.audio_id === audioId);
+
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          total: updated[existingIndex].total + 1,
+          played_at: [...updated[existingIndex].played_at, date],
+        };
+        return updated;
+      } else {
+        return [
+          ...prev,
+          {
+            audio_id: audioId,
+            total: 1,
+            played_at: [date],
+          },
+        ];
+      }
+    });
+
     player.replace({
-      uri: audioFiles[currentAudio],
+      uri: audioFiles[currentAudio].audio_url,
     });
 
     player.play();
@@ -107,7 +141,7 @@ const bingo = () => {
       try {
         const res = await takeAuditoryActivity(
           subjectId,
-          activityType,
+          activity_type,
           difficulty,
           activityId,
         );
@@ -116,19 +150,10 @@ const bingo = () => {
         }
 
         setAttemptId(res.attemptId);
-        const app = getApp();
-        const storage = getStorage(app);
-
-        const audioCards = await Promise.all(
-          res.audio_paths.map(
-            async (file: { audio_path: string }) =>
-              await getDownloadURL(ref(storage, file.audio_path)),
-          ),
-        );
 
         if (isMounted) {
           setActivityData(res.items);
-          setAudioFiles(audioCards);
+          setAudioFiles(res.audio_paths);
           setLoading(false);
         }
       } catch (err) {
@@ -141,7 +166,7 @@ const bingo = () => {
     return () => {
       isMounted = false;
     };
-  }, [subjectId, activityType, difficulty, activityId]);
+  }, [subjectId, activity_type, difficulty, activityId]);
 
   if (loading) {
     return (
@@ -192,7 +217,7 @@ const bingo = () => {
         onPress={handleSubmit}
         style={[
           styles.nextButton,
-          !isPlaying && matchedIds.length > 1
+          !isPlaying && matchedIds.length > 0
             ? { backgroundColor: "#FFBF18" }
             : { backgroundColor: "#DEDFE2" },
         ]}
