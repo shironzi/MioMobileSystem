@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -7,13 +7,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { router, useLocalSearchParams } from "expo-router";
-import { createMatchingActivity } from "@/utils/auditory";
+import {
+  createMatchingActivity,
+  // createMatchingActivity,
+  updateMatchingActivity,
+} from "@/utils/auditory";
 import globalStyles from "@/styles/globalStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
 import { useAudioPlayer } from "expo-audio";
+import useHeaderConfig from "@/utils/HeaderConfig";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,14 +28,20 @@ interface FileInfo {
 }
 
 interface Items {
-  id: string;
+  image_id: string;
   file: FileInfo | null;
   image_path: string | null;
 }
 
 interface Audio {
+  audio_id: string | null;
   audio_path: string | null;
   audio: FileInfo | null;
+}
+
+interface Answers {
+  image_id: string;
+  audio_id: string;
 }
 
 interface Connection {
@@ -40,6 +50,13 @@ interface Connection {
   x2: number;
   y2: number;
   audioId: number;
+}
+
+interface Answer {
+  image_id: string | null;
+  audio_id: string | null;
+  image: FileInfo | null;
+  audio: FileInfo | null;
 }
 
 interface AudioRef {
@@ -53,44 +70,66 @@ interface ImageRef {
 }
 
 const MatchingPreview = () => {
-  HeaderConfigQuiz("Matching Cards");
+  useHeaderConfig("Matching Cards");
 
   const {
     subjectId,
     activityType,
+    activityId,
     activityDifficulty,
     matchingAudio,
     matchingItems,
+    matchingAnswers,
   } = useLocalSearchParams<{
     subjectId: string;
     activityType: string;
+    activityId: string;
     activityDifficulty: string;
     matchingAudio: string;
     matchingItems: string;
+    matchingAnswers: string;
   }>();
 
-  const parsedMatchingAudio: Audio[] = JSON.parse(matchingAudio);
-  const parsedMatchingItems: Items[] = JSON.parse(matchingItems);
+  const parsedMatchingItems = useMemo<Items[]>(() => {
+    try {
+      return JSON.parse(matchingItems || "[]");
+    } catch {
+      return [];
+    }
+  }, [matchingItems]);
 
-  const [answers, setAnswers] = useState<
-    { image_id: string; audio_id: string; image: FileInfo; audio: FileInfo }[]
-  >([]);
+  const parsedMatchingAudio = useMemo<Audio[]>(() => {
+    try {
+      return JSON.parse(matchingAudio || "[]");
+    } catch {
+      return [];
+    }
+  }, [matchingAudio]);
 
+  const parsedAnswers = useMemo<Answers[]>(() => {
+    try {
+      return JSON.parse(matchingAnswers || "[]");
+    } catch {
+      return [];
+    }
+  }, [matchingAnswers]);
+
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedAudio, setSelectedAudio] = useState<number | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-
   const audioPositions = useRef<{ [key: number]: AudioRef }>({});
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
+  const [loading, setLoading] = useState<boolean>(true);
 
   const player = useAudioPlayer();
 
   const handlePlayAudio = async (index: number) => {
-    const uri = parsedMatchingAudio[index].audio?.uri;
+    const uri =
+      parsedMatchingAudio[index].audio?.uri ??
+      parsedMatchingAudio[index].audio_path;
     if (!uri) return;
-
     player.replace({ uri });
-
     player.play();
   };
 
@@ -107,14 +146,20 @@ const MatchingPreview = () => {
       );
       return;
     }
-
     try {
-      const res = await createMatchingActivity(
-        subjectId,
-        activityType,
-        activityDifficulty,
-        answers,
-      );
+      const res = activityId
+        ? await updateMatchingActivity(
+            subjectId,
+            activityDifficulty,
+            activityId,
+            answers,
+          )
+        : await createMatchingActivity(
+            subjectId,
+            activityType,
+            activityDifficulty,
+            answers,
+          );
 
       if (res.success) {
         Alert.alert(
@@ -141,6 +186,45 @@ const MatchingPreview = () => {
   };
 
   useEffect(() => {
+    if (activityId) {
+      const audioReady =
+        Object.keys(audioPositions.current).length ===
+        parsedMatchingAudio.length;
+      const imageReady =
+        Object.keys(imagePositions.current).length ===
+        parsedMatchingItems.length;
+
+      if (!audioReady || !imageReady || parsedAnswers.length === 0) return;
+
+      const initialConnections: Connection[] = [];
+      const initialAnswers: Answer[] = [];
+
+      parsedAnswers.forEach((ans, index) => {
+        const audioPos = audioPositions.current[index];
+        const imagePos = imagePositions.current[index];
+
+        initialConnections.push({
+          x1: audioPos.x,
+          y1: audioPos.y,
+          x2: imagePos.x,
+          y2: imagePos.y,
+          audioId: index,
+        });
+
+        initialAnswers.push({
+          audio_id: ans.audio_id,
+          image_id: ans.image_id,
+          image: parsedMatchingItems[index].file,
+          audio: parsedMatchingAudio[index].audio,
+        });
+      });
+
+      setConnections(initialConnections);
+      setAnswers(initialAnswers);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     if (selectedAudio !== null && selectedImage !== null) {
       const audioPos = audioPositions.current[selectedAudio];
       const imagePos = imagePositions.current[selectedImage];
@@ -162,39 +246,38 @@ const MatchingPreview = () => {
       }
 
       setAnswers((prev) => {
-        const audio_id = parsedMatchingAudio[selectedAudio].audio?.uri;
-        const image_id = parsedMatchingItems[selectedImage].file?.uri;
+        const audioData = parsedMatchingAudio[selectedAudio];
+        const imageData = parsedMatchingItems[selectedImage];
 
-        if (
-          !audio_id ||
-          !image_id ||
-          !parsedMatchingItems[selectedImage].file ||
-          !parsedMatchingAudio[selectedAudio].audio
-        )
-          return prev;
+        const audio_id = audioData.audio_id;
+        const image_id = imageData.image_id;
+
+        if (!audio_id || !image_id) return prev;
 
         const newEntry = {
           audio_id,
           image_id,
-          image: parsedMatchingItems[selectedImage].file,
-          audio: parsedMatchingAudio[selectedAudio].audio,
+          image: imageData.file,
+          audio: audioData.audio,
         };
 
-        const exists = prev.some(
-          (a) =>
-            a.audio_id === newEntry.audio_id ||
-            a.image_id === newEntry.image_id,
+        const filtered = prev.filter(
+          (a) => a.audio_id !== audio_id && a.image_id !== image_id,
         );
 
-        if (exists) return prev;
-
-        return [...prev, newEntry];
+        return [...filtered, newEntry];
       });
-
       setSelectedAudio(null);
       setSelectedImage(null);
     }
   }, [selectedAudio, selectedImage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+  });
+
   return (
     <View style={[globalStyles.container, { height: "100%" }]}>
       <View style={{ flex: 1 }}>
@@ -280,7 +363,7 @@ const MatchingPreview = () => {
                 style={[
                   {
                     padding: 5,
-                    borderWidth: 1,
+                    borderWidth: 1.5,
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
