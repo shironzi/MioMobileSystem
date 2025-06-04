@@ -1,11 +1,44 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
-import { useState } from "react";
 
 interface FileInfo {
   uri: string;
   name: string;
   mimeType?: string;
+}
+
+export async function getBingoActivityById(
+  subjectId: string,
+  activityType: string,
+  difficulty: string,
+  activityId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/auditory/${activityType}/${difficulty}/${activityId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error("fetch activity by Id failed: ", err);
+  }
+}
+
+export async function getMatchingActivityById(
+  subjectId: string,
+  activityType: string,
+  difficulty: string,
+  activityId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error("fetch activity by Id failed: ", err);
+  }
 }
 
 export async function createBingoActivity(
@@ -79,31 +112,25 @@ export async function createMatchingActivity(
   subjectId: string,
   activityType: string,
   difficulty: string,
-  activity: {
-    image_id: string;
-    audio_id: string;
-    image: FileInfo;
-    audio: FileInfo;
-  }[],
+  answers: Answer[],
 ) {
   try {
-    console.log(activity[0]);
     const formData = new FormData();
 
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
 
-    activity.forEach((item, index) => {
+    answers.forEach((item, index) => {
       formData.append(`activity[${index}][image]`, {
-        uri: item.image.uri,
-        name: item.image.name,
-        type: item.image.mimeType,
+        uri: item.image?.uri,
+        name: item.image?.name,
+        type: item.image?.mimeType,
       } as any);
 
       formData.append(`activity[${index}][audio]`, {
-        uri: item.audio.uri,
-        name: item.audio.name,
-        type: item.audio.mimeType,
+        uri: item.audio?.uri,
+        name: item.audio?.name,
+        type: item.audio?.mimeType,
       } as any);
     });
 
@@ -111,6 +138,77 @@ export async function createMatchingActivity(
 
     const response = await fetch(
       `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/matching`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      },
+    );
+
+    return await response.json();
+  } catch (err) {
+    console.error("Submit Activity Failed:", err);
+    throw err;
+  }
+}
+
+export async function updateBingoActivity(
+  subjectId: string,
+  activityType: string,
+  difficulty: string,
+  activityId: string,
+  bingoItems: {
+    file: FileInfo | null;
+    image_path: string | null;
+    image_id?: string | null;
+    is_answer: boolean;
+  }[],
+  audioFiles: {
+    audio: FileInfo | null;
+    audio_path: string | null;
+    audio_id?: string | null;
+  }[],
+) {
+  try {
+    const formData = new FormData();
+
+    bingoItems.forEach((item, index) => {
+      if (item.file) {
+        formData.append(`activity[${index}][image]`, {
+          uri: item.file.uri,
+          name: item.file.name,
+          type: item.file.mimeType ?? "image/jpeg",
+        } as any);
+      }
+
+      formData.append(
+        `activity[${index}][is_answer]`,
+        item.is_answer ? "true" : "false",
+      );
+
+      formData.append(`activity[${index}][image_id]`, item.image_id ?? "");
+    });
+
+    audioFiles.forEach((item, index) => {
+      if (item.audio) {
+        formData.append(`audio[${index}][audio_file]`, {
+          uri: item.audio.uri,
+          name: item.audio.name,
+          type: item.audio.mimeType ?? "audio/mpeg",
+        } as any);
+      }
+
+      formData.append(`audio[${index}][audio_id]`, item.audio_id ?? "");
+    });
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(
+      `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
       {
         method: "POST",
         headers: {
@@ -165,23 +263,104 @@ export async function submitBingoActivity(
   }
 }
 
+interface answerLog {
+  audio_id: string;
+  audio_played: string[];
+  selected: string[];
+  image_selected_at: string[];
+}
+
 export async function submitMatchingActivity(
   subjectId: string,
   difficulty: string,
   activityId: string,
   attemptId: string,
-  payload: { answers: { audio_id: string; image_id: string }[] },
+  answerLogs: answerLog[],
+  answers: { image_id: string; audio_id: string }[],
 ) {
   try {
-    console.log(payload);
+    const token = await getAuth().currentUser?.getIdToken(true);
 
-    const { data } = await api.put(
-      `/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
-      payload,
-    );
+    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`;
+    const payload = {
+      answers,
+      answerLogs,
+    };
 
-    return data;
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return await response.json();
   } catch (err) {
-    console.error("Take Activity Failed");
+    console.error("Submit Matching Activity Failed:", err);
+  }
+}
+
+interface Answer {
+  image_id: string | null;
+  audio_id: string | null;
+  audio: FileInfo | null;
+  image: FileInfo | null;
+}
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  type?: string;
+}
+
+export async function updateMatchingActivity(
+  subjectId: string,
+  difficulty: string,
+  activityId: string,
+  answers: Answer[],
+) {
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`;
+    const formData = new FormData();
+
+    answers.forEach((answer, index) => {
+      formData.append(`activity[${index}][image_id]`, answer.image_id ?? "");
+      formData.append(`activity[${index}][audio_id]`, answer.audio_id ?? "");
+
+      if (answer.image?.uri) {
+        formData.append(`activity[${index}][image]`, {
+          uri: answer.image.uri,
+          name: answer.image.name,
+          type: answer.image.type || "image/jpeg",
+        } as any);
+      }
+
+      if (answer.audio?.uri) {
+        formData.append(`activity[${index}][audio]`, {
+          uri: answer.audio.uri,
+          name: answer.audio.name,
+          type: answer.audio.type || "audio/mpeg",
+        } as any);
+      }
+    });
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    return await response.json();
+  } catch (err) {
+    console.error("Submit Matching Activity Failed:", err);
   }
 }
