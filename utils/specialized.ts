@@ -188,7 +188,7 @@ export async function getActivityById(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}/${activityId}`,
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
     );
 
     return data;
