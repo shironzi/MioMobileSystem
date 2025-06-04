@@ -10,12 +10,6 @@ import {
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { router, useLocalSearchParams } from "expo-router";
 import { submitMatchingActivity, takeAuditoryActivity } from "@/utils/auditory";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-} from "@react-native-firebase/storage";
-import { getApp } from "@react-native-firebase/app";
 import globalStyles from "@/styles/globalStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
@@ -44,10 +38,10 @@ interface ImageRef {
 const MatchingCards = () => {
   HeaderConfigQuiz("Matching Cards");
 
-  const { subjectId, activityType, difficulty, category, activityId } =
+  const { subjectId, activity_type, difficulty, category, activityId } =
     useLocalSearchParams<{
       subjectId: string;
-      activityType: string;
+      activity_type: string;
       difficulty: string;
       category: string;
       activityId: string;
@@ -114,8 +108,8 @@ const MatchingCards = () => {
         pathname: "/subject/(exercises)/AuditoryScores",
         params: {
           score: res.score,
-          totalScore: total,
-          activityType,
+          totalItems: total,
+          activity_type,
           difficulty,
         },
       });
@@ -169,31 +163,32 @@ const MatchingCards = () => {
       try {
         const res = await takeAuditoryActivity(
           subjectId,
-          activityType,
+          activity_type,
           difficulty,
           activityId,
         );
 
         const images_url: string[] = [];
+        const audio_url: string[] = [];
         const originalImages: { image_ids: string }[] = [];
         const originalAudios: { audio_ids: string }[] = [];
 
-        const app = getApp();
-        const storage = getStorage(app);
-
-        const audioPromises = res.items.map(async (item: any) => {
-          images_url.push(item.image_url);
-          originalImages.push({ image_ids: item.image_ids });
-          originalAudios.push({ audio_ids: item.audio_ids });
-
-          const audioRef = ref(storage, item.audio_path);
-          return await getDownloadURL(audioRef);
-        });
-
-        const audioURLs = await Promise.all(audioPromises);
+        res.items.map(
+          async (item: {
+            image_url: string;
+            audio_url: string;
+            image_ids: string;
+            audio_ids: string;
+          }) => {
+            images_url.push(item.image_url);
+            audio_url.push(item.audio_url);
+            originalImages.push({ image_ids: item.image_ids });
+            originalAudios.push({ audio_ids: item.audio_ids });
+          },
+        );
 
         setImages(images_url);
-        setAudioFiles(audioURLs);
+        setAudioFiles(audio_url);
         setOriginalImagesPaths(originalImages);
         setOriginalAudioPaths(originalAudios);
         setAttemptId(res.attemptId);
@@ -318,7 +313,7 @@ const MatchingCards = () => {
                 style={[
                   {
                     padding: 5,
-                    borderWidth: 1,
+                    borderWidth: 1.5,
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
@@ -326,7 +321,7 @@ const MatchingCards = () => {
                     marginVertical: 5,
                   },
                   selectedImage === index
-                    ? { borderColor: "#2264DC", borderWidth: 1.5 }
+                    ? { borderColor: "#2264DC" }
                     : { borderColor: "#00000024" },
                 ]}
                 onLayout={(e) => {
@@ -352,8 +347,11 @@ const MatchingCards = () => {
         </View>
 
         <View>
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text>Submit</Text>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={globalStyles.submitButton}
+          >
+            <Text style={globalStyles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
         </View>
       </View>
