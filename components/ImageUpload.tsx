@@ -16,6 +16,7 @@ const ImageUpload = (props: {
   handleFiles: (file: FileInfo) => void;
   handleImageRemove: () => void;
   imageUri: FileInfo | null;
+  image_path: string | null;
   isError: boolean;
   showPreview: boolean;
   index: number;
@@ -43,23 +44,22 @@ const ImageUpload = (props: {
   return (
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>
-        {props.imageUri !== null ? (
+        {props.imageUri !== null || props.image_path ? (
           <View style={[styles.fileRow]}>
             {props.showPreview ? (
               <View>
                 <Image
-                  source={props.imageUri.uri}
-                  style={{ width: 150, height: 150, marginHorizontal: "auto" }}
+                  source={
+                    props.image_path
+                      ? { uri: props.image_path }
+                      : props.imageUri?.uri
+                        ? { uri: props.imageUri?.uri }
+                        : undefined
+                  }
+                  style={styles.imageStyle}
                   contentFit="contain"
                 />
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                    width: "100%",
-                  }}
-                >
+                <View style={styles.fileSettings}>
                   <TouchableOpacity
                     onPress={handleFileUpload}
                     style={styles.fileUpload}
@@ -77,17 +77,13 @@ const ImageUpload = (props: {
                 </View>
               </View>
             ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "125%",
-                  marginVertical: -10,
-                }}
-              >
-                <Text>
-                  {props.index + 1}. {props.imageUri.name}
+              <View style={styles.textImage}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{ flex: 1 }}
+                >
+                  {props.index + 1}. {props.imageUri?.name ?? "Unnamed file"}
                 </Text>
                 <TouchableOpacity
                   onPress={props.handleImageRemove}
@@ -161,6 +157,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
   },
+  textImage: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "125%",
+    marginVertical: -10,
+  },
+  fileSettings: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+  },
+  imageStyle: { width: 150, height: 150, alignSelf: "center" },
 });
 
 export default memo(ImageUpload);

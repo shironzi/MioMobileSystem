@@ -36,6 +36,7 @@ const auditoryTrainingExercise = () => {
                     subjectId: subjectId,
                     activity_type: "bingo",
                     category: "auditory",
+                    role: role,
                   },
                 })
               }
@@ -60,6 +61,7 @@ const auditoryTrainingExercise = () => {
                     subjectId: subjectId,
                     activity_type: "matching",
                     category: "auditory",
+                    role: role,
                   },
                 })
               }

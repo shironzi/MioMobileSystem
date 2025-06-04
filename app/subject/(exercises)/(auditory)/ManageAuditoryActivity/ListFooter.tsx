@@ -11,19 +11,16 @@ interface FileInfo {
   mimeType?: string;
 }
 
-interface Items {
-  id: string;
-  file: FileInfo | null;
-  image_path: string | null;
-}
-
 interface Audio {
+  filename: string | null;
+  audio_id: string | null;
   audio_path: string | null;
   audio: FileInfo | null;
 }
 
 const ListFooter = (props: {
-  activityType: string;
+  activityType: string | null;
+  activityId: string;
   bingoAudio: Audio[];
   matchingAudio: Audio[];
   handleAudioUpload: (index: number, file: FileInfo) => void;
@@ -32,7 +29,7 @@ const ListFooter = (props: {
   handleAddAudio: () => void;
   handleRoute: () => void;
 }) => (
-  <View>
+  <View style={[{ marginBottom: 50 }]}>
     <View style={styles.addItems}>
       <TouchableOpacity
         style={styles.addFileRow}
@@ -49,6 +46,8 @@ const ListFooter = (props: {
             key={index}
             isFirst={index === 0}
             audio={item.audio ?? null}
+            filename={item.filename}
+            audio_path={item.audio_path}
             handleFileUpload={(file) => props.handleAudioUpload(index, file)}
             handleFileRemove={() => props.handleAudioRemove(index)}
           />
@@ -57,6 +56,8 @@ const ListFooter = (props: {
           <AddMatchingAudio
             key={index}
             isFirst={index === 0}
+            filename={item.filename}
+            audio_path={item.audio_path}
             audio={item.audio ?? null}
             handleFileUpload={(file) => props.handleAudioUpload(index, file)}
             handleFileRemove={() => props.handleAudioRemove(index)}
@@ -78,7 +79,7 @@ const ListFooter = (props: {
         onPress={props.handleRoute}
       >
         <Text style={[globalStyles.submitButtonText, styles.continueButton]}>
-          Continue to Answer Selection
+          {props.activityId ? "Edit Answers" : "Continue to Answer Selection"}
         </Text>
       </TouchableOpacity>
     </View>

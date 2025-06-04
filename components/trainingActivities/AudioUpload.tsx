@@ -1,7 +1,6 @@
 import * as DocumentPicker from "expo-document-picker";
 import React, { memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import { useAudioPlayer } from "expo-audio";
@@ -17,6 +16,8 @@ const AudioUpload = (props: {
   handleAudioRemove: () => void;
   audioUri: FileInfo | null;
   isError: boolean;
+  filename: string | null;
+  audio_path: string | null;
 }) => {
   const [file, setFile] = useState<FileInfo | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -43,7 +44,7 @@ const AudioUpload = (props: {
   return (
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>
-        {props.audioUri ? (
+        {props.audioUri || props.audio_path ? (
           <View style={styles.fileRow}>
             <View style={{ flexDirection: "row" }}></View>
             <View
@@ -55,7 +56,11 @@ const AudioUpload = (props: {
                 marginVertical: -10,
               }}
             >
-              <Text>{props.audioUri.name}</Text>
+              <Text
+                style={{ maxWidth: 250, marginVertical: 10, flexWrap: "wrap" }}
+              >
+                {props.audioUri?.name ?? props.filename}
+              </Text>
               <TouchableOpacity
                 onPress={props.handleAudioRemove}
                 style={styles.fileUpload}
