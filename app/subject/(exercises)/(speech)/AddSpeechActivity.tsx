@@ -50,7 +50,7 @@ const AddSpeechActivity = () => {
       file: FileInfo | null;
       image_path: string | null;
       text: string | null;
-      firebase_path: string | null;
+      image_url: string | null;
     }[]
   >([
     {
@@ -58,7 +58,7 @@ const AddSpeechActivity = () => {
       text: null,
       image_path: null,
       flashcard_id: null,
-      firebase_path: null,
+      image_url: null,
     },
   ]);
 
@@ -104,7 +104,7 @@ const AddSpeechActivity = () => {
           file: null,
           text: null,
           image_path: null,
-          firebase_path: null,
+          image_url: null,
         },
       ]);
     } else if (activityType === "question") {
@@ -158,9 +158,9 @@ const AddSpeechActivity = () => {
               pictureItems.some(
                 (item) =>
                   item.file === null &&
-                  (!item.firebase_path || item.firebase_path === "") &&
+                  (!item.image_url || item.image_url === "") &&
                   (!item.image_path || item.image_path === "") &&
-                  (!item.flashcard_id || item.flashcard_id === ""), // totally new item
+                  (!item.flashcard_id || item.flashcard_id === ""),
               ) || hasEmptyText(pictureItems);
 
             if (isPictureInvalid) {
@@ -459,9 +459,7 @@ const AddSpeechActivity = () => {
                       ),
                     )
                   }
-                  imageUri={
-                    pictureItems[index].file ? pictureItems[index].file : null
-                  }
+                  imageUri={pictureItems[index].file ?? null}
                   handleImageRemove={() => {
                     setPictureItems((prev) =>
                       prev.map((item, i) =>
@@ -472,7 +470,7 @@ const AddSpeechActivity = () => {
                   isError={isFileEmpty}
                   showPreview={true}
                   index={0}
-                  image_path={null}
+                  image_path={pictureItems[index].image_url}
                 />
                 <Text style={globalStyles.text1}>Word</Text>
                 <TextInput

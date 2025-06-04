@@ -206,7 +206,7 @@ export async function updatePictureActivity(
     file: FileInfo | null;
     image_path: string | null;
     text: string | null;
-    firebase_path: string | null;
+    image_url: string | null;
   }[],
 ) {
   try {
@@ -233,8 +233,8 @@ export async function updatePictureActivity(
         } as any);
       }
 
-      if (!item.file && item.firebase_path) {
-        formData.append(`flashcards[${index}][remotePath]`, item.firebase_path);
+      if (!item.file && item.image_url) {
+        formData.append(`flashcards[${index}][remotePath]`, item.image_url);
       }
     });
 
