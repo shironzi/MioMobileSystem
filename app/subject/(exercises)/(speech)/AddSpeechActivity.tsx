@@ -461,7 +461,6 @@ const AddSpeechActivity = () => {
                   }
                   imageUri={
                     pictureItems[index].file ? pictureItems[index].file : null
-                    // : pictureItems[index].image_path
                   }
                   handleImageRemove={() => {
                     setPictureItems((prev) =>
@@ -473,6 +472,7 @@ const AddSpeechActivity = () => {
                   isError={isFileEmpty}
                   showPreview={true}
                   index={0}
+                  image_path={null}
                 />
                 <Text style={globalStyles.text1}>Word</Text>
                 <TextInput
