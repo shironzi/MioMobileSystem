@@ -55,10 +55,13 @@ const PlayCard = (props: {
     if (props.category === "auditory") {
       if (props.activity_type === "bingo") {
         router.push({
-          pathname: "/subject/(exercises)/(auditory)/bingo",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/ManageAuditoryActivity/AddAuditoryActivity"
+              : "/subject/(exercises)/(auditory)/bingo",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activity_type,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -68,10 +71,13 @@ const PlayCard = (props: {
 
       if (props.activity_type === "matching") {
         router.push({
-          pathname: "/subject/(exercises)/(auditory)/MatchingCards",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/ManageAuditoryActivity/AddAuditoryActivity"
+              : "/subject/(exercises)/(auditory)/MatchingCards",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activity_type,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -86,7 +92,7 @@ const PlayCard = (props: {
           pathname: "/subject/(exercises)/(language)/fillInTheBlank",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activity_type,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -99,7 +105,7 @@ const PlayCard = (props: {
           pathname: "/subject/(exercises)/(language)/talk2Me",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activity_type,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
@@ -112,7 +118,7 @@ const PlayCard = (props: {
           pathname: "/subject/(exercises)/(language)/Homonyms",
           params: {
             subjectId: props.subjectId,
-            activityType: props.activity_type,
+            activity_type: props.activity_type,
             difficulty: props.difficulty,
             category: props.category,
             activityId: props.activityId,
