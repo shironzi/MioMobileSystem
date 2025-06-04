@@ -10,7 +10,6 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import {
   createMatchingActivity,
-  // createMatchingActivity,
   updateMatchingActivity,
 } from "@/utils/auditory";
 import globalStyles from "@/styles/globalStyles";
@@ -138,14 +137,6 @@ const MatchingPreview = () => {
       console.error("all items must be have connections");
       return;
     }
-
-    if (answers.some((a) => !a.image_id || !a.audio_id)) {
-      Alert.alert(
-        "Error",
-        "Each connection must have both an image and an audio.",
-      );
-      return;
-    }
     try {
       const res = activityId
         ? await updateMatchingActivity(
@@ -249,21 +240,29 @@ const MatchingPreview = () => {
         const audioData = parsedMatchingAudio[selectedAudio];
         const imageData = parsedMatchingItems[selectedImage];
 
-        const audio_id = audioData.audio_id;
-        const image_id = imageData.image_id;
-
-        if (!audio_id || !image_id) return prev;
-
         const newEntry = {
-          audio_id,
-          image_id,
+          audio_id: audioData.audio_id,
+          image_id: imageData.image_id,
           image: imageData.file,
           audio: audioData.audio,
         };
 
-        const filtered = prev.filter(
-          (a) => a.audio_id !== audio_id && a.image_id !== image_id,
-        );
+        if (prev.length === 0) return [...prev, newEntry];
+        const filtered = prev.filter((a) => {
+          const sameAudioId =
+            audioData.audio_id !== null && a.audio_id === audioData.audio_id;
+
+          const sameImageId =
+            imageData.image_id !== null && a.image_id === imageData.image_id;
+
+          const sameImageUri =
+            imageData.file?.uri && a.image?.uri === imageData.file.uri;
+
+          const sameAudioUri =
+            audioData.audio?.uri && a.audio?.uri === audioData.audio.uri;
+
+          return !(sameAudioId || sameImageId || sameImageUri || sameAudioUri);
+        });
 
         return [...filtered, newEntry];
       });

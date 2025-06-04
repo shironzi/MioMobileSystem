@@ -14,6 +14,7 @@ import globalStyles from "@/styles/globalStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
 import { useAudioPlayer } from "expo-audio";
+import getCurrentDateTime from "@/utils/DateFormat";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,6 +36,13 @@ interface ImageRef {
   y: number;
 }
 
+interface answerLog {
+  audio_id: string;
+  audio_played: string[];
+  selected: string[];
+  image_selected_at: string[];
+}
+
 const MatchingCards = () => {
   HeaderConfigQuiz("Matching Cards");
 
@@ -47,63 +55,63 @@ const MatchingCards = () => {
       activityId: string;
     }>();
 
-  const [images, setImages] = useState<string[]>([]);
-  const [audioFiles, setAudioFiles] = useState<string[]>([]);
-  const [originalImagesPaths, setOriginalImagesPaths] = useState<
-    {
-      image_ids: string;
-    }[]
+  const [activity, setActivity] = useState<
+    { image_id: string; image_url: string }[]
   >([]);
-  const [originalAudioPaths, setOriginalAudioPaths] = useState<
-    {
-      audio_ids: string;
-    }[]
-  >([]);
+  const [audio, setAudio] = useState<{ audio_id: string; audio_url: string }[]>(
+    [],
+  );
   const [total, setTotal] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>();
   const [answers, setAnswers] = useState<
     { image_id: string; audio_id: string }[]
   >([]);
+  const [answerLogs, setAnswerLogs] = useState<answerLog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedAudio, setSelectedAudio] = useState<number | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
-
   const audioPositions = useRef<{ [key: number]: AudioRef }>({});
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
 
   const player = useAudioPlayer();
-
   const handlePlayAudio = async (index: number) => {
-    const uri = audioFiles[index];
-
-    player.replace({ uri });
-
+    player.replace({ uri: audio[index].audio_url });
     player.play();
+
+    const date = getCurrentDateTime();
+
+    setAnswerLogs((prev) => {
+      return prev.map((log) => {
+        if (log.audio_id === audio[index].audio_id) {
+          return {
+            ...log,
+            audio_id: audio[index].audio_id,
+            audio_played: [...log.audio_played, date],
+          };
+        }
+        return log;
+      });
+    });
   };
 
   const handleSubmit = async () => {
     try {
       if (!attemptId) return;
 
-      const payload = {
-        answers,
-      };
-
       const res = await submitMatchingActivity(
         subjectId,
         difficulty,
         activityId,
         attemptId,
-        payload,
+        answerLogs,
+        answers,
       );
 
       if (!res.success) {
         console.error("failed to submit");
         return;
       }
-
       router.push({
         pathname: "/subject/(exercises)/AuditoryScores",
         params: {
@@ -138,18 +146,47 @@ const MatchingCards = () => {
           ];
         });
       }
+      const date = getCurrentDateTime();
+      const audioId = audio[selectedAudio].audio_id;
+      const imageId = activity[selectedImage].image_id;
+
+      setAnswerLogs((prev) => {
+        const existingIndex = prev.findIndex((log) => log.audio_id === audioId);
+
+        if (existingIndex !== -1) {
+          const updated = [...prev];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            selected: [...updated[existingIndex].selected, imageId],
+            audio_played: [...updated[existingIndex].audio_played, date],
+            image_selected_at: [
+              ...updated[existingIndex].image_selected_at,
+              date,
+            ],
+          };
+          return updated;
+        } else {
+          return [
+            ...prev,
+            {
+              audio_id: audioId,
+              audio_played: [date],
+              selected: [imageId],
+              image_selected_at: [date],
+            },
+          ];
+        }
+      });
 
       setAnswers((prev) => {
         const newEntry = {
-          audio_id: originalAudioPaths[selectedAudio!].audio_ids,
-          image_id: originalImagesPaths[selectedImage!].image_ids,
+          audio_id: audio[selectedAudio!].audio_id,
+          image_id: activity[selectedImage!].image_id,
         };
-
         const exists = prev.some((a) => a.audio_id === newEntry.audio_id);
         if (exists) {
           return prev;
         }
-
         return [...prev, newEntry];
       });
 
@@ -168,29 +205,8 @@ const MatchingCards = () => {
           activityId,
         );
 
-        const images_url: string[] = [];
-        const audio_url: string[] = [];
-        const originalImages: { image_ids: string }[] = [];
-        const originalAudios: { audio_ids: string }[] = [];
-
-        res.items.map(
-          async (item: {
-            image_url: string;
-            audio_url: string;
-            image_ids: string;
-            audio_ids: string;
-          }) => {
-            images_url.push(item.image_url);
-            audio_url.push(item.audio_url);
-            originalImages.push({ image_ids: item.image_ids });
-            originalAudios.push({ audio_ids: item.audio_ids });
-          },
-        );
-
-        setImages(images_url);
-        setAudioFiles(audio_url);
-        setOriginalImagesPaths(originalImages);
-        setOriginalAudioPaths(originalAudios);
+        setActivity(res.items);
+        setAudio(res.audio);
         setAttemptId(res.attemptId);
         setTotal(res.total);
         setLoading(false);
@@ -201,22 +217,6 @@ const MatchingCards = () => {
 
     fetchActivity();
   }, []);
-
-  if (!audioFiles) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>audio available.</Text>
-      </View>
-    );
-  }
-
-  if (!images) {
-    return (
-      <View style={globalStyles.container}>
-        <Text>image available.</Text>
-      </View>
-    );
-  }
 
   if (loading) {
     return (
@@ -229,18 +229,8 @@ const MatchingCards = () => {
   return (
     <View style={[globalStyles.container, { height: "100%" }]}>
       <Text style={styles.difficulty}>{difficulty}</Text>
-
       <View style={{ flex: 1 }}>
-        <Svg
-          height={height}
-          width={width}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            zIndex: -1,
-          }}
-        >
+        <Svg height={height} width={width} style={styles.connectionLines}>
           {connections.map((line, idx) => (
             <Line
               key={idx}
@@ -253,15 +243,9 @@ const MatchingCards = () => {
             />
           ))}
         </Svg>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-          }}
-        >
+        <View style={styles.cardContainer}>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
-            {audioFiles.map((value, index) => (
+            {activity.map((value, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => {
@@ -269,63 +253,42 @@ const MatchingCards = () => {
                   handlePlayAudio(index);
                 }}
                 style={[
-                  {
-                    padding: 20,
-                    borderWidth: 1.5,
-                    borderRadius: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#fff",
-                    marginVertical: 5,
-                  },
+                  styles.itemContainer,
+                  { padding: 20 },
                   selectedAudio === index
-                    ? { borderColor: "#2264DC", borderWidth: 1.5 }
-                    : { borderColor: "#00000024" },
+                    ? styles.selected
+                    : styles.notSelected,
                 ]}
                 onLayout={(e) => {
-                  const { x, y, width, height } = e.nativeEvent.layout;
+                  const { x, y, height } = e.nativeEvent.layout;
                   audioPositions.current[index] = {
                     x: x + 120,
                     y: y + height / 2,
                   };
                 }}
               >
-                <View
-                  style={{
-                    borderRadius: 12,
-                    padding: 20,
-                    margin: "auto",
-                    backgroundColor: "#FFBF18",
-                  }}
-                >
+                <View style={styles.audioContainer}>
                   <FontAwesome6 name="volume-high" size={25} color="#fff" />
                 </View>
               </TouchableOpacity>
             ))}
           </View>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
-            {images.map((imageUrl, index) => (
+            {activity.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => {
                   setSelectedImage(index);
                 }}
                 style={[
-                  {
-                    padding: 5,
-                    borderWidth: 1.5,
-                    borderRadius: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#fff",
-                    marginVertical: 5,
-                  },
+                  styles.itemContainer,
+                  { padding: 5 },
                   selectedImage === index
-                    ? { borderColor: "#2264DC" }
-                    : { borderColor: "#00000024" },
+                    ? styles.selected
+                    : styles.notSelected,
                 ]}
                 onLayout={(e) => {
-                  const { x, y, width, height } = e.nativeEvent.layout;
+                  const { x, y, height } = e.nativeEvent.layout;
                   imagePositions.current[index] = {
                     x: x + 260,
                     y: y + height / 2,
@@ -334,18 +297,13 @@ const MatchingCards = () => {
               >
                 <Image
                   key={index}
-                  source={{ uri: imageUrl }}
-                  style={{
-                    width: 105,
-                    height: 97,
-                    borderRadius: 15,
-                  }}
+                  source={{ uri: item.image_url }}
+                  style={styles.imageContainer}
                 />
               </TouchableOpacity>
             ))}
           </View>
         </View>
-
         <View>
           <TouchableOpacity
             onPress={handleSubmit}
@@ -373,6 +331,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 12,
     padding: 100,
+  },
+  itemContainer: {
+    borderWidth: 1.5,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    marginVertical: 5,
+  },
+  imageContainer: {
+    width: 105,
+    height: 97,
+    borderRadius: 15,
+  },
+  audioContainer: {
+    borderRadius: 12,
+    padding: 20,
+    margin: "auto",
+    backgroundColor: "#FFBF18",
+  },
+  selected: { borderColor: "#2264DC", borderWidth: 1.5 },
+  notSelected: { borderColor: "#00000024" },
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+  },
+  connectionLines: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: -1,
   },
 });
 
