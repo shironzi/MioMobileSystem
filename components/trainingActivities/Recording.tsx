@@ -79,14 +79,6 @@ const Recording = (props: {
           color={isRecording ? "#fff" : "black"}
         />
       </TouchableOpacity>
-      <Text
-        style={[
-          styles.recordingText,
-          isRecording ? { opacity: 100 } : { opacity: 0 },
-        ]}
-      >
-        Listening...
-      </Text>
     </View>
   );
 };

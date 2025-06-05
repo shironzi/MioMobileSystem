@@ -121,12 +121,14 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 20,
     rowGap: 10,
+    height: 120,
   },
   addFileText: {
     color: "#1F1F1F68",
-    fontSize: 16,
+    fontSize: 14,
     fontStyle: "italic",
     lineHeight: 28,
+    textAlign: "center",
   },
   actionsRow: {
     flexDirection: "row",

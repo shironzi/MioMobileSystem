@@ -2,12 +2,16 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 
 const SpeechTrainingExercise = () => {
   const router = useRouter();
   HeaderConfig("Language Training Exercise");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
 
   const handleFillRoute = () => {
     router.push({
@@ -31,54 +35,46 @@ const SpeechTrainingExercise = () => {
     });
   };
 
-  const handleTalk2MeRoute = () => {
+  const handleAdd = () => {
     router.push({
-      pathname: "/subject/(exercises)/level",
-      params: {
-        subjectId: subjectId,
-        activity_type: "talk2me",
-        category: "language",
-      },
+      pathname: "/subject/ManageActivity/AddLanguageActivity",
     });
   };
 
   return (
-    <View style={styles.courseContainer}>
-      <View style={styles.gridContainer}>
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleFillRoute}>
-            <Image
-              source={require("@/assets/icons/Speaker_Notes.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Fill in the Blanks
-            </Text>
-          </TouchableOpacity>
-        </View>
+    <View style={{ flex: 1 }}>
+      <View style={styles.courseContainer}>
+        <View style={styles.gridContainer}>
+          <View style={styles.gridItem}>
+            <TouchableOpacity style={styles.card} onPress={handleFillRoute}>
+              <Image
+                source={require("@/assets/icons/Speaker_Notes.png")}
+                style={styles.icon}
+              />
+              <Text style={{ textAlign: "center", marginTop: 5 }}>
+                Fill in the Blanks
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleTalk2MeRoute}>
-            <Image
-              source={require("@/assets/icons/Technology_Lifestyle.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Talk2Me: Responding Questions
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleHomonymsRoute}>
-            <Image
-              source={require("@/assets/icons/homonyms.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>Homonyms</Text>
-          </TouchableOpacity>
+          <View style={styles.gridItem}>
+            <TouchableOpacity style={styles.card} onPress={handleHomonymsRoute}>
+              <Image
+                source={require("@/assets/icons/homonyms.png")}
+                style={styles.icon}
+              />
+              <Text style={{ textAlign: "center", marginTop: 5 }}>
+                Homonyms
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+      {role === "teacher" && (
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -142,6 +138,18 @@ const styles = StyleSheet.create({
   icon: {
     width: 60,
     height: 60,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#2264DC",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
 });
 
