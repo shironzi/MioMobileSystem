@@ -256,7 +256,6 @@ const AddAuditoryActivity = () => {
             difficulty,
             activityId,
           );
-
           setBingoItems(res.items);
           setBingoAudio(res.audio);
         } else if (activity_type === "matching") {

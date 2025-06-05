@@ -1,8 +1,12 @@
 import { getAuth } from "@react-native-firebase/auth";
 import axios from "axios";
 
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
+console.log(IPADDRESS);
+
 export const api = axios.create({
-  baseURL: "http://192.168.254.169:8001/api",
+  baseURL: `${IPADDRESS}`,
   headers: { Accept: "application/json" },
   timeout: 10_000,
 });

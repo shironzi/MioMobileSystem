@@ -1,6 +1,8 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
 
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 interface FileInfo {
   uri: string;
   name: string;
@@ -15,7 +17,7 @@ export async function getBingoActivityById(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/auditory/${activityType}/${difficulty}/${activityId}`,
+      `/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}`,
     );
 
     return data;
@@ -89,7 +91,7 @@ export async function createBingoActivity(
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(
-      `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/bingo`,
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo`,
       {
         method: "POST",
         headers: {
@@ -137,7 +139,7 @@ export async function createMatchingActivity(
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(
-      `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/matching`,
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching`,
       {
         method: "POST",
         headers: {
@@ -205,10 +207,12 @@ export async function updateBingoActivity(
       formData.append(`audio[${index}][audio_id]`, item.audio_id ?? "");
     });
 
+    console.log(formData);
+
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(
-      `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
       {
         method: "POST",
         headers: {
@@ -280,22 +284,23 @@ export async function submitMatchingActivity(
 ) {
   try {
     const token = await getAuth().currentUser?.getIdToken(true);
-
-    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`;
     const payload = {
       answers,
       answerLogs,
     };
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload),
-    });
+    );
 
     return await response.json();
   } catch (err) {
@@ -324,8 +329,6 @@ export async function updateMatchingActivity(
 ) {
   try {
     const token = await getAuth().currentUser?.getIdToken(true);
-
-    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`;
     const formData = new FormData();
 
     answers.forEach((answer, index) => {
@@ -349,15 +352,18 @@ export async function updateMatchingActivity(
       }
     });
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       },
-      body: formData,
-    });
+    );
 
     return await response.json();
   } catch (err) {

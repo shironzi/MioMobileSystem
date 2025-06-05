@@ -1,4 +1,7 @@
 import { api } from "@/utils/apiClient";
+import { getAuth } from "@react-native-firebase/auth";
+
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function getActivities(
   subjectId: string,
@@ -33,8 +36,6 @@ export async function startActivity(
   }
 }
 
-import { getAuth } from "@react-native-firebase/auth";
-
 export async function submitAnswer(
   subjectId: string,
   activityType: string,
@@ -45,7 +46,7 @@ export async function submitAnswer(
   fileUri: string,
 ) {
   try {
-    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+    const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
     const filename = fileUri.split("/").pop()!;
     const mimeType = "audio/mpeg";
@@ -116,7 +117,7 @@ export async function createPictureSpeechActivity(
   difficulty: string,
 ) {
   try {
-    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/speech/picture`;
+    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
 
     const formData = new FormData();
 
@@ -210,7 +211,7 @@ export async function updatePictureActivity(
   }[],
 ) {
   try {
-    const url = `http://192.168.254.169:8001/api/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
+    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
 
     const formData = new FormData();
 

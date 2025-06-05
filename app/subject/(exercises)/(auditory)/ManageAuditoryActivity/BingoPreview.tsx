@@ -1,12 +1,12 @@
 import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useCallback, useState, useMemo } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
   Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import globalStyles from "@/styles/globalStyles";
@@ -119,6 +119,8 @@ const BingoPreview = () => {
       };
     });
 
+    console.log(activityId);
+
     try {
       const res = activityId
         ? await updateBingoActivity(
@@ -136,6 +138,8 @@ const BingoPreview = () => {
             activity,
             parsedBingoAudio,
           );
+
+      console.log(res);
 
       if (res.success) {
         Alert.alert(
