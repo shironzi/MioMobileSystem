@@ -21,6 +21,7 @@ interface FileInfo {
 interface FillItem {
   id: string;
   text: string;
+  answers: string[];
   distractors: string[];
   audio: FileInfo | null;
   audioType: "upload" | "record" | "system";
@@ -45,9 +46,11 @@ interface Props {
     value: "upload" | "record" | "system",
   ) => void;
   handleRemoveAudio: (id: string) => void;
-  handleAddItem: (id: string) => void;
+  handleAddItem: () => void;
   handleAddDistractor: (id: string) => void;
+  handleAddAnswer: (id: string) => void;
   handleDistractorInput: (id: string, index: number, value: string) => void;
+  handleAnswerInput: (id: string, index: number, value: string) => void;
   handleRemoveDistractor: (id: string, index: number) => void;
 }
 
@@ -66,6 +69,8 @@ const LanguageFillActivity = ({
   distractorErrorInput,
   handleDistractorInput,
   handleRemoveDistractor,
+  handleAnswerInput,
+  handleAddAnswer,
 }: Props) => {
   const item_id = parseInt(item.id);
   const [descHeight, setDescHeight] = useState<number>(100);
@@ -103,7 +108,7 @@ const LanguageFillActivity = ({
                 styles.errorBorder &&
                 styles.errorBorder,
             ]}
-            placeholder="Write the sentence (e.g., The sun rises in the east.)"
+            placeholder="Type a sentence with a blank for the answer (e.g., The sun _____ in the east.)"
             multiline={true}
             onContentSizeChange={(e) =>
               setDescHeight(e.nativeEvent.contentSize.height)
@@ -112,6 +117,44 @@ const LanguageFillActivity = ({
             value={item.text}
             onChangeText={(value: string) => handleTextInput(item.id, value)}
           />
+        </View>
+        <View style={{ marginBottom: 20, rowGap: 7.5 }}>
+          {item.answers.map((value, index) => (
+            <View key={index}>
+              {index === 0 && <Text style={globalStyles.text1}>Answer</Text>}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextInput
+                  style={[
+                    styles.textInputContainer,
+                    { width: "90%" },
+                    distractorErrorInput.some(
+                      (dist) => dist.id === item.id && dist.index === index,
+                    ) && styles.errorBorder,
+                  ]}
+                  placeholder={"Correct word for the blank (e.g., rises)"}
+                  value={value}
+                  onChangeText={(value) =>
+                    handleAnswerInput(item.id, index, value)
+                  }
+                />
+                {index !== 0 && (
+                  <TouchableOpacity>
+                    <AntDesign name="close" size={24} color="red" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          ))}
+          <TouchableOpacity style={styles.addItemRow}>
+            <MaterialIcons name="add" size={24} color="#FFBF18" />
+            <Text style={styles.addFileText}>Add Answer</Text>
+          </TouchableOpacity>
         </View>
         <View style={{ marginBottom: 20, rowGap: 7.5 }}>
           {item.distractors.map((value, index) => (
@@ -140,11 +183,13 @@ const LanguageFillActivity = ({
                     handleDistractorInput(item.id, index, value)
                   }
                 />
-                <TouchableOpacity
-                  onPress={() => handleRemoveDistractor(item.id, index)}
-                >
-                  <AntDesign name="close" size={24} color="red" />
-                </TouchableOpacity>
+                {index !== 0 && (
+                  <TouchableOpacity
+                    onPress={() => handleRemoveDistractor(item.id, index)}
+                  >
+                    <AntDesign name="close" size={24} color="red" />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           ))}
@@ -174,7 +219,7 @@ const LanguageFillActivity = ({
           <View style={styles.footerContainer}>
             <TouchableOpacity
               style={styles.addItemRow}
-              onPress={() => handleAddItem(item.id)}
+              onPress={() => handleAddItem()}
             >
               <MaterialIcons name="add" size={24} color="#FFBF18" />
               <Text style={styles.addFileText}>Add Item</Text>

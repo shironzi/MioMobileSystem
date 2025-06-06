@@ -14,6 +14,7 @@ interface FileInfo {
 interface FillItem {
   id: string;
   text: string;
+  answers: string[];
   distractors: string[];
   audio: FileInfo | null;
   audioType: "upload" | "record" | "system";
@@ -32,7 +33,14 @@ const AddLanguageActivity = () => {
   useHeaderConfig("Add Language Activity");
 
   const [fillItems, setFillItems] = useState<FillItem[]>([
-    { id: "0", text: "", audio: null, distractors: [""], audioType: "upload" },
+    {
+      id: "0",
+      text: "",
+      answers: [""],
+      audio: null,
+      distractors: [""],
+      audioType: "upload",
+    },
   ]);
   const [homonymItems, setHomonymItems] = useState<HomonymItem[]>([
     {
@@ -50,8 +58,8 @@ const AddLanguageActivity = () => {
   const renderFillItems = (item: FillItem) => (
     <FillRenderItem
       item={item}
-      items={fillItems}
-      setItems={(items) => setFillItems(items)}
+      fillItems={fillItems}
+      setFillItems={(items) => setFillItems(items)}
     />
   );
 
