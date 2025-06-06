@@ -59,6 +59,7 @@ const globalStyles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 28,
     color: "#1F1F1F",
+    fontWeight: "500",
   },
 });
 

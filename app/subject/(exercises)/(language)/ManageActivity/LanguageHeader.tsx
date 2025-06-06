@@ -11,7 +11,7 @@ const LanguageHeader = (props: {
 }) => (
   <View style={styles.header}>
     <View style={globalStyles.cardContainer}>
-      <Text>Type of Exercise</Text>
+      <Text style={globalStyles.text1}>Type of Exercise</Text>
       <Picker
         mode="dropdown"
         selectedValue={props.activityType}
@@ -23,7 +23,7 @@ const LanguageHeader = (props: {
         <Picker.Item label="Homonyms" value="homonyms" />
       </Picker>
 
-      <Text>Difficulty</Text>
+      <Text style={globalStyles.text1}>Difficulty</Text>
       <Picker
         mode="dropdown"
         selectedValue={props.activityDifficulty}
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
     backgroundColor: "#f2f2f2",
-    marginTop: 20,
   },
   headerText: {
     fontSize: 20,

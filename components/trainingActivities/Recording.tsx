@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import {
   useAudioRecorder,
   AudioModule,
@@ -8,23 +8,26 @@ import {
   AudioQuality,
 } from "expo-audio";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 
 const Recording = (props: {
-  onStart: () => void;
-  onStop: (uri: string | null) => void;
+  onStop: (file: string | null) => void;
+  inputError?: boolean;
 }) => {
-  RecordingPresets.HIGH_QUALITY = {
+  RecordingPresets.LOW_QUALITY = {
     extension: ".mp3",
     sampleRate: 44100,
     numberOfChannels: 2,
-    bitRate: 128000,
+    bitRate: 64000,
     android: {
-      outputFormat: "mpeg4",
-      audioEncoder: "aac",
+      extension: ".3gp",
+      outputFormat: "3gp",
+      audioEncoder: "amr_nb",
     },
     ios: {
+      audioQuality: AudioQuality.MIN,
       outputFormat: IOSOutputFormat.MPEG4AAC,
-      audioQuality: AudioQuality.MAX,
       linearPCMBitDepth: 16,
       linearPCMIsBigEndian: false,
       linearPCMIsFloat: false,
@@ -37,25 +40,19 @@ const Recording = (props: {
 
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const [isRecording, setIsRecording] = useState(false);
-  // const timerRef = useRef<number | null>(null);
 
-  const record = async () => {
+  const startRecording = async () => {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
     setIsRecording(true);
-    props.onStart();
-
-    // timerRef.current = setTimeout(() => {
-    //   setIsRecording(false);
-    // }, 8000);
   };
 
   const stopRecording = async () => {
     await audioRecorder.stop();
 
     const recordingUri = audioRecorder.uri;
-    props.onStop(recordingUri);
     setIsRecording(false);
+    props.onStop(recordingUri);
   };
 
   useEffect(() => {
@@ -67,28 +64,46 @@ const Recording = (props: {
     })();
   }, []);
 
+  const longPressGesture = Gesture.LongPress()
+    .onStart(() => {
+      runOnJS(startRecording)();
+    })
+    .onEnd(() => {
+      runOnJS(stopRecording)();
+    });
+
   return (
-    <View style={styles.micContainer}>
-      <TouchableOpacity
-        style={[styles.micButton, isRecording && styles.recordingButton]}
-        onPress={isRecording ? stopRecording : record}
-      >
-        <FontAwesome
-          name="microphone"
-          size={50}
-          color={isRecording ? "#fff" : "black"}
-        />
-      </TouchableOpacity>
-    </View>
+    <GestureDetector gesture={longPressGesture}>
+      <View style={styles.micContainer}>
+        <View
+          style={[
+            styles.micButton,
+            isRecording && styles.recordingButton,
+            props.inputError
+              ? { borderColor: "red" }
+              : { borderColor: "transparent" },
+          ]}
+        >
+          <FontAwesome
+            name="microphone"
+            size={50}
+            color={isRecording ? "#fff" : "black"}
+          />
+        </View>
+        <Text style={styles.instructionText}>
+          Press and hold the microphone to start recording. Release to stop.
+        </Text>
+      </View>
+    </GestureDetector>
   );
 };
 
 const styles = StyleSheet.create({
   micContainer: {
     alignItems: "center",
-    marginTop: 40,
     display: "flex",
     flexDirection: "column",
+    rowGap: 5,
   },
   micButton: {
     width: 80,
@@ -97,6 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1.5,
   },
   recordingText: {
     marginTop: 15,
@@ -105,6 +121,12 @@ const styles = StyleSheet.create({
   },
   recordingButton: {
     backgroundColor: "#FFBF18",
+  },
+  instructionText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: "#555",
+    textAlign: "center",
   },
 });
 
