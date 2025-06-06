@@ -24,9 +24,8 @@ interface Props {
 }
 
 interface InputError {
-  name: string | null;
-  index: number | null;
-  item: number | null;
+  id: string | null;
+  index: number[];
 }
 
 const LanguageHomonymActivity = ({
@@ -34,13 +33,11 @@ const LanguageHomonymActivity = ({
   homonymItems,
   setHomonymItems,
 }: Props) => {
-  const [inputError, setInputError] = useState<InputError>({
-    name: null,
-    index: null,
-    item: null,
-  });
+  const [inputError, setInputError] = useState<InputError[]>([]);
+  const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
+  const [audioErrorInput, setAudioErrorInput] = useState<InputError[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
-    { id: string; index: number }[]
+    { id: string | null; index: number | null }[]
   >([]);
 
   const handleRemoveItem = (id: string) => {
@@ -49,13 +46,76 @@ const LanguageHomonymActivity = ({
     const update = homonymItems.filter((item) => item.id !== id);
     setHomonymItems(update);
 
-    setInputError((prev) =>
-      prev && prev.index !== null && homonymItems[prev.index]?.id === id
-        ? { name: null, index: null, item: null }
-        : prev
-    );
-
+    setInputError((prev) => prev.filter((e) => e.id !== id));
+    setAnswerErrorInput((prev) => prev.filter((e) => e.id !== id));
+    setAudioErrorInput((prev) => prev.filter((e) => e.id !== id));
     setDistractorErrorInput((prev) => prev.filter((e) => e.id !== id));
+  };
+
+  const handleAddItem = () => {
+    const inputErrors: InputError[] = [];
+    const distractorErrors: { id: string | null; index: number | null }[] = [];
+    const answerErrors: InputError[] = [];
+    const audioErrors: InputError[] = [];
+
+    for (let i = 0; i < homonymItems.length; i++) {
+      const item = homonymItems[i];
+      const inputIndexErrors: number[] = [];
+      const answerIndexErrors: number[] = [];
+      const audioIndexErrors: number[] = [];
+
+      if (!item.text[0]?.trim()) inputIndexErrors.push(0);
+      if (!item.text[1]?.trim()) inputIndexErrors.push(1);
+      if (inputIndexErrors.length)
+        inputErrors.push({ id: item.id, index: inputIndexErrors });
+
+      if (!item.answer[0]?.trim()) answerIndexErrors.push(0);
+      if (!item.answer[1]?.trim()) answerIndexErrors.push(1);
+      if (answerIndexErrors.length)
+        answerErrors.push({ id: item.id, index: answerIndexErrors });
+
+      if (!item.audio[0] && item.audioType[0] !== "system")
+        audioIndexErrors.push(0);
+      if (!item.audio[1] && item.audioType[1] !== "system")
+        audioIndexErrors.push(1);
+      if (audioIndexErrors.length)
+        audioErrors.push({ id: item.id, index: audioIndexErrors });
+
+      item.distractors.forEach((dist, idx) => {
+        if (!dist.trim()) {
+          distractorErrors.push({ id: item.id, index: idx });
+        }
+      });
+    }
+
+    if (
+      inputErrors.length > 0 ||
+      distractorErrors.length > 0 ||
+      answerErrors.length > 0 ||
+      audioErrors.length > 0
+    ) {
+      setInputError(inputErrors);
+      setDistractorErrorInput(distractorErrors);
+      setAnswerErrorInput(answerErrors);
+      setAudioErrorInput(audioErrors);
+      return;
+    }
+
+    setInputError([]);
+    setDistractorErrorInput([]);
+    setAnswerErrorInput([]);
+    setAudioErrorInput([]);
+
+    const newItem: HomonymItem = {
+      id: String(homonymItems.length),
+      text: ["", ""],
+      answer: ["", ""],
+      distractors: [""],
+      audio: [],
+      audioType: ["upload", "upload"],
+    };
+
+    setHomonymItems([...homonymItems, newItem]);
   };
 
   const handleTextInput = (id: string, value: string, index: number) => {
@@ -65,7 +125,7 @@ const LanguageHomonymActivity = ({
             ...item,
             text: item.text.map((text, i) => (i === index ? value : text)),
           }
-        : item
+        : item,
     );
     setHomonymItems(update);
   };
@@ -77,72 +137,8 @@ const LanguageHomonymActivity = ({
             ...item,
             answer: item.answer.map((ans, i) => (i === index ? value : ans)),
           }
-        : item
+        : item,
     );
-    setHomonymItems(update);
-  };
-
-  const handleAddItem = (index: string) => {
-    const i = parseInt(index);
-    const item = homonymItems[i];
-
-    if (!item?.text[0]?.trim() || item.text[0].trim().length < 2) {
-      setInputError({ name: "textInput", index: i, item: 0 });
-      return;
-    }
-
-    if (!item?.text[1]?.trim() || item.text[1].trim().length < 2) {
-      setInputError({ name: "textInput", index: i, item: 1 });
-      return;
-    }
-
-    const hasEmptyDistractor = item.distractors.some(
-      (dist) => dist.trim().length === 0
-    );
-
-    if (!item.answer[0]?.trim()) {
-      setInputError({ name: "answer", index: i, item: 0 });
-    }
-
-    if (!item.answer[1]?.trim()) {
-      setInputError({ name: "answer", index: i, item: 1 });
-    }
-
-    if (hasEmptyDistractor) {
-      const invalids = item.distractors
-        .map((dist, idx) =>
-          dist.trim().length === 0 ? { id: item.id, index: idx } : null
-        )
-        .filter(Boolean) as { id: string; index: number }[];
-
-      setDistractorErrorInput(invalids);
-      return;
-    }
-
-    setDistractorErrorInput([]);
-
-    if (!item.audio[0] && item.audioType[0] !== "system") {
-      setInputError({ name: "audio", index: i, item: 0 });
-      return;
-    }
-
-    if (!item.audio[1] && item.audioType[1] !== "system") {
-      setInputError({ name: "audio", index: i, item: 1 });
-      return;
-    }
-
-    setInputError({ name: null, index: null, item: null });
-
-    const newItem: HomonymItem = {
-      id: String(homonymItems.length),
-      text: ["", ""],
-      answer: ["", ""],
-      distractors: [""],
-      audio: [],
-      audioType: ["upload", "upload"],
-    };
-
-    const update = [...homonymItems, newItem];
     setHomonymItems(update);
   };
 
@@ -167,7 +163,7 @@ const LanguageHomonymActivity = ({
     const update = homonymItems.map((item) => {
       if (item.id === id) {
         const updatedDistractors = item.distractors.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         );
         return {
           ...item,
@@ -180,7 +176,7 @@ const LanguageHomonymActivity = ({
     setHomonymItems(update);
 
     setDistractorErrorInput((prev) =>
-      prev.filter((dist) => !(dist.id === id && dist.index === index))
+      prev.filter((dist) => !(dist.id === id && dist.index === index)),
     );
   };
 
@@ -190,7 +186,7 @@ const LanguageHomonymActivity = ({
 
     const invalids = item.distractors
       .map((distractor, index) =>
-        distractor.trim().length === 0 ? { id, index } : null
+        distractor.trim().length === 0 ? { id, index } : null,
       )
       .filter(Boolean) as { id: string; index: number }[];
 
@@ -200,7 +196,7 @@ const LanguageHomonymActivity = ({
     const update = homonymItems.map((item) =>
       item.id === id
         ? { ...item, distractors: [...item.distractors, ""] }
-        : item
+        : item,
     );
 
     setHomonymItems(update);
@@ -222,7 +218,7 @@ const LanguageHomonymActivity = ({
   const handleAudioRecording = (
     id: string,
     uri: string | null,
-    index: number
+    index: number,
   ) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
@@ -249,7 +245,7 @@ const LanguageHomonymActivity = ({
   const handleSelectAudioType = (
     id: string,
     audioType: "upload" | "record" | "system",
-    index: number
+    index: number,
   ) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
@@ -289,11 +285,13 @@ const LanguageHomonymActivity = ({
 
   return (
     <HomonymRenderItem
-      ItemsLength={homonymItems.length}
-      handleAddItem={(id) => handleAddItem(id)}
+      handleAddItem={() => handleAddItem()}
       item={item}
       handleRemoveItem={(id) => handleRemoveItem(id)}
       inputError={inputError}
+      distractorErrorInput={distractorErrorInput}
+      answerErrorInput={answerErrorInput}
+      audioErrorInput={audioErrorInput}
       handleTextInput={(id, value, index) => handleTextInput(id, value, index)}
       handleAnswerInput={(id, value, index) =>
         handleAnswerInput(id, value, index)
@@ -309,9 +307,10 @@ const LanguageHomonymActivity = ({
         handleSelectAudioType(id, value, index)
       }
       handleRemoveAudio={(id, index) => handleRemoveAudio(id, index)}
-      distractorErrorInput={distractorErrorInput}
       handleRemoveDistractor={(id, index) => handleRemoveDistractor(id, index)}
       handleAddDistractor={(id) => handleAddDistractor(id)}
+      firstIndex={homonymItems[0]?.id}
+      lastIndex={homonymItems[homonymItems.length - 1]?.id ?? 0}
     />
   );
 };

@@ -16,7 +16,7 @@ interface FillItem {
   audioType: "upload" | "record" | "system";
 }
 interface InputError {
-  name: string | null;
+  id: string | null;
   index: number | null;
 }
 
@@ -27,36 +27,69 @@ interface Props {
   itemsLength: number;
 }
 
-const FillRenderItem = ({
-  item,
-  setFillItems,
-  fillItems,
-  itemsLength,
-}: Props) => {
-  const [inputError, setInputError] = useState<InputError>();
+const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
+  const [inputError, setInputError] = useState<{ id: string }[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
-    { id: string; index: number }[]
+    InputError[]
   >([]);
-
-  const [answerErrorInput, setAnswerErrorInput] = useState<
-    { id: string; index: number }[]
-  >([]);
+  const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
+  const [audioError, setAudioError] = useState<{ id: string }[]>([]);
 
   const handleAddItem = () => {
+    const inputErrors: { id: string }[] = [];
+    const answerErrors: { id: string; index: number }[] = [];
+    const distractorErrors: { id: string; index: number }[] = [];
+    const audioErrors: { id: string }[] = [];
+
     for (let i = 0; i < fillItems.length; i++) {
-      if (fillItems[i].text.trim() === "") {
-        setInputError({ name: "textInput", index: i });
-        return;
+      const item = fillItems[i];
+
+      if (item.text.trim() === "") {
+        inputErrors.push({ id: item.id });
+      }
+
+      item.answers.forEach((ans, index) => {
+        if (ans.trim() === "") {
+          answerErrors.push({ id: item.id, index });
+        }
+      });
+
+      item.distractors.forEach((dis, index) => {
+        if (dis.trim() === "") {
+          distractorErrors.push({ id: item.id, index });
+        }
+      });
+
+      if (item.audioType !== "system" && item.audio === null) {
+        audioErrors.push({ id: item.id });
       }
     }
-    const newId = (
-      fillItems.length > 0
-        ? Math.max(...fillItems.map((item) => parseInt(item.id))) + 1
-        : 0
-    ).toString();
+
+    if (
+      inputErrors.length > 0 ||
+      answerErrors.length > 0 ||
+      distractorErrors.length > 0 ||
+      audioErrors.length > 0
+    ) {
+      setInputError(inputErrors);
+      setAnswerErrorInput(answerErrors);
+      setDistractorErrorInput(distractorErrors);
+      setAudioError(audioErrors);
+      return;
+    }
+
+    setInputError([]);
+    setAnswerErrorInput([]);
+    setDistractorErrorInput([]);
+    setAudioError([]);
+
+    const newId =
+      (fillItems.length > 0
+        ? Math.max(...fillItems.map((item) => parseInt(item.id)))
+        : -1) + 1;
 
     const newItem: FillItem = {
-      id: String(itemsLength),
+      id: String(newId),
       text: "",
       answers: [""],
       distractors: [""],
@@ -65,48 +98,6 @@ const FillRenderItem = ({
     };
 
     setFillItems([...fillItems, newItem]);
-    // setFillItems((prev) => {
-    //   const newId = String(prev.length);
-    //   const i = parseInt(index);
-    //
-    //   if (!prev[i]?.text.trim()) {
-    //     setInputError({ name: "textInput", index: i });
-    //     return prev;
-    //   }
-    //
-    //   // if(answerErrorInput.length)
-    //
-    //   const invalids = prev[i].distractors
-    //     .map((dist, idx) =>
-    //       dist.trim().length === 0 ? { id: prev[i].id, index: idx } : null,
-    //     )
-    //     .filter(Boolean) as { id: string; index: number }[];
-    //   setDistractorErrorInput(invalids);
-    //
-    //   if (invalids) {
-    //     return prev;
-    //   }
-    //
-    //   const hasAudio = prev[i].audio !== null || prev[i].audioType === "system";
-    //
-    //   if (!hasAudio) {
-    //     setInputError({ name: "audio", index: i });
-    //     return prev;
-    //   }
-    //
-    //   setInputError({ name: null, index: null });
-    //
-    //   const newItem: FillItem = {
-    //     id: newId,
-    //     text: "",
-    //     answers: [""],
-    //     distractors: [""],
-    //     audio: null,
-    //     audioType: "upload",
-    //   };
-    //
-    //   return [...prev, newItem];
-    // });
   };
 
   const handleRemoveItem = (id: string) => {
@@ -115,35 +106,32 @@ const FillRenderItem = ({
 
     setFillItems(items);
 
-    setInputError((prev) =>
-      prev && prev.index !== null && fillItems[prev.index]?.id === id
-        ? { name: null, index: null }
-        : prev
-    );
-
+    setInputError((prev) => prev?.filter((e) => e.id !== id));
+    setAnswerErrorInput((prev) => prev?.filter((e) => e.id !== id));
     setDistractorErrorInput((prev) => prev.filter((e) => e.id !== id));
+    setAudioError((prev) => prev?.filter((e) => e.id !== id));
   };
 
   const handleSelectAudioType = (
     id: string,
-    audioType: "upload" | "record" | "system"
+    audioType: "upload" | "record" | "system",
   ) => {
     const update = fillItems.map((item) =>
-      item.id === id ? { ...item, audioType: audioType, audio: null } : item
+      item.id === id ? { ...item, audioType: audioType, audio: null } : item,
     );
     setFillItems(update);
   };
 
   const handleAddAudio = (id: string, audio: FileInfo) => {
     const update = fillItems.map((item) =>
-      item.id === id ? { ...item, audio } : item
+      item.id === id ? { ...item, audio } : item,
     );
     setFillItems(update);
   };
 
   const handleRemoveAudio = (id: string) => {
     const update = fillItems.map((item) =>
-      item.id === id ? { ...item, audio: null } : item
+      item.id === id ? { ...item, audio: null } : item,
     );
     setFillItems(update);
   };
@@ -170,7 +158,7 @@ const FillRenderItem = ({
 
   const handleTextInput = (id: string, value: string) => {
     const update = fillItems.map((item) =>
-      item.id === id ? { ...item, text: value } : item
+      item.id === id ? { ...item, text: value } : item,
     );
     setFillItems(update);
   };
@@ -266,7 +254,7 @@ const FillRenderItem = ({
     const update = fillItems.map((item) => {
       if (item.id === id && item.distractors.length > 1) {
         const updatedDistractors = item.distractors.filter(
-          (_, i) => i !== index
+          (_, i) => i !== index,
         );
         return {
           ...item,
@@ -278,14 +266,31 @@ const FillRenderItem = ({
 
     setFillItems(update);
     setDistractorErrorInput((prev) =>
-      prev.filter((dist) => !(dist.id === id && dist.index === index))
+      prev.filter((dist) => !(dist.id === id && dist.index === index)),
+    );
+  };
+
+  const handleRemoveAnswer = (id: string, index: number) => {
+    const update = fillItems.map((item) => {
+      if (item.id === id && item.answers.length > 1) {
+        const updatedAnswers = item.answers.filter((_, i) => i !== index);
+        return {
+          ...item,
+          answers: updatedAnswers,
+        };
+      }
+      return item;
+    });
+
+    setFillItems(update);
+    setAnswerErrorInput((prev) =>
+      prev.filter((ans) => !(ans.id === id && ans.index === index)),
     );
   };
 
   return (
     <LanguageFillActivity
       item={item}
-      fillItemsLength={fillItems.length}
       handleRemoveItem={(id) => handleRemoveItem(id)}
       inputError={inputError}
       handleTextInput={(id, value) => handleTextInput(id, value)}
@@ -295,9 +300,7 @@ const FillRenderItem = ({
       handleRemoveAudio={(id) => handleRemoveAudio(id)}
       handleAddItem={() => handleAddItem()}
       handleAddDistractor={(id) => handleAddDistractor(id)}
-      distractorErrorInput={distractorErrorInput.filter(
-        (dis) => dis.id === item.id
-      )}
+      distractorErrorInput={distractorErrorInput}
       handleDistractorInput={(id, index, value) =>
         handleDistractorInput(id, index, value)
       }
@@ -306,6 +309,13 @@ const FillRenderItem = ({
         handleAnswerInput(id, index, value)
       }
       handleAddAnswer={(id) => handleAddAnswer(id)}
+      firstIndex={fillItems[0]?.id}
+      lastIndex={fillItems[fillItems.length - 1]?.id ?? 0}
+      audioError={audioError}
+      answerInputError={answerErrorInput}
+      handleRemoveAnswer={(id: string, index: number) =>
+        handleRemoveAnswer(id, index)
+      }
     />
   );
 };

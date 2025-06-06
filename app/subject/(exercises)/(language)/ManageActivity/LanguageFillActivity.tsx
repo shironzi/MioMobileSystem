@@ -28,16 +28,16 @@ interface FillItem {
 }
 
 interface InputError {
-  name: string | null;
-  index: number | null;
+  id: string | null;
 }
 
 interface Props {
   item: FillItem;
-  distractorErrorInput: { id: string; index: number }[];
-  fillItemsLength: number;
+  firstIndex: string;
+  lastIndex: string;
+  distractorErrorInput: { id: string | null; index: number | null }[];
   handleRemoveItem: (id: string) => void;
-  inputError: InputError | undefined;
+  inputError: InputError[];
   handleTextInput: (id: string, value: string) => void;
   handleAddAudio: (id: string, file: FileInfo) => void;
   handleAudioRecording: (id: string, uri: string | null) => void;
@@ -52,11 +52,15 @@ interface Props {
   handleDistractorInput: (id: string, index: number, value: string) => void;
   handleAnswerInput: (id: string, index: number, value: string) => void;
   handleRemoveDistractor: (id: string, index: number) => void;
+  audioError: { id: string | null }[];
+  answerInputError: { id: string | null; index: number | null }[];
+  handleRemoveAnswer: (id: string, index: number) => void;
 }
 
 const LanguageFillActivity = ({
   item,
-  fillItemsLength,
+  firstIndex,
+  lastIndex,
   handleRemoveItem,
   inputError,
   handleTextInput,
@@ -71,17 +75,25 @@ const LanguageFillActivity = ({
   handleRemoveDistractor,
   handleAnswerInput,
   handleAddAnswer,
+  audioError,
+  answerInputError,
+  handleRemoveAnswer,
 }: Props) => {
   const item_id = parseInt(item.id);
   const [descHeight, setDescHeight] = useState<number>(100);
+
+  const textError = inputError.find((e) => e.id === item.id);
+  const audioErrors = audioError.find((e) => e.id === item.id);
+  const distractorErrors = distractorErrorInput.filter((e) => e.id === item.id);
+  const answerErrors = answerInputError.filter((e) => e.id === item.id);
 
   return (
     <GestureHandlerRootView>
       <View
         style={[
           styles.itemContainer,
-          item_id === 0 && styles.itemTopRounded,
-          item_id === fillItemsLength - 1 && styles.itemBottomRounded,
+          item.id === firstIndex && styles.itemTopRounded,
+          item.id === lastIndex && styles.itemBottomRounded,
         ]}
       >
         {item_id === 0 && (
@@ -102,11 +114,8 @@ const LanguageFillActivity = ({
           <TextInput
             style={[
               styles.textInputContainer,
-              { height: Math.max(descHeight, 100) },
-              item_id === inputError?.index &&
-                inputError?.name === "textInput" &&
-                styles.errorBorder &&
-                styles.errorBorder,
+              { height: Math.min(Math.max(descHeight, 100), 200) },
+              !!textError && styles.errorBorder,
             ]}
             placeholder="Type a sentence with a blank for the answer (e.g., The sun _____ in the east.)"
             multiline={true}
@@ -133,9 +142,8 @@ const LanguageFillActivity = ({
                   style={[
                     styles.textInputContainer,
                     { width: "90%" },
-                    distractorErrorInput.some(
-                      (dist) => dist.id === item.id && dist.index === index,
-                    ) && styles.errorBorder,
+                    answerErrors.some((e) => e.index === index) &&
+                      styles.errorBorder,
                   ]}
                   placeholder={"Correct word for the blank (e.g., rises)"}
                   value={value}
@@ -144,14 +152,19 @@ const LanguageFillActivity = ({
                   }
                 />
                 {index !== 0 && (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleRemoveAnswer(item.id, index)}
+                  >
                     <AntDesign name="close" size={24} color="red" />
                   </TouchableOpacity>
                 )}
               </View>
             </View>
           ))}
-          <TouchableOpacity style={styles.addItemRow}>
+          <TouchableOpacity
+            style={styles.addItemRow}
+            onPress={() => handleAddAnswer(item.id)}
+          >
             <MaterialIcons name="add" size={24} color="#FFBF18" />
             <Text style={styles.addFileText}>Add Answer</Text>
           </TouchableOpacity>
@@ -173,8 +186,8 @@ const LanguageFillActivity = ({
                   style={[
                     styles.textInputContainer,
                     { width: "90%" },
-                    distractorErrorInput.some(
-                      (dist) => dist.id === item.id && dist.index === index,
+                    distractorErrors.some(
+                      (err) => err.id === item.id && err.index === index,
                     ) && styles.errorBorder,
                   ]}
                   placeholder={"E.g., 'bare' for 'bear'"}
@@ -205,9 +218,7 @@ const LanguageFillActivity = ({
           item={item}
           isTextEmpty={item.text.trim().length < 1}
           handleAddAudio={(id, file) => handleAddAudio(id, file)}
-          inputError={
-            inputError?.index === item_id && inputError.name === "audio"
-          }
+          inputError={!!audioErrors}
           handleAudioRecording={(id, uri) => handleAudioRecording(id, uri)}
           handleSelectAudioType={(id, value) =>
             handleSelectAudioType(id, value)
@@ -215,7 +226,7 @@ const LanguageFillActivity = ({
           handleRemoveAudio={(id) => handleRemoveAudio(id)}
         />
         <View style={styles.divider} />
-        {item_id === fillItemsLength - 1 && (
+        {item.id === lastIndex && (
           <View style={styles.footerContainer}>
             <TouchableOpacity
               style={styles.addItemRow}

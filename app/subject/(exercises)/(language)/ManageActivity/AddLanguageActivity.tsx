@@ -55,23 +55,6 @@ const AddLanguageActivity = () => {
   const [activityType, setActivityType] = useState<string>("fill");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
 
-  const renderFillItems = (item: FillItem) => (
-    <FillRenderItem
-      item={item}
-      fillItems={fillItems}
-      setFillItems={(items) => setFillItems(items)}
-    />
-  );
-
-  const renderHomonymsItems = (item: HomonymItem) => (
-    <LanguageHomonymActivity
-      item={item}
-      homonymItems={homonymItems}
-      setHomonymItems={(prev: HomonymItem[]) => setHomonymItems(prev)}
-      ItemsLength={homonymItems.length}
-    />
-  );
-
   const header = () => (
     <LanguageHeader
       activityType={activityType}
@@ -87,8 +70,16 @@ const AddLanguageActivity = () => {
         <FlatList
           data={fillItems}
           ListHeaderComponent={header}
-          renderItem={({ item }) => renderFillItems(item)}
           keyExtractor={(item) => item.id}
+          keyboardShouldPersistTaps="handled"
+          renderItem={({ item }) => (
+            <FillRenderItem
+              item={item}
+              fillItems={fillItems}
+              setFillItems={setFillItems}
+              itemsLength={fillItems.length}
+            />
+          )}
         />
       )}
 
@@ -96,8 +87,16 @@ const AddLanguageActivity = () => {
         <FlatList
           data={homonymItems}
           ListHeaderComponent={header}
-          renderItem={({ item }) => renderHomonymsItems(item)}
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <LanguageHomonymActivity
+              item={item}
+              homonymItems={homonymItems}
+              setHomonymItems={(prev: HomonymItem[]) => setHomonymItems(prev)}
+              ItemsLength={homonymItems.length}
+            />
+          )}
         />
       )}
     </View>

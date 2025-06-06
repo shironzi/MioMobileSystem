@@ -28,16 +28,18 @@ interface HomonymItem {
 }
 
 interface InputError {
-  name: string | null;
-  index: number | null;
-  item: number | null;
+  id: string | null;
+  index: number[];
 }
 
 interface Props {
   item: HomonymItem;
-  ItemsLength: number;
-  inputError: InputError;
-  distractorErrorInput: { id: string; index: number }[];
+  firstIndex: string;
+  lastIndex: string;
+  inputError: InputError[];
+  answerErrorInput: InputError[];
+  audioErrorInput: InputError[];
+  distractorErrorInput: { id: string | null; index: number | null }[];
   handleRemoveItem: (id: string) => void;
   handleTextInput: (id: string, value: string, index: number) => void;
   handleAnswerInput: (id: string, value: string, index: number) => void;
@@ -52,12 +54,13 @@ interface Props {
   handleRemoveAudio: (id: string, index: number) => void;
   handleRemoveDistractor: (id: string, index: number) => void;
   handleAddDistractor: (id: string) => void;
-  handleAddItem: (id: string) => void;
+  handleAddItem: () => void;
 }
 
 const HomonymRenderItem = ({
   item,
-  ItemsLength,
+  firstIndex,
+  lastIndex,
   handleRemoveItem,
   inputError,
   handleTextInput,
@@ -71,15 +74,21 @@ const HomonymRenderItem = ({
   handleRemoveDistractor,
   handleAddDistractor,
   handleAddItem,
+  audioErrorInput,
+  answerErrorInput,
 }: Props) => {
   const item_id = parseInt(item.id);
+
+  const getFieldErrors = (errors: InputError[], index: number) =>
+    errors.some((e) => e.id === item.id && e.index.includes(index));
+
   return (
     <GestureHandlerRootView>
       <View
         style={[
           styles.itemContainer,
-          item_id === 0 && styles.itemTopRounded,
-          item_id === ItemsLength - 1 && styles.itemBottomRounded,
+          item.id === firstIndex && styles.itemTopRounded,
+          item.id === lastIndex && styles.itemBottomRounded,
         ]}
       >
         {item_id === 0 && (
@@ -100,49 +109,55 @@ const HomonymRenderItem = ({
           </View>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
             <HomonymItem
-              item_id={item_id}
               item={item}
-              inputError={inputError}
+              inputError={
+                getFieldErrors(inputError, 0)
+                  ? [{ id: item.id, index: [0] }]
+                  : []
+              }
+              audioErrors={
+                getFieldErrors(audioErrorInput, 0)
+                  ? [{ id: item.id, index: [0] }]
+                  : []
+              }
+              answerErrors={
+                getFieldErrors(answerErrorInput, 0)
+                  ? [{ id: item.id, index: [0] }]
+                  : []
+              }
               item_index={0}
-              handleTextInput={(id, value, index) =>
-                handleTextInput(id, value, index)
-              }
-              handleAnswerInput={(id, value, index) =>
-                handleAnswerInput(id, value, index)
-              }
-              handleAddAudio={(id, file, index) =>
-                handleAddAudio(id, file, index)
-              }
-              handleAudioRecording={(id, uri, index) =>
-                handleAudioRecording(id, uri, index)
-              }
-              handleSelectAudioType={(id, value, index) =>
-                handleSelectAudioType(id, value, index)
-              }
-              handleRemoveAudio={(id, index) => handleRemoveAudio(id, index)}
+              handleTextInput={handleTextInput}
+              handleAnswerInput={handleAnswerInput}
+              handleAddAudio={handleAddAudio}
+              handleAudioRecording={handleAudioRecording}
+              handleSelectAudioType={handleSelectAudioType}
+              handleRemoveAudio={handleRemoveAudio}
             />
 
             <HomonymItem
-              item_id={item_id}
               item={item}
-              inputError={inputError}
+              inputError={
+                getFieldErrors(inputError, 1)
+                  ? [{ id: item.id, index: [1] }]
+                  : []
+              }
+              audioErrors={
+                getFieldErrors(audioErrorInput, 1)
+                  ? [{ id: item.id, index: [1] }]
+                  : []
+              }
+              answerErrors={
+                getFieldErrors(answerErrorInput, 1)
+                  ? [{ id: item.id, index: [1] }]
+                  : []
+              }
               item_index={1}
-              handleTextInput={(id, value, index) =>
-                handleTextInput(id, value, index)
-              }
-              handleAnswerInput={(id, value, index) =>
-                handleAnswerInput(id, value, index)
-              }
-              handleAddAudio={(id, file, index) =>
-                handleAddAudio(id, file, index)
-              }
-              handleAudioRecording={(id, uri, index) =>
-                handleAudioRecording(id, uri, index)
-              }
-              handleSelectAudioType={(id, value, index) =>
-                handleSelectAudioType(id, value, index)
-              }
-              handleRemoveAudio={(id, index) => handleRemoveAudio(id, index)}
+              handleTextInput={handleTextInput}
+              handleAnswerInput={handleAnswerInput}
+              handleAddAudio={handleAddAudio}
+              handleAudioRecording={handleAudioRecording}
+              handleSelectAudioType={handleSelectAudioType}
+              handleRemoveAudio={handleRemoveAudio}
             />
           </View>
         </View>
@@ -164,7 +179,7 @@ const HomonymRenderItem = ({
                     styles.textInputContainer,
                     { width: "90%" },
                     distractorErrorInput.some(
-                      (dist) => dist.id === item.id && dist.index === index,
+                      (e) => e.index === index && e.id === item.id,
                     ) && styles.errorBorder,
                   ]}
                   placeholder={"E.g., 'bare' for 'bear'"}
@@ -191,11 +206,11 @@ const HomonymRenderItem = ({
         </View>
         <View style={styles.divider} />
 
-        {item_id === ItemsLength - 1 && (
+        {item.id === lastIndex && (
           <View style={styles.footerContainer}>
             <TouchableOpacity
               style={styles.addItemRow}
-              onPress={() => handleAddItem(item.id)}
+              onPress={() => handleAddItem()}
             >
               <MaterialIcons name="add" size={24} color="#FFBF18" />
               <Text style={styles.addFileText}>Add Item</Text>

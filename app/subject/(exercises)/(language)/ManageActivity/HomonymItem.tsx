@@ -18,14 +18,14 @@ interface HomonymItem {
 }
 
 interface InputError {
-  name: string | null;
-  index: number | null;
-  item: number | null;
+  id: string | null;
+  index: number[];
 }
 
 interface Props {
-  item_id: number;
-  inputError: InputError;
+  inputError: InputError[];
+  audioErrors: InputError[];
+  answerErrors: InputError[];
   item: HomonymItem;
   item_index: number;
   handleTextInput: (id: string, value: string, index: number) => void;
@@ -41,8 +41,9 @@ interface Props {
 }
 
 const HomonymItem = ({
-  item_id,
   inputError,
+  audioErrors,
+  answerErrors,
   item,
   item_index,
   handleTextInput,
@@ -54,6 +55,10 @@ const HomonymItem = ({
 }: Props) => {
   const [descHeight, setDescHeight] = useState<number>(100);
 
+  const hasAnswerError = answerErrors.find(
+    (e) => e.id === item.id && e.index.includes(item_index),
+  );
+
   return (
     <View>
       <View>
@@ -62,10 +67,9 @@ const HomonymItem = ({
           style={[
             styles.textInputContainer,
             { height: Math.max(descHeight, 100) },
-            item_id === inputError?.index &&
-              inputError?.name === "textInput" &&
-              inputError?.item === item_index &&
-              styles.errorBorder,
+            inputError.some(
+              (e) => e.id === item.id && e.index.includes(item_index),
+            ) && styles.errorBorder,
           ]}
           placeholder="Write the sentence (e.g., The sun rises in the east.)"
           multiline={true}
@@ -80,20 +84,12 @@ const HomonymItem = ({
         />
       </View>
       <View>
-        <Text
-          style={[
-            globalStyles.text1,
-            item_id === inputError?.index &&
-              inputError?.name === "textInput" &&
-              inputError?.item === 1 &&
-              styles.errorBorder &&
-              styles.errorBorder,
-          ]}
-        >
-          Answer
-        </Text>
+        <Text style={[globalStyles.text1]}>Answer</Text>
         <TextInput
-          style={[styles.textInputContainer]}
+          style={[
+            styles.textInputContainer,
+            hasAnswerError && styles.errorBorder,
+          ]}
           placeholder={"Enter homonym word (e.g., 'flower')"}
           value={item.answer[item_index]}
           onChangeText={(value) =>
@@ -106,9 +102,9 @@ const HomonymItem = ({
         isTextEmpty={item.text[item_index].trim().length < 1}
         itemIndex={item_index}
         handleAddAudio={(id, file) => handleAddAudio(id, file, item_index)}
-        inputError={
-          inputError?.index === item_id && inputError.name === "audio"
-        }
+        inputError={audioErrors.some(
+          (e) => e.id === item.id && e.index.includes(item_index),
+        )}
         handleAudioRecording={(id, uri) =>
           handleAudioRecording(id, uri, item_index)
         }
