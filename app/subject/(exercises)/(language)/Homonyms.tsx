@@ -7,8 +7,6 @@ import {
   startHomonymsActivity,
   submitHomonymsActivity,
 } from "@/utils/language";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
 import globalStyles from "@/styles/globalStyles";
 import { getApp } from "@react-native-firebase/app";
 import {
@@ -17,6 +15,18 @@ import {
   ref,
 } from "@react-native-firebase/storage";
 import { useAudioPlayer } from "expo-audio";
+import HomonymCard from "@/app/subject/(exercises)/(language)/HomonymCard";
+
+interface Activity {
+  sentence: string;
+  sentence_id: string;
+  audio_path: string;
+}
+
+interface Answer {
+  item_id: string;
+  answers: { sentence_id: string; answer: string }[];
+}
 
 const Homonyms = () => {
   HeaderConfig("Homonyms");
@@ -30,17 +40,13 @@ const Homonyms = () => {
       activityId: string;
     }>();
 
-  const [activity, setActivity] = useState<
-    { sentence: string; sentence_id: string; audio_path: string }[][]
-  >([]);
+  const [activity, setActivity] = useState<Activity[][]>([]);
   const [choices, setChoices] = useState<string[][]>([]);
   const [itemId, setItemId] = useState<string[]>([]);
   const [attemptId, setAttemptId] = useState<string>();
   const [currentItem, setCurrentItem] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [answers, setAnswers] = useState<
-    { item_id: string; answers: { sentence_id: string; answer: string }[] }[]
-  >([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
 
   const handleAnswer = (answer: string, sentence_id: string) => {
     setAnswers((prevAnswers) => {
@@ -97,7 +103,7 @@ const Homonyms = () => {
 
     setTimeout(() => {
       player.play();
-    }, 200); // 200ms is usually enough, or tweak as needed
+    }, 3000);
   };
 
   const [emptyInput, setEmptyInput] = useState<boolean>(false);
@@ -118,13 +124,11 @@ const Homonyms = () => {
       setEmptyInput(true);
       return;
     }
-
     if (isLastItem) {
       if (!attemptId) {
         console.error("Attempt id is empty");
         return;
       }
-
       try {
         const res = await submitHomonymsActivity(
           subjectId,
@@ -206,122 +210,23 @@ const Homonyms = () => {
           instruction="Guess the picture"
         />
 
-        <View style={{ width: "120%" }}>
-          {activity[currentItem].map((value, index) => {
-            const words = value.sentence.split(" ");
+        <HomonymCard
+          activity={activity}
+          choices={choices}
+          answers={answers}
+          currentItem={currentItem}
+          emptyInput={emptyInput}
+          handleAnswer={(answer, sentence_id) =>
+            handleAnswer(answer, sentence_id)
+          }
+          handleAudioPlay={(index) => handleAudioPlay(index)}
+          itemId={itemId}
+        />
 
-            return (
-              <View
-                key={index}
-                style={{
-                  marginBottom: 20,
-                  columnGap: 20,
-                  flexDirection: "row",
-                  borderWidth: 1,
-                  borderColor: "#00000024",
-                  padding: 9,
-                  marginHorizontal: 40,
-                  borderRadius: 20,
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#FFBF18",
-                    padding: 20,
-                    borderRadius: 15,
-                  }}
-                  onPress={() => handleAudioPlay(index)}
-                >
-                  <FontAwesome6 name="volume-high" size={25} color="#fff" />
-                </TouchableOpacity>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    marginVertical: "auto",
-                    maxWidth: "75%",
-                  }}
-                >
-                  {words.map((word, i) => {
-                    if (word === "_____") {
-                      return (
-                        <View
-                          key={`picker-${i}`}
-                          style={[
-                            {
-                              borderWidth: 1,
-                              borderRadius: 10,
-                              marginRight: 10,
-                              marginLeft: 5,
-                              flexDirection: "row",
-                              alignItems: "center",
-                            },
-                            emptyInput
-                              ? { borderColor: "red" }
-                              : { borderColor: "#00000024" },
-                          ]}
-                        >
-                          <Text style={{ position: "absolute", left: 10 }}>
-                            {answers
-                              .find((a) => a.item_id === itemId[currentItem])
-                              ?.answers.find(
-                                (ans) => ans.sentence_id === value.sentence_id,
-                              )?.answer || ""}
-                          </Text>
-                          <Picker
-                            selectedValue={
-                              answers
-                                .find((a) => a.item_id === itemId[currentItem])
-                                ?.answers.find(
-                                  (ans) =>
-                                    ans.sentence_id === value.sentence_id,
-                                )?.answer || ""
-                            }
-                            placeholder={"hello"}
-                            dropdownIconColor={"#FFBF19"}
-                            style={{
-                              width: 125,
-                              height: 30,
-                            }}
-                            onValueChange={(itemValue) =>
-                              handleAnswer(itemValue, value.sentence_id)
-                            }
-                            mode={"dropdown"}
-                          >
-                            {choices[currentItem].map((choice) => (
-                              <Picker.Item
-                                label={choice}
-                                value={choice}
-                                key={choice}
-                              />
-                            ))}
-                          </Picker>
-                        </View>
-                      );
-                    } else {
-                      return (
-                        <Text
-                          key={`word-${i}`}
-                          style={{ marginRight: 5, fontSize: 16 }}
-                        >
-                          {word}
-                        </Text>
-                      );
-                    }
-                  })}
-                </View>
-              </View>
-            );
-          })}
-        </View>
-
-        <View style={{ width: "100%" }}>
+        <View style={styles.buttonWrapper}>
           <TouchableOpacity
             onPress={handleNext}
             style={[styles.button, globalStyles.submitButton]}
-            // disabled={isAnswered && !isPlaying}
           >
             <Text style={styles.buttonText}>
               {currentItem < activity.length - 1 ? "Continue" : "Submit"}
@@ -334,10 +239,10 @@ const Homonyms = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   questionsContainer: {
     height: "70%",
@@ -345,15 +250,64 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
   },
+  questionsWrapper: {
+    width: "120%",
+  },
+  questionCard: {
+    marginBottom: 20,
+    flexDirection: "row",
+    columnGap: 20,
+    borderWidth: 1,
+    borderColor: "#00000024",
+    padding: 9,
+    marginHorizontal: 40,
+    borderRadius: 20,
+  },
+  audioButton: {
+    backgroundColor: "#FFBF18",
+    padding: 20,
+    borderRadius: 15,
+  },
+  wordContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    maxWidth: "75%",
+  },
+  wordText: {
+    marginRight: 5,
+    fontSize: 16,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderRadius: 10,
+    marginRight: 10,
+    marginLeft: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+  },
+  pickerNormal: {
+    borderColor: "#00000024",
+  },
+  pickerError: {
+    borderColor: "red",
+  },
+  pickerText: {
+    position: "absolute",
+    left: 10,
+    zIndex: 1,
+  },
+  picker: {
+    width: 125,
+    height: 30,
+  },
+  buttonWrapper: {
+    width: "100%",
+  },
   button: {
     borderRadius: 50,
     padding: 15,
-  },
-  activeButton: {
-    backgroundColor: "#FFBF18",
-  },
-  disabledButton: {
-    backgroundColor: "#E0E0E0",
   },
   buttonText: {
     color: "white",

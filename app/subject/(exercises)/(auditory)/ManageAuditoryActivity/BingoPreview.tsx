@@ -60,8 +60,6 @@ const BingoPreview = () => {
     }
   }, [bingoItems]);
 
-  console.log(parsedBingoItems[0]);
-
   const parsedBingoAudio = useMemo<AudioItem[]>(() => {
     try {
       return JSON.parse(bingoAudio || "[]");
@@ -119,8 +117,6 @@ const BingoPreview = () => {
       };
     });
 
-    console.log(activityId);
-
     try {
       const res = activityId
         ? await updateBingoActivity(
@@ -139,12 +135,10 @@ const BingoPreview = () => {
             parsedBingoAudio,
           );
 
-      console.log(res);
-
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity", // or customize if editing
+          "Successfully created the activity",
           [
             {
               text: "OK",

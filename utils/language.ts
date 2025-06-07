@@ -1,4 +1,7 @@
 import { api } from "@/utils/apiClient";
+import { getAuth } from "@react-native-firebase/auth";
+
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function startHomonymsActivity(
   subjectId: string,
@@ -72,5 +75,153 @@ export async function submitFillActivity(
     return data;
   } catch (err) {
     console.error("Take Activity Failed");
+  }
+}
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
+interface HomonymItem {
+  id: string;
+  text: string[];
+  answer: string[];
+  distractors: string[];
+  audio: FileInfo[];
+  audioType: ("upload" | "record" | "system")[];
+}
+
+export async function createHomonym(
+  activity: HomonymItem[],
+  difficulty: string,
+  subjectId: string,
+) {
+  const formData = new FormData();
+  formData.append("difficulty", difficulty);
+
+  activity.forEach((item, i) => {
+    item.text.forEach((sentence, j) => {
+      formData.append(`homonyms[${i}][sentences][${j}]`, sentence);
+    });
+
+    item.answer.forEach((answer, j) => {
+      formData.append(`homonyms[${i}][answers][${j}]`, answer);
+    });
+
+    item.audioType.forEach((type, j) => {
+      formData.append(`homonyms[${i}][audio_type][${j}]`, type);
+    });
+
+    if (item.audio) {
+      item.audio.forEach((audioFile, j) => {
+        if (audioFile && item.audioType[j] !== "system") {
+          formData.append(`homonyms[${i}][audio][${j}]`, {
+            uri: audioFile.uri,
+            name: audioFile.name,
+            type: audioFile.mimeType ?? "audio/mp3",
+          } as any);
+        }
+      });
+    }
+
+    item.distractors.forEach((distractor, j) => {
+      formData.append(`homonyms[${i}][distractors][${j}]`, distractor);
+    });
+  });
+
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Validation or server error:", data);
+      throw new Error(data.message || "Submission failed");
+    }
+
+    console.log("Success:", data);
+    return data;
+  } catch (err) {
+    console.error("Network or submission error:", err);
+    throw err;
+  }
+}
+
+interface FillItem {
+  id: string;
+  text: string;
+  distractors: string[];
+  audio: FileInfo | null;
+  audioType: "upload" | "record" | "system";
+}
+
+export async function createFill(
+  activity: FillItem[],
+  difficulty: string,
+  subjectId: string,
+) {
+  const formData = new FormData();
+  formData.append("difficulty", difficulty);
+
+  for (let index = 0; index < activity.length; index++) {
+    const item = activity[index];
+
+    formData.append(`activity[${index}][sentence]`, item.text);
+    formData.append(`activity[${index}][audioType]`, item.audioType);
+
+    if (item.audioType !== "system" && item.audio) {
+      const response = await fetch(item.audio.uri);
+      const blob = await response.blob();
+      formData.append(`activity[${index}][audio]`, blob, item.audio.name);
+    }
+
+    item.distractors.forEach((dist, j) => {
+      formData.append(`activity[${index}][distractors][${j}]`, dist);
+    });
+  }
+
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/language/fill`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Validation or server error:", data);
+      throw new Error(data.message || "Submission failed");
+    }
+
+    console.log("Success:", data);
+    return data;
+  } catch (err) {
+    console.error("Network or submission error:", err);
+    throw err;
   }
 }

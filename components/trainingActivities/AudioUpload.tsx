@@ -3,7 +3,6 @@ import React, { memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
-import { useAudioPlayer } from "expo-audio";
 
 interface FileInfo {
   uri: string;
@@ -20,9 +19,6 @@ const AudioUpload = (props: {
   audio_path: string | null;
 }) => {
   const [file, setFile] = useState<FileInfo | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
-  const player = useAudioPlayer();
 
   const handleFileUpload = async () => {
     const res = await DocumentPicker.getDocumentAsync({
@@ -121,14 +117,13 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 20,
     rowGap: 10,
-    height: 120,
+    height: 100,
   },
   addFileText: {
     color: "#1F1F1F68",
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: "italic",
     lineHeight: 28,
-    textAlign: "center",
   },
   actionsRow: {
     flexDirection: "row",
