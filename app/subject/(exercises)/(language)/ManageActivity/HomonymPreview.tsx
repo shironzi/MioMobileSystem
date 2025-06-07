@@ -1,9 +1,10 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymPreviewCard";
+import { createHomonym } from "@/utils/language";
 
 interface FileInfo {
   uri: string;
@@ -23,9 +24,12 @@ interface HomonymItem {
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const { data } = useLocalSearchParams();
+  const { data, subjectId, difficulty } = useLocalSearchParams<{
+    data: string;
+    subjectId: string;
+    difficulty: string;
+  }>();
   const items: HomonymItem[] = JSON.parse(decodeURIComponent(data as string));
-  const [activity, setActivity] = useState<HomonymItem[]>(items);
   const [answers, setAnswers] = useState<{ id: string; answer: string[] }[]>(
     [],
   );
@@ -51,10 +55,20 @@ const Homonyms = () => {
     });
   };
 
+  const handeCreate = async () => {
+    try {
+      const res = await createHomonym(items, difficulty, subjectId);
+
+      console.log(res);
+    } catch (err) {
+      console.error("hello");
+    }
+  };
+
   return (
     <View style={globalStyles.container}>
-      <View style={styles.questionsContainer}>
-        {activity.map((item, index) => (
+      <View style={[styles.questionsContainer, { height: "90%" }]}>
+        {items.map((item, index) => (
           <HomonymPreviewCard
             key={index}
             activity={item}
@@ -66,6 +80,12 @@ const Homonyms = () => {
           />
         ))}
       </View>
+      <TouchableOpacity
+        style={[globalStyles.submitButton, { justifyContent: "flex-end" }]}
+        onPress={handeCreate}
+      >
+        <Text style={globalStyles.submitButtonText}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 };

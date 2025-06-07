@@ -4,6 +4,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import LanguageHeader from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageHeader";
 import LanguageHomonymActivity from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageHomonymActivity";
 import FillRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/FillRenderItem";
+import { useLocalSearchParams } from "expo-router";
 
 interface FileInfo {
   uri: string;
@@ -31,6 +32,8 @@ interface HomonymItem {
 
 const AddLanguageActivity = () => {
   useHeaderConfig("Add Language Activity");
+
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
 
   const [fillItems, setFillItems] = useState<FillItem[]>([
     {
@@ -95,6 +98,9 @@ const AddLanguageActivity = () => {
               homonymItems={homonymItems}
               setHomonymItems={(prev: HomonymItem[]) => setHomonymItems(prev)}
               ItemsLength={homonymItems.length}
+              subjectId={subjectId}
+              activityType={activityType}
+              difficulty={activityDifficulty}
             />
           )}
         />

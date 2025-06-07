@@ -38,6 +38,7 @@ const SpeechTrainingExercise = () => {
   const handleAdd = () => {
     router.push({
       pathname: "/subject/ManageActivity/AddLanguageActivity",
+      params: { subjectId: subjectId },
     });
   };
 

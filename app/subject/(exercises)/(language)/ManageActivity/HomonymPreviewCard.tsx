@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     maxWidth: "75%",
-    gap: 4,
+    rowGap: 4,
   },
   wordText: {
     marginRight: 5,
