@@ -21,7 +21,6 @@ interface FileInfo {
 interface FillItem {
   id: string;
   text: string;
-  answers: string[];
   distractors: string[];
   audio: FileInfo | null;
   audioType: "upload" | "record" | "system";
@@ -29,13 +28,15 @@ interface FillItem {
 
 interface InputError {
   id: string | null;
+  index: number | null;
+  errorMessage: string;
 }
 
 interface Props {
   item: FillItem;
   firstIndex: string;
   lastIndex: string;
-  distractorErrorInput: { id: string | null; index: number | null }[];
+  distractorErrorInput: InputError[];
   handleRemoveItem: (id: string) => void;
   inputError: InputError[];
   handleTextInput: (id: string, value: string) => void;
@@ -48,14 +49,10 @@ interface Props {
   handleRemoveAudio: (id: string) => void;
   handleAddItem: () => void;
   handleAddDistractor: (id: string) => void;
-  handleAddAnswer: (id: string) => void;
   handleDistractorInput: (id: string, index: number, value: string) => void;
-  handleAnswerInput: (id: string, index: number, value: string) => void;
   handleRemoveDistractor: (id: string, index: number) => void;
   audioError: { id: string | null }[];
-  answerInputError: { id: string | null; index: number | null }[];
-  handleRemoveAnswer: (id: string, index: number) => void;
-  // handleSubmit: () => void;
+  handleSubmit: () => void;
 }
 
 const LanguageFillActivity = ({
@@ -74,20 +71,20 @@ const LanguageFillActivity = ({
   distractorErrorInput,
   handleDistractorInput,
   handleRemoveDistractor,
-  handleAnswerInput,
-  handleAddAnswer,
   audioError,
-  answerInputError,
-  handleRemoveAnswer,
-  // handleSubmit,
+  handleSubmit,
 }: Props) => {
   const item_id = parseInt(item.id);
   const [descHeight, setDescHeight] = useState<number>(100);
 
-  const textError = inputError.find((e) => e.id === item.id);
+  const textError = inputError.find((e) => e.id === item.id)?.errorMessage;
   const audioErrors = audioError.find((e) => e.id === item.id);
-  const distractorErrors = distractorErrorInput.filter((e) => e.id === item.id);
-  const answerErrors = answerInputError.filter((e) => e.id === item.id);
+
+  const getDistractorError = (index: number) => {
+    return distractorErrorInput.find(
+      (err) => err.id === item.id && err.index === index,
+    )?.errorMessage;
+  };
 
   return (
     <GestureHandlerRootView>
@@ -113,6 +110,7 @@ const LanguageFillActivity = ({
               <AntDesign name="close" size={24} color="red" />
             </TouchableOpacity>
           </View>
+          {textError && <Text style={styles.errorText}>{textError}</Text>}
           <TextInput
             style={[
               styles.textInputContainer,
@@ -130,48 +128,6 @@ const LanguageFillActivity = ({
           />
         </View>
         <View style={{ marginBottom: 20, rowGap: 7.5 }}>
-          {item.answers.map((value, index) => (
-            <View key={index}>
-              {index === 0 && <Text style={globalStyles.text1}>Answer</Text>}
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <TextInput
-                  style={[
-                    styles.textInputContainer,
-                    { width: "90%" },
-                    answerErrors.some((e) => e.index === index) &&
-                      styles.errorBorder,
-                  ]}
-                  placeholder={"Correct word for the blank (e.g., rises)"}
-                  value={value}
-                  onChangeText={(value) =>
-                    handleAnswerInput(item.id, index, value)
-                  }
-                />
-                {index !== 0 && (
-                  <TouchableOpacity
-                    onPress={() => handleRemoveAnswer(item.id, index)}
-                  >
-                    <AntDesign name="close" size={24} color="red" />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          ))}
-          <TouchableOpacity
-            style={styles.addItemRow}
-            onPress={() => handleAddAnswer(item.id)}
-          >
-            <MaterialIcons name="add" size={24} color="#FFBF18" />
-            <Text style={styles.addFileText}>Add Answer</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ marginBottom: 20, rowGap: 7.5 }}>
           {item.distractors.map((value, index) => (
             <View key={index}>
               {index === 0 && (
@@ -184,20 +140,24 @@ const LanguageFillActivity = ({
                   justifyContent: "space-between",
                 }}
               >
-                <TextInput
-                  style={[
-                    styles.textInputContainer,
-                    { width: "90%" },
-                    distractorErrors.some(
-                      (err) => err.id === item.id && err.index === index,
-                    ) && styles.errorBorder,
-                  ]}
-                  placeholder={"E.g., 'bare' for 'bear'"}
-                  value={value}
-                  onChangeText={(value) =>
-                    handleDistractorInput(item.id, index, value)
-                  }
-                />
+                <View style={{ width: "90%" }}>
+                  {getDistractorError(index) && (
+                    <Text style={styles.errorText}>
+                      {getDistractorError(index)}
+                    </Text>
+                  )}
+                  <TextInput
+                    style={[
+                      styles.textInputContainer,
+                      getDistractorError(index) && styles.errorBorder,
+                    ]}
+                    placeholder={"E.g., 'bare' for 'bear'"}
+                    value={value}
+                    onChangeText={(value) =>
+                      handleDistractorInput(item.id, index, value)
+                    }
+                  />
+                </View>
                 {index !== 0 && (
                   <TouchableOpacity
                     onPress={() => handleRemoveDistractor(item.id, index)}
@@ -240,7 +200,7 @@ const LanguageFillActivity = ({
 
             <TouchableOpacity
               style={globalStyles.submitButton}
-              // onPress={handleSubmit}
+              onPress={handleSubmit}
             >
               <Text style={globalStyles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
@@ -293,7 +253,6 @@ const styles = StyleSheet.create({
   },
   itemBodyContainer: {
     marginBottom: 15,
-    rowGap: 15,
   },
   itemHeaderRow: {
     flexDirection: "row",
@@ -308,6 +267,12 @@ const styles = StyleSheet.create({
   },
   addItemRow: {
     flexDirection: "row",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
   },
 });
 

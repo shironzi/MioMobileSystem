@@ -19,7 +19,15 @@ interface InputError {
   error: string | null;
 }
 
-export function validateHomonymItems(items: HomonymItem[]) {
+interface FillItem {
+  id: string;
+  text: string;
+  distractors: string[];
+  audio: FileInfo | null;
+  audioType: "upload" | "record" | "system";
+}
+
+export default function validateHomonymItems(items: HomonymItem[]) {
   const inputErrors: InputError[] = [];
   const distractorErrors: {
     id: string | null;
@@ -88,4 +96,46 @@ export function validateHomonymItems(items: HomonymItem[]) {
       answerErrors.length > 0 ||
       audioErrors.length > 0,
   };
+}
+
+interface FillInputError {
+  id: string | null;
+  index: number | null;
+  errorMessage: string;
+}
+
+export function validateFillItems(items: FillItem[]) {
+  const inputErrors: FillInputError[] = [];
+  const distractorErrors: FillInputError[] = [];
+  const audioErrors: FillInputError[] = [];
+
+  for (let item of items) {
+    if (!item.text.trim()) {
+      inputErrors.push({
+        id: item.id,
+        index: null,
+        errorMessage: "This field is required",
+      });
+    }
+
+    item.distractors.forEach((dis, idx) => {
+      if (!dis.trim()) {
+        distractorErrors.push({
+          id: item.id,
+          index: idx,
+          errorMessage: "This field is required",
+        });
+      }
+    });
+
+    if (item.audioType !== "system" && !item.audio) {
+      audioErrors.push({
+        id: item.id,
+        index: null,
+        errorMessage: "This field is required",
+      });
+    }
+  }
+
+  return { inputErrors, distractorErrors, audioErrors };
 }

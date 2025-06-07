@@ -1,6 +1,6 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import ActivityProgress from "@/components/activityProgress";
@@ -183,7 +183,5 @@ const fillInTheBlank = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default fillInTheBlank;

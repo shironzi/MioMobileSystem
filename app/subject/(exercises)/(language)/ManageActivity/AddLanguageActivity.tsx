@@ -15,7 +15,6 @@ interface FileInfo {
 interface FillItem {
   id: string;
   text: string;
-  answers: string[];
   distractors: string[];
   audio: FileInfo | null;
   audioType: "upload" | "record" | "system";
@@ -39,7 +38,6 @@ const AddLanguageActivity = () => {
     {
       id: "0",
       text: "",
-      answers: [""],
       audio: null,
       distractors: [""],
       audioType: "upload",
@@ -81,6 +79,9 @@ const AddLanguageActivity = () => {
               fillItems={fillItems}
               setFillItems={setFillItems}
               itemsLength={fillItems.length}
+              subjectId={subjectId}
+              activityType={activityType}
+              difficulty={activityDifficulty}
             />
           )}
         />

@@ -1,7 +1,7 @@
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymPreviewCard";
 import { createHomonym } from "@/utils/language";
@@ -59,9 +59,27 @@ const Homonyms = () => {
     try {
       const res = await createHomonym(items, difficulty, subjectId);
 
-      console.log(res);
+      if (res.success) {
+        Alert.alert(
+          "Success",
+          "Successfully created the activity",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
     } catch (err) {
-      console.error("hello");
+      console.error("Submission error:", err);
+      Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
 

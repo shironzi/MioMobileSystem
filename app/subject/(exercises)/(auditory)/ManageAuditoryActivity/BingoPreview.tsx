@@ -138,7 +138,7 @@ const BingoPreview = () => {
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity", // or customize if editing
+          "Successfully created the activity",
           [
             {
               text: "OK",

@@ -1,5 +1,7 @@
 import LanguageFillActivity from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageFillActivity";
 import React, { memo, useState } from "react";
+import { validateFillItems } from "@/app/subject/(exercises)/(language)/ManageActivity/languageValidations";
+import { router } from "expo-router";
 
 interface FileInfo {
   uri: string;
@@ -10,7 +12,6 @@ interface FileInfo {
 interface FillItem {
   id: string;
   text: string;
-  answers: string[];
   distractors: string[];
   audio: FileInfo | null;
   audioType: "upload" | "record" | "system";
@@ -18,6 +19,7 @@ interface FillItem {
 interface InputError {
   id: string | null;
   index: number | null;
+  errorMessage: string;
 }
 
 interface Props {
@@ -25,61 +27,39 @@ interface Props {
   setFillItems: (items: FillItem[]) => void;
   fillItems: FillItem[];
   itemsLength: number;
+  activityType: string;
+  difficulty: string;
+  subjectId: string;
 }
 
-const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
-  const [inputError, setInputError] = useState<{ id: string }[]>([]);
+const FillRenderItem = ({
+  item,
+  setFillItems,
+  fillItems,
+  activityType,
+  difficulty,
+  subjectId,
+}: Props) => {
+  const [inputError, setInputError] = useState<InputError[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
     InputError[]
   >([]);
-  const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
-  const [audioError, setAudioError] = useState<{ id: string }[]>([]);
+  const [audioError, setAudioError] = useState<InputError[]>([]);
 
   const handleAddItem = () => {
-    const inputErrors: { id: string }[] = [];
-    const answerErrors: { id: string; index: number }[] = [];
-    const distractorErrors: { id: string; index: number }[] = [];
-    const audioErrors: { id: string }[] = [];
+    const { inputErrors, distractorErrors, audioErrors } =
+      validateFillItems(fillItems);
+    const hasErrors =
+      inputErrors.length || distractorErrors.length || audioErrors.length;
 
-    for (let i = 0; i < fillItems.length; i++) {
-      const item = fillItems[i];
-
-      if (item.text.trim() === "") {
-        inputErrors.push({ id: item.id });
-      }
-
-      item.answers.forEach((ans, index) => {
-        if (ans.trim() === "") {
-          answerErrors.push({ id: item.id, index });
-        }
-      });
-
-      item.distractors.forEach((dis, index) => {
-        if (dis.trim() === "") {
-          distractorErrors.push({ id: item.id, index });
-        }
-      });
-
-      if (item.audioType !== "system" && item.audio === null) {
-        audioErrors.push({ id: item.id });
-      }
-    }
-
-    if (
-      inputErrors.length > 0 ||
-      answerErrors.length > 0 ||
-      distractorErrors.length > 0 ||
-      audioErrors.length > 0
-    ) {
+    if (hasErrors) {
       setInputError(inputErrors);
-      setAnswerErrorInput(answerErrors);
       setDistractorErrorInput(distractorErrors);
       setAudioError(audioErrors);
       return;
     }
 
     setInputError([]);
-    setAnswerErrorInput([]);
     setDistractorErrorInput([]);
     setAudioError([]);
 
@@ -91,7 +71,6 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
     const newItem: FillItem = {
       id: String(newId),
       text: "",
-      answers: [""],
       distractors: [""],
       audio: null,
       audioType: "upload",
@@ -107,7 +86,6 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
     setFillItems(items);
 
     setInputError((prev) => prev?.filter((e) => e.id !== id));
-    setAnswerErrorInput((prev) => prev?.filter((e) => e.id !== id));
     setDistractorErrorInput((prev) => prev.filter((e) => e.id !== id));
     setAudioError((prev) => prev?.filter((e) => e.id !== id));
   };
@@ -157,6 +135,19 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
   };
 
   const handleTextInput = (id: string, value: string) => {
+    if (value.length > 300) {
+      setInputError((prev) => [
+        ...prev,
+        {
+          id,
+          index: null,
+          errorMessage: "Maximum 300 characters only.",
+        },
+      ]);
+      return;
+    }
+
+    setInputError((prev) => prev.filter((err) => err.id !== id));
     const update = fillItems.map((item) =>
       item.id === id ? { ...item, text: value } : item,
     );
@@ -167,10 +158,10 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
     const item = fillItems.find((item) => item.id === id);
     if (!item) return;
 
-    const invalids: { id: string; index: number }[] = [];
+    const invalids: InputError[] = [];
     item.distractors.forEach((distractor, index) => {
       if (distractor.trim().length <= 0) {
-        invalids.push({ id, index });
+        invalids.push({ id, index, errorMessage: "This field is required" });
       }
     });
 
@@ -191,58 +182,30 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
     setFillItems(update);
   };
 
-  const handleAddAnswer = (id: string) => {
-    const item = fillItems.find((item) => item.id === id);
-    if (!item) return;
-
-    const invalids: { id: string; index: number }[] = [];
-    item.answers.forEach((answer, index) => {
-      if (answer.trim().length <= 0) {
-        invalids.push({ id, index });
-      }
-    });
-
-    setAnswerErrorInput(invalids);
-
-    if (invalids.length > 0) return;
-
-    const update = fillItems.map((item) => {
-      if (item.id === id) {
-        return {
-          ...item,
-          answers: [...item.answers, ""],
-        };
-      }
-      return item;
-    });
-    setFillItems(update);
-  };
-
   const handleDistractorInput = (id: string, index: number, value: string) => {
+    if (value.length > 30) {
+      setDistractorErrorInput((prev) => [
+        ...prev,
+        {
+          id,
+          index: index,
+          errorMessage: "Maximum 30 characters only.",
+        },
+      ]);
+      return;
+    }
+
+    setDistractorErrorInput((prev) =>
+      prev.filter((err) => err.id !== id && err.index !== index),
+    );
+
     const update = fillItems.map((item) => {
       if (item.id === id) {
         const updatedDistractors = [...item.distractors];
         updatedDistractors[index] = value;
-
         return {
           ...item,
           distractors: updatedDistractors,
-        };
-      }
-      return item;
-    });
-    setFillItems(update);
-  };
-
-  const handleAnswerInput = (id: string, index: number, value: string) => {
-    const update = fillItems.map((item) => {
-      if (item.id === id) {
-        const updatedAnswers = [...(item.answers || [])];
-        updatedAnswers[index] = value;
-
-        return {
-          ...item,
-          answers: updatedAnswers,
         };
       }
       return item;
@@ -270,22 +233,31 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
     );
   };
 
-  const handleRemoveAnswer = (id: string, index: number) => {
-    const update = fillItems.map((item) => {
-      if (item.id === id && item.answers.length > 1) {
-        const updatedAnswers = item.answers.filter((_, i) => i !== index);
-        return {
-          ...item,
-          answers: updatedAnswers,
-        };
-      }
-      return item;
-    });
+  const handleSubmit = () => {
+    const { inputErrors, audioErrors, distractorErrors } =
+      validateFillItems(fillItems);
 
-    setFillItems(update);
-    setAnswerErrorInput((prev) =>
-      prev.filter((ans) => !(ans.id === id && ans.index === index)),
-    );
+    if (inputErrors || audioErrors || distractorErrors) {
+      setInputError(inputErrors);
+      setDistractorErrorInput(distractorErrors);
+      setAudioError(audioErrors);
+    }
+
+    setInputError([]);
+    setDistractorErrorInput([]);
+    setAudioError([]);
+
+    const fillData = encodeURIComponent(JSON.stringify(fillItems));
+
+    router.push({
+      pathname: "/subject/ManageActivity/FillPreview",
+      params: {
+        data: fillData,
+        subjectId: subjectId,
+        activityType: activityType,
+        difficulty: difficulty,
+      },
+    });
   };
 
   return (
@@ -305,17 +277,10 @@ const FillRenderItem = ({ item, setFillItems, fillItems }: Props) => {
         handleDistractorInput(id, index, value)
       }
       handleRemoveDistractor={(id, index) => handleRemoveDistractor(id, index)}
-      handleAnswerInput={(id, index, value) =>
-        handleAnswerInput(id, index, value)
-      }
-      handleAddAnswer={(id) => handleAddAnswer(id)}
       firstIndex={fillItems[0]?.id}
       lastIndex={fillItems[fillItems.length - 1]?.id ?? 0}
       audioError={audioError}
-      answerInputError={answerErrorInput}
-      handleRemoveAnswer={(id: string, index: number) =>
-        handleRemoveAnswer(id, index)
-      }
+      handleSubmit={handleSubmit}
     />
   );
 };

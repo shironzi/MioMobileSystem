@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as Speech from "expo-speech";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useAudioPlayer } from "expo-audio";
 
 interface FileInfo {
   uri: string;
@@ -39,10 +40,23 @@ const HomonymPreviewCard = ({
     new Set([...activity.distractors, ...activity.answer]),
   );
 
-  const speak = (text: string) => {
+  const player = useAudioPlayer();
+
+  const handleAudioPlay = (
+    activityType: string,
+    text: string,
+    audio: FileInfo,
+  ) => {
+    if (activityType !== "system") {
+      player.replace({ uri: audio.uri });
+      player.play();
+
+      return;
+    }
+
     Speech.speak(text, {
       pitch: 1,
-      rate: 0.4,
+      rate: 0.5,
       language: "en-US",
       voice: "com.apple.ttsbundle.Samantha-compact",
     });
@@ -62,7 +76,13 @@ const HomonymPreviewCard = ({
         style={[styles.questionCard, { flexDirection: "row", columnGap: 10 }]}
       >
         <TouchableOpacity
-          onPress={() => speak(activity.text[0])}
+          onPress={() =>
+            handleAudioPlay(
+              activity.audioType[0],
+              activity.text[0],
+              activity.audio[0],
+            )
+          }
           style={{
             backgroundColor: "#FFBF18",
             paddingVertical: 20,
@@ -113,7 +133,13 @@ const HomonymPreviewCard = ({
         style={[styles.questionCard, { flexDirection: "row", columnGap: 10 }]}
       >
         <TouchableOpacity
-          onPress={() => speak(activity.text[1])}
+          onPress={() =>
+            handleAudioPlay(
+              activity.audioType[1],
+              activity.text[1],
+              activity.audio[1],
+            )
+          }
           style={{
             backgroundColor: "#FFBF18",
             paddingVertical: 20,

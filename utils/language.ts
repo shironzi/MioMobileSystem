@@ -161,3 +161,67 @@ export async function createHomonym(
     throw err;
   }
 }
+
+interface FillItem {
+  id: string;
+  text: string;
+  distractors: string[];
+  audio: FileInfo | null;
+  audioType: "upload" | "record" | "system";
+}
+
+export async function createFill(
+  activity: FillItem[],
+  difficulty: string,
+  subjectId: string,
+) {
+  const formData = new FormData();
+  formData.append("difficulty", difficulty);
+
+  for (let index = 0; index < activity.length; index++) {
+    const item = activity[index];
+
+    formData.append(`activity[${index}][sentence]`, item.text);
+    formData.append(`activity[${index}][audioType]`, item.audioType);
+
+    if (item.audioType !== "system" && item.audio) {
+      const response = await fetch(item.audio.uri);
+      const blob = await response.blob();
+      formData.append(`activity[${index}][audio]`, blob, item.audio.name);
+    }
+
+    item.distractors.forEach((dist, j) => {
+      formData.append(`activity[${index}][distractors][${j}]`, dist);
+    });
+  }
+
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/language/fill`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Validation or server error:", data);
+      throw new Error(data.message || "Submission failed");
+    }
+
+    console.log("Success:", data);
+    return data;
+  } catch (err) {
+    console.error("Network or submission error:", err);
+    throw err;
+  }
+}

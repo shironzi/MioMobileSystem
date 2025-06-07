@@ -1,7 +1,7 @@
 import HomonymRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymRenderItem";
 import React, { memo, useState } from "react";
 import { router } from "expo-router";
-import { validateHomonymItems } from "@/app/subject/(exercises)/(language)/ManageActivity/languageValidations";
+import validateHomonymItems from "@/app/subject/(exercises)/(language)/ManageActivity/languageValidations";
 
 interface FileInfo {
   uri: string;
@@ -29,8 +29,8 @@ interface Props {
   homonymItems: HomonymItem[];
   setHomonymItems: (prev: HomonymItem[]) => void;
   ItemsLength: number;
-  activityType?: string;
-  difficulty?: string;
+  activityType: string;
+  difficulty: string;
   subjectId: string;
 }
 

@@ -44,7 +44,7 @@ const HomonymAudioUpload = (props: {
   const speak = async () => {
     Speech.speak(props.item.text[props.itemIndex], {
       pitch: 1,
-      rate: 0.5,
+      rate: 0.6,
       language: "en-US",
       voice: "com.apple.ttsbundle.Samantha-compact",
     });
