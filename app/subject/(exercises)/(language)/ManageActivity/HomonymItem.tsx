@@ -8,6 +8,7 @@ interface FileInfo {
   name: string;
   mimeType?: string;
 }
+
 interface HomonymItem {
   id: string;
   text: string[];
@@ -17,15 +18,10 @@ interface HomonymItem {
   audioType: ("upload" | "record" | "system")[];
 }
 
-interface InputError {
-  id: string | null;
-  index: number[];
-}
-
 interface Props {
-  inputError: InputError[];
-  audioErrors: InputError[];
-  answerErrors: InputError[];
+  inputErrorMessage: any;
+  audioErrorMessage: any;
+  answerErrorMessage: any;
   item: HomonymItem;
   item_index: number;
   handleTextInput: (id: string, value: string, index: number) => void;
@@ -41,9 +37,9 @@ interface Props {
 }
 
 const HomonymItem = ({
-  inputError,
-  audioErrors,
-  answerErrors,
+  inputErrorMessage,
+  audioErrorMessage,
+  answerErrorMessage,
   item,
   item_index,
   handleTextInput,
@@ -55,21 +51,20 @@ const HomonymItem = ({
 }: Props) => {
   const [descHeight, setDescHeight] = useState<number>(100);
 
-  const hasAnswerError = answerErrors.find(
-    (e) => e.id === item.id && e.index.includes(item_index),
-  );
-
   return (
     <View>
       <View>
-        <Text style={globalStyles.text1}>Homonym 1</Text>
+        <Text style={globalStyles.text1}>
+          Homonym sentence {item_index + 1}
+        </Text>
+        {inputErrorMessage && (
+          <Text style={styles.errorText}>{inputErrorMessage}</Text>
+        )}
         <TextInput
           style={[
             styles.textInputContainer,
             { height: Math.max(descHeight, 100) },
-            inputError.some(
-              (e) => e.id === item.id && e.index.includes(item_index),
-            ) && styles.errorBorder,
+            inputErrorMessage && styles.errorBorder,
           ]}
           placeholder="Write the sentence (e.g., The sun rises in the east.)"
           multiline={true}
@@ -85,10 +80,13 @@ const HomonymItem = ({
       </View>
       <View>
         <Text style={[globalStyles.text1]}>Answer</Text>
+        {answerErrorMessage && (
+          <Text style={styles.errorText}>{answerErrorMessage}</Text>
+        )}
         <TextInput
           style={[
             styles.textInputContainer,
-            hasAnswerError && styles.errorBorder,
+            answerErrorMessage && styles.errorBorder,
           ]}
           placeholder={"Enter homonym word (e.g., 'flower')"}
           value={item.answer[item_index]}
@@ -100,11 +98,10 @@ const HomonymItem = ({
       <HomonymAudioUpload
         item={item}
         isTextEmpty={item.text[item_index].trim().length < 1}
+        errorMessage={audioErrorMessage}
         itemIndex={item_index}
         handleAddAudio={(id, file) => handleAddAudio(id, file, item_index)}
-        inputError={audioErrors.some(
-          (e) => e.id === item.id && e.index.includes(item_index),
-        )}
+        inputError={!!audioErrorMessage}
         handleAudioRecording={(id, uri) =>
           handleAudioRecording(id, uri, item_index)
         }
@@ -127,6 +124,12 @@ const styles = StyleSheet.create({
   },
   errorBorder: {
     borderColor: "red",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
   },
 });
 

@@ -37,6 +37,7 @@ const HomonymAudioUpload = (props: {
   handleRemoveAudio: (id: string) => void;
   handleAudioRecording: (id: string, uri: string | null) => void;
   itemIndex: number;
+  errorMessage: string | null | undefined;
 }) => {
   const player = useAudioPlayer();
 
@@ -59,9 +60,18 @@ const HomonymAudioUpload = (props: {
     SystemSetting.setVolume(0.9);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
   return (
     <View style={styles.audioRow}>
       <Text style={globalStyles.text1}>Audio Type</Text>
+      {!!props.errorMessage && (
+        <Text style={styles.errorText}>{props.errorMessage}</Text>
+      )}
       <View
         style={{
           borderWidth: 1,
@@ -239,6 +249,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
   },
 });
 

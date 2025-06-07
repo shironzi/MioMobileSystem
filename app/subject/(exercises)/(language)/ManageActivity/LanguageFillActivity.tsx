@@ -55,6 +55,7 @@ interface Props {
   audioError: { id: string | null }[];
   answerInputError: { id: string | null; index: number | null }[];
   handleRemoveAnswer: (id: string, index: number) => void;
+  // handleSubmit: () => void;
 }
 
 const LanguageFillActivity = ({
@@ -78,6 +79,7 @@ const LanguageFillActivity = ({
   audioError,
   answerInputError,
   handleRemoveAnswer,
+  // handleSubmit,
 }: Props) => {
   const item_id = parseInt(item.id);
   const [descHeight, setDescHeight] = useState<number>(100);
@@ -236,7 +238,10 @@ const LanguageFillActivity = ({
               <Text style={styles.addFileText}>Add Item</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={globalStyles.submitButton}>
+            <TouchableOpacity
+              style={globalStyles.submitButton}
+              // onPress={handleSubmit}
+            >
               <Text style={globalStyles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>

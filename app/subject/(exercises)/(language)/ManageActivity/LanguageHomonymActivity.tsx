@@ -1,5 +1,6 @@
 import HomonymRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymRenderItem";
 import React, { memo, useState } from "react";
+import { router } from "expo-router";
 
 interface FileInfo {
   uri: string;
@@ -16,16 +17,17 @@ interface HomonymItem {
   audioType: ("upload" | "record" | "system")[];
 }
 
+interface InputError {
+  id: string | null;
+  index: number[];
+  error: string | null;
+}
+
 interface Props {
   item: HomonymItem;
   homonymItems: HomonymItem[];
   setHomonymItems: (prev: HomonymItem[]) => void;
   ItemsLength: number;
-}
-
-interface InputError {
-  id: string | null;
-  index: number[];
 }
 
 const LanguageHomonymActivity = ({
@@ -37,7 +39,7 @@ const LanguageHomonymActivity = ({
   const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
   const [audioErrorInput, setAudioErrorInput] = useState<InputError[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
-    { id: string | null; index: number | null }[]
+    { id: string | null; index: number | null; error: string }[]
   >([]);
 
   const handleRemoveItem = (id: string) => {
@@ -54,7 +56,11 @@ const LanguageHomonymActivity = ({
 
   const handleAddItem = () => {
     const inputErrors: InputError[] = [];
-    const distractorErrors: { id: string | null; index: number | null }[] = [];
+    const distractorErrors: {
+      id: string | null;
+      index: number | null;
+      error: string;
+    }[] = [];
     const answerErrors: InputError[] = [];
     const audioErrors: InputError[] = [];
 
@@ -64,26 +70,45 @@ const LanguageHomonymActivity = ({
       const answerIndexErrors: number[] = [];
       const audioIndexErrors: number[] = [];
 
-      if (!item.text[0]?.trim()) inputIndexErrors.push(0);
-      if (!item.text[1]?.trim()) inputIndexErrors.push(1);
-      if (inputIndexErrors.length)
-        inputErrors.push({ id: item.id, index: inputIndexErrors });
+      if (!item.text[0]?.trim() || !item.text[0].includes("_"))
+        inputIndexErrors.push(0);
+      if (!item.text[1]?.trim() || !item.text[1].includes("_"))
+        inputIndexErrors.push(1);
+      if (inputIndexErrors.length) {
+        inputErrors.push({
+          id: item.id,
+          index: inputIndexErrors,
+          error: "This field is required and must contain an underscore (_).",
+        });
+      }
 
       if (!item.answer[0]?.trim()) answerIndexErrors.push(0);
       if (!item.answer[1]?.trim()) answerIndexErrors.push(1);
       if (answerIndexErrors.length)
-        answerErrors.push({ id: item.id, index: answerIndexErrors });
+        answerErrors.push({
+          id: item.id,
+          index: answerIndexErrors,
+          error: "This field is required.",
+        });
 
       if (!item.audio[0] && item.audioType[0] !== "system")
         audioIndexErrors.push(0);
       if (!item.audio[1] && item.audioType[1] !== "system")
         audioIndexErrors.push(1);
       if (audioIndexErrors.length)
-        audioErrors.push({ id: item.id, index: audioIndexErrors });
+        audioErrors.push({
+          id: item.id,
+          index: audioIndexErrors,
+          error: "This field is required.",
+        });
 
       item.distractors.forEach((dist, idx) => {
         if (!dist.trim()) {
-          distractorErrors.push({ id: item.id, index: idx });
+          distractorErrors.push({
+            id: item.id,
+            index: idx,
+            error: "This field is required.",
+          });
         }
       });
     }
@@ -119,6 +144,19 @@ const LanguageHomonymActivity = ({
   };
 
   const handleTextInput = (id: string, value: string, index: number) => {
+    if (value.length > 300) {
+      setInputError((prev) => {
+        const filtered = prev.filter(
+          (e) => e.id !== id || !e.index.includes(index),
+        );
+        return [
+          ...filtered,
+          { id, index: [index], error: "Maximum of 300 characters only." },
+        ];
+      });
+      return;
+    }
+
     const update = homonymItems.map((item) =>
       item.id === id
         ? {
@@ -131,6 +169,19 @@ const LanguageHomonymActivity = ({
   };
 
   const handleAnswerInput = (id: string, value: string, index: number) => {
+    if (value.length > 30) {
+      setAnswerErrorInput((prev) => {
+        const filtered = prev.filter(
+          (e) => e.id !== id || !e.index.includes(index),
+        );
+        return [
+          ...filtered,
+          { id, index: [index], error: "Maximum of 30 characters only." },
+        ];
+      });
+      return;
+    }
+
     const update = homonymItems.map((item) =>
       item.id === id
         ? {
@@ -143,6 +194,21 @@ const LanguageHomonymActivity = ({
   };
 
   const handleDistractorInput = (id: string, index: number, value: string) => {
+    if (value.length > 30) {
+      setDistractorErrorInput((prev) => {
+        const filtered = prev.filter((e) => e.id !== id || e.index !== index);
+        return [
+          ...filtered,
+          {
+            id,
+            index,
+            error: "Maximum of 30 characters only.",
+          },
+        ];
+      });
+      return;
+    }
+
     const update = homonymItems.map((item) => {
       if (item.id === id) {
         const updatedDistractors = [...item.distractors];
@@ -155,7 +221,6 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
   };
 
@@ -172,9 +237,7 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
-
     setDistractorErrorInput((prev) =>
       prev.filter((dist) => !(dist.id === id && dist.index === index)),
     );
@@ -186,9 +249,11 @@ const LanguageHomonymActivity = ({
 
     const invalids = item.distractors
       .map((distractor, index) =>
-        distractor.trim().length === 0 ? { id, index } : null,
+        distractor.trim().length === 0
+          ? { id, index, error: "This field is required." }
+          : null,
       )
-      .filter(Boolean) as { id: string; index: number }[];
+      .filter(Boolean) as { id: string; index: number; error: string }[];
 
     setDistractorErrorInput(invalids);
     if (invalids.length > 0) return;
@@ -198,7 +263,6 @@ const LanguageHomonymActivity = ({
         ? { ...item, distractors: [...item.distractors, ""] }
         : item,
     );
-
     setHomonymItems(update);
   };
 
@@ -211,7 +275,6 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
   };
 
@@ -230,7 +293,6 @@ const LanguageHomonymActivity = ({
             mimeType: "audio/mpeg",
           };
         }
-
         return {
           ...item,
           audio: updatedAudio,
@@ -238,7 +300,6 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
   };
 
@@ -263,7 +324,6 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
   };
 
@@ -279,8 +339,93 @@ const LanguageHomonymActivity = ({
       }
       return item;
     });
-
     setHomonymItems(update);
+  };
+
+  const handleSubmit = () => {
+    const inputErrors: InputError[] = [];
+    const distractorErrors: {
+      id: string | null;
+      index: number | null;
+      error: string;
+    }[] = [];
+    const answerErrors: InputError[] = [];
+    const audioErrors: InputError[] = [];
+
+    for (let i = 0; i < homonymItems.length; i++) {
+      const item = homonymItems[i];
+      const inputIndexErrors: number[] = [];
+      const answerIndexErrors: number[] = [];
+      const audioIndexErrors: number[] = [];
+
+      if (!item.text[0]?.trim() || !item.text[0].includes("_"))
+        inputIndexErrors.push(0);
+      if (!item.text[1]?.trim() || !item.text[1].includes("_"))
+        inputIndexErrors.push(1);
+      if (inputIndexErrors.length) {
+        inputErrors.push({
+          id: item.id,
+          index: inputIndexErrors,
+          error: "This field is required and must contain an underscore (_).",
+        });
+      }
+
+      if (!item.answer[0]?.trim()) answerIndexErrors.push(0);
+      if (!item.answer[1]?.trim()) answerIndexErrors.push(1);
+      if (answerIndexErrors.length)
+        answerErrors.push({
+          id: item.id,
+          index: answerIndexErrors,
+          error: "This field is required.",
+        });
+
+      if (!item.audio[0] && item.audioType[0] !== "system")
+        audioIndexErrors.push(0);
+      if (!item.audio[1] && item.audioType[1] !== "system")
+        audioIndexErrors.push(1);
+      if (audioIndexErrors.length)
+        audioErrors.push({
+          id: item.id,
+          index: audioIndexErrors,
+          error: "This field is required.",
+        });
+
+      item.distractors.forEach((dist, idx) => {
+        if (!dist.trim()) {
+          distractorErrors.push({
+            id: item.id,
+            index: idx,
+            error: "This field is required.",
+          });
+        }
+      });
+    }
+
+    if (
+      inputErrors.length > 0 ||
+      distractorErrors.length > 0 ||
+      answerErrors.length > 0 ||
+      audioErrors.length > 0
+    ) {
+      setInputError(inputErrors);
+      setDistractorErrorInput(distractorErrors);
+      setAnswerErrorInput(answerErrors);
+      setAudioErrorInput(audioErrors);
+      return;
+    }
+
+    setInputError([]);
+    setDistractorErrorInput([]);
+    setAnswerErrorInput([]);
+    setAudioErrorInput([]);
+
+    const homonymsData = encodeURIComponent(JSON.stringify(homonymItems));
+    router.push({
+      pathname: "/subject/ManageActivity/HomonymPreview",
+      params: {
+        data: homonymsData,
+      },
+    });
   };
 
   return (
@@ -311,6 +456,7 @@ const LanguageHomonymActivity = ({
       handleAddDistractor={(id) => handleAddDistractor(id)}
       firstIndex={homonymItems[0]?.id}
       lastIndex={homonymItems[homonymItems.length - 1]?.id ?? 0}
+      handleSubmit={() => handleSubmit()}
     />
   );
 };

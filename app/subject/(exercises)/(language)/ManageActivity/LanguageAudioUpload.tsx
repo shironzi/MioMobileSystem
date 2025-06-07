@@ -56,6 +56,12 @@ const LanguageAudioUpload = (props: {
     SystemSetting.setVolume(1);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
   return (
     <View style={styles.audioRow}>
       <Text style={globalStyles.text1}>Audio Type</Text>

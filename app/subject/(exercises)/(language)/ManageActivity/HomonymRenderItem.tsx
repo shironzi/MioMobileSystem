@@ -30,6 +30,7 @@ interface HomonymItem {
 interface InputError {
   id: string | null;
   index: number[];
+  error: string | null;
 }
 
 interface Props {
@@ -55,6 +56,7 @@ interface Props {
   handleRemoveDistractor: (id: string, index: number) => void;
   handleAddDistractor: (id: string) => void;
   handleAddItem: () => void;
+  handleSubmit: () => void;
 }
 
 const HomonymRenderItem = ({
@@ -76,11 +78,19 @@ const HomonymRenderItem = ({
   handleAddItem,
   audioErrorInput,
   answerErrorInput,
+  handleSubmit,
 }: Props) => {
   const item_id = parseInt(item.id);
 
-  const getFieldErrors = (errors: InputError[], index: number) =>
-    errors.some((e) => e.id === item.id && e.index.includes(index));
+  const getFieldErrorMessage = (
+    errors: InputError[],
+    index: number,
+  ): string | null => {
+    const match = errors.find(
+      (e) => e.id === item.id && e.index.includes(index),
+    );
+    return match?.error ?? null;
+  };
 
   return (
     <GestureHandlerRootView>
@@ -110,21 +120,9 @@ const HomonymRenderItem = ({
           <View style={{ flexDirection: "column", rowGap: 10 }}>
             <HomonymItem
               item={item}
-              inputError={
-                getFieldErrors(inputError, 0)
-                  ? [{ id: item.id, index: [0] }]
-                  : []
-              }
-              audioErrors={
-                getFieldErrors(audioErrorInput, 0)
-                  ? [{ id: item.id, index: [0] }]
-                  : []
-              }
-              answerErrors={
-                getFieldErrors(answerErrorInput, 0)
-                  ? [{ id: item.id, index: [0] }]
-                  : []
-              }
+              inputErrorMessage={getFieldErrorMessage(inputError, 0)}
+              audioErrorMessage={getFieldErrorMessage(audioErrorInput, 0)}
+              answerErrorMessage={getFieldErrorMessage(answerErrorInput, 0)}
               item_index={0}
               handleTextInput={handleTextInput}
               handleAnswerInput={handleAnswerInput}
@@ -136,21 +134,9 @@ const HomonymRenderItem = ({
 
             <HomonymItem
               item={item}
-              inputError={
-                getFieldErrors(inputError, 1)
-                  ? [{ id: item.id, index: [1] }]
-                  : []
-              }
-              audioErrors={
-                getFieldErrors(audioErrorInput, 1)
-                  ? [{ id: item.id, index: [1] }]
-                  : []
-              }
-              answerErrors={
-                getFieldErrors(answerErrorInput, 1)
-                  ? [{ id: item.id, index: [1] }]
-                  : []
-              }
+              inputErrorMessage={getFieldErrorMessage(inputError, 1)}
+              audioErrorMessage={getFieldErrorMessage(audioErrorInput, 1)}
+              answerErrorMessage={getFieldErrorMessage(answerErrorInput, 1)}
               item_index={1}
               handleTextInput={handleTextInput}
               handleAnswerInput={handleAnswerInput}
@@ -216,7 +202,10 @@ const HomonymRenderItem = ({
               <Text style={styles.addFileText}>Add Item</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={globalStyles.submitButton}>
+            <TouchableOpacity
+              style={globalStyles.submitButton}
+              onPress={handleSubmit}
+            >
               <Text style={globalStyles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>
