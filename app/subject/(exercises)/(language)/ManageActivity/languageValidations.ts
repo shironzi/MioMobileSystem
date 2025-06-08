@@ -6,11 +6,13 @@ interface FileInfo {
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  audioType: ("upload" | "record")[];
 }
 
 interface InputError {
@@ -21,10 +23,13 @@ interface InputError {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
   distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
 
 export default function validateHomonymItems(items: HomonymItem[]) {
@@ -63,10 +68,13 @@ export default function validateHomonymItems(items: HomonymItem[]) {
         error: "This field is required.",
       });
 
-    if (!item.audio[0] && item.audioType[0] !== "system")
+    if (!item.audio?.[0] && !item.audio_path?.[0]) {
       audioIndexErrors.push(0);
-    if (!item.audio[1] && item.audioType[1] !== "system")
+    }
+
+    if (!item.audio?.[1] && !item.audio_path?.[1]) {
       audioIndexErrors.push(1);
+    }
     if (audioIndexErrors.length)
       audioErrors.push({
         id: item.id,
@@ -128,7 +136,7 @@ export function validateFillItems(items: FillItem[]) {
       }
     });
 
-    if (item.audioType !== "system" && !item.audio) {
+    if (!item.audio) {
       audioErrors.push({
         id: item.id,
         index: null,

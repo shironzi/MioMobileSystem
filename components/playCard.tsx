@@ -89,20 +89,10 @@ const PlayCard = (props: {
     if (props.category === "language") {
       if (props.activity_type === "fill") {
         router.push({
-          pathname: "/subject/(exercises)/(language)/fillInTheBlank",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-
-      if (props.activity_type === "talk2me") {
-        router.push({
-          pathname: "/subject/(exercises)/(language)/talk2Me",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/ManageActivity/AddLanguageActivity"
+              : "/subject/(exercises)/(language)/fillInTheBlank",
           params: {
             subjectId: props.subjectId,
             activity_type: props.activity_type,
@@ -115,7 +105,10 @@ const PlayCard = (props: {
 
       if (props.activity_type === "homonyms") {
         router.push({
-          pathname: "/subject/(exercises)/(language)/Homonyms",
+          pathname:
+            props.role === "teacher"
+              ? "/subject/ManageActivity/AddLanguageActivity"
+              : "/subject/(exercises)/(language)/Homonyms",
           params: {
             subjectId: props.subjectId,
             activity_type: props.activity_type,

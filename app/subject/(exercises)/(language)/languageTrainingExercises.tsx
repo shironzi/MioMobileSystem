@@ -20,6 +20,7 @@ const SpeechTrainingExercise = () => {
         subjectId: subjectId,
         activity_type: "fill",
         category: "language",
+        role: role,
       },
     });
   };
@@ -31,6 +32,7 @@ const SpeechTrainingExercise = () => {
         subjectId: subjectId,
         activity_type: "homonyms",
         category: "language",
+        role: role,
       },
     });
   };

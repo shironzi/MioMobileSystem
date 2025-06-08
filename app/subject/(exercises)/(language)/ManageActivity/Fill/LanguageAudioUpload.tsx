@@ -6,8 +6,7 @@ import AudioUpload from "@/components/trainingActivities/AudioUpload";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Recording from "@/components/trainingActivities/Recording";
-import { useAudioPlayer } from "expo-audio";
-import * as Speech from "expo-speech";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import SystemSetting from "react-native-system-setting";
 
 interface FileInfo {
@@ -18,37 +17,32 @@ interface FileInfo {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
+  distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
 
 const LanguageAudioUpload = (props: {
   item: FillItem;
   isTextEmpty: boolean;
   inputError: boolean;
-  handleSelectAudioType: (
-    id: string,
-    value: "upload" | "record" | "system",
-  ) => void;
+  handleSelectAudioType: (id: string, value: "upload" | "record") => void;
   handleAddAudio: (id: string, file: FileInfo) => void;
   handleRemoveAudio: (id: string) => void;
   handleAudioRecording: (id: string, uri: string | null) => void;
 }) => {
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
 
-  const speak = async () => {
-    Speech.speak(props.item.text, {
-      pitch: 1,
-      rate: 0.5,
-      language: "en-US",
-      voice: "com.apple.ttsbundle.Samantha-compact",
-    });
-  };
-
-  const handleAudioPlay = async (id: string, uri: string | undefined) => {
+  const handleAudioPlay = async (uri: string | null) => {
     if (!uri) return;
-    player.replace({ uri });
+    player.pause();
+    player.replace({ uri: uri });
+    await player.seekTo(0);
     player.play();
   };
 
@@ -58,7 +52,9 @@ const LanguageAudioUpload = (props: {
 
   useEffect(() => {
     return () => {
-      Speech.stop();
+      if (status.playing) {
+        player.pause();
+      }
     };
   }, []);
 
@@ -75,19 +71,18 @@ const LanguageAudioUpload = (props: {
         <Picker
           mode="dropdown"
           selectedValue={props.item.audioType}
-          onValueChange={(value: "upload" | "record" | "system") =>
+          onValueChange={(value: "upload" | "record") =>
             props.handleSelectAudioType(props.item.id, value)
           }
         >
           <Picker.Item label="Upload an Audio File" value="upload" />
           <Picker.Item label="Record Using Microphone" value="record" />
-          <Picker.Item label="Use System-Generated Speech" value="system" />
         </Picker>
       </View>
       <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         {props.item.audioType === "upload" && (
           <View>
-            {!props.item.audio ? (
+            {!props.item.audio && !props.item.audio_path ? (
               <AudioUpload
                 handleFiles={(file: FileInfo) =>
                   props.handleAddAudio(props.item.id, file)
@@ -101,7 +96,7 @@ const LanguageAudioUpload = (props: {
             ) : (
               <View style={{ flexDirection: "column", rowGap: 5 }}>
                 <View style={styles.itemHeaderRow}>
-                  <Text>{props.item.audio.name}</Text>
+                  <Text>{props.item.audio?.name ?? props.item.filename}</Text>
                   <TouchableOpacity
                     onPress={() => props.handleRemoveAudio(props.item.id)}
                   >
@@ -117,7 +112,9 @@ const LanguageAudioUpload = (props: {
                 >
                   <TouchableOpacity
                     onPress={() =>
-                      handleAudioPlay(props.item.id, props.item.audio?.uri)
+                      handleAudioPlay(
+                        props.item.audio?.uri ?? props.item.audio_path,
+                      )
                     }
                   >
                     <AntDesign name="playcircleo" size={30} color="black" />
@@ -156,7 +153,9 @@ const LanguageAudioUpload = (props: {
               >
                 <TouchableOpacity
                   onPress={() =>
-                    handleAudioPlay(props.item.id, props.item.audio?.uri)
+                    handleAudioPlay(
+                      props.item.audio?.uri ?? props.item.audio_path,
+                    )
                   }
                 >
                   <AntDesign name="playcircleo" size={30} color="black" />
@@ -174,62 +173,6 @@ const LanguageAudioUpload = (props: {
                 </View>
               </View>
             )}
-          </View>
-        )}
-        {props.item.audioType === "system" && (
-          <View style={{ flexDirection: "column", rowGap: 10 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 10,
-              }}
-            >
-              {!props.isTextEmpty && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    columnGap: 10,
-                  }}
-                >
-                  <TouchableOpacity onPress={speak}>
-                    <AntDesign name="playcircleo" size={30} color="black" />
-                  </TouchableOpacity>
-                  <View style={{ flexDirection: "row" }}>
-                    {Array.from({ length: 15 }).map((_, index) => (
-                      <MaterialCommunityIcons
-                        key={index}
-                        name="waveform"
-                        size={24}
-                        color="black"
-                        style={{ marginHorizontal: -4 }}
-                      />
-                    ))}
-                  </View>
-                </View>
-              )}
-            </View>
-
-            <View
-              style={{
-                alignItems: "center",
-                marginHorizontal: "auto",
-                flexDirection: "row",
-                backgroundColor: "#FFF3CD",
-                borderWidth: 1,
-                borderRadius: 15,
-                paddingHorizontal: 20,
-                paddingVertical: 15,
-                borderColor: "orange",
-              }}
-            >
-              <Text style={{ alignItems: "center", textAlign: "center" }}>
-                {props.isTextEmpty
-                  ? "⚠️ Note: Please enter a sentence before playing the system-generated audio."
-                  : "⚠️ Note: The speech output is generated in real time and is not stored in the system. If you need to keep a copy, consider recording manually or using the file upload."}
-              </Text>
-            </View>
           </View>
         )}
       </View>

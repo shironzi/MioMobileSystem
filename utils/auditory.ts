@@ -207,8 +207,6 @@ export async function updateBingoActivity(
       formData.append(`audio[${index}][audio_id]`, item.audio_id ?? "");
     });
 
-    console.log(formData);
-
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(

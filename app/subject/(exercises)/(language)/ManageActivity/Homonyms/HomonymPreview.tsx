@@ -3,8 +3,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymPreviewCard";
-import { createHomonym } from "@/utils/language";
+import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymPreviewCard";
+import { createHomonym, editHomonyms } from "@/utils/language";
 
 interface FileInfo {
   uri: string;
@@ -14,22 +14,26 @@ interface FileInfo {
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  filename: string[];
+  audioType: ("upload" | "record")[];
 }
 
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const { data, subjectId, difficulty } = useLocalSearchParams<{
+  const { data, subjectId, difficulty, activityId } = useLocalSearchParams<{
     data: string;
     subjectId: string;
     difficulty: string;
+    activityId: string;
   }>();
-  const items: HomonymItem[] = JSON.parse(decodeURIComponent(data as string));
+  const items: HomonymItem[] = JSON.parse(data);
   const [answers, setAnswers] = useState<{ id: string; answer: string[] }[]>(
     [],
   );
@@ -57,12 +61,16 @@ const Homonyms = () => {
 
   const handeCreate = async () => {
     try {
-      const res = await createHomonym(items, difficulty, subjectId);
+      const res = activityId
+        ? await editHomonyms(items, difficulty, subjectId, activityId)
+        : await createHomonym(items, difficulty, subjectId);
 
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity",
+          activityId
+            ? "Successfully updated the activity"
+            : "Successfully created the activity",
           [
             {
               text: "OK",

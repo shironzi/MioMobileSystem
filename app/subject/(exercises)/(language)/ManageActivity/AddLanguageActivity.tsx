@@ -1,12 +1,13 @@
-import React, { memo, useState } from "react";
-import { FlatList, View } from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import { FlatList, Text, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import LanguageHeader from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageHeader";
-import LanguageHomonymActivity from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageHomonymActivity";
-import FillRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/FillRenderItem";
+import LanguageHeader from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageHeader";
+import LanguageHomonymActivity from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/LanguageHomonymActivity";
+import FillRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/FillRenderItem";
 import { useLocalSearchParams } from "expo-router";
+import { getFillActivity, getHomonymActivity } from "@/utils/language";
 
-interface FileInfo {
+export interface FileInfo {
   uri: string;
   name: string;
   mimeType?: string;
@@ -14,31 +15,46 @@ interface FileInfo {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
   distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  filename: string[];
+  audioType: ("upload" | "record")[];
 }
 
 const AddLanguageActivity = () => {
   useHeaderConfig("Add Language Activity");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
-
+  const { subjectId, activity_type, difficulty, category, activityId } =
+    useLocalSearchParams<{
+      subjectId: string;
+      activity_type: string;
+      difficulty: string;
+      category: string;
+      activityId: string;
+    }>();
   const [fillItems, setFillItems] = useState<FillItem[]>([
     {
       id: "0",
+      item_id: null,
       text: "",
       audio: null,
+      filename: null,
+      audio_path: null,
       distractors: [""],
       audioType: "upload",
     },
@@ -46,15 +62,19 @@ const AddLanguageActivity = () => {
   const [homonymItems, setHomonymItems] = useState<HomonymItem[]>([
     {
       id: "0",
+      item_id: null,
       text: ["", ""],
       answer: ["", ""],
       distractors: [""],
       audio: [],
+      audio_path: [],
+      filename: [],
       audioType: ["upload", "upload"],
     },
   ]);
   const [activityType, setActivityType] = useState<string>("fill");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const header = () => (
     <LanguageHeader
@@ -65,12 +85,93 @@ const AddLanguageActivity = () => {
     />
   );
 
+  useEffect(() => {
+    if (activityId) {
+      setLoading(true);
+
+      const fetchActivity = async () => {
+        if (activity_type === "fill") {
+          const res = await getFillActivity(
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+          );
+
+          const items: FillItem[] = [];
+          Object.entries(res.items).forEach(
+            ([key, value]: [string, any], index) => {
+              items.push({
+                id: index.toString(),
+                item_id: key,
+                text: value.sentence,
+                audio: null,
+                filename: value.filename,
+                audio_path: value.audio_path,
+                distractors: value.distractors,
+                audioType: "upload",
+              });
+            },
+          );
+          setFillItems(items);
+        } else if (activity_type === "homonyms") {
+          const res = await getHomonymActivity(
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+          );
+
+          const items: HomonymItem[] = [];
+          Object.entries(res.items).forEach(
+            ([key, value]: [string, any], index) => {
+              const text = [
+                value.sentence_1 || value.setence_1 || "",
+                value.sentence_2 || value.setence_2 || "",
+              ];
+
+              const answer = [value.answer_1, value.answer_2];
+              const audio_path = [value.audio_path_1, value.audio_path_2];
+              const filenames = [value.filename_1, value.filename_2];
+              const audioType = ["upload", "upload"] as any;
+
+              items.push({
+                id: index.toString(),
+                item_id: key,
+                text,
+                answer,
+                distractors: value.distractors ?? [],
+                audio: [],
+                audio_path,
+                filename: filenames,
+                audioType: audioType,
+              });
+            },
+          );
+          setHomonymItems(items);
+          setActivityType("homonyms");
+        }
+
+        setLoading(false);
+      };
+      fetchActivity();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading.....</Text>
+      </View>
+    );
+  }
+
   return (
     <View>
       {activityType === "fill" && (
         <FlatList
           data={fillItems}
-          ListHeaderComponent={header}
+          ListHeaderComponent={activityId ? null : header}
           keyExtractor={(item) => item.id}
           keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
@@ -80,8 +181,9 @@ const AddLanguageActivity = () => {
               setFillItems={setFillItems}
               itemsLength={fillItems.length}
               subjectId={subjectId}
+              activityId={activityId}
               activityType={activityType}
-              difficulty={activityDifficulty}
+              difficulty={difficulty ? difficulty : activityDifficulty}
             />
           )}
         />
@@ -90,7 +192,7 @@ const AddLanguageActivity = () => {
       {activityType === "homonyms" && (
         <FlatList
           data={homonymItems}
-          ListHeaderComponent={header}
+          ListHeaderComponent={activityId ? null : header}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
@@ -100,8 +202,9 @@ const AddLanguageActivity = () => {
               setHomonymItems={(prev: HomonymItem[]) => setHomonymItems(prev)}
               ItemsLength={homonymItems.length}
               subjectId={subjectId}
+              activityId={activityId}
               activityType={activityType}
-              difficulty={activityDifficulty}
+              difficulty={difficulty ? difficulty : activityDifficulty}
             />
           )}
         />

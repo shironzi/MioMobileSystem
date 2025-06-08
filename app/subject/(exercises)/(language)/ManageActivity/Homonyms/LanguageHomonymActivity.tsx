@@ -1,4 +1,4 @@
-import HomonymRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymRenderItem";
+import HomonymRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymRenderItem";
 import React, { memo, useState } from "react";
 import { router } from "expo-router";
 import validateHomonymItems from "@/app/subject/(exercises)/(language)/ManageActivity/languageValidations";
@@ -11,11 +11,14 @@ interface FileInfo {
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  filename: string[];
+  audioType: ("upload" | "record")[];
 }
 
 interface InputError {
@@ -32,6 +35,7 @@ interface Props {
   activityType: string;
   difficulty: string;
   subjectId: string;
+  activityId: string;
 }
 
 const LanguageHomonymActivity = ({
@@ -41,6 +45,7 @@ const LanguageHomonymActivity = ({
   activityType,
   difficulty,
   subjectId,
+  activityId,
 }: Props) => {
   const [inputError, setInputError] = useState<InputError[]>([]);
   const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
@@ -85,10 +90,13 @@ const LanguageHomonymActivity = ({
 
     const newItem: HomonymItem = {
       id: String(homonymItems.length),
+      item_id: null,
       text: ["", ""],
       answer: ["", ""],
       distractors: [""],
       audio: [],
+      filename: [],
+      audio_path: [],
       audioType: ["upload", "upload"],
     };
 
@@ -218,7 +226,7 @@ const LanguageHomonymActivity = ({
   const handleAddAudio = (id: string, audio: FileInfo, index: number) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
-        const updatedAudio = [...item.audio];
+        const updatedAudio = [...(item.audio ?? [])];
         updatedAudio[index] = audio;
         return { ...item, audio: updatedAudio };
       }
@@ -234,7 +242,7 @@ const LanguageHomonymActivity = ({
   ) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
-        const updatedAudio = [...item.audio];
+        const updatedAudio = [...(item.audio ?? [])];
         if (uri) {
           updatedAudio[index] = {
             uri,
@@ -254,12 +262,12 @@ const LanguageHomonymActivity = ({
 
   const handleSelectAudioType = (
     id: string,
-    audioType: "upload" | "record" | "system",
+    audioType: "upload" | "record",
     index: number,
   ) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
-        const updatedAudio = [...item.audio];
+        const updatedAudio = [...(item.audio ?? [])];
         updatedAudio[index] = undefined as any;
 
         const updatedAudioType = [...item.audioType];
@@ -279,7 +287,7 @@ const LanguageHomonymActivity = ({
   const handleRemoveAudio = (id: string, index: number) => {
     const update = homonymItems.map((item) => {
       if (item.id === id) {
-        const updatedAudio = [...item.audio];
+        const updatedAudio = [...(item.audio ?? [])];
         updatedAudio.splice(index, 1);
         return {
           ...item,
@@ -315,12 +323,14 @@ const LanguageHomonymActivity = ({
 
     const homonymsData = encodeURIComponent(JSON.stringify(homonymItems));
     router.push({
-      pathname: "/subject/ManageActivity/HomonymPreview",
+      pathname:
+        "/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymPreview",
       params: {
         data: homonymsData,
         activityType: activityType,
         difficulty: difficulty,
         subjectId: subjectId,
+        activityId: activityId,
       },
     });
   };

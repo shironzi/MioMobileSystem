@@ -1,4 +1,4 @@
-import LanguageFillActivity from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageFillActivity";
+import LanguageFillActivity from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageFillActivity";
 import React, { memo, useState } from "react";
 import { validateFillItems } from "@/app/subject/(exercises)/(language)/ManageActivity/languageValidations";
 import { router } from "expo-router";
@@ -11,11 +11,15 @@ interface FileInfo {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
   distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
+
 interface InputError {
   id: string | null;
   index: number | null;
@@ -30,6 +34,7 @@ interface Props {
   activityType: string;
   difficulty: string;
   subjectId: string;
+  activityId: string;
 }
 
 const FillRenderItem = ({
@@ -39,6 +44,7 @@ const FillRenderItem = ({
   activityType,
   difficulty,
   subjectId,
+  activityId,
 }: Props) => {
   const [inputError, setInputError] = useState<InputError[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
@@ -70,9 +76,12 @@ const FillRenderItem = ({
 
     const newItem: FillItem = {
       id: String(newId),
+      item_id: null,
       text: "",
       distractors: [""],
       audio: null,
+      filename: null,
+      audio_path: null,
       audioType: "upload",
     };
 
@@ -92,7 +101,7 @@ const FillRenderItem = ({
 
   const handleSelectAudioType = (
     id: string,
-    audioType: "upload" | "record" | "system",
+    audioType: "upload" | "record",
   ) => {
     const update = fillItems.map((item) =>
       item.id === id ? { ...item, audioType: audioType, audio: null } : item,
@@ -250,16 +259,16 @@ const FillRenderItem = ({
     const fillData = encodeURIComponent(JSON.stringify(fillItems));
 
     router.push({
-      pathname: "/subject/ManageActivity/FillPreview",
+      pathname: "/subject/ManageActivity/Fill/FillPreview",
       params: {
         data: fillData,
         subjectId: subjectId,
         activityType: activityType,
         difficulty: difficulty,
+        activityId: activityId,
       },
     });
   };
-
   return (
     <LanguageFillActivity
       item={item}

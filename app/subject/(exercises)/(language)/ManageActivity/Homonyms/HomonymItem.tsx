@@ -1,7 +1,7 @@
 import React, { memo, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import HomonymAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymAudioUpload";
+import HomonymAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymAudioUpload";
 
 interface FileInfo {
   uri: string;
@@ -11,11 +11,14 @@ interface FileInfo {
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  filename: string[];
+  audioType: ("upload" | "record")[];
 }
 
 interface Props {
@@ -30,7 +33,7 @@ interface Props {
   handleAudioRecording: (id: string, uri: string | null, index: number) => void;
   handleSelectAudioType: (
     id: string,
-    value: "upload" | "record" | "system",
+    value: "upload" | "record",
     index: number,
   ) => void;
   handleRemoveAudio: (id: string, index: number) => void;

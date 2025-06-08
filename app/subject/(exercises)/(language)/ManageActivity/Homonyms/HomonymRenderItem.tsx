@@ -10,7 +10,7 @@ import globalStyles from "@/styles/globalStyles";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { MaterialIcons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import HomonymItem from "@/app/subject/(exercises)/(language)/ManageActivity/HomonymItem";
+import HomonymItem from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymItem";
 
 interface FileInfo {
   uri: string;
@@ -20,11 +20,14 @@ interface FileInfo {
 
 interface HomonymItem {
   id: string;
+  item_id: string | null;
   text: string[];
   answer: string[];
   distractors: string[];
   audio: FileInfo[];
-  audioType: ("upload" | "record" | "system")[];
+  audio_path: string[];
+  filename: string[];
+  audioType: ("upload" | "record")[];
 }
 
 interface InputError {
@@ -47,7 +50,7 @@ interface Props {
   handleDistractorInput: (id: string, index: number, value: string) => void;
   handleSelectAudioType: (
     id: string,
-    value: "upload" | "record" | "system",
+    value: "upload" | "record",
     index: number,
   ) => void;
   handleAudioRecording: (id: string, uri: string | null, index: number) => void;
@@ -220,6 +223,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
+    marginTop: 20,
   },
   itemTopRounded: {
     borderTopLeftRadius: 20,

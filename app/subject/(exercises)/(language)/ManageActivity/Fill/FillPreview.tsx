@@ -1,14 +1,13 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import React, { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import globalStyles from "@/styles/globalStyles";
+import HeaderConfig from "@/utils/HeaderConfig";
+import { createFill, editFill } from "@/utils/language";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
-import * as Speech from "expo-speech";
-import { createFill } from "@/utils/language";
+import React, { useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface FileInfo {
   uri: string;
@@ -18,22 +17,26 @@ interface FileInfo {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
   distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
 
 const FillPreview = () => {
   HeaderConfig("Fill in the Blank");
 
-  const { data, subjectId, difficulty } = useLocalSearchParams<{
+  const { data, subjectId, difficulty, activityId } = useLocalSearchParams<{
     data: string;
     subjectId: string;
     difficulty: string;
+    activityId: string;
   }>();
 
-  const items: FillItem[] = JSON.parse(decodeURIComponent(data as string));
+  const items: FillItem[] = JSON.parse(data);
   const [currentItem, setCurrentItem] = useState<number>(0);
 
   const handleNext = async () => {
@@ -46,7 +49,9 @@ const FillPreview = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await createFill(items, difficulty, subjectId);
+      const res = activityId
+        ? await editFill(items, difficulty, subjectId, activityId)
+        : await createFill(items, difficulty, subjectId);
 
       if (res.success) {
         Alert.alert(
@@ -61,7 +66,7 @@ const FillPreview = () => {
               },
             },
           ],
-          { cancelable: false },
+          { cancelable: false }
         );
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
@@ -75,19 +80,14 @@ const FillPreview = () => {
   const player = useAudioPlayer();
 
   const handleAudioPlay = async () => {
-    if (items[currentItem].audioType !== "system") {
-      player.replace({ uri: items[currentItem].audio?.uri });
-
-      player.play();
-      return;
-    }
-
-    Speech.speak(items[currentItem].text, {
-      pitch: 1,
-      rate: 0.5,
-      language: "en-US",
-      voice: "com.apple.ttsbundle.Samantha-compact",
+    player.replace({
+      uri:
+        items[currentItem].audio?.uri ?? items[currentItem]?.audio_path ?? "",
     });
+    await player.seekTo(0);
+
+    player.play();
+    return;
   };
 
   return (
@@ -126,7 +126,9 @@ const FillPreview = () => {
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
         >
-          <Text style={globalStyles.submitButtonText}>Create</Text>
+          <Text style={globalStyles.submitButtonText}>
+            {activityId ? "Update" : "Create"}
+          </Text>
         </TouchableOpacity>
       </View>
     </GestureHandlerRootView>

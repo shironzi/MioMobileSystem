@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import LanguageAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/LanguageAudioUpload";
+import LanguageAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageAudioUpload";
 import { MaterialIcons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -20,10 +20,13 @@ interface FileInfo {
 
 interface FillItem {
   id: string;
+  item_id: string | null;
   text: string;
   distractors: string[];
   audio: FileInfo | null;
-  audioType: "upload" | "record" | "system";
+  filename: string | null;
+  audio_path: string | null;
+  audioType: "upload" | "record";
 }
 
 interface InputError {
@@ -42,10 +45,7 @@ interface Props {
   handleTextInput: (id: string, value: string) => void;
   handleAddAudio: (id: string, file: FileInfo) => void;
   handleAudioRecording: (id: string, uri: string | null) => void;
-  handleSelectAudioType: (
-    type: string,
-    value: "upload" | "record" | "system",
-  ) => void;
+  handleSelectAudioType: (type: string, value: "upload" | "record") => void;
   handleRemoveAudio: (id: string) => void;
   handleAddItem: () => void;
   handleAddDistractor: (id: string) => void;
@@ -133,13 +133,7 @@ const LanguageFillActivity = ({
               {index === 0 && (
                 <Text style={globalStyles.text1}>Distractors</Text>
               )}
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={styles.distractorRow}>
                 <View style={{ width: "90%" }}>
                   {getDistractorError(index) && (
                     <Text style={styles.errorText}>
@@ -213,6 +207,7 @@ const LanguageFillActivity = ({
 
 const styles = StyleSheet.create({
   itemContainer: {
+    marginTop: 20,
     marginHorizontal: 20,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
@@ -273,6 +268,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,
+  },
+  distractorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 7.5,
   },
 });
 
