@@ -3,6 +3,32 @@ import { getAuth } from "@react-native-firebase/auth";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
+interface PictureItem {
+  id: string;
+  flashcard_id: string | null;
+  file: FileInfo | null;
+  text: string;
+  image_url: string;
+}
+
+interface Flashcard {
+  id: string;
+  flashcard_id: string | null;
+  text: string;
+}
+
+interface Flashcard {
+  id: string;
+  flashcard_id: string | null;
+  text: string;
+}
+
 export async function getActivities(
   subjectId: string,
   activityType: string,
@@ -99,20 +125,9 @@ export async function finishActivity(
   }
 }
 
-interface FileInfo {
-  uri: string;
-  name: string;
-  mimeType?: string;
-}
-
 export async function createPictureSpeechActivity(
   subjectId: string,
-  flashcards: {
-    flashcard_id: string | null;
-    file: FileInfo | null;
-    image_path: string | null;
-    text: string | null;
-  }[],
+  flashcards: PictureItem[],
   activityType: string,
   difficulty: string,
 ) {
@@ -160,7 +175,7 @@ export async function createSpeechActivity(
   subjectId: string,
   activityType: string,
   difficulty: string,
-  flashcards: { text: string | null }[],
+  flashcards: Flashcard[],
 ) {
   try {
     const payload = {
@@ -202,13 +217,7 @@ export async function updatePictureActivity(
   subjectId: string,
   difficulty: string,
   activityId: string,
-  flashcards: {
-    flashcard_id: string | null;
-    file: FileInfo | null;
-    image_path: string | null;
-    text: string | null;
-    image_url: string | null;
-  }[],
+  flashcards: PictureItem[],
 ) {
   try {
     const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
@@ -233,11 +242,9 @@ export async function updatePictureActivity(
           type: mimeType,
         } as any);
       }
-
-      if (!item.file && item.image_url) {
-        formData.append(`flashcards[${index}][remotePath]`, item.image_url);
-      }
     });
+
+    console.log(formData);
 
     const token = await getAuth().currentUser?.getIdToken(true);
 
@@ -263,7 +270,7 @@ export async function updateSpeechActivity(
   difficulty: string,
   activityId: string,
   activityType: string,
-  flashcards: { text: string | null }[],
+  flashcards: Flashcard[],
 ) {
   try {
     const { data } = await api.put(

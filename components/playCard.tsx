@@ -19,7 +19,7 @@ const PlayCard = (props: {
         router.push({
           pathname:
             props.role === "teacher"
-              ? "/subject/(exercises)/(speech)/AddSpeechActivity"
+              ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
               : "/subject/(exercises)/(speech)/PictureFlashcards",
           params: {
             subjectId: props.subjectId,
@@ -39,7 +39,7 @@ const PlayCard = (props: {
         router.push({
           pathname:
             props.role === "teacher"
-              ? "/subject/(exercises)/(speech)/AddSpeechActivity"
+              ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
               : "/subject/(exercises)/(speech)/Flashcards",
           params: {
             subjectId: props.subjectId,
@@ -57,7 +57,7 @@ const PlayCard = (props: {
         router.push({
           pathname:
             props.role === "teacher"
-              ? "/subject/ManageAuditoryActivity/AddAuditoryActivity"
+              ? "/subject/(exercises)/(speech)/AddSpeechActivity"
               : "/subject/(exercises)/(auditory)/bingo",
           params: {
             subjectId: props.subjectId,

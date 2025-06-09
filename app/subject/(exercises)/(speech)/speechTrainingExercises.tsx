@@ -65,7 +65,8 @@ const SpeechTrainingExercise = () => {
 
   const handleAdd = () => {
     router.push({
-      pathname: "/subject/(exercises)/(speech)/AddSpeechActivity",
+      pathname:
+        "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity",
       params: { subjectId: subjectId },
     });
   };

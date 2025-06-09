@@ -18,11 +18,18 @@ import {
   getDownloadURL,
 } from "@react-native-firebase/storage";
 import { getApp } from "@react-native-firebase/app";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PictureFlashcards = () => {
   const router = useRouter();
 
   HeaderConfigQuiz("Flashcards");
+
+  interface PictureItem {
+    flashcard_id: string;
+    text: string;
+    image_url: string;
+  }
 
   const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
@@ -32,9 +39,7 @@ const PictureFlashcards = () => {
       activityId: string;
     }>();
 
-  const [cards, setCards] = useState<
-    { flashcard_id: string; imagePath: string }[]
-  >([]);
+  const [cards, setCards] = useState<PictureItem[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [recordingAudio, setRecordingAudio] = useState<string | null>();
@@ -90,22 +95,16 @@ const PictureFlashcards = () => {
           return router.back();
         }
 
-        const app = getApp();
-        const storage = getStorage(app);
-
-        const flashcards = await Promise.all(
-          Object.values(res.flashcards).map(async (card: any) => {
-            const imageRef = ref(storage, card.image_path);
-            const imageUrl = await getDownloadURL(imageRef);
-            return {
-              flashcard_id: card.flashcard_id,
-              imagePath: imageUrl,
-            };
+        const fetchedFlashcards = Object.entries(res.flashcards).map(
+          ([key, value]: [string, any]) => ({
+            flashcard_id: key,
+            text: value.text,
+            image_url: value.image_url,
           }),
         );
 
         if (!isMounted) return;
-        setCards(flashcards);
+        setCards(fetchedFlashcards);
         setAttemptId(res.attemptId);
       } catch (error) {
         console.error("Error loading activity:", error);
@@ -142,57 +141,57 @@ const PictureFlashcards = () => {
     );
   }
 
+  console.log(cards[currentCard].image_url);
+
   return (
-    <View style={styles.container}>
-      <ActivityProgress
-        difficulty={difficulty}
-        totalItems={cards.length}
-        completedItems={currentCard}
-        instruction="Guess the picture"
-      />
-
-      <View style={styles.flashcardContainer}>
-        <Image
-          source={require("@/assets/images/orange.png")}
-          style={{ width: 90, height: 50 }}
+    <GestureHandlerRootView>
+      <View style={styles.container}>
+        <ActivityProgress
+          difficulty={difficulty}
+          totalItems={cards.length}
+          completedItems={currentCard}
+          instruction="Guess the picture"
         />
 
-        <Image
-          source={{ uri: cards[currentCard].imagePath }}
-          style={{ width: 250, height: 250, borderRadius: 8, margin: "auto" }}
-          resizeMode="contain"
+        <View style={styles.flashcardContainer}>
+          <Image
+            source={require("@/assets/images/orange.png")}
+            style={{ width: 90, height: 50 }}
+          />
+
+          <Image
+            source={{ uri: cards[currentCard].image_url }}
+            style={{ width: 250, height: 250, borderRadius: 8, margin: "auto" }}
+            resizeMode="contain"
+          />
+        </View>
+
+        <Recording
+          onStop={(uri) => {
+            setIsRecording(false);
+            setIsAnswered(true);
+            setRecordingAudio(uri);
+          }}
         />
-      </View>
 
-      <Recording
-        onStart={() => {
-          setIsRecording(true);
-          setIsAnswered(false);
-        }}
-        onStop={(uri) => {
-          setIsRecording(false);
-          setIsAnswered(true);
-          setRecordingAudio(uri);
-        }}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            isAnswered && !isRecording
-              ? { backgroundColor: "#FFBF18" }
-              : { backgroundColor: "#E0E0E0" },
-          ]}
-          disabled={!isAnswered || isRecording || submitting}
-          onPress={handleNextCard}
-        >
-          <Text style={styles.continueButtonText}>
-            {submitting ? "loading...." : "Next"}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.continueButton,
+              isAnswered && !isRecording
+                ? { backgroundColor: "#FFBF18" }
+                : { backgroundColor: "#E0E0E0" },
+            ]}
+            disabled={!isAnswered || isRecording || submitting}
+            onPress={handleNextCard}
+          >
+            <Text style={styles.continueButtonText}>
+              {submitting ? "loading...." : "Next"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 

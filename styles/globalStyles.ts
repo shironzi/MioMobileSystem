@@ -61,6 +61,24 @@ const globalStyles = StyleSheet.create({
     color: "#1F1F1F",
     fontWeight: "500",
   },
+  textInputContainer: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  divider: {
+    borderTopWidth: 1,
+    borderColor: "#82828257",
+    marginHorizontal: -10,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
+  },
 });
 
 export default globalStyles;
