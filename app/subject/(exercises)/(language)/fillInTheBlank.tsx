@@ -25,16 +25,30 @@ const fillInTheBlank = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [attemptId, setAttemptId] = useState<string>();
   const [activity, setActivity] = useState<
-    { sentence: string; audio_path: string }[]
+    { item_id: string; sentence: string; audio_path: string }[]
   >([]);
-  const [itemId, setItemId] = useState<string[]>([]);
   const [currentItem, setCurrentItem] = useState<number>(0);
   const [answers, setAnswers] = useState<
     { item_id: string; sentence: string }[]
   >([]);
+  const [inputErrors, setInputErrors] = useState<{ item_id: string }[]>([]);
 
   const handleSubmit = async () => {
-    if (currentItem >= activity.length - 1) {
+    const currentAnswer = answers.find(
+      (a) => a.item_id === activity[currentItem].item_id,
+    );
+
+    if (!currentAnswer || !currentAnswer.sentence.trim()) {
+      setInputErrors((prev) => [
+        ...prev,
+        { item_id: activity[currentItem].item_id },
+      ]);
+      return;
+    }
+
+    if (currentItem < activity.length - 1) {
+      setCurrentItem((prev) => prev + 1);
+    } else {
       try {
         if (!attemptId) {
           console.error("Attempt id is empty");
@@ -63,28 +77,25 @@ const fillInTheBlank = () => {
           console.error("Unable to submit", res);
         }
       } catch (err) {
-        console.error("failed to submit: " + err);
+        console.error("Failed to submit:", err);
       }
-      return;
     }
-
-    setCurrentItem(currentItem + 1);
   };
 
   const handleAnswer = useCallback(
     (answers: string[]) => {
       const currentAnswer = answers.join(" ");
-      const currentItemId = itemId[currentItem];
 
+      if (!currentAnswer.trim()) return;
       setAnswers((prev) => {
         const existingIndex = prev.findIndex(
-          (entry) => entry.item_id === currentItemId,
+          (entry) => entry.item_id === activity[currentItem].item_id,
         );
 
         if (existingIndex !== -1) {
           const updated = [...prev];
           updated[existingIndex] = {
-            item_id: currentItemId,
+            item_id: activity[currentItem].item_id,
             sentence: currentAnswer,
           };
           return updated;
@@ -93,13 +104,17 @@ const fillInTheBlank = () => {
         return [
           ...prev,
           {
-            item_id: currentItemId,
+            item_id: activity[currentItem].item_id,
             sentence: currentAnswer,
           },
         ];
       });
+
+      setInputErrors((prev) =>
+        prev.filter((err) => err.item_id !== activity[currentItem].item_id),
+      );
     },
-    [itemId, currentItem],
+    [currentItem, activity],
   );
 
   const player = useAudioPlayer();
@@ -117,16 +132,14 @@ const fillInTheBlank = () => {
       const res = await startFillActivity(subjectId, difficulty, activityId);
 
       Object.entries(res.activity).map(async ([id, data]: [string, any]) => {
-        setItemId((prev) => [...prev, id]);
         setActivity((prev) => [
           ...prev,
-          { sentence: data.sentence, audio_path: data.audio_path },
+          { item_id: id, sentence: data.sentence, audio_path: data.audio_path },
         ]);
       });
 
       setAttemptId(res.attempt_id);
       setLoading(false);
-
       setCurrentItem(0);
     };
 
@@ -135,8 +148,10 @@ const fillInTheBlank = () => {
 
   useEffect(() => {
     if (loading) return;
-    player.replace({ uri: activity[currentItem].audio_path });
-    player.pause();
+    (async () => {
+      player.replace({ uri: activity[currentItem].audio_path });
+      player.pause();
+    })();
   }, [currentItem, loading]);
 
   if (loading) {
@@ -155,31 +170,38 @@ const fillInTheBlank = () => {
         completedItems={currentItem}
         instruction="Guess the picture"
       />
-      <TouchableOpacity
-        style={{
-          backgroundColor: "#FFBF18",
-          padding: 20,
-          borderRadius: 15,
-        }}
-        onPress={handleAudioPlay}
-      >
-        <FontAwesome6 name="volume-high" size={25} color="#fff" />
-      </TouchableOpacity>
+      <View style={{ rowGap: 10 }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#FFBF18",
+            padding: 20,
+            borderRadius: 15,
+            width: 75,
+          }}
+          onPress={handleAudioPlay}
+        >
+          <FontAwesome6 name="volume-high" size={25} color="#fff" />
+        </TouchableOpacity>
 
-      <FillInTheBlanks
-        key={currentItem}
-        sentence={activity[currentItem].sentence}
-        handleAnswers={(answers: string[]) => handleAnswer(answers)}
-      />
-
-      <TouchableOpacity
-        style={globalStyles.submitButton}
-        onPress={handleSubmit}
-      >
-        <Text style={globalStyles.submitButtonText}>
-          {currentItem >= activity.length - 1 ? "Submit" : "Next"}
-        </Text>
-      </TouchableOpacity>
+        <FillInTheBlanks
+          key={currentItem}
+          sentence={activity[currentItem].sentence}
+          handleAnswers={(answers: string[]) => handleAnswer(answers)}
+          hasError={inputErrors.some(
+            (err) => err.item_id === activity[currentItem].item_id,
+          )}
+        />
+      </View>
+      <View style={globalStyles.submitWrapper}>
+        <TouchableOpacity
+          style={globalStyles.submitButton}
+          onPress={handleSubmit}
+        >
+          <Text style={globalStyles.submitButtonText}>
+            {currentItem >= activity.length - 1 ? "Submit" : "Next"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </GestureHandlerRootView>
   );
 };

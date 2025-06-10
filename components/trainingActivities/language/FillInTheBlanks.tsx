@@ -18,6 +18,7 @@ import globalStyles from "@/styles/globalStyles";
 const FillInTheBlanks = (props: {
   sentence: string;
   handleAnswers: (answers: string[]) => void;
+  hasError?: boolean;
 }) => {
   const words = props.sentence.split(" ");
 
@@ -41,48 +42,60 @@ const FillInTheBlanks = (props: {
 
   return (
     <View style={{ flexDirection: "column" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          height: 250,
-          width: "100%",
-          borderWidth: 1,
-          borderRadius: 20,
-          padding: 20,
-        }}
-      >
-        {inputBox.map((word, index) => {
-          const tapGesture = Gesture.Tap().onStart(() => {
-            runOnJS(handleRemove)(word);
-          });
+      {props.hasError && (
+        <Text style={globalStyles.errorText}>
+          Please complete the sentence before submitting.
+        </Text>
+      )}
+      <View style={{ rowGap: 10 }}>
+        <View
+          style={[
+            {
+              flexDirection: "row",
+              flexWrap: "wrap",
+              height: 250,
+              width: "100%",
+              borderWidth: 1,
+              borderRadius: 20,
+              padding: 20,
+            },
+            props.hasError
+              ? { borderColor: "red" }
+              : { borderColor: "#00000024" },
+          ]}
+        >
+          {inputBox.map((word, index) => {
+            const tapGesture = Gesture.Tap().onStart(() => {
+              runOnJS(handleRemove)(word);
+            });
 
-          return (
-            <GestureDetector gesture={tapGesture} key={index}>
-              <View
-                style={[styles.wordWrapper, { backgroundColor: "#D1DFFF" }]}
-              >
-                <Text style={styles.wordText}>{word}</Text>
-              </View>
-            </GestureDetector>
-          );
-        })}
-      </View>
+            return (
+              <GestureDetector gesture={tapGesture} key={index}>
+                <View
+                  style={[styles.wordWrapper, { backgroundColor: "#D1DFFF" }]}
+                >
+                  <Text style={styles.wordText}>{word}</Text>
+                </View>
+              </GestureDetector>
+            );
+          })}
+        </View>
 
-      <View style={[styles.wordsWrapper, { height: 200 }]}>
-        {remainingWords.map((item, index) => {
-          const tapGesture = Gesture.Tap().onStart(() => {
-            runOnJS(handleSelect)(index);
-          });
+        <View style={[styles.wordsWrapper, { height: 200 }]}>
+          {remainingWords.map((item, index) => {
+            const tapGesture = Gesture.Tap().onStart(() => {
+              runOnJS(handleSelect)(index);
+            });
 
-          return (
-            <GestureDetector gesture={tapGesture} key={index}>
-              <View style={[styles.wordWrapper]}>
-                <Text style={styles.wordText}>{item}</Text>
-              </View>
-            </GestureDetector>
-          );
-        })}
+            return (
+              <GestureDetector gesture={tapGesture} key={index}>
+                <View style={[styles.wordWrapper]}>
+                  <Text style={styles.wordText}>{item}</Text>
+                </View>
+              </GestureDetector>
+            );
+          })}
+        </View>
       </View>
     </View>
   );
@@ -92,18 +105,17 @@ const styles = StyleSheet.create({
   wordsWrapper: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 20,
   },
   wordWrapper: {
     marginRight: 5,
-    marginBottom: 10,
+    marginBottom: 5,
     borderWidth: 1,
     borderRadius: 15,
     padding: 10,
     borderColor: "#ccc",
   },
   wordText: {
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 

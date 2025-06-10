@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 const globalStyles = StyleSheet.create({
   container: {
     padding: 20,
+    height: "100%",
   },
   inputContainer: {
     fontSize: 16,
@@ -54,7 +55,6 @@ const globalStyles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
   },
-
   text1: {
     fontSize: 16,
     lineHeight: 28,
@@ -78,6 +78,14 @@ const globalStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,
+  },
+  submitWrapper: {
+    position: "absolute",
+    bottom: 50,
+    left: 20,
+    right: 20,
+    width: "100%",
+    justifyContent: "center",
   },
 });
 

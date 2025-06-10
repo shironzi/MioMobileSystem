@@ -144,13 +144,13 @@ const FillRenderItem = ({
   };
 
   const handleTextInput = (id: string, value: string) => {
-    if (value.length > 300) {
+    if (value.length > 200) {
       setInputError((prev) => [
         ...prev,
         {
           id,
           index: null,
-          errorMessage: "Maximum 300 characters only.",
+          errorMessage: "Maximum 100 characters only.",
         },
       ]);
       return;

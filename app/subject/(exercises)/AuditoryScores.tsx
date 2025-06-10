@@ -15,49 +15,38 @@ import ScoreFeedback from "@/components/ScoreFeedback";
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { score, totalItems, activity_type, difficulty } =
-    useLocalSearchParams<{
-      score: string;
-      totalItems: string;
-      activity_type: string;
-      difficulty: string;
-    }>();
+  const { score, activity_type, difficulty } = useLocalSearchParams<{
+    score: string;
+    activity_type: string;
+    difficulty: string;
+  }>();
 
-  const [loading, setLoading] = useState(true);
-  const [overallScore, setOverallScore] = useState(0);
-  const [total, setTotal] = useState(0);
+  const fill = !isNaN(parseFloat(score)) ? parseFloat(score) : 0;
 
-  useEffect(() => {
-    const s = Number(score ?? 0);
-    const t = Number(totalItems ?? 0);
-    setOverallScore(s);
-    setTotal(t);
-    setLoading(false);
-  }, [score, totalItems]);
-
-  const percentage = total > 0 ? (overallScore / total) * 100 : 0;
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const getTitle = (type: string) => {
+    switch (type) {
+      case "picture":
+        return "Picture Flashcards";
+      case "pronunciation":
+        return "ReadMe: Pronunciation Challenge";
+      case "phrases":
+        return "Phrase Flashcards";
+      case "question":
+        return "Question Flashcards";
+      case "bingo":
+        return "Bingo Cards";
+      case "matching":
+        return "Matching Cards";
+      default:
+        return "Activity Score";
+    }
+  };
 
   return (
     <ScrollView>
       <View style={[globalStyles.container, { rowGap: 20 }]}>
         <View>
-          <Text style={styles.title}>
-            {activity_type === "picture" && "Picture Flashcards"}
-            {activity_type === "pronunciation" &&
-              "ReadMe: Pronunciation Challenge"}
-            {activity_type === "phrases" && "Phrase Flashcards"}
-            {activity_type === "question" && "Question Flashcards"}
-            {activity_type === "bingo" && "Bingo Cards"}
-            {activity_type === "matching" && "Matching Cards"}
-          </Text>
+          <Text style={styles.title}>{getTitle(activity_type)}</Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
         </View>
 
@@ -67,7 +56,7 @@ const AuditoryScores = () => {
             <AnimatedCircularProgress
               size={150}
               width={10}
-              fill={percentage}
+              fill={parseFloat(score)}
               tintColor="#2264DC"
               backgroundColor="#e7eaea"
               rotation={0}
@@ -75,16 +64,16 @@ const AuditoryScores = () => {
             >
               {() => (
                 <>
-                  <Text style={styles.scoreText}>{overallScore}</Text>
+                  <Text style={styles.scoreText}>{fill}</Text>
                   <Text>Points</Text>
                 </>
               )}
             </AnimatedCircularProgress>
-            <Text>Out of {total} points</Text>
+            <Text>Out of 100 points</Text>
           </View>
         </View>
 
-        <ScoreFeedback percentage={percentage} />
+        <ScoreFeedback percentage={parseFloat(score)} />
       </View>
     </ScrollView>
   );

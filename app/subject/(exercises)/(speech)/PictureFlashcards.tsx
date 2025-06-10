@@ -12,13 +12,8 @@ import {
 import { startActivity, submitAnswer } from "@/utils/specialized";
 import Recording from "@/components/trainingActivities/Recording";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import {
-  getStorage,
-  ref,
-  getDownloadURL,
-} from "@react-native-firebase/storage";
-import { getApp } from "@react-native-firebase/app";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import globalStyles from "@/styles/globalStyles";
 
 const PictureFlashcards = () => {
   const router = useRouter();
@@ -174,7 +169,7 @@ const PictureFlashcards = () => {
           }}
         />
 
-        <View style={styles.buttonContainer}>
+        <View style={globalStyles.submitWrapper}>
           <TouchableOpacity
             style={[
               styles.continueButton,
