@@ -104,10 +104,11 @@ export async function submitHomonymsActivity(
   attemptId: string,
   payload: {
     item_id: string;
-    answers: { sentence_id: string; answer: string }[];
+    answer: string[];
   }[],
 ) {
   try {
+    console.log({ answers: payload });
     const { data } = await api.patch(
       `/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
       { answers: payload },
