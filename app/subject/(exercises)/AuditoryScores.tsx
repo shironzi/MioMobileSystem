@@ -1,11 +1,5 @@
-import React, { memo, useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import React, { memo } from "react";
+import { ScrollView, StyleSheet, View, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";

@@ -4,10 +4,9 @@ import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Recording from "@/components/trainingActivities/Recording";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import SystemSetting from "react-native-system-setting";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -37,18 +36,6 @@ const LanguageAudioUpload = (props: {
 }) => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
-
-  const handleAudioPlay = async (uri: string | null) => {
-    if (!uri) return;
-    player.pause();
-    player.replace({ uri: uri });
-    await player.seekTo(0);
-    player.play();
-  };
-
-  useEffect(() => {
-    SystemSetting.setVolume(1);
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -103,34 +90,11 @@ const LanguageAudioUpload = (props: {
                     <AntDesign name="close" size={24} color="red" />
                   </TouchableOpacity>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    columnGap: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleAudioPlay(
-                        props.item.audio?.uri ?? props.item.audio_path,
-                      )
-                    }
-                  >
-                    <AntDesign name="playcircleo" size={30} color="black" />
-                  </TouchableOpacity>
-                  <View style={{ flexDirection: "row" }}>
-                    {Array.from({ length: 15 }).map((_, index) => (
-                      <MaterialCommunityIcons
-                        key={index}
-                        name="waveform"
-                        size={24}
-                        color="black"
-                        style={{ marginHorizontal: -4 }}
-                      />
-                    ))}
-                  </View>
-                </View>
+                {(props.item.audio_path || props.item.audio) && (
+                  <EditPlayer
+                    uri={props.item.audio?.uri ?? props.item.audio_path!}
+                  />
+                )}
               </View>
             )}
           </View>
@@ -143,35 +107,10 @@ const LanguageAudioUpload = (props: {
               }
               inputError={props.inputError}
             />
-            {props.item.audio && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  columnGap: 10,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    handleAudioPlay(
-                      props.item.audio?.uri ?? props.item.audio_path,
-                    )
-                  }
-                >
-                  <AntDesign name="playcircleo" size={30} color="black" />
-                </TouchableOpacity>
-                <View style={{ flexDirection: "row" }}>
-                  {Array.from({ length: 15 }).map((_, index) => (
-                    <MaterialCommunityIcons
-                      key={index}
-                      name="waveform"
-                      size={24}
-                      color="black"
-                      style={{ marginHorizontal: -4 }}
-                    />
-                  ))}
-                </View>
-              </View>
+            {(props.item.audio_path || props.item.audio) && (
+              <EditPlayer
+                uri={props.item.audio?.uri ?? props.item.audio_path!}
+              />
             )}
           </View>
         )}

@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import globalStyles from "@/styles/globalStyles";
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -61,6 +62,9 @@ const AddMatchingAudio = ({
           filename={filename}
           audio_path={audio_path}
         />
+        {(audio_path || audio?.uri) && (
+          <EditPlayer uri={(audio?.uri ?? audio_path)!} />
+        )}
       </View>
     </Animated.View>
   );

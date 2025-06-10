@@ -106,13 +106,44 @@ export async function submitHomonymsActivity(
     item_id: string;
     answer: string[];
   }[],
+  answersLogs: {
+    item_id: string;
+    answers_1: string[];
+    answers_2: string[];
+    answered_at_1: string[];
+    answered_at_2: string[];
+  }[],
+  audioLogs: {
+    item_id: string;
+    played_at_1: string[];
+    played_at_2: string[];
+  }[],
 ) {
   try {
-    console.log({ answers: payload });
-    const { data } = await api.patch(
-      `/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
-      { answers: payload },
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          answers: payload,
+          answer_logs: answersLogs,
+          audio_logs: audioLogs,
+        }),
+      },
     );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Validation or server error:", data);
+    }
 
     return data;
   } catch (err) {
@@ -126,11 +157,17 @@ export async function submitFillActivity(
   activityId: string,
   attemptId: string,
   payload: { item_id: string; sentence: string }[],
+  audio_logs: { item_id: string; played_at: string[] }[],
+  answer_logs: { item_id: string; answers: string[]; answered_at: string[] }[],
 ) {
   try {
     const { data } = await api.patch(
       `/subject/${subjectId}/language/fill/${difficulty}/${activityId}/${attemptId}`,
-      { answers: payload },
+      {
+        answers: payload,
+        audio_logs: audio_logs,
+        answer_logs: answer_logs,
+      },
     );
 
     return data;

@@ -98,7 +98,7 @@ export async function submitAnswer(
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`Upload failed ${response.status}: ${text}`);
+      console.error("Error: " + text);
     }
 
     return await response.json();
@@ -243,8 +243,6 @@ export async function updatePictureActivity(
         } as any);
       }
     });
-
-    console.log(formData);
 
     const token = await getAuth().currentUser?.getIdToken(true);
 

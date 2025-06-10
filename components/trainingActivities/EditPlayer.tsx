@@ -4,7 +4,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import Slider from "@react-native-community/slider";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const AudioPlayer = (props: { uri: string }) => {
+const EditPlayer = (props: { uri: string }) => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
@@ -18,10 +18,7 @@ const AudioPlayer = (props: { uri: string }) => {
       style={{
         alignItems: "center",
         flexDirection: "row",
-        rowGap: 5,
-        borderWidth: 1,
-        borderColor: "#00000024",
-        padding: 10,
+        padding: 5,
         borderRadius: 20,
         backgroundColor: "#fff",
       }}
@@ -71,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AudioPlayer;
+export default EditPlayer;

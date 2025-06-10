@@ -11,7 +11,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 
-const Recording = (props: {
+const FlashcardMicrophone = (props: {
   onStop: (file: string | null) => void;
   inputError?: boolean;
 }) => {
@@ -86,7 +86,7 @@ const Recording = (props: {
         >
           <FontAwesome
             name="microphone"
-            size={50}
+            size={32}
             color={isRecording ? "#fff" : "black"}
           />
         </View>
@@ -101,23 +101,25 @@ const Recording = (props: {
 const styles = StyleSheet.create({
   micContainer: {
     alignItems: "center",
-    display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     rowGap: 5,
-    width: 250,
     marginHorizontal: "auto",
+    borderWidth: 1,
+    borderColor: "#00000024",
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: "#fff",
   },
   micButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 70,
+    height: 70,
+    borderRadius: 12,
     backgroundColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
   },
   recordingText: {
-    marginTop: 15,
     color: "#FFBF18",
     fontWeight: "500",
   },
@@ -125,11 +127,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFBF18",
   },
   instructionText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: "#555",
+    paddingHorizontal: 20,
+    fontSize: 12,
+    lineHeight: 20,
+    color: "#282727",
+    fontWeight: 400,
     textAlign: "center",
+    width: "80%",
   },
 });
 
-export default memo(Recording);
+export default memo(FlashcardMicrophone);

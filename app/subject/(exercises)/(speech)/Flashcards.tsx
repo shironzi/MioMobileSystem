@@ -10,9 +10,10 @@ import {
   View,
 } from "react-native";
 import { startActivity, submitAnswer } from "@/utils/specialized";
-import Recording from "@/components/trainingActivities/Recording";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
+import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 
 const Flashcards = () => {
   const router = useRouter();
@@ -78,8 +79,6 @@ const Flashcards = () => {
           difficulty,
           activityId,
         );
-
-        console.log(res);
 
         if (res.success) {
           const fetchedFlashcards = Object.entries(res.flashcards).map(
@@ -153,13 +152,16 @@ const Flashcards = () => {
           </View>
         </View>
 
-        <Recording
-          onStop={(uri) => {
-            setIsRecording(false);
-            setIsAnswered(true);
-            setRecordingAudio(uri);
-          }}
-        />
+        <View>
+          <FlashcardMicrophone
+            onStop={(uri) => {
+              setIsRecording(false);
+              setIsAnswered(true);
+              setRecordingAudio(uri);
+            }}
+          />
+          {recordingAudio && <AudioPlayer uri={recordingAudio} />}
+        </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity

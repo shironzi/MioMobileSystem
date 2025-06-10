@@ -57,7 +57,7 @@ const PlayCard = (props: {
         router.push({
           pathname:
             props.role === "teacher"
-              ? "/subject/(exercises)/(speech)/AddSpeechActivity"
+              ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
               : "/subject/(exercises)/(auditory)/bingo",
           params: {
             subjectId: props.subjectId,
@@ -73,7 +73,7 @@ const PlayCard = (props: {
         router.push({
           pathname:
             props.role === "teacher"
-              ? "/subject/ManageAuditoryActivity/AddAuditoryActivity"
+              ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
               : "/subject/(exercises)/(auditory)/MatchingCards",
           params: {
             subjectId: props.subjectId,

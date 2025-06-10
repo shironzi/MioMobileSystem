@@ -14,7 +14,7 @@ interface FileInfo {
 interface Audio {
   filename: string | null;
   audio_id: string | null;
-  audio_path: string | null;
+  audio_path: string;
   audio: FileInfo | null;
 }
 

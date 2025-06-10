@@ -10,10 +10,11 @@ import {
   View,
 } from "react-native";
 import { startActivity, submitAnswer } from "@/utils/specialized";
-import Recording from "@/components/trainingActivities/Recording";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import globalStyles from "@/styles/globalStyles";
+import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
+import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 
 const PictureFlashcards = () => {
   const router = useRouter();
@@ -37,7 +38,7 @@ const PictureFlashcards = () => {
   const [cards, setCards] = useState<PictureItem[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [recordingAudio, setRecordingAudio] = useState<string | null>();
+  const [recordingAudio, setRecordingAudio] = useState<string | null>("");
   const [loading, setLoading] = useState(true);
   const [attemptId, setAttemptId] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -136,11 +137,9 @@ const PictureFlashcards = () => {
     );
   }
 
-  console.log(cards[currentCard].image_url);
-
   return (
     <GestureHandlerRootView>
-      <View style={styles.container}>
+      <View style={[styles.container, { height: "100%" }]}>
         <ActivityProgress
           difficulty={difficulty}
           totalItems={cards.length}
@@ -148,27 +147,36 @@ const PictureFlashcards = () => {
           instruction="Guess the picture"
         />
 
-        <View style={styles.flashcardContainer}>
-          <Image
-            source={require("@/assets/images/orange.png")}
-            style={{ width: 90, height: 50 }}
-          />
+        <View style={{ rowGap: 20 }}>
+          <View style={styles.flashcardContainer}>
+            <Image
+              source={require("@/assets/images/orange.png")}
+              style={{ width: 90, height: 50 }}
+            />
 
-          <Image
-            source={{ uri: cards[currentCard].image_url }}
-            style={{ width: 250, height: 250, borderRadius: 8, margin: "auto" }}
-            resizeMode="contain"
-          />
+            <Image
+              source={{ uri: cards[currentCard].image_url }}
+              style={{
+                width: 250,
+                height: 250,
+                borderRadius: 8,
+                margin: "auto",
+              }}
+              resizeMode="contain"
+            />
+          </View>
+
+          <View style={{ rowGap: 5 }}>
+            <FlashcardMicrophone
+              onStop={(uri) => {
+                setIsRecording(false);
+                setIsAnswered(true);
+                setRecordingAudio(uri);
+              }}
+            />
+            {recordingAudio && <AudioPlayer uri={recordingAudio} />}
+          </View>
         </View>
-
-        <Recording
-          onStop={(uri) => {
-            setIsRecording(false);
-            setIsAnswered(true);
-            setRecordingAudio(uri);
-          }}
-        />
-
         <View style={globalStyles.submitWrapper}>
           <TouchableOpacity
             style={[
@@ -192,16 +200,13 @@ const PictureFlashcards = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
-
   flashcardContainer: {
     backgroundColor: "#fff",
-    flex: 1,
     padding: 20,
-    height: 300,
+    height: 325,
     borderRadius: 15,
   },
   textContainer: {
@@ -213,7 +218,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   cardImage: {
-    width: 200,
+    width: 100,
     height: 200,
     borderRadius: 10,
     marginTop: -90,

@@ -8,6 +8,7 @@ import {
   submitHomonymsActivity,
 } from "@/utils/language";
 import HomonymCard from "@/app/subject/(exercises)/(language)/HomonymCard";
+import getCurrentDateTime from "@/utils/DateFormat";
 
 interface HomonymItem {
   item_id: string | null;
@@ -38,6 +39,18 @@ const Homonyms = () => {
   const [inputError, setInputError] = useState<
     { item_id: string | null; index: number[] }[]
   >([]);
+  const [answerLogs, setAnswerLogs] = useState<
+    {
+      item_id: string;
+      answers_1: string[];
+      answers_2: string[];
+      answered_at_1: string[];
+      answered_at_2: string[];
+    }[]
+  >([]);
+  const [audioLogs, setAudioLogs] = useState<
+    { item_id: string; played_at_1: string[]; played_at_2: string[] }[]
+  >([]);
 
   const handleAnswer = (answer: string, index: number) => {
     const item_id = items[currentItem]?.item_id;
@@ -63,18 +76,150 @@ const Homonyms = () => {
       }
     });
 
-    setInputError(
-      (prev) =>
-        prev
-          .map((err) => {
-            if (err.item_id === item_id) {
-              const filteredIndexes = err.index.filter((i) => i !== index);
-              return { ...err, index: filteredIndexes };
-            }
-            return err;
-          })
-          .filter((err) => err.index.length > 0), // Remove if no errors left
+    setInputError((prev) =>
+      prev
+        .map((err) => {
+          if (err.item_id === item_id) {
+            const filteredIndexes = err.index.filter((i) => i !== index);
+            return { ...err, index: filteredIndexes };
+          }
+          return err;
+        })
+        .filter((err) => err.index.length > 0),
     );
+
+    setAnswerLogs((prev) => {
+      const now = getCurrentDateTime();
+      const existingIndex = prev.findIndex((log) => log.item_id === item_id);
+
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        const existing = updated[existingIndex];
+
+        if (index === 0) {
+          updated[existingIndex] = {
+            ...existing,
+            answers_1: [...existing.answers_1, answer],
+            answered_at_1: [...existing.answered_at_1, now],
+          };
+        } else if (index === 1) {
+          updated[existingIndex] = {
+            ...existing,
+            answers_2: [...existing.answers_2, answer],
+            answered_at_2: [...existing.answered_at_2, now],
+          };
+        }
+
+        return updated;
+      } else {
+        return [
+          ...prev,
+          {
+            item_id,
+            answers_1: index === 0 ? [answer] : [],
+            answers_2: index === 1 ? [answer] : [],
+            answered_at_1: index === 0 ? [now] : [],
+            answered_at_2: index === 1 ? [now] : [],
+          },
+        ];
+      }
+    });
+  };
+
+  const handleSubmit = async () => {
+    const currentAnswers = answers[currentItem]?.answer || [];
+    let hasError = false;
+    const errorIndexes: number[] = [];
+
+    if (!currentAnswers[0]?.trim()) {
+      errorIndexes.push(0);
+      hasError = true;
+    }
+
+    if (!currentAnswers[1]?.trim()) {
+      errorIndexes.push(1);
+      hasError = true;
+    }
+
+    if (hasError) {
+      setInputError((prev) => [
+        ...prev,
+        { item_id: items[currentItem].item_id, index: errorIndexes },
+      ]);
+      return;
+    }
+
+    setInputError((prev) =>
+      prev.filter((err) => err.item_id !== items[currentItem].item_id),
+    );
+
+    if (currentItem >= items.length) {
+      setCurrentItem(currentItem + 1);
+    } else {
+      if (!attemptId) return;
+
+      const res = await submitHomonymsActivity(
+        subjectId,
+        difficulty,
+        activityId,
+        attemptId,
+        answers,
+        answerLogs,
+        audioLogs,
+      );
+
+      if (res.success) {
+        router.push({
+          pathname: "/subject/(exercises)/AuditoryScores",
+          params: {
+            score: res.score,
+            totalItems: items.length * 2,
+            activity: activityType,
+            difficulty: difficulty,
+          },
+        });
+      } else {
+        console.error("Unable to submit", res);
+      }
+    }
+  };
+
+  const handleAudioLogs = (index: number) => {
+    const item_id = items[currentItem]?.item_id;
+    if (!item_id) return;
+
+    setAudioLogs((prev) => {
+      const now = getCurrentDateTime();
+      const existingIndex = prev.findIndex((log) => log.item_id === item_id);
+
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        const existing = updated[existingIndex];
+
+        if (index === 0) {
+          updated[existingIndex] = {
+            ...existing,
+            played_at_1: [...existing.played_at_1, now],
+          };
+        } else if (index === 1) {
+          updated[existingIndex] = {
+            ...existing,
+            played_at_2: [...existing.played_at_2, now],
+          };
+        }
+
+        return updated;
+      } else {
+        return [
+          ...prev,
+          {
+            item_id,
+            played_at_1: index === 0 ? [now] : [],
+            played_at_2: index === 1 ? [now] : [],
+          },
+        ];
+      }
+    });
   };
 
   useEffect(() => {
@@ -115,61 +260,6 @@ const Homonyms = () => {
     );
   }
 
-  const handleSubmit = async () => {
-    const currentAnswers = answers[currentItem]?.answer || [];
-    let hasError = false;
-    const errorIndexes: number[] = [];
-
-    if (!currentAnswers[0]?.trim()) {
-      errorIndexes.push(0);
-      hasError = true;
-    }
-
-    if (!currentAnswers[1]?.trim()) {
-      errorIndexes.push(1);
-      hasError = true;
-    }
-
-    if (hasError) {
-      setInputError((prev) => [
-        ...prev,
-        { item_id: items[currentItem].item_id, index: errorIndexes },
-      ]);
-      return;
-    }
-
-    setInputError((prev) =>
-      prev.filter((err) => err.item_id !== items[currentItem].item_id),
-    );
-
-    if (currentItem >= items.length) {
-      setCurrentItem(currentItem + 1);
-    } else {
-      if (!attemptId) return;
-      const res = await submitHomonymsActivity(
-        subjectId,
-        difficulty,
-        activityId,
-        attemptId,
-        answers,
-      );
-
-      if (res.success) {
-        router.push({
-          pathname: "/subject/(exercises)/AuditoryScores",
-          params: {
-            score: res.score,
-            totalItems: items.length * 2,
-            activity: activityType,
-            difficulty: difficulty,
-          },
-        });
-      } else {
-        console.error("Unable to submit", res);
-      }
-    }
-  };
-
   return (
     <View style={globalStyles.container}>
       <View style={[styles.questionsContainer, { height: "90%" }]}>
@@ -181,6 +271,7 @@ const Homonyms = () => {
           inputError={inputError.find(
             (err) => err.item_id === items[currentItem].item_id,
           )}
+          handleAudioLogs={(index: number) => handleAudioLogs(index)}
         />
       </View>
       <TouchableOpacity

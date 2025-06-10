@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import globalStyles from "@/styles/globalStyles";
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -19,7 +20,7 @@ interface AddBingoAudioProps {
   handleFileUpload: (file: FileInfo) => void;
   handleFileRemove: () => void;
   audio: FileInfo | null;
-  audio_path: string | null;
+  audio_path: string;
   filename: string | null;
 }
 
@@ -61,6 +62,9 @@ const AddBingoAudio = ({
           filename={filename}
           isError={false}
         />
+        {(audio_path || audio?.uri) && (
+          <EditPlayer uri={(audio?.uri ?? audio_path)!} />
+        )}
       </View>
     </Animated.View>
   );

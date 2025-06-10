@@ -3,8 +3,6 @@ import axios from "axios";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
-console.log(IPADDRESS);
-
 export const api = axios.create({
   baseURL: `${IPADDRESS}`,
   headers: { Accept: "application/json" },
@@ -22,10 +20,3 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error),
 );
-
-// api.interceptors.response.use(
-//     response => response,
-//     async error => {
-//         return Promise.reject(error);
-//     }
-// );

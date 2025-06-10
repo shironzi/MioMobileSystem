@@ -19,6 +19,7 @@ interface Props {
   inputError?: { item_id: string | null; index: number[] };
   answers: { item_id: string; answer: string[] };
   handleAnswer: (answer: string, index: number) => void;
+  handleAudioLogs: (index: number) => void;
 }
 
 const HomonymCard = ({
@@ -27,6 +28,7 @@ const HomonymCard = ({
   handleAnswer,
   answers,
   inputError,
+  handleAudioLogs,
 }: Props) => {
   const activitySentence1 = activity.sentence_1.split(" ");
   const activitySentence2 = activity.sentence_2.split(" ");
@@ -37,11 +39,12 @@ const HomonymCard = ({
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
-  const handleAudioPlay = (audio_path: string) => {
+  const handleAudioPlay = (audio_path: string, index: number) => {
     player.pause();
     player.replace({ uri: audio_path });
     player.seekTo(0);
     player.play();
+    handleAudioLogs(index);
     return;
   };
 
@@ -57,7 +60,7 @@ const HomonymCard = ({
     <View style={styles.container}>
       <View style={[styles.questionCard, styles.questionRow]}>
         <TouchableOpacity
-          onPress={() => handleAudioPlay(activity.audio_path_1)}
+          onPress={() => handleAudioPlay(activity.audio_path_1, 0)}
           style={styles.audioControl}
         >
           <FontAwesome name="volume-up" size={24} color="white" />
@@ -100,7 +103,7 @@ const HomonymCard = ({
 
       <View style={[styles.questionCard, styles.questionRow]}>
         <TouchableOpacity
-          onPress={() => handleAudioPlay(activity.audio_path_2)}
+          onPress={() => handleAudioPlay(activity.audio_path_2, 1)}
           style={styles.audioControl}
         >
           <FontAwesome name="volume-up" size={24} color="white" />

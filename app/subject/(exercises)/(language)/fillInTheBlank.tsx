@@ -8,7 +8,8 @@ import globalStyles from "@/styles/globalStyles";
 import { router, useLocalSearchParams } from "expo-router";
 import { startFillActivity, submitFillActivity } from "@/utils/language";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import getCurrentDateTime from "@/utils/DateFormat";
 
 const fillInTheBlank = () => {
   HeaderConfig("Fill in the Blank");
@@ -32,6 +33,12 @@ const fillInTheBlank = () => {
     { item_id: string; sentence: string }[]
   >([]);
   const [inputErrors, setInputErrors] = useState<{ item_id: string }[]>([]);
+  const [audioLogs, setAudioLogs] = useState<
+    { item_id: string; played_at: string[] }[]
+  >([]);
+  const [answerLogs, setAnswerLogs] = useState<
+    { item_id: string; answers: string[]; answered_at: string[] }[]
+  >([]);
 
   const handleSubmit = async () => {
     const currentAnswer = answers.find(
@@ -61,6 +68,8 @@ const fillInTheBlank = () => {
           activityId,
           attemptId,
           answers,
+          audioLogs,
+          answerLogs,
         );
 
         if (res.success) {
@@ -85,17 +94,18 @@ const fillInTheBlank = () => {
   const handleAnswer = useCallback(
     (answers: string[]) => {
       const currentAnswer = answers.join(" ");
+      const itemId = activity[currentItem].item_id;
 
       if (!currentAnswer.trim()) return;
       setAnswers((prev) => {
         const existingIndex = prev.findIndex(
-          (entry) => entry.item_id === activity[currentItem].item_id,
+          (entry) => entry.item_id === itemId,
         );
 
         if (existingIndex !== -1) {
           const updated = [...prev];
           updated[existingIndex] = {
-            item_id: activity[currentItem].item_id,
+            item_id: itemId,
             sentence: currentAnswer,
           };
           return updated;
@@ -113,31 +123,77 @@ const fillInTheBlank = () => {
       setInputErrors((prev) =>
         prev.filter((err) => err.item_id !== activity[currentItem].item_id),
       );
+
+      setAnswerLogs((prev) => {
+        const now = getCurrentDateTime();
+        const existingIndex = prev.findIndex((log) => log.item_id === itemId);
+
+        if (existingIndex !== -1) {
+          const updated = [...prev];
+          const existing = updated[existingIndex];
+          updated[existingIndex] = {
+            ...existing,
+            answers: [...(existing.answers || []), currentAnswer],
+            answered_at: [...(existing.answered_at || []), now],
+          };
+
+          return updated;
+        } else {
+          return [
+            ...prev,
+            {
+              item_id: itemId,
+              answers: [currentAnswer],
+              answered_at: [now],
+            },
+          ];
+        }
+      });
     },
     [currentItem, activity],
   );
 
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
 
   const handleAudioPlay = async () => {
     await player.seekTo(0);
-    if (player.isLoaded) {
+    if (!status.playing) {
+      player.replace({ uri: activity[currentItem].audio_path });
       player.play();
-      console.log(player.isBuffering);
     }
   };
 
   useEffect(() => {
+    if (status.didJustFinish) {
+      const itemId = activity[currentItem]?.item_id;
+      const now = getCurrentDateTime();
+
+      setAudioLogs((prev) => {
+        const existingIndex = prev.findIndex((log) => log.item_id === itemId);
+        if (existingIndex !== -1) {
+          const updated = [...prev];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            played_at: [...updated[existingIndex].played_at, now],
+          };
+          return updated;
+        } else {
+          return [...prev, { item_id: itemId, played_at: [now] }];
+        }
+      });
+    }
+  }, [status.didJustFinish]);
+
+  useEffect(() => {
     const fetchActivity = async () => {
       const res = await startFillActivity(subjectId, difficulty, activityId);
-
       Object.entries(res.activity).map(async ([id, data]: [string, any]) => {
         setActivity((prev) => [
           ...prev,
           { item_id: id, sentence: data.sentence, audio_path: data.audio_path },
         ]);
       });
-
       setAttemptId(res.attempt_id);
       setLoading(false);
       setCurrentItem(0);
@@ -149,7 +205,6 @@ const fillInTheBlank = () => {
   useEffect(() => {
     if (loading) return;
     (async () => {
-      player.replace({ uri: activity[currentItem].audio_path });
       player.pause();
     })();
   }, [currentItem, loading]);
@@ -184,7 +239,6 @@ const fillInTheBlank = () => {
         </TouchableOpacity>
 
         <FillInTheBlanks
-          key={currentItem}
           sentence={activity[currentItem].sentence}
           handleAnswers={(answers: string[]) => handleAnswer(answers)}
           hasError={inputErrors.some(
