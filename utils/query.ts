@@ -1,4 +1,7 @@
 import { api } from "@/utils/apiClient";
+import { getAuth } from "@react-native-firebase/auth";
+
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function getSubjects() {
   try {
@@ -54,29 +57,57 @@ export async function getAnnouncementById(
   }
 }
 
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
 export async function createAnnouncement(
-  subjectId: string,
   title: string,
   description: string,
+  files: FileInfo[],
+  urls: string[],
+  subjectId: string,
+  formattedDate: string,
 ) {
   try {
-    const payload = JSON.stringify({
-      title: title,
-      description: description,
+    const formdata = new FormData();
+
+    formdata.append("title", title);
+    formdata.append("description", description);
+    formdata.append("date_posted", formattedDate);
+
+    files.forEach((file, index) => {
+      formdata.append(`files[${index}][file]`, {
+        name: file.name,
+        uri: file.uri,
+        type: file.mimeType,
+      } as any);
     });
 
-    const { data } = await api.post(
-      `/subject/${subjectId}/announcement`,
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      },
-    );
+    urls.forEach((url, index) => {
+      if (!url.trim()) return;
+      formdata.append(`urls[${index}][url]`, url);
+    });
 
-    return data;
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    console.log(formdata);
+
+    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
+      method: "POST",
+      headers: {
+        Accept: "multipart/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formdata,
+    });
+
+    const responseJson = await res.json();
+    console.log(responseJson);
+    return responseJson;
   } catch (err) {
     console.error(err);
     throw err;
@@ -84,31 +115,66 @@ export async function createAnnouncement(
 }
 
 export async function editAnnouncement(
-  subjectId: string,
   title: string,
   description: string,
+  files: FileInfo[],
+  urls: string[],
+  existingImageUrls: { url: string; name: string }[],
+  subjectId: string,
   announcementId: string,
+  formattedDate: string,
 ) {
   try {
-    const payload = JSON.stringify({
-      title: title,
-      description: description,
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("date_posted", formattedDate);
+
+    existingImageUrls.forEach((url, idx) => {
+      if (url.url.trim()) {
+        formData.append(`image_urls[${idx}]`, url.url);
+      }
     });
 
-    const { data } = await api.put(
-      `/subject/${subjectId}/announcement/${announcementId}`,
-      payload,
+    files.forEach((file, idx) => {
+      if (!file.uri) return;
+      formData.append(`files[${idx}][file]`, {
+        uri: file.uri,
+        name: file.name,
+        type: file.mimeType ?? "application/octet-stream",
+      } as any);
+    });
+
+    urls.forEach((url, idx) => {
+      if (url.trim()) {
+        formData.append(`urls[${idx}][url]`, url);
+      }
+    });
+
+    console.log(formData);
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/announcement/${announcementId}`,
       {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        body: formData,
       },
     );
 
-    return data;
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`Update failed (${res.status}): ${text}`);
+    }
+
+    return await res.json();
   } catch (err) {
-    console.error(err);
+    console.error("editAnnouncement error:", err);
     throw err;
   }
 }
