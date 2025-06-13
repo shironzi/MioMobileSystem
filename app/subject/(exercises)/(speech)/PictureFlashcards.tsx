@@ -19,6 +19,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import globalStyles from "@/styles/globalStyles";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
+import FeedbackAlert from "@/components/FeedbackAlert";
 
 const PictureFlashcards = () => {
   const router = useRouter();
@@ -48,6 +49,7 @@ const PictureFlashcards = () => {
   const [attemptId, setAttemptId] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentCard, setCurrentCard] = useState<number>(0);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const handleNextCard = async () => {
     if (!attemptId) return;
@@ -63,6 +65,10 @@ const PictureFlashcards = () => {
       recordingAudio,
     );
 
+    if (res.feedback) {
+      setFeedback(res.feedback);
+    }
+
     if (currentCard === cards.length - 1) {
       router.push({
         pathname: "/subject/(sub-details)/scoreDetails",
@@ -76,6 +82,7 @@ const PictureFlashcards = () => {
       setCurrentCard(currentCard + 1);
       setIsAnswered(false);
       setSubmitting(false);
+      setRecordingAudio(null);
     }
   };
 
@@ -170,6 +177,23 @@ const PictureFlashcards = () => {
               source={require("@/assets/images/orange.png")}
               style={{ width: 90, height: 50 }}
             />
+
+            {feedback && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <FeedbackAlert
+                  message={feedback}
+                  onHide={() => setFeedback(null)}
+                />
+              </View>
+            )}
 
             <Image
               source={{ uri: cards[currentCard].image_url }}
