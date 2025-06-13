@@ -80,7 +80,7 @@ export async function getAttemptActivity(
   attemptId: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/${activity_type}/${activityId}/${attemptId}`;
+    const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(url, {

@@ -10,20 +10,26 @@ import {
   View,
 } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import { submitBingoActivity, takeAuditoryActivity } from "@/utils/auditory";
+import {
+  getAttemptActivityAuditory,
+  submitBingoActivity,
+  takeAuditoryActivity,
+} from "@/utils/auditory";
 import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer } from "expo-audio";
 import getCurrentDateTime from "@/utils/DateFormat";
+import { getAttemptActivity } from "@/utils/specialized";
 
 const bingo = () => {
   HeaderConfigQuiz("Bingo Cards");
 
-  const { subjectId, difficulty, activity_type, activityId } =
+  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
+      prevAttemptId: string;
     }>();
 
   const [activityData, setActivityData] = useState<
@@ -139,20 +145,30 @@ const bingo = () => {
 
     const fetchData = async () => {
       try {
-        const res = await takeAuditoryActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-        );
+        const res = prevAttemptId
+          ? await getAttemptActivityAuditory(
+              subjectId,
+              activity_type,
+              activityId,
+              prevAttemptId,
+            )
+          : await takeAuditoryActivity(
+              subjectId,
+              activity_type,
+              difficulty,
+              activityId,
+            );
+
+        console.log(res);
         if (!res.success) {
           console.log("failed to take activity");
         }
 
         setAttemptId(res.attemptId);
-
         if (isMounted) {
           setActivityData(res.items);
+
+          console.log(res.items);
           setAudioFiles(res.audio_paths);
           setLoading(false);
         }

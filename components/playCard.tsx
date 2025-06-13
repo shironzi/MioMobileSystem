@@ -13,90 +13,21 @@ const PlayCard = (props: {
   role: string;
 }) => {
   const router = useRouter();
+
   const handleCategory = () => {
-    if (props.category === "speech") {
-      router.push({
-        pathname:
-          props.role === "teacher"
-            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-            : "/subject/(exercises)/ViewActivity",
-        params: {
-          subjectId: props.subjectId,
-          activity_type: props.activity_type,
-          difficulty: props.difficulty,
-          category: props.category,
-          activityId: props.activityId,
-        },
-      });
-    }
-
-    if (props.category === "auditory") {
-      if (props.activity_type === "bingo") {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
-              : "/subject/(exercises)/(auditory)/bingo",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-
-      if (props.activity_type === "matching") {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
-              : "/subject/(exercises)/(auditory)/MatchingCards",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-    }
-
-    if (props.category === "language") {
-      if (props.activity_type === "fill") {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/ManageActivity/AddLanguageActivity"
-              : "/subject/(exercises)/(language)/fillInTheBlank",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-
-      if (props.activity_type === "homonyms") {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/ManageActivity/AddLanguageActivity"
-              : "/subject/(exercises)/(language)/Homonyms",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-    }
+    router.push({
+      pathname:
+        props.role === "teacher"
+          ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+          : "/subject/(exercises)/ViewActivity",
+      params: {
+        subjectId: props.subjectId,
+        activity_type: props.activity_type,
+        difficulty: props.difficulty,
+        category: props.category,
+        activityId: props.activityId,
+      },
+    });
   };
 
   return (

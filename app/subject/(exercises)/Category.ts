@@ -53,7 +53,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          attemptId,
+          prevAttemptId: attemptId,
         },
       });
     }
@@ -72,7 +72,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          attemptId,
+          prevAttemptId: attemptId,
         },
       });
     }
@@ -89,7 +89,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          attemptId,
+          prevAttemptId: attemptId,
         },
       });
     }
@@ -108,7 +108,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          attemptId,
+          prevAttemptId: attemptId,
         },
       });
     }
@@ -125,7 +125,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          attemptId,
+          prevAttemptId: attemptId,
         },
       });
     }
