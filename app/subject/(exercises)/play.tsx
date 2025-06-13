@@ -1,10 +1,11 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import PlayCard from "@/components/playCard";
 import React, { memo, useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import { useLocalSearchParams } from "expo-router";
-import { getActivities } from "@/utils/specialized";
+import { router, useLocalSearchParams } from "expo-router";
+import { getActiveActivity, getActivities } from "@/utils/specialized";
+import handleCategory from "@/app/subject/(exercises)/Category";
 
 const Play = () => {
   HeaderConfig("Play");
@@ -30,11 +31,12 @@ const Play = () => {
         setLoading(false);
       } catch (err) {
         console.error("Get Activities Fetch Failed: " + err);
+        Alert.alert("Error", "Failed to load activities.");
       }
     };
 
     fetchActivities();
-  }, [subjectId, activity_type, difficulty]);
+  }, []);
 
   if (loading) {
     return (

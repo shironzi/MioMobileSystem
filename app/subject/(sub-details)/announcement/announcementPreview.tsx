@@ -3,7 +3,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { createAnnouncement, editAnnouncement } from "@/utils/query";
 import { Alert, Linking } from "react-native";
 import { Image, Image as ExpoImage } from "expo-image";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   ScrollView,

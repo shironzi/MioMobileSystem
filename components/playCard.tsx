@@ -15,41 +15,19 @@ const PlayCard = (props: {
   const router = useRouter();
   const handleCategory = () => {
     if (props.category === "speech") {
-      if (props.activity_type === "picture") {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-              : "/subject/(exercises)/(speech)/PictureFlashcards",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
-
-      if (
-        props.activity_type === "phrase" ||
-        props.activity_type === "question" ||
-        props.activity_type === "pronunciation"
-      ) {
-        router.push({
-          pathname:
-            props.role === "teacher"
-              ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-              : "/subject/(exercises)/(speech)/Flashcards",
-          params: {
-            subjectId: props.subjectId,
-            activity_type: props.activity_type,
-            difficulty: props.difficulty,
-            category: props.category,
-            activityId: props.activityId,
-          },
-        });
-      }
+      router.push({
+        pathname:
+          props.role === "teacher"
+            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+            : "/subject/(exercises)/ViewActivity",
+        params: {
+          subjectId: props.subjectId,
+          activity_type: props.activity_type,
+          difficulty: props.difficulty,
+          category: props.category,
+          activityId: props.activityId,
+        },
+      });
     }
 
     if (props.category === "auditory") {

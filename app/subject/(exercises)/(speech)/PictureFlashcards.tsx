@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { startActivity, submitAnswer } from "@/utils/specialized";
+import {
+  getAttemptActivity,
+  startActivity,
+  submitAnswer,
+} from "@/utils/specialized";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import globalStyles from "@/styles/globalStyles";
@@ -27,12 +31,13 @@ const PictureFlashcards = () => {
     image_url: string;
   }
 
-  const { subjectId, difficulty, activity_type, activityId } =
+  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
+      prevAttemptId: string;
     }>();
 
   const [cards, setCards] = useState<PictureItem[]>([]);
@@ -79,12 +84,19 @@ const PictureFlashcards = () => {
 
     const fetchActivity = async () => {
       try {
-        const res = await startActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-        );
+        const res = prevAttemptId
+          ? await getAttemptActivity(
+              subjectId,
+              activity_type,
+              activityId,
+              prevAttemptId,
+            )
+          : await startActivity(
+              subjectId,
+              activity_type,
+              difficulty,
+              activityId,
+            );
 
         if (!res.success) {
           Alert.alert("Failed to start the activity");
@@ -102,6 +114,11 @@ const PictureFlashcards = () => {
         if (!isMounted) return;
         setCards(fetchedFlashcards);
         setAttemptId(res.attemptId);
+
+        const lastAnsweredIndex = res.last_answered ?? 0;
+        setCurrentCard(
+          lastAnsweredIndex < fetchedFlashcards.length ? lastAnsweredIndex : 0,
+        );
       } catch (error) {
         console.error("Error loading activity:", error);
         if (isMounted) {

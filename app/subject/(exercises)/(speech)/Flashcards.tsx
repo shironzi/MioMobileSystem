@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { startActivity, submitAnswer } from "@/utils/specialized";
+import {
+  getAttemptActivity,
+  startActivity,
+  submitAnswer,
+} from "@/utils/specialized";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
@@ -20,12 +24,13 @@ const Flashcards = () => {
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activity_type, activityId } =
+  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
+      prevAttemptId: string;
     }>();
 
   const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
@@ -73,12 +78,19 @@ const Flashcards = () => {
     let isMounted = true;
     const fetchActivity = async () => {
       try {
-        const res = await startActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-        );
+        const res = prevAttemptId
+          ? await getAttemptActivity(
+              subjectId,
+              activity_type,
+              activityId,
+              prevAttemptId,
+            )
+          : await startActivity(
+              subjectId,
+              activity_type,
+              difficulty,
+              activityId,
+            );
 
         if (res.success) {
           const fetchedFlashcards = Object.entries(res.flashcards).map(
@@ -90,6 +102,13 @@ const Flashcards = () => {
 
           setAttemptId(res.attemptId);
           setCards(fetchedFlashcards);
+
+          const lastAnsweredIndex = res.last_answered ?? 0;
+          setCurrentCard(
+            lastAnsweredIndex < fetchedFlashcards.length
+              ? lastAnsweredIndex
+              : 0,
+          );
         } else {
           Alert.alert("Failed to start the activity");
           router.back();

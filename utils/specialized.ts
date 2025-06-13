@@ -45,6 +45,63 @@ export async function getActivities(
   }
 }
 
+export async function getActiveActivity(
+  subjectId: string,
+  activity_type: string,
+  activityId: string,
+) {
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/attempts/${activity_type}/${activityId}`;
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Error: " + text);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Get Activities Fetch Failed: " + err);
+  }
+}
+
+export async function getAttemptActivity(
+  subjectId: string,
+  activity_type: string,
+  activityId: string,
+  attemptId: string,
+) {
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/attempts/${activity_type}/${activityId}/${attemptId}`;
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Error: " + text);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Get Activities Fetch Failed: " + err);
+  }
+}
+
 export async function startActivity(
   subjectId: string,
   activityType: string,
@@ -151,7 +208,6 @@ export async function createPictureSpeechActivity(
         } as any);
       }
     });
-
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const response = await fetch(url, {
