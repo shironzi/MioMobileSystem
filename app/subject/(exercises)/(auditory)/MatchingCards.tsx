@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { router, useLocalSearchParams } from "expo-router";
-import { submitMatchingActivity, takeAuditoryActivity } from "@/utils/auditory";
+import {
+  getAttemptActivityAuditory,
+  submitMatchingActivity,
+  takeAuditoryActivity,
+} from "@/utils/auditory";
 import globalStyles from "@/styles/globalStyles";
 import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
@@ -46,14 +50,21 @@ interface answerLog {
 const MatchingCards = () => {
   HeaderConfigQuiz("Matching Cards");
 
-  const { subjectId, activity_type, difficulty, category, activityId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      category: string;
-      activityId: string;
-    }>();
+  const {
+    subjectId,
+    activity_type,
+    difficulty,
+    category,
+    activityId,
+    prevAttemptId,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activity_type: string;
+    difficulty: string;
+    category: string;
+    activityId: string;
+    prevAttemptId: string;
+  }>();
 
   const [activity, setActivity] = useState<
     { image_id: string; image_url: string }[]
@@ -198,12 +209,22 @@ const MatchingCards = () => {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const res = await takeAuditoryActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-        );
+        console.log(prevAttemptId);
+        const res = prevAttemptId
+          ? await getAttemptActivityAuditory(
+              subjectId,
+              activity_type,
+              activityId,
+              prevAttemptId,
+            )
+          : await takeAuditoryActivity(
+              subjectId,
+              activity_type,
+              difficulty,
+              activityId,
+            );
+
+        console.log(res);
 
         setActivity(res.items);
         setAudio(res.audio);

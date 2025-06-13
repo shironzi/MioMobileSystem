@@ -419,3 +419,32 @@ export async function editFill(
     throw err;
   }
 }
+
+export async function getAttemptActivityLanguage(
+  subjectId: string,
+  activity_type: string,
+  activityId: string,
+  attemptId: string,
+) {
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/attempts/language/${activity_type}/${activityId}/${attemptId}`;
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Error: " + text);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Get Activities Fetch Failed: " + err);
+  }
+}

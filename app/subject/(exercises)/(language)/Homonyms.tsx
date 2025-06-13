@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import {
+  getAttemptActivityLanguage,
   startHomonymsActivity,
   submitHomonymsActivity,
 } from "@/utils/language";
@@ -22,12 +23,13 @@ interface HomonymItem {
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const { subjectId, difficulty, activityId, activityType } =
+  const { subjectId, difficulty, activityId, activityType, prevAttemptId } =
     useLocalSearchParams<{
       subjectId: string;
       difficulty: string;
       activityId: string;
       activityType: string;
+      prevAttemptId: string;
     }>();
   const [items, setItems] = useState<HomonymItem[]>([]);
   const [currentItem, setCurrentItem] = useState(0);
@@ -224,11 +226,14 @@ const Homonyms = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      const res = await startHomonymsActivity(
-        subjectId,
-        difficulty,
-        activityId,
-      );
+      const res = prevAttemptId
+        ? await getAttemptActivityLanguage(
+            subjectId,
+            activityType,
+            activityId,
+            prevAttemptId,
+          )
+        : await startHomonymsActivity(subjectId, difficulty, activityId);
 
       Object.entries(res.activity).map(([key, value]: [string, any]) => {
         setItems((prev) => [

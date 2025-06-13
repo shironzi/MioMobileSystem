@@ -6,7 +6,11 @@ import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheB
 import ActivityProgress from "@/components/activityProgress";
 import globalStyles from "@/styles/globalStyles";
 import { router, useLocalSearchParams } from "expo-router";
-import { startFillActivity, submitFillActivity } from "@/utils/language";
+import {
+  getAttemptActivityLanguage,
+  startFillActivity,
+  submitFillActivity,
+} from "@/utils/language";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import getCurrentDateTime from "@/utils/DateFormat";
@@ -14,14 +18,21 @@ import getCurrentDateTime from "@/utils/DateFormat";
 const fillInTheBlank = () => {
   HeaderConfig("Fill in the Blank");
 
-  const { subjectId, activity_type, difficulty, category, activityId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      category: string;
-      activityId: string;
-    }>();
+  const {
+    subjectId,
+    activity_type,
+    difficulty,
+    category,
+    activityId,
+    prevAttemptId,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activity_type: string;
+    difficulty: string;
+    category: string;
+    activityId: string;
+    prevAttemptId: string;
+  }>();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [attemptId, setAttemptId] = useState<string>();
@@ -187,14 +198,23 @@ const fillInTheBlank = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      const res = await startFillActivity(subjectId, difficulty, activityId);
+      console.log(prevAttemptId);
+      const res = prevAttemptId
+        ? await getAttemptActivityLanguage(
+            subjectId,
+            activity_type,
+            activityId,
+            prevAttemptId,
+          )
+        : await startFillActivity(subjectId, difficulty, activityId);
+
       Object.entries(res.activity).map(async ([id, data]: [string, any]) => {
         setActivity((prev) => [
           ...prev,
           { item_id: id, sentence: data.sentence, audio_path: data.audio_path },
         ]);
       });
-      setAttemptId(res.attempt_id);
+      setAttemptId(res.attemptId);
       setLoading(false);
       setCurrentItem(0);
     };
