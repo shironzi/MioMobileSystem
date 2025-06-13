@@ -3,9 +3,8 @@ import PlayCard from "@/components/playCard";
 import React, { memo, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import { router, useLocalSearchParams } from "expo-router";
-import { getActiveActivity, getActivities } from "@/utils/specialized";
-import handleCategory from "@/app/subject/(exercises)/Category";
+import { useLocalSearchParams } from "expo-router";
+import { getActivities } from "@/utils/specialized";
 
 const Play = () => {
   HeaderConfig("Play");

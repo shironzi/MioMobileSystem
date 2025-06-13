@@ -51,3 +51,36 @@ export function parseFormattedDate(dateStr: string): Date {
 
   return new Date(year, month - 1, day, hour, minute, second);
 }
+
+export function parseFormattedDateString(dateStr: string): Date {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
+export function formatDayDateTimeWithAmPm(date: string): string {
+  const newDate = parseFormattedDateString(date);
+
+  const day = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    weekday: "long",
+  }).format(newDate);
+
+  const dateStr = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  }).format(newDate);
+
+  const time = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(newDate);
+
+  return `${day}, ${dateStr} ${time}`;
+}

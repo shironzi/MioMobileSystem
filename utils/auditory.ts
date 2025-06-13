@@ -37,6 +37,10 @@ export async function getMatchingActivityById(
       `/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}`,
     );
 
+    console.log(
+      "/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}",
+    );
+
     return data;
   } catch (err) {
     console.error("fetch activity by Id failed: ", err);
@@ -251,17 +255,38 @@ export async function submitBingoActivity(
   difficulty: string,
   activityId: string,
   attemptId: string,
-  payload: { answers: { image_id: string }[] },
+  answers: { image_id: string; selected_at: string }[],
+  totalPlay: { audio_id: string; played_at: string[] }[],
 ) {
   try {
-    const { data } = await api.put(
-      `/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
-      payload,
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    console.log(
+      JSON.stringify({
+        answers,
+        audio_played: totalPlay,
+      }),
     );
 
-    return data;
+    const response = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          answers,
+          audio_played: totalPlay,
+        }),
+      },
+    );
+
+    return await response.json();
   } catch (err) {
-    console.error("Take Activity Failed");
+    console.error("Take Activity Failed", err);
   }
 }
 

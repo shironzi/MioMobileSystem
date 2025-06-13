@@ -18,7 +18,6 @@ import {
 import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer } from "expo-audio";
 import getCurrentDateTime from "@/utils/DateFormat";
-import { getAttemptActivity } from "@/utils/specialized";
 
 const bingo = () => {
   HeaderConfigQuiz("Bingo Cards");
@@ -44,7 +43,7 @@ const bingo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPlay, setTotalPlay] = useState<
-    { audio_id: string; total: number; played_at: string[] }[]
+    { audio_id: string; played_at: string[] }[]
   >([]);
   const [answers, setAnswers] = useState<
     { image_id: string; selected_at: string }[]
@@ -68,18 +67,16 @@ const bingo = () => {
     try {
       if (!attemptId) return;
 
-      const payload = {
-        answers: answers,
-        audio_played: totalPlay,
-      };
-
       const res = await submitBingoActivity(
         subjectId,
         difficulty,
         activityId,
         attemptId,
-        payload,
+        answers,
+        totalPlay,
       );
+
+      console.log(res);
 
       if (res.success) {
         router.push({
@@ -108,7 +105,6 @@ const bingo = () => {
         const updated = [...prev];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          total: updated[existingIndex].total + 1,
           played_at: [...updated[existingIndex].played_at, date],
         };
         return updated;
@@ -117,7 +113,6 @@ const bingo = () => {
           ...prev,
           {
             audio_id: audioId,
-            total: 1,
             played_at: [date],
           },
         ];

@@ -156,6 +156,7 @@ export async function submitAnswer(
     if (!response.ok) {
       const text = await response.text();
       console.error("Error: " + text);
+      return;
     }
 
     return await response.json();

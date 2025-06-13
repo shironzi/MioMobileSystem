@@ -122,7 +122,14 @@ const courseDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
-          onPress={useCallback(() => router.push("/subject/scores"), [router])}
+          onPress={useCallback(
+            () =>
+              router.push({
+                pathname: "/subject/Scores",
+                params: { subjectId: id },
+              }),
+            [router, id],
+          )}
         >
           <View style={styles.yellowBulletin}></View>
           <View style={styles.linkDecoration}>

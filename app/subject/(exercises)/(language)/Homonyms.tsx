@@ -249,7 +249,7 @@ const Homonyms = () => {
         ]);
       });
 
-      setAttemptId(res.attempt_id);
+      setAttemptId(res.attemptId);
 
       setLoading(false);
     };

@@ -15,19 +15,60 @@ const PlayCard = (props: {
   const router = useRouter();
 
   const handleCategory = () => {
-    router.push({
-      pathname:
-        props.role === "teacher"
-          ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-          : "/subject/(exercises)/ViewActivity",
-      params: {
-        subjectId: props.subjectId,
-        activity_type: props.activity_type,
-        difficulty: props.difficulty,
-        category: props.category,
-        activityId: props.activityId,
-      },
-    });
+    if (
+      props.activity_type === "picture" ||
+      props.activity_type === "pronunciation" ||
+      props.activity_type === "phrase" ||
+      props.activity_type === "question"
+    ) {
+      router.push({
+        pathname:
+          props.role === "teacher"
+            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+            : "/subject/(exercises)/ViewActivity",
+        params: {
+          subjectId: props.subjectId,
+          activity_type: props.activity_type,
+          difficulty: props.difficulty,
+          category: props.category,
+          activityId: props.activityId,
+        },
+      });
+    } else if (
+      props.activity_type === "bingo" ||
+      props.activity_type === "matching"
+    ) {
+      router.push({
+        pathname:
+          props.role === "teacher"
+            ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
+            : "/subject/(exercises)/ViewActivity",
+        params: {
+          subjectId: props.subjectId,
+          activity_type: props.activity_type,
+          difficulty: props.difficulty,
+          category: props.category,
+          activityId: props.activityId,
+        },
+      });
+    } else if (
+      props.activity_type === "fill" ||
+      props.activity_type === "homonyms"
+    ) {
+      router.push({
+        pathname:
+          props.role === "teacher"
+            ? "/subject/(exercises)/(language)/ManageActivity/AddLanguageActivity"
+            : "/subject/(exercises)/ViewActivity",
+        params: {
+          subjectId: props.subjectId,
+          activity_type: props.activity_type,
+          difficulty: props.difficulty,
+          category: props.category,
+          activityId: props.activityId,
+        },
+      });
+    }
   };
 
   return (
