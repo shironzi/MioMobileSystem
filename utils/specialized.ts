@@ -29,15 +29,9 @@ interface Flashcard {
   text: string;
 }
 
-export async function getActivities(
-  subjectId: string,
-  activityType: string,
-  difficulty: string,
-) {
+export async function getActivities(subjectId: string) {
   try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activityType}/${difficulty}`,
-    );
+    const { data } = await api.get(`/subject/${subjectId}/scores`);
 
     return data;
   } catch (err) {

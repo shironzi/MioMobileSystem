@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { getActivities } from "@/utils/specialized";
 import { router } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -10,74 +9,58 @@ const SpeechScores = ({
   subjectId,
   difficulty,
   activityType,
+  activityIds = [],
 }: {
   subjectId: string;
   difficulty: string;
   placeholder: string;
   activityType: string;
+  activityIds?: string[];
 }) => {
   useHeaderConfig("Scores");
 
   const [isVisible, setIsVisible] = useState(false);
-  const [pictureEasy, setPictureEasy] = useState<string[]>([]);
   const toggleDropdown = () => setIsVisible(!isVisible);
 
   const handleViewStudents = (activity: string) => {
     router.push({
       pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
       params: {
-        subjectId: subjectId,
+        subjectId,
         activityId: activity,
-        activityType: activityType,
-        difficulty: difficulty,
+        activityType,
+        difficulty,
       },
     });
   };
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      const data = await getActivities(subjectId, activityType, difficulty);
-      if (data.success) {
-        setPictureEasy(data.activities);
-      }
-    };
-    fetchActivities();
-  }, []);
-
   return (
     <View>
-      <TouchableOpacity
-        onPress={toggleDropdown}
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: "#fff",
-          padding: 20,
-        }}
-      >
-        <Text>
+      <TouchableOpacity onPress={toggleDropdown} style={styles.dropdownButton}>
+        <Text style={styles.buttonText}>
           {placeholder} (
           {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)})
         </Text>
-        {isVisible ? (
-          <MaterialIcons name="keyboard-arrow-up" size={24} color="black" />
-        ) : (
-          <MaterialIcons name="keyboard-arrow-down" size={24} color="black" />
-        )}
+        <MaterialIcons
+          name={isVisible ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+          size={24}
+          color="#fff"
+        />
       </TouchableOpacity>
+
       {isVisible && (
         <View style={styles.dropdownContent}>
-          {pictureEasy.length ? (
-            pictureEasy.map((activity, index) => (
+          {activityIds.length > 0 ? (
+            activityIds.map((activity, index) => (
               <TouchableOpacity
-                key={index}
+                key={activity}
                 onPress={() => handleViewStudents(activity)}
               >
                 <Text style={styles.item}>Level {index + 1}</Text>
               </TouchableOpacity>
             ))
           ) : (
-            <Text>No Activities Yet</Text>
+            <Text style={styles.item}>No Activities Yet</Text>
           )}
         </View>
       )}
@@ -86,28 +69,27 @@ const SpeechScores = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
   dropdownButton: {
-    backgroundColor: "#4682B4",
-    padding: 12,
-    borderRadius: 6,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 4,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
     fontSize: 16,
+    fontWeight: "500",
   },
   dropdownContent: {
-    backgroundColor: "#f0f0f0",
-    padding: 10,
+    padding: 12,
     borderRadius: 6,
-    flexDirection: "column",
     borderWidth: 1,
   },
   item: {
-    paddingVertical: 6,
+    paddingVertical: 8,
     fontSize: 14,
+    color: "#333",
   },
 });
 
