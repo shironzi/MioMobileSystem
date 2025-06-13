@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   feedbackText: {
     paddingHorizontal: 20,
-    textAlign: "center" as const,
+    textAlign: "center",
     color: "#1F1F1F",
     fontSize: 16,
     lineHeight: 28,

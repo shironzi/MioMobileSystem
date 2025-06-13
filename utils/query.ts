@@ -355,3 +355,51 @@ export async function getScores(subjectId: string | string[]) {
     throw err;
   }
 }
+
+export async function getStudents(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/peoples`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getAttempts(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+  userId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getAttempt(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+  userId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}/${attemptId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}

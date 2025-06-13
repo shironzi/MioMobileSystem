@@ -28,7 +28,7 @@ interface Items {
 interface Audio {
   filename: string | null;
   audio_id: string | null;
-  audio_path: string | null;
+  audio_path: string;
   audio: FileInfo | null;
 }
 
@@ -136,7 +136,7 @@ const AddAuditoryActivity = () => {
         ) {
           return [
             ...prev,
-            { audio_path: null, audio_id: null, audio: null, filename: null },
+            { audio_path: "", audio_id: null, audio: null, filename: null },
           ];
         }
         return prev;
@@ -151,7 +151,7 @@ const AddAuditoryActivity = () => {
         ) {
           return [
             ...prev,
-            { audio_path: null, audio_id: null, audio: null, filename: null },
+            { audio_path: "", audio_id: null, audio: null, filename: null },
           ];
         }
         return prev;
