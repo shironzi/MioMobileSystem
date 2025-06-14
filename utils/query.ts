@@ -403,3 +403,87 @@ export async function getAttempt(
     throw err;
   }
 }
+
+export async function getAttendance(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/attendance`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getAttendanceById(
+  subjectId: string,
+  attendanceId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/attendance/${attendanceId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getAttendanceStudents(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/attendance/students`);
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function addAttendance(
+  subjectId: string,
+  attendanceId: string,
+  payload: {
+    student_id: string;
+    status: string;
+  }[],
+) {
+  try {
+    console.log({ students: payload });
+
+    const { data } = await api.post(
+      `/subject/${subjectId}/attendance/${attendanceId}`,
+      { students: payload },
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function editAttendance(
+  subjectId: string,
+  attendanceId: string,
+  payload: {
+    student_id: string;
+    status: string;
+  }[],
+) {
+  try {
+    console.log({ students: payload });
+
+    const { data } = await api.put(
+      `/subject/${subjectId}/attendance/${attendanceId}`,
+      {
+        students: payload,
+      },
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
