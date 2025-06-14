@@ -16,7 +16,10 @@ import { formattedDate } from "@/utils/DateFormat";
 const attendanceDetails = () => {
   HeaderConfig("Attendance");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
   const [attendanceList, setAttendanceList] = useState<
     { id: string; date: string; date_created: string; date_updated?: string }[]
   >([]);
@@ -70,17 +73,19 @@ const attendanceDetails = () => {
           )}
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          router.push({
-            pathname: "/subject/(sub-details)/AddAttendance",
-            params: { subjectId },
-          });
-        }}
-      >
-        <MaterialIcon name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      {role && (
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            router.push({
+              pathname: "/subject/(sub-details)/AddAttendance",
+              params: { subjectId },
+            });
+          }}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
