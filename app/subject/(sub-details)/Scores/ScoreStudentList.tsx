@@ -14,12 +14,13 @@ const ScoreStudentList = () => {
   useHeaderConfig("Scores");
 
   const [students, setStudents] = useState<Student[]>([]);
-  const { subjectId, difficulty, activityId, activityType } =
+  const { subjectId, difficulty, activityId, activityType, role } =
     useLocalSearchParams<{
       subjectId: string;
       difficulty: string;
       activityId: string;
       activityType: string;
+      role: string;
     }>();
 
   const handleViewActivity = (studentId: string) => {
@@ -31,6 +32,7 @@ const ScoreStudentList = () => {
         activityId: activityId,
         userId: studentId,
         difficulty: difficulty,
+        role: role,
       },
     });
   };

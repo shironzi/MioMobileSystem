@@ -126,9 +126,9 @@ const courseDetails = () => {
             () =>
               router.push({
                 pathname: "/subject/Scores",
-                params: { subjectId: id },
+                params: { subjectId: id, role: role },
               }),
-            [router, id],
+            [router, id, role],
           )}
         >
           <View style={styles.yellowBulletin}></View>

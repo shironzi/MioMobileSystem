@@ -9,17 +9,25 @@ import { getAttempt } from "@/utils/query";
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { subjectId, activityType, activityId, userId, attemptId, difficulty } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activityType: string;
-      activityId: string;
-      userId: string;
-      attemptId: string;
-      difficulty: string;
-    }>();
+  const {
+    subjectId,
+    activityType,
+    activityId,
+    userId,
+    attemptId,
+    difficulty,
+    role,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activityType: string;
+    activityId: string;
+    userId: string;
+    attemptId: string;
+    difficulty: string;
+    role: string;
+  }>();
 
-  const [overallScore, setOverallScore] = useState<number | null>(null);
+  const [overallScore, setOverallScore] = useState<number>(0);
   const [feedbacks, setFeedbacks] = useState<
     { id: string; feedback: string }[]
   >([]);
@@ -101,19 +109,21 @@ const AuditoryScores = () => {
           </View>
         )}
 
-        <View style={globalStyles.cardContainer}>
-          <Text style={styles.sectionTitle}>Teacher Feedback</Text>
-          {feedbacks.length === 0 ? (
-            <Text style={styles.feedbackText}>No feedback provided.</Text>
-          ) : (
-            feedbacks.map((item, index) => (
-              <View key={item.id} style={{ marginBottom: 20 }}>
-                <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
-                <Text style={styles.feedbackText}>{item.feedback}</Text>
-              </View>
-            ))
-          )}
-        </View>
+        {role === "teacher" && (
+          <View style={globalStyles.cardContainer}>
+            <Text style={styles.sectionTitle}>Teacher Feedback</Text>
+            {feedbacks.length === 0 ? (
+              <Text style={styles.feedbackText}>No feedback provided.</Text>
+            ) : (
+              feedbacks.map((item, index) => (
+                <View key={item.id} style={{ marginBottom: 20 }}>
+                  <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
+                  <Text style={styles.feedbackText}>{item.feedback}</Text>
+                </View>
+              ))
+            )}
+          </View>
+        )}
       </View>
     </ScrollView>
   );

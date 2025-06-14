@@ -15,13 +15,14 @@ import { formatDayDateTimeWithAmPm } from "@/utils/DateFormat";
 const ScoreAttempts = () => {
   useHeaderConfig("Score");
 
-  const { subjectId, activityType, activityId, userId, difficulty } =
+  const { subjectId, activityType, activityId, userId, difficulty, role } =
     useLocalSearchParams<{
       subjectId: string;
       activityType: string;
       activityId: string;
       userId: string;
       difficulty: string;
+      role: string;
     }>();
 
   const [attempts, setAttempts] = useState<

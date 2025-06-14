@@ -10,12 +10,14 @@ const SpeechScores = ({
   difficulty,
   activityType,
   activityIds = [],
+  role,
 }: {
   subjectId: string;
   difficulty: string;
   placeholder: string;
   activityType: string;
   activityIds?: string[];
+  role: string;
 }) => {
   useHeaderConfig("Scores");
 
@@ -30,6 +32,7 @@ const SpeechScores = ({
         activityId: activity,
         activityType,
         difficulty,
+        role: role,
       },
     });
   };

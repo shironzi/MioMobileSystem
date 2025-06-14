@@ -8,7 +8,10 @@ import { getActivities } from "@/utils/specialized";
 const Scores = () => {
   useHeaderConfig("Scores");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
   const [activities, setActivities] = useState<any>({});
 
   useEffect(() => {
@@ -32,6 +35,7 @@ const Scores = () => {
             placeholder={`${activityType.charAt(0).toUpperCase() + activityType.slice(1)} Flashcards`}
             activityType={activityType}
             activityIds={info.activity_ids}
+            role={role}
           />
         )),
       )}
