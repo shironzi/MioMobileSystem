@@ -111,14 +111,11 @@ const SpeechTrainingExercise = () => {
 							top: 20,
 							alignSelf: "center",
 							flexDirection: "row",
-							// justifyContent: "center",
 						}}
 					>
 						<Ionicons name="add-circle" size={20} color="#aaa" />
-						<Text style={styles.addText}>Add Exercise</Text>
+						<Text style={styles.addText}>Add Speech Exercise</Text>
 					</View>
-
-					{/* <MaterialIcon name="add" size={30} color="#fff" /> */}
 				</TouchableOpacity>
 			)}
 		</View>
