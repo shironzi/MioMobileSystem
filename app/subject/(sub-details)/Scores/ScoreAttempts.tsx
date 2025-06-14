@@ -58,7 +58,7 @@ const ScoreAttempts = () => {
         const formatted = Object.entries(res.attempts).map(
           ([id, data]: any) => ({
             id,
-            overall_score: data.overall_score,
+            overall_score: data.overall_score ?? data.score,
             submitted_at: data.submitted_at,
           }),
         );
