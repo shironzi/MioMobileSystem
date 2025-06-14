@@ -1,41 +1,91 @@
-import AttendanceCard from "@/components/attendanceCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import React, { memo } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-
-const data = [
-  {
-    id: 1,
-    date: new Date(Date.now()),
-  },
-  {
-    id: 2,
-    date: new Date(Date.now()),
-  },
-];
+import React, { memo, useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { getAttendance } from "@/utils/query";
+import globalStyles from "@/styles/globalStyles";
+import { formattedDate } from "@/utils/DateFormat";
 
 const attendanceDetails = () => {
   HeaderConfig("Attendance");
 
+  const { subjectId, role } = useLocalSearchParams<{
+    subjectId: string;
+    role: string;
+  }>();
+  const [attendanceList, setAttendanceList] = useState<
+    { id: string; date: string; date_created: string; date_updated?: string }[]
+  >([]);
+
+  const handleAttendanceSelect = (attendanceId: string) => {
+    router.push({
+      pathname: "/subject/(sub-details)/AddAttendance",
+      params: { subjectId: subjectId, attendanceId: attendanceId },
+    });
+  };
+
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      const res = await getAttendance(subjectId);
+      if (res?.success && res.attendance) {
+        const mapped = Object.entries(res.attendance).map(
+          ([id, details]: any) => ({
+            id,
+            date: details.date,
+            date_created: details.date_created,
+            date_updated: details.date_updated ?? null,
+          }),
+        );
+        setAttendanceList(mapped);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <View style={[globalStyles.container, { flex: 1 }]}>
       <ScrollView>
         <View style={styles.content}>
-          {data.map((item) => (
-            <AttendanceCard key={item.id} item={item} />
-          ))}
+          {attendanceList.length > 0 ? (
+            attendanceList.map((item) => (
+              <TouchableOpacity
+                style={[
+                  globalStyles.cardContainer,
+                  { flexDirection: "row", alignItems: "center" },
+                ]}
+                key={item.id}
+                onPress={() => handleAttendanceSelect(item.id)}
+              >
+                <View style={styles.yellowBulletin}></View>
+                <Text>{formattedDate(item.date)}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>No attendance records yet.</Text>
+          )}
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          // router.push("attendanceDetails")
-          console.log("Attendance");
-        }}
-      >
-        <MaterialIcon name="add" size={30} color="#fff" />
-      </TouchableOpacity>
+      {role && (
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => {
+            router.push({
+              pathname: "/subject/(sub-details)/AddAttendance",
+              params: { subjectId },
+            });
+          }}
+        >
+          <MaterialIcon name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -45,7 +95,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 2,
+    rowGap: 10,
+  },
+  emptyText: {
+    textAlign: "center",
+    marginTop: 30,
+    fontSize: 16,
+    color: "#666",
   },
   addButton: {
     position: "absolute",
@@ -58,6 +114,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 5,
+  },
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    borderWidth: 2.5,
+    borderRadius: 100,
+    marginLeft: -15,
+    marginRight: 15,
+    height: 30,
   },
 });
 
