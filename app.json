@@ -36,6 +36,13 @@
           "backgroundColor": "#ffffff"
         }
       ],
+
+      [
+        "expo-notifications",
+        {
+          "sounds": ["./assets/audio/emergency.mp3"]
+        }
+      ],
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       "expo-secure-store",

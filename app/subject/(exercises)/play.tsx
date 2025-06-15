@@ -4,7 +4,7 @@ import React, { memo, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { useLocalSearchParams } from "expo-router";
-import { getActivities } from "@/utils/specialized";
+import { getActivities, getSpecializedActivities } from "@/utils/specialized";
 
 const Play = () => {
   HeaderConfig("Play");
@@ -24,7 +24,11 @@ const Play = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const res = await getActivities(subjectId, activity_type, difficulty);
+        const res = await getSpecializedActivities(
+          subjectId,
+          activity_type,
+          difficulty,
+        );
 
         setActivities(res.activities);
         setLoading(false);
