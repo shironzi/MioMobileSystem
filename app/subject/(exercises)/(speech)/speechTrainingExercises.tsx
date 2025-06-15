@@ -1,203 +1,247 @@
 import HeaderConfig from "@/utils/HeaderConfig";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import globalStyles from "@/styles/globalStyles";
 
 const SpeechTrainingExercise = () => {
-  const router = useRouter();
+	const router = useRouter();
 
-  HeaderConfig("Speech Training Exercises");
+	HeaderConfig("Speech Exercises");
 
-  const { subjectId, role } = useLocalSearchParams<{
-    subjectId: string;
-    role: string;
-  }>();
+	const { subjectId, role } = useLocalSearchParams<{
+		subjectId: string;
+		role: string;
+	}>();
 
-  const handlePictureRoute = () => {
-    router.push({
-      pathname: "/subject/(exercises)/level",
-      params: {
-        subjectId: subjectId,
-        activity_type: "picture",
-        category: "speech",
-        role: role,
-      },
-    });
-  };
+	const handlePictureRoute = () => {
+		router.push({
+			pathname: "/subject/(exercises)/level",
+			params: {
+				subjectId: subjectId,
+				activity_type: "picture",
+				category: "speech",
+				role: role,
+			},
+		});
+	};
 
-  const handleQuestionRoute = () => {
-    router.push({
-      pathname: "/subject/(exercises)/level",
-      params: {
-        subjectId: subjectId,
-        activity_type: "question",
-        category: "speech",
-        role: role,
-      },
-    });
-  };
+	const handleQuestionRoute = () => {
+		router.push({
+			pathname: "/subject/(exercises)/level",
+			params: {
+				subjectId: subjectId,
+				activity_type: "question",
+				category: "speech",
+				role: role,
+			},
+		});
+	};
 
-  const handlePhraseRoute = () => {
-    router.push({
-      pathname: "/subject/(exercises)/level",
-      params: {
-        subjectId: subjectId,
-        activity_type: "phrase",
-        category: "speech",
-        role: role,
-      },
-    });
-  };
+	const handlePhraseRoute = () => {
+		router.push({
+			pathname: "/subject/(exercises)/level",
+			params: {
+				subjectId: subjectId,
+				activity_type: "phrase",
+				category: "speech",
+				role: role,
+			},
+		});
+	};
 
-  const handlePronunciationRoute = () => {
-    router.push({
-      pathname: "/subject/(exercises)/level",
-      params: {
-        subjectId: subjectId,
-        activity_type: "pronunciation",
-        category: "speech",
-        role: role,
-      },
-    });
-  };
+	const handlePronunciationRoute = () => {
+		router.push({
+			pathname: "/subject/(exercises)/level",
+			params: {
+				subjectId: subjectId,
+				activity_type: "pronunciation",
+				category: "speech",
+				role: role,
+			},
+		});
+	};
 
-  const handleAdd = () => {
-    router.push({
-      pathname:
-        "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity",
-      params: { subjectId: subjectId },
-    });
-  };
+	const handleAdd = () => {
+		router.push({
+			pathname:
+				"/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity",
+			params: { subjectId: subjectId },
+		});
+	};
 
-  return (
-    <View style={[globalStyles.container, { flex: 1 }]}>
-      <View style={styles.gridContainer}>
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handlePictureRoute}>
-            <Image
-              source={require("@/assets/icons/Picture.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Picture Flashcards
-            </Text>
-          </TouchableOpacity>
-        </View>
+	return (
+		<View style={{ backgroundColor: "#fff", flex: 1 }}>
+			<View style={styles.actHeader}>
+				<Image
+					source={require("@/assets/actCard/speechDev.png")}
+					style={styles.actHeader}
+				/>
+			</View>
+			<Text
+				style={{
+					color: "#2264dc",
+					fontWeight: 500,
+					marginHorizontal: 30,
+					marginVertical: -5,
+				}}
+			>
+				Explore your exercises!
+			</Text>
 
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handleQuestionRoute}>
-            <Image
-              source={require("@/assets/icons/Questions.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Question Flashcards
-            </Text>
-          </TouchableOpacity>
-        </View>
+			<TouchableOpacity style={styles.actSub} onPress={handlePictureRoute}>
+				<Image
+					source={require("@/assets/cardImg/picImg.png")}
+					style={styles.img}
+				/>
+				<Text style={[styles.practice]}>PRACTICE WITH</Text>
+				<Text style={[styles.actName]}>Picture FlashCards</Text>
+				<View style={styles.choose}>
+					<Text
+						style={{
+							color: "#fff",
+							alignSelf: "center",
+							top: 10,
+							fontWeight: 300,
+							fontSize: 12,
+						}}
+					>
+						Choose this
+					</Text>
+				</View>
+			</TouchableOpacity>
 
-        <View style={styles.gridItem}>
-          <TouchableOpacity style={styles.card} onPress={handlePhraseRoute}>
-            <Image
-              source={require("@/assets/icons/Dictionary.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              Phrase Flashcards
-            </Text>
-          </TouchableOpacity>
-        </View>
+			<TouchableOpacity
+				style={[styles.actSub, { marginTop: -5 }]}
+				onPress={handleQuestionRoute}
+			>
+				<Image
+					source={require("@/assets/cardImg/wordImg.png")}
+					style={styles.img}
+				/>
+				<Text style={[styles.practice]}>PRACTICE WITH</Text>
+				<Text style={[styles.actName]}>Word FlashCards</Text>
+				<View style={styles.choose}>
+					<Text
+						style={{
+							color: "#fff",
+							alignSelf: "center",
+							top: 10,
+							fontWeight: 300,
+							fontSize: 12,
+						}}
+					>
+						Choose this
+					</Text>
+				</View>
+			</TouchableOpacity>
 
-        <View style={styles.gridItem}>
-          <TouchableOpacity
-            style={styles.card}
-            onPress={handlePronunciationRoute}
-          >
-            <Image
-              source={require("@/assets/icons/Speaker_Notes.png")}
-              style={styles.icon}
-            />
-            <Text style={{ textAlign: "center", marginTop: 5 }}>
-              ReadMe: Pronunciation Challenge
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+			<TouchableOpacity
+				style={[styles.actSub, { marginTop: -5 }]}
+				onPress={handlePhraseRoute}
+			>
+				<Image
+					source={require("@/assets/cardImg/phraseImg.png")}
+					resizeMode="contain"
+					style={[styles.img, { height: 50, width: 50 }]}
+				/>
+				<Text style={[styles.practice]}>PRACTICE WITH</Text>
+				<Text style={[styles.actName]}>Phrase FlashCards</Text>
+				<View style={styles.choose}>
+					<Text
+						style={{
+							color: "#fff",
+							alignSelf: "center",
+							top: 10,
+							fontWeight: 300,
+							fontSize: 12,
+						}}
+					>
+						Choose this
+					</Text>
+				</View>
+			</TouchableOpacity>
 
-      {role === "teacher" && (
-        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-          <MaterialIcon name="add" size={30} color="#fff" />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+			{role === "teacher" && (
+				<TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+					<View
+						style={{
+							top: 20,
+							alignSelf: "center",
+							flexDirection: "row",
+						}}
+					>
+						<Ionicons name="add-circle" size={20} color="#aaa" />
+						<Text style={styles.addText}>Add Speech Exercises</Text>
+					</View>
+				</TouchableOpacity>
+			)}
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-  courseTitle: {
-    fontSize: 20,
-  },
-  dropdownContainer: {
-    width: 200,
-  },
-  dropdown: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    paddingHorizontal: 5,
-    paddingVertical: 8,
-  },
-  selectedTextStyle: {
-    color: "#FFBF18",
-    fontSize: 14,
-    textAlign: "right",
-    flex: 1,
-  },
-  iconStyle: {
-    fontSize: 20,
-    color: "#FFBF18",
-  },
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
-    justifyContent: "space-between",
-  },
-  gridItem: {
-    width: "48%",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  card: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    width: "100%",
-    height: 140,
-    padding: 16,
-    fontSize: 12,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    elevation: 5,
-  },
-  icon: {
-    width: 60,
-    height: 60,
-  },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#2264DC",
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-  },
+	actHeader: {
+		margin: 20,
+		height: 170,
+		width: 350,
+		left: -10,
+		top: -10,
+	},
+	actSub: {
+		paddingTop: 10,
+		marginTop: 20,
+		margin: 20,
+		borderColor: "#ddd",
+		borderRadius: 20,
+		borderWidth: 1,
+	},
+	img: {
+		left: 10,
+		margin: 20,
+		width: 40,
+		height: 50,
+	},
+	practice: {
+		fontSize: 10,
+		fontWeight: 300,
+		left: 100,
+		top: -62,
+	},
+	actName: {
+		fontSize: 14,
+		fontWeight: 500,
+		left: 100,
+		top: -60,
+		marginBottom: -30,
+	},
+	choose: {
+		backgroundColor: "#2264dc",
+		height: 35,
+		width: "30%",
+		alignSelf: "flex-end",
+		borderTopLeftRadius: 20,
+		borderBottomRightRadius: 20,
+		marginTop: -30,
+	},
+	addButton: {
+		position: "absolute",
+		left: -8,
+		width: "88%",
+		backgroundColor: "#f5f5f5",
+		borderColor: "#ddd",
+		borderWidth: 2,
+		borderRadius: 20,
+		borderStyle: "dashed",
+		margin: 30,
+		bottom: 0,
+		height: 60,
+	},
+	addText: {
+		color: "#aaa",
+		fontWeight: 500,
+		marginHorizontal: 10,
+	},
 });
 
 export default memo(SpeechTrainingExercise);
