@@ -28,6 +28,30 @@ const CARD_DATA: Record<
 		actDesc:
 			"Practice saying short phrases to improve your speaking and fluency. This exercise helps you learn how to say phrases clearly using the microphone.",
 	},
+	bingo: {
+		img: require("@/assets/cardImg/piddieImg.png"),
+		actName: "Piddie Says",
+		actDesc:
+			"Train your listening skills by playing a fun Piddie Says game. This exercise helps you pair sounds to the correct pictures by listening carefully.",
+	},
+	matching: {
+		img: require("@/assets/cardImg/matchImg.png"),
+		actName: "Matching Cards",
+		actDesc:
+			"Improve your listening and sound recognition skills by matching what you hear to the correct image. This exercise helps you focus on identifying sounds accurately.",
+	},
+	fill: {
+		img: require("@/assets/cardImg/fillImg.png"),
+		actName: "Fill in the Blanks",
+		actDesc:
+			"Improve your sentence skills by listening and arranging words. This exercise helps you understand sentence structure by putting words in the correct order.",
+	},
+	homonyms: {
+		img: require("@/assets/cardImg/homImg.png"),
+		actName: "Homonyms",
+		actDesc:
+			"Learn how to tell the difference between words that sound the same but have different meanings. This exercise helps you understand and choose the correct homonyms in sentences.",
+	},
 };
 
 const level = () => {

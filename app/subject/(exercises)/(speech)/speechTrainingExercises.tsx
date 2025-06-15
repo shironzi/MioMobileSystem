@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
 	},
 	actSub: {
 		paddingTop: 10,
-		marginTop: 15,
+		marginTop: 20,
 		margin: 20,
 		borderColor: "#ddd",
 		borderRadius: 20,
@@ -225,13 +225,16 @@ const styles = StyleSheet.create({
 		marginTop: -30,
 	},
 	addButton: {
+		position: "absolute",
+		left: -8,
+		width: "88%",
 		backgroundColor: "#f5f5f5",
 		borderColor: "#ddd",
 		borderWidth: 2,
 		borderRadius: 20,
 		borderStyle: "dashed",
 		margin: 30,
-		bottom: -10,
+		bottom: 0,
 		height: 60,
 	},
 	addText: {
