@@ -7,18 +7,7 @@ interface levelCardProps {
 	actName: string;
 	actDesc: string;
 }
-const getImageStyle = (actName: string) => {
-	if (actName === "Phrase Flashcards") {
-		return { width: 70, height: 50, margin: 20, left: 40, top: 10 };
-	}
-	return {};
-};
-const getNameStyle = (actName: string) => {
-	if (actName === "Phrase Flashcards") {
-		return { fontSize: 16, fontWeight: "500", left: 10, top: 10 };
-	}
-	return {};
-};
+
 const levelCard = ({ img, actName, actDesc }: levelCardProps) => (
 	<View style={styles.header}>
 		<FontAwesome
@@ -33,8 +22,8 @@ const levelCard = ({ img, actName, actDesc }: levelCardProps) => (
 			color="#ffe9ae"
 			style={styles.circle2}
 		/>
-		<Image source={img} style={[styles.img, getImageStyle(actName)]} />;
-		<View style={getNameStyle(actName)}>
+		<Image source={img} style={[styles.img]} resizeMode="contain" />;
+		<View>
 			<Text style={[styles.practice]}>PRACTICE WITH</Text>
 			<Text style={[styles.actName]}>{actName}</Text>
 		</View>
@@ -59,7 +48,7 @@ const styles = StyleSheet.create({
 		textAlign: "justify",
 		fontSize: 12,
 		margin: 20,
-		marginTop: -30,
+		marginTop: -40,
 		fontWeight: 300,
 	},
 	practice: {

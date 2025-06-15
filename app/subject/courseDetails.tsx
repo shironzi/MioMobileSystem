@@ -62,8 +62,7 @@ const newCourseDetails = () => {
 							switch (specializedType) {
 								case "speech":
 									router.push({
-										pathname:
-											"/subject/(exercises)/(speech)/speechTrainingExercises",
+										pathname: "/subject/(exercises)/(speech)/newSpeech",
 										params: { subjectId: id, role },
 									});
 									break;
