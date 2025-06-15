@@ -171,13 +171,16 @@ const styles = StyleSheet.create({
 		marginTop: -30,
 	},
 	addButton: {
+		position: "absolute",
+		left: -8,
+		width: "88%",
 		backgroundColor: "#f5f5f5",
 		borderColor: "#ddd",
 		borderWidth: 2,
 		borderRadius: 20,
 		borderStyle: "dashed",
 		margin: 30,
-		bottom: -10,
+		bottom: 0,
 		height: 60,
 	},
 	addText: {
