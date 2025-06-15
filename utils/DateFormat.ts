@@ -92,3 +92,49 @@ export function formattedDate(date: string) {
     day: "numeric",
   });
 }
+
+export function getSmartFormattedDate(date: string) {
+  const timestamp = parseInt(date) * 1000;
+  const dateObj = new Date(timestamp);
+  const now = new Date();
+
+  const isSameDay = dateObj.toDateString() === now.toDateString();
+
+  const daysDiff = Math.floor(
+    (now.getTime() - dateObj.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  const timeFormatter = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true, // ✅ 12-hour format with AM/PM
+  });
+
+  const time = timeFormatter.format(dateObj);
+
+  if (isSameDay) {
+    return `Now ${time}`;
+  }
+
+  if (daysDiff < 7) {
+    const dayFormatter = new Intl.DateTimeFormat("en-PH", {
+      timeZone: "Asia/Manila",
+      weekday: "long",
+    });
+
+    const day = dayFormatter.format(dateObj);
+    return `${day}, ${time}`;
+  }
+
+  const fullFormatter = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    month: "long",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return fullFormatter.format(dateObj);
+}

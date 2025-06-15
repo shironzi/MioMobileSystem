@@ -46,7 +46,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
-  }, []);
+  }, [props.navigation]);
 
   useFocusEffect(
     useCallback(() => {
