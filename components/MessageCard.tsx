@@ -1,26 +1,25 @@
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
 const MessageCard = (props: {
   name: string;
-  date: Date;
-  time: string;
+  date: string;
   desc: string;
-  type: string;
+  thread: string;
+  selectedType: string;
 }) => {
-  const formatDate = useCallback((date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    });
-  }, []);
-
   return (
     <TouchableOpacity
       onPress={() => {
-        // router.push("messageDetails")
-        console.log("message Details");
+        router.push({
+          pathname: "/(notification)/messageDetails",
+          params: {
+            thread: props.thread,
+            name: props.name,
+            selectedType: props.selectedType,
+          },
+        });
       }}
     >
       <View
@@ -65,9 +64,7 @@ const MessageCard = (props: {
               <Text style={{ fontSize: 18, fontWeight: 500 }}>
                 {props.name}
               </Text>
-              <Text style={{ fontSize: 12, marginTop: 5, marginRight: 15 }}>
-                {formatDate(props.date)}
-              </Text>
+              <Text>{props.date}</Text>
             </View>
             <Text
               style={{ fontSize: 14, marginTop: 5, height: 50, width: 300 }}
