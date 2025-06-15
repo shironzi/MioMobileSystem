@@ -39,6 +39,7 @@ const auditoryTrainingExercise = () => {
 				Explore your exercises!
 			</Text>
 			<TouchableOpacity
+				style={styles.actSub}
 				onPress={() =>
 					router.push({
 						pathname: "/subject/(exercises)/level",
@@ -52,11 +53,28 @@ const auditoryTrainingExercise = () => {
 				}
 			>
 				<Image
-					source={require("@/assets/actCard/piddie.png")}
-					style={[styles.actSub, { marginVertical: -5 }]}
+					source={require("@/assets/cardImg/piddieImg.png")}
+					style={styles.img}
+					resizeMode="contain"
 				/>
+				<Text style={[styles.practice]}>PRACTICE WITH</Text>
+				<Text style={[styles.actName]}>Piddie Says</Text>
+				<View style={styles.choose}>
+					<Text
+						style={{
+							color: "#fff",
+							alignSelf: "center",
+							top: 10,
+							fontWeight: 300,
+							fontSize: 12,
+						}}
+					>
+						Choose this
+					</Text>
+				</View>
 			</TouchableOpacity>
 			<TouchableOpacity
+				style={[styles.actSub, { marginTop: -5 }]}
 				onPress={() =>
 					router.push({
 						pathname: "/subject/(exercises)/level",
@@ -70,9 +88,25 @@ const auditoryTrainingExercise = () => {
 				}
 			>
 				<Image
-					source={require("@/assets/actCard/match.png")}
-					style={[styles.actSub, { marginVertical: -5 }]}
+					source={require("@/assets/cardImg/matchImg.png")}
+					style={styles.img}
+					resizeMode="contain"
 				/>
+				<Text style={[styles.practice]}>PRACTICE WITH</Text>
+				<Text style={[styles.actName]}>Matching Cards</Text>
+				<View style={styles.choose}>
+					<Text
+						style={{
+							color: "#fff",
+							alignSelf: "center",
+							top: 10,
+							fontWeight: 300,
+							fontSize: 12,
+						}}
+					>
+						Choose this
+					</Text>
+				</View>
 			</TouchableOpacity>
 
 			{role === "teacher" && (
@@ -98,23 +132,53 @@ const styles = StyleSheet.create({
 		margin: 20,
 		height: 170,
 		width: 350,
+		// left: -10,
+		// top: -10,
 	},
 	actSub: {
-		marginTop: 15,
+		paddingTop: 10,
+		marginTop: 20,
 		margin: 20,
-		height: 110,
-		width: 350,
+		borderColor: "#ddd",
+		borderRadius: 20,
+		borderWidth: 1,
+	},
+	img: {
+		left: 10,
+		margin: 20,
+		width: 50,
+		height: 50,
+	},
+	practice: {
+		fontSize: 10,
+		fontWeight: 300,
+		left: 100,
+		top: -62,
+	},
+	actName: {
+		fontSize: 14,
+		fontWeight: 500,
+		left: 100,
+		top: -60,
+		marginBottom: -30,
+	},
+	choose: {
+		backgroundColor: "#2264dc",
+		height: 35,
+		width: "30%",
+		alignSelf: "flex-end",
+		borderTopLeftRadius: 20,
+		borderBottomRightRadius: 20,
+		marginTop: -30,
 	},
 	addButton: {
-		// position: "absolute",
 		backgroundColor: "#f5f5f5",
-		borderColor: "#aaa",
+		borderColor: "#ddd",
 		borderWidth: 2,
 		borderRadius: 20,
 		borderStyle: "dashed",
 		margin: 30,
-		// bottom: -10,
-		bottom: -150,
+		bottom: -10,
 		height: 60,
 	},
 	addText: {

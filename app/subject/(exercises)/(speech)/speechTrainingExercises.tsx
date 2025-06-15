@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
 	},
 	actSub: {
 		paddingTop: 10,
-		marginTop: 15,
+		marginTop: 20,
 		margin: 20,
 		borderColor: "#ddd",
 		borderRadius: 20,

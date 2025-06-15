@@ -89,10 +89,10 @@ const newCourseDetails = () => {
 						<Image
 							source={
 								specializedType === "speech"
-									? require("@/assets/course/speech.png")
+									? require("@/assets/course/speechHeader.png")
 									: specializedType === "auditory"
-										? require("@/assets/course/auditory.png")
-										: require("@/assets/course/language.png")
+										? require("@/assets/course/auditoryHeader.png")
+										: require("@/assets/course/languageHeader.png")
 							}
 							style={styles.speech}
 						/>
