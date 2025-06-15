@@ -1,158 +1,234 @@
+import LevelCard from "@/components/levelCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { FontAwesome, Fontisto } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+
+const CARD_DATA: Record<
+	string,
+	{ img: any; actName: string; actDesc: string }
+> = {
+	picture: {
+		img: require("@/assets/cardImg/picImg.png"),
+		actName: "Picture Flashcards",
+		actDesc:
+			"Practice saying words by looking at pictures. This exercise helps you improve your speech by naming what you see using the microphone.",
+	},
+	question: {
+		img: require("@/assets/cardImg/wordImg.png"),
+		actName: "Word Flashcards",
+		actDesc:
+			"Practice saying words by reading them and understanding their sounds. This exercise helps you improve pronunciation by speaking words shown with their phonemes.",
+	},
+	phrase: {
+		img: require("@/assets/cardImg/phraseImg.png"),
+		actName: "Phrase Flashcards",
+		actDesc:
+			"Practice saying short phrases to improve your speaking and fluency. This exercise helps you learn how to say phrases clearly using the microphone.",
+	},
+};
 
 const level = () => {
-  const router = useRouter();
+	const router = useRouter();
+	const { activity_type, category, subjectId, role } = useLocalSearchParams<{
+		activity_type: string;
+		category: string;
+		subjectId: string;
+		role: string;
+	}>();
 
-  const { activity_type, category, subjectId, role } = useLocalSearchParams<{
-    activity_type: string;
-    category: string;
-    subjectId: string;
-    role: string;
-  }>();
+	HeaderConfig("Levels");
 
-  HeaderConfig("Levels");
+	const handleEasyRoute = () =>
+		router.push({
+			pathname: "/subject/(exercises)/play",
+			params: {
+				subjectId: subjectId,
+				activity_type: activity_type,
+				difficulty: "easy",
+				category: category,
+				role: role,
+			},
+		});
 
-  const handleEasyRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "easy",
-        category: category,
-        role: role,
-      },
-    });
+	const handleAverageRoute = () =>
+		router.push({
+			pathname: "/subject/(exercises)/play",
+			params: {
+				subjectId: subjectId,
+				activity_type: activity_type,
+				difficulty: "Average",
+				category: category,
+				role: role,
+			},
+		});
 
-  const handleAverageRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "Average",
-        category: category,
-        role: role,
-      },
-    });
+	const handleDifficultRoute = () =>
+		router.push({
+			pathname: "/subject/(exercises)/play",
+			params: {
+				subjectId: subjectId,
+				activity_type: activity_type,
+				difficulty: "Difficult",
+				category: category,
+				role: role,
+			},
+		});
 
-  const handleDifficultRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "Difficult",
-        category: category,
-        role: role,
-      },
-    });
+	const handleChallengeRoute = () =>
+		router.push({
+			pathname: "/subject/(exercises)/play",
+			params: {
+				subjectId: subjectId,
+				activity_type: activity_type,
+				difficulty: "Challenge",
+				category: category,
+				role: role,
+			},
+		});
 
-  const handleChallengeRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "Challenge",
-        category: category,
-        role: role,
-      },
-    });
+	const difficultyStyles: Record<
+		string,
+		{ backgroundColor: string; borderColor: string }
+	> = {
+		easy: { backgroundColor: "#C8FFB7", borderColor: "#439558" },
+		Average: { backgroundColor: "#ffe9ae", borderColor: "#ffbf18" },
+		Difficult: { backgroundColor: "#FFCEA1", borderColor: "#FF7A00" },
+		Challenge: { backgroundColor: "#FFB1B1", borderColor: "#DB4141" },
+	};
+	const card = CARD_DATA[activity_type] ?? CARD_DATA.picture;
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select a Difficulty Level</Text>
-      <View style={styles.cardContainer}>
-        <TouchableOpacity style={styles.card} onPress={handleEasyRoute}>
-          <MaterialIcons
-            name="star"
-            size={50}
-            color="#009c41"
-            style={styles.icon}
-          />
-          <Text style={[styles.cardText, { color: "#009c41" }]}>Easy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.card} onPress={handleAverageRoute}>
-          <MaterialIcons
-            name="star"
-            size={50}
-            color="#FFda03"
-            style={styles.icon}
-          />
-          <Text style={[styles.cardText, { color: "#FFda03" }]}>Average</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.card} onPress={handleDifficultRoute}>
-          <MaterialIcons
-            name="star"
-            size={50}
-            color="#FFa700"
-            style={styles.icon}
-          />
-          <Text style={[styles.cardText, { color: "#FFa700" }]}>Difficult</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.card} onPress={handleChallengeRoute}>
-          <MaterialIcons
-            name="star"
-            size={50}
-            color="#FF0000"
-            style={styles.icon}
-          />
-          <Text style={[styles.cardText, { color: "#FF0000" }]}>Challenge</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+	return (
+		<ScrollView
+			showsVerticalScrollIndicator={false}
+			style={{ backgroundColor: "#fff", flex: 1 }}
+		>
+			<LevelCard img={card.img} actName={card.actName} actDesc={card.actDesc} />
+
+			<Text style={styles.headerText}>Choose Difficulty Mode</Text>
+
+			<TouchableOpacity
+				style={[styles.subLevel, difficultyStyles.easy]}
+				onPress={handleEasyRoute}
+			>
+				<Fontisto name="star" size={40} color="#439558" style={styles.shape1} />
+				<Text style={styles.try}>TRY THE</Text>
+				<Text style={styles.name}>Easy Mode</Text>
+				<Fontisto name="star" size={70} color="#439558" style={styles.shape2} />
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={[styles.subLevel, difficultyStyles.Average, { marginTop: -5 }]}
+				onPress={handleAverageRoute}
+			>
+				<Ionicons
+					name="square"
+					size={40}
+					color="#ffbf18"
+					style={styles.shape1}
+				/>
+				<Text style={styles.try}>TRY THE</Text>
+				<Text style={styles.name}>Average Mode</Text>
+				<Ionicons
+					name="square"
+					size={70}
+					color="#ffbf18"
+					style={styles.shape2}
+				/>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={[styles.subLevel, difficultyStyles.Difficult, { marginTop: -5 }]}
+				onPress={handleDifficultRoute}
+			>
+				<Ionicons
+					name="triangle"
+					size={40}
+					color="#FF7A00"
+					style={styles.shape1}
+				/>
+				<Text style={styles.try}>TRY THE</Text>
+				<Text style={styles.name}>Difficult Mode</Text>
+				<Ionicons
+					name="triangle"
+					size={70}
+					color="#FF7A00"
+					style={styles.shape2}
+				/>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={[styles.subLevel, difficultyStyles.Challenge, { marginTop: -5 }]}
+				onPress={handleChallengeRoute}
+			>
+				<FontAwesome
+					name="circle"
+					size={40}
+					color="#DB4141"
+					style={styles.shape1}
+				/>
+				<Text style={styles.try}>TRY THE</Text>
+				<Text style={styles.name}>Challenge Mode</Text>
+				<FontAwesome
+					name="circle"
+					size={70}
+					color="#DB4141"
+					style={styles.shape2}
+				/>
+			</TouchableOpacity>
+		</ScrollView>
+	);
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 20,
-    // alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#000",
-    left: 0,
-  },
-  cardContainer: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "space-around",
-    // flexWrap: "wrap",
-    gap: 20,
-  },
-  card: {
-    width: "100%",
-    height: 100,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  cardText: {
-    // marginTop: 10,
-    left: 80,
-    marginTop: -35,
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#000",
-  },
 
-  icon: {
-    left: 15,
-    marginTop: 20,
-  },
+const styles = StyleSheet.create({
+	header: {
+		borderColor: "#ddd",
+		borderWidth: 1,
+		borderRadius: 20,
+		margin: 20,
+	},
+	headerText: {
+		color: "#2264dc",
+		fontWeight: "500",
+		marginHorizontal: 30,
+		fontSize: 16,
+		top: 15,
+		left: -5,
+		marginBottom: 10,
+	},
+	subLevel: {
+		margin: 20,
+		borderWidth: 1,
+		borderRadius: 20,
+		height: 100,
+		overflow: "hidden",
+		position: "relative",
+	},
+	shape1: {
+		transform: [{ rotate: "-15deg" }],
+		left: 20,
+		top: -15,
+	},
+	shape2: {
+		position: "absolute",
+		transform: [{ rotate: "20deg" }],
+		left: 250,
+		top: 45,
+	},
+	try: {
+		fontSize: 12,
+		fontWeight: 400,
+		left: 90,
+		top: -12,
+	},
+	name: {
+		fontSize: 16,
+		fontWeight: 500,
+		left: 90,
+		top: -10,
+	},
 });
 
 export default memo(level);
