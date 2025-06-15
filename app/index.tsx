@@ -250,7 +250,7 @@ const Index = () => {
                   )}
                   {/* <View>
 										<Image
-											source={require("@/assets/onboard/mobile-piddie-login.png")}
+											source={require("@/assets/onboard/default_profile.png")}
 											style={styles.logo}
 										/>
 									</View> */}

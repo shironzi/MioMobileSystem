@@ -1,37 +1,57 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { getProfile } from "@/utils/query";
 
-const data = {
-  id: 1,
-  image:
-    "https://scontent.fcrk3-1.fna.fbcdn.net/v/t1.15752-9/490985916_1202175937960521_8050126276858148282_n.jpg?stp=dst-jpg_p480x480_tt6&_nc_cat=110&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeGdS_RHXex_0OCp-aLXEeC40MR0ym5I97vQxHTKbkj3u-VWX16S8FkyS8TZDJsy7bVJnVrb4ioGAm1z_AQ6sqJ7&_nc_ohc=kgJNUn5Ix3wQ7kNvwED2EVt&_nc_oc=AdmysBOwUz556KCfGyCwdPtRHv9P9_YPyHkQRv3GdGjYsNKDajUbD4YS7tE0rFp-DQA&_nc_zt=23&_nc_ht=scontent.fcrk3-1.fna&oh=03_Q7cD2AEwoyZmSU9qAQXanXXFqDrjPo4ai2COCsq7GKVQsJlo3g&oe=6830AA7D",
-  name: "Aaron Josh Baon",
-  bibliography:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eget nunc non arcu fermentum pharetra. Vivamus id justo vitae odio feugiat scelerisque.",
-  contact: "09662303125",
-  socialLink: "Facebook: @josh",
-  link: "https://www.google.com",
-};
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
 
 const profile = () => {
   const router = useRouter();
+  const [name, setName] = useState<string>("");
+  const [bibliography, setBibliography] = useState<string>("");
+  const [photo_url, setPhoto_url] = useState();
 
   HeaderConfig("Profile");
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const res = await getProfile();
+
+      setName(res.name);
+      setBibliography(res.biography);
+      setPhoto_url(res.photo_url);
+
+      console.log(res);
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View key={data.id} style={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
         <View style={styles.profile}>
-          <Image
-            source={{ uri: data.image }}
-            width={80}
-            height={80}
-            style={styles.profilePic}
-          />
+          <View style={{ borderWidth: 1, borderRadius: 360, padding: 5 }}>
+            <Image
+              source={
+                photo_url
+                  ? { uri: photo_url }
+                  : require("@/assets/images/default_profile.png")
+              }
+              style={{
+                width: 80,
+                height: 80,
+              }}
+              resizeMode="contain"
+            />
+          </View>
           <View style={styles.iconWrapper}>
             <Text style={styles.pencil}>
               <FontAwesome name="pencil" size={15} color="#fff" />
@@ -39,17 +59,26 @@ const profile = () => {
           </View>
         </View>
         <View style={styles.cardContent}>
-          <Text style={styles.name}>{data.name}</Text>
+          <Text style={styles.name}>{name}</Text>
           <Text style={styles.sectionTitle}>Biography</Text>
-          <Text style={styles.bibliography}>{data.bibliography}</Text>
-          <Text style={styles.sectionTitle}>Contact</Text>
-          <Text style={styles.contact}>{data.contact}</Text>
-          <Text style={styles.sectionTitle}>Social Links</Text>
-          <Text style={styles.socialLink}>{data.socialLink}</Text>
+          <Text style={styles.bibliography}>{bibliography}</Text>
+          {/*<Text style={styles.sectionTitle}>Contact</Text>*/}
+          {/*<Text style={styles.contact}>{data.contact}</Text>*/}
+          {/*<Text style={styles.sectionTitle}>Social Links</Text>*/}
+          {/*<Text style={styles.socialLink}>{data.socialLink}</Text>*/}
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/edit")}
+          onPress={() =>
+            router.push({
+              pathname: "/edit",
+              params: {
+                name: name,
+                photo_url: photo_url,
+                bibliography: bibliography,
+              },
+            })
+          }
         >
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
@@ -149,6 +178,8 @@ const styles = StyleSheet.create({
   },
   profile: {
     alignItems: "center",
+    width: 105,
+    marginHorizontal: "auto",
   },
   pencil: {
     textAlign: "center",

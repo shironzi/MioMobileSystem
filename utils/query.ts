@@ -93,8 +93,6 @@ export async function createAnnouncement(
 
     const token = await getAuth().currentUser?.getIdToken(true);
 
-    console.log(formdata);
-
     const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
       method: "POST",
       headers: {
@@ -482,6 +480,59 @@ export async function editAttendance(
     );
 
     return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getProfilePic() {
+  try {
+    const { data } = await api.get(`/profile/photo`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getProfile() {
+  try {
+    const { data } = await api.get(`profile`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function editProfile(picture: FileInfo | null, biography: string) {
+  try {
+    const formdata = new FormData();
+
+    if (picture) {
+      formdata.append(`photo`, {
+        name: picture.name,
+        uri: picture.uri,
+        type: picture.mimeType,
+      } as any);
+    }
+    formdata.append("biography", biography);
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(`${IPADDRESS}/profile`, {
+      method: "POST",
+      headers: {
+        Accept: "multipart/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formdata,
+    });
+
+    return await res.json();
   } catch (err) {
     console.error(err);
     throw err;

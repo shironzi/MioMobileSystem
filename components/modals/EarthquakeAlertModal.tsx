@@ -10,6 +10,7 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { Vibration } from "react-native";
 
 const EarthquakeAlertModal = ({
   visible,
@@ -31,12 +32,16 @@ const EarthquakeAlertModal = ({
     console.log("hello");
     player.seekTo(0);
     player.play();
+    const vibrationPattern = [0, 200, 100, 200, 100, 200, 100, 200];
+    Vibration.vibrate(vibrationPattern, true);
   }
 
   useEffect(() => {
     if (visible) {
       player.seekTo(0);
       player.play();
+      const vibrationPattern = [0, 200, 100, 200, 100, 200, 100, 200];
+      Vibration.vibrate(vibrationPattern, true);
     } else {
       player.pause();
     }

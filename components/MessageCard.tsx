@@ -1,6 +1,7 @@
 import React, { memo } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, Image, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import globalStyles from "@/styles/globalStyles";
 
 const MessageCard = (props: {
   name: string;
@@ -10,74 +11,91 @@ const MessageCard = (props: {
   selectedType: string;
 }) => {
   return (
-    <TouchableOpacity
-      onPress={() => {
-        router.push({
-          pathname: "/(notification)/messageDetails",
-          params: {
-            thread: props.thread,
-            name: props.name,
-            selectedType: props.selectedType,
-          },
-        });
-      }}
-    >
-      <View
-        style={{
-          padding: 0,
-          margin: 0,
-          backgroundColor: "#fff",
-          alignItems: "center",
+    <View style={[globalStyles.container, styles.cardContainer]}>
+      <TouchableOpacity
+        onPress={() => {
+          router.push({
+            pathname: "/(notification)/messageDetails",
+            params: {
+              thread: props.thread,
+              name: props.name,
+              selectedType: props.selectedType,
+            },
+          });
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            margin: 0,
-            marginBottom: -20,
-            top: -10,
-            padding: 10,
-            paddingBottom: -20,
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            source={require("@/assets/1.png")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 50,
-              margin: 20,
-              alignItems: "center",
-              top: -5,
-            }}
-          />
-          <View>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={{ fontSize: 18, fontWeight: 500 }}>
-                {props.name}
-              </Text>
-              <Text>{props.date}</Text>
+        <View style={styles.innerContainer}>
+          <View style={styles.row}>
+            <View style={styles.imageWrapper}>
+              <Image
+                source={require("@/assets/images/default_profile.png")}
+                style={styles.profileImage}
+                resizeMode="contain"
+              />
             </View>
-            <Text
-              style={{ fontSize: 14, marginTop: 5, height: 50, width: 300 }}
-            >
-              {props.desc.length > 100
-                ? props.desc.substring(0, 50 - 3) + "..."
-                : props.desc}
-            </Text>
+            <View style={styles.messageContent}>
+              <View style={styles.nameRow}>
+                <Text style={styles.nameText}>{props.name}</Text>
+                <Text>{props.date}</Text>
+              </View>
+              <Text style={styles.descText}>
+                {props.desc.length > 100
+                  ? props.desc.substring(0, 47) + "..."
+                  : props.desc}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    width: "90%",
+    marginHorizontal: "auto",
+    borderWidth: 1,
+    borderColor: "#00000024",
+    borderRadius: 20,
+  },
+  innerContainer: {
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 20,
+  },
+  imageWrapper: {
+    borderWidth: 1,
+    padding: 2.5,
+    borderRadius: 50,
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+  },
+  messageContent: {
+    marginVertical: "auto",
+  },
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: "auto",
+  },
+  nameText: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
+  descText: {
+    fontSize: 14,
+    marginTop: 5,
+    height: 30,
+    width: 270,
+  },
+});
 
 export default memo(MessageCard);

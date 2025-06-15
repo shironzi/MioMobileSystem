@@ -8,11 +8,13 @@ import {
 } from "@react-navigation/drawer";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { logout } from "@/utils/auth";
 import { StackActions } from "@react-navigation/native";
+import { getAuth } from "@react-native-firebase/auth";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { getProfilePic } from "@/utils/query";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -21,21 +23,36 @@ interface CustomDrawerContentProps extends DrawerContentComponentProps {
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const navigation = useNavigation();
 
-  const [userData, setUserData] = useState({
-    id: 202210920,
-    name: "Ava Samantha Arce",
-  });
+  const [profileLoading, setProfileLoading] = useState<boolean>(true);
+  const [userData, setUserData] = useState<{
+    id: string;
+    name: string | null;
+    photoUrl: string | null;
+  } | null>(null);
 
   useEffect(() => {
-    const getUserData = async () => {
-      const storedSessionData = await SecureStore.getItemAsync("sessionData");
-
-      if (storedSessionData) {
-        const data = await JSON.parse(storedSessionData);
-        setUserData({ name: data.name, id: data.userId });
+    const unsubscribe = getAuth().onAuthStateChanged((u) => {
+      if (u) {
+        setUserData({ id: u.uid, name: u.displayName, photoUrl: u.photoURL });
       }
+    });
+
+    const fetchProfile = async () => {
+      const res = await getProfilePic();
+
+      if (res.success) {
+        setUserData((prev) =>
+          prev ? { ...prev, photoUrl: res.photo_url } : prev,
+        );
+        console.log(res.photo_url);
+      }
+
+      setProfileLoading(false);
     };
-    getUserData();
+
+    fetchProfile();
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = useCallback(async () => {
@@ -62,13 +79,26 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <View style={styles.profileContainer}>
-        <Image
-          style={styles.profileImage}
-          source={require("@/assets/images/1.png")}
-        />
+        <View
+          style={{
+            borderWidth: 3,
+            borderRadius: 360,
+            borderColor: "#fff",
+            padding: 2.5,
+          }}
+        >
+          <Image
+            source={
+              userData?.photoUrl
+                ? { uri: userData.photoUrl }
+                : require("@/assets/images/default_profile.png")
+            }
+            style={{ width: 70, height: 70, resizeMode: "contain" }}
+          />
+        </View>
         <View>
-          <Text style={styles.userName}>{userData.name}</Text>
-          <Text style={styles.userId}>{userData.id}</Text>
+          <Text style={styles.userName}>{userData?.name}</Text>
+          <Text style={styles.userId}>{userData?.id}</Text>
         </View>
       </View>
 

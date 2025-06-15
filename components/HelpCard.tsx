@@ -11,7 +11,10 @@ const HelpCard = (props: {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.row}>
-        <Image source={require("@/assets/images/1.png")} style={styles.image} />
+        <Image
+          source={require("@/assets/images/default_profile.png")}
+          style={styles.image}
+        />
         <View style={styles.textContainer}>
           <View style={styles.row}>
             <Text style={styles.name}>{props.name}</Text>

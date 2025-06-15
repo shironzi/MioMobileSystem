@@ -1,143 +1,208 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome } from "@expo/vector-icons";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Image,
+  Alert,
 } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import * as DocumentPicker from "expo-document-picker";
+import { editProfile } from "@/utils/query";
 
-const data = [
-  {
-    id: 1,
-    image: require("@/assets/images/1.png"),
-    name: "Ava Samantha Arce",
-  },
-];
+// interface SocialLink {
+//   title: string;
+//   url: string;
+// }
 
-interface SocialLink {
-  title: string;
-  url: string;
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
 }
 
 const Edit = () => {
-  const [biography, setBiography] = useState("");
-  const [contact, setContact] = useState("");
-  const [socialLinks, setSocialLinks] = useState([{ title: "", url: "" }]);
+  const { name, biography, photo_url } = useLocalSearchParams<{
+    name: string;
+    biography: string;
+    photo_url: string;
+  }>();
+  const [newBiography, setNewBiography] = useState(biography);
+  const [profile_pic, setProfile_pic] = useState<FileInfo | null>(null);
+  // const [contact, setContact] = useState("");
+  // const [socialLinks, setSocialLinks] = useState([{ title: "", url: "" }]);
 
   HeaderConfig("Profile");
 
-  const handleSocialLinkChange = useCallback(
-    (index: number, field: keyof SocialLink, value: string): void => {
-      const updatedLinks: SocialLink[] = [...socialLinks];
-      updatedLinks[index][field] = value;
-      setSocialLinks(updatedLinks);
-    },
-    [socialLinks]
-  );
+  const handleEditImage = async () => {
+    const res = await DocumentPicker.getDocumentAsync({
+      type: ["image/*"],
+      copyToCacheDirectory: true,
+    });
 
-  const handleAddSocialLink = useCallback(() => {
-    setSocialLinks([...socialLinks, { title: "", url: "" }]);
-  }, [socialLinks]);
+    if (!res.canceled) {
+      const { uri, name, mimeType } = res.assets[0];
+      setProfile_pic({ uri, name, mimeType });
+    }
+  };
 
-  const handleRemoveSocialLink = useCallback(
-    (index: number): void => {
-      const updatedLinks: SocialLink[] = socialLinks.filter(
-        (_, i) => i !== index
-      );
-      setSocialLinks(updatedLinks);
-    },
-    [socialLinks]
-  );
+  const handleUpdate = async () => {
+    try {
+      const res = await editProfile(profile_pic, biography);
+
+      if (res.success) {
+        Alert.alert(
+          "Success",
+          res.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      Alert.alert("Error", "Submission failed. Please check your inputs.");
+    }
+  };
+
+  // const handleSocialLinkChange = useCallback(
+  //   (index: number, field: keyof SocialLink, value: string): void => {
+  //     const updatedLinks: SocialLink[] = [...socialLinks];
+  //     updatedLinks[index][field] = value;
+  //     setSocialLinks(updatedLinks);
+  //   },
+  //   [socialLinks],
+  // );
+  //
+  // const handleAddSocialLink = useCallback(() => {
+  //   setSocialLinks([...socialLinks, { title: "", url: "" }]);
+  // }, [socialLinks]);
+  //
+  // const handleRemoveSocialLink = useCallback(
+  //   (index: number): void => {
+  //     const updatedLinks: SocialLink[] = socialLinks.filter(
+  //       (_, i) => i !== index,
+  //     );
+  //     setSocialLinks(updatedLinks);
+  //   },
+  //   [socialLinks],
+  // );
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
-        {data.map((item) => (
-          <View key={item.id} style={styles.cardContainer}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
-            <Image source={item.image} style={styles.profileImage} />
-            <TouchableOpacity style={styles.iconWrapper}>
-              <FontAwesome name="pencil" size={15} color="#fff" />
-            </TouchableOpacity>
-            <View style={styles.cardContent}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.sectionTitle}>Biography</Text>
-              <View style={styles.bio}>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="I am..."
-                  placeholderTextColor="#aaa"
-                  value={biography}
-                  onChangeText={setBiography}
-                  multiline={true}
-                />
-              </View>
-              <Text style={styles.sectionTitle}>Contact</Text>
-              <View style={styles.con}>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="name@gmail.com"
-                  placeholderTextColor="#aaa"
-                  value={contact}
-                  onChangeText={setContact}
-                  multiline={true}
-                />
-              </View>
-              <Text style={styles.sectionTitle}>Social Links</Text>
-              {socialLinks.map((link, index) => (
-                <View key={index} style={styles.row}>
-                  <TextInput
-                    style={[styles.textInputRow]}
-                    placeholder="Title"
-                    placeholderTextColor="#aaa"
-                    value={link.title}
-                    onChangeText={(value) =>
-                      handleSocialLinkChange(index, "title", value)
-                    }
-                    multiline={true}
-                  />
-                  <Text style={styles.arrow}>›</Text>
-                  <TextInput
-                    style={[styles.textInputRow]}
-                    placeholder="URL"
-                    placeholderTextColor="#aaa"
-                    value={link.url}
-                    onChangeText={(value) =>
-                      handleSocialLinkChange(index, "url", value)
-                    }
-                    multiline={true}
-                  />
-                  <TouchableOpacity
-                    style={styles.deleteIcon}
-                    onPress={() => handleRemoveSocialLink(index)}
-                  >
-                    <FontAwesome name="times" size={16} color="#aaa" />
-                  </TouchableOpacity>
-                </View>
-              ))}
-              <TouchableOpacity
-                style={{ flexDirection: "row", alignItems: "center" }}
-                onPress={handleAddSocialLink}
-              >
-                <FontAwesome
-                  name="plus"
-                  size={12}
-                  color="#ffbf18"
-                  style={{ top: 0, left: 10 }}
-                />
-                <Text style={styles.addLinkText}>Add link</Text>
-              </TouchableOpacity>
+        <View style={styles.cardContainer}>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Profile</Text>
+          <TouchableOpacity style={styles.profile} onPress={handleEditImage}>
+            <View style={{ borderWidth: 1, borderRadius: 360, padding: 5 }}>
+              <Image
+                source={
+                  profile_pic?.uri
+                    ? { uri: profile_pic.uri }
+                    : photo_url
+                      ? { uri: photo_url }
+                      : require("@/assets/images/default_profile.png")
+                }
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 40,
+                }}
+                resizeMode="contain"
+              />
             </View>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Save Profile</Text>
-            </TouchableOpacity>
+            <View style={styles.iconWrapper}>
+              <Text style={styles.pencil}>
+                <FontAwesome name="pencil" size={15} color="#fff" />
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.cardContent}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.sectionTitle}>Biography</Text>
+            <View style={styles.bio}>
+              <TextInput
+                placeholder="I am..."
+                placeholderTextColor="#aaa"
+                value={newBiography}
+                onChangeText={setNewBiography}
+                multiline={true}
+              />
+            </View>
+            {/*<Text style={styles.sectionTitle}>Contact</Text>*/}
+            {/*<View style={styles.con}>*/}
+            {/*  <TextInput*/}
+            {/*    style={styles.textInput}*/}
+            {/*    placeholder="name@gmail.com"*/}
+            {/*    placeholderTextColor="#aaa"*/}
+            {/*    value={contact}*/}
+            {/*    onChangeText={setContact}*/}
+            {/*    multiline={true}*/}
+            {/*  />*/}
+            {/*</View>*/}
+            {/*<Text style={styles.sectionTitle}>Social Links</Text>*/}
+            {/*{socialLinks.map((link, index) => (*/}
+            {/*  <View key={index} style={styles.row}>*/}
+            {/*    <TextInput*/}
+            {/*      style={[styles.textInputRow]}*/}
+            {/*      placeholder="Title"*/}
+            {/*      placeholderTextColor="#aaa"*/}
+            {/*      value={link.title}*/}
+            {/*      onChangeText={(value) =>*/}
+            {/*        handleSocialLinkChange(index, "title", value)*/}
+            {/*      }*/}
+            {/*      multiline={true}*/}
+            {/*    />*/}
+            {/*    <Text style={styles.arrow}>›</Text>*/}
+            {/*    <TextInput*/}
+            {/*      style={[styles.textInputRow]}*/}
+            {/*      placeholder="URL"*/}
+            {/*      placeholderTextColor="#aaa"*/}
+            {/*      value={link.url}*/}
+            {/*      onChangeText={(value) =>*/}
+            {/*        handleSocialLinkChange(index, "url", value)*/}
+            {/*      }*/}
+            {/*      multiline={true}*/}
+            {/*    />*/}
+            {/*    <TouchableOpacity*/}
+            {/*      style={styles.deleteIcon}*/}
+            {/*      onPress={() => handleRemoveSocialLink(index)}*/}
+            {/*    >*/}
+            {/*      <FontAwesome name="times" size={16} color="#aaa" />*/}
+            {/*    </TouchableOpacity>*/}
+            {/*  </View>*/}
+            {/*))}*/}
+            {/*<TouchableOpacity*/}
+            {/*  style={{ flexDirection: "row", alignItems: "center" }}*/}
+            {/*  onPress={handleAddSocialLink}*/}
+            {/*>*/}
+            {/*  <FontAwesome*/}
+            {/*    name="plus"*/}
+            {/*    size={12}*/}
+            {/*    color="#ffbf18"*/}
+            {/*    style={{ top: 0, left: 10 }}*/}
+            {/*  />*/}
+            {/*  <Text style={styles.addLinkText}>Add link</Text>*/}
+            {/*</TouchableOpacity>*/}
           </View>
-        ))}
+          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Save Profile</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -168,8 +233,8 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     position: "absolute",
-    top: 105,
-    right: 125,
+    top: 65,
+    right: 10,
     backgroundColor: "#FFBF18",
     height: 27,
     width: 27,
@@ -200,19 +265,17 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   bio: {
-    left: -15,
     width: "100%",
     marginTop: 10,
-    padding: 10,
+    paddingHorizontal: 10,
     borderRadius: 10,
     backgroundColor: "#f9f9f9",
     borderWidth: 1,
     borderColor: "#ddd",
-    height: 100,
+    height: 150,
     marginBottom: 20,
   },
   con: {
-    left: -15,
     width: "100%",
     marginTop: 10,
     padding: 10,
@@ -272,10 +335,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  textInput: {
-    top: 5,
-    paddingTop: -10,
-    width: "100%",
+  profile: {
+    alignItems: "center",
+    width: 105,
+    marginHorizontal: "auto",
+  },
+  pencil: {
+    textAlign: "center",
+    padding: 5,
+    width: 25,
+    height: 25,
+    borderRadius: 180,
+    backgroundColor: "#FFBF18",
   },
 });
 
