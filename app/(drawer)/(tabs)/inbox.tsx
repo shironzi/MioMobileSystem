@@ -17,6 +17,7 @@ import { getInboxMessages, getSentMessages } from "@/utils/messages";
 import { getSmartFormattedDate } from "@/utils/DateFormat";
 import { router } from "expo-router";
 import messaging from "@react-native-firebase/messaging";
+import { getAuth } from "@react-native-firebase/auth";
 
 enum messageType {
   inbox = "Inbox",
@@ -55,6 +56,8 @@ const Inbox = () => {
   };
 
   useEffect(() => {
+    if (!getAuth().onAuthStateChanged) return;
+
     if (!mount) {
       fetchMessages();
       setMount(true);
