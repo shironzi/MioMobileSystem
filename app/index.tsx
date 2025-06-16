@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import * as yup from "yup";
+import { getAuth } from "@react-native-firebase/auth";
 
 type FormData = {
   email: string;
@@ -104,6 +105,10 @@ const Index = () => {
       console.error("Login error:", e.message);
       setErrorMessage("Failed to log in. Please check your credentials.");
     }
+  };
+
+  const handleForgotPass = () => {
+    router.push("/(login)/ForgotPassword");
   };
 
   useFocusEffect(() => {
@@ -356,7 +361,7 @@ const Index = () => {
                         </View>
                         <Text>Remember me</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => console.log("forgot")}>
+                      <TouchableOpacity onPress={handleForgotPass}>
                         <Text style={styles.forgotText}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>

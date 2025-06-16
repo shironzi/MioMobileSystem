@@ -5,24 +5,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert,
 } from "react-native";
-import React, { useState, memo, useCallback } from "react";
-import {
-  useFocusEffect,
-  useNavigation,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import React, { useState, memo } from "react";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { getAuth } from "@react-native-firebase/auth";
+import { sendPasswordResetEmail } from "@firebase/auth";
 
-const email = "202210920@fit.edu.ph";
-
-const auth = () => {
+const forgotPass = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [newCode, setNewCode] = useState("");
-  const { from: source } = useLocalSearchParams();
+  const [emailAddress, setEmailAddress] = useState("");
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -30,21 +26,24 @@ const auth = () => {
     });
   });
 
-  // const handleConfirm = useCallback(() => {
-  //   if (source === "forgot") {
-  //     router.back();
-  //   } else if (source === "login") {
-  //     router.push("/(drawer)");
-  //   } else {
-  //     router.push("index");
-  //   }
-  // }, [source, router]);
+  const handleForgotRequest = () => {
+    getAuth()
+      .sendPasswordResetEmail(emailAddress)
+      .then(() => {
+        Alert.alert("Success", "Password reset email sent!");
+      })
+      .catch((error) => {
+        if (error.code === "auth/user-not-found") {
+          Alert.alert("Error", "No user found with that email.");
+        } else {
+          Alert.alert("Error", "Failed to send reset email.");
+        }
+        console.error("Reset error:", error);
+      });
+  };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, justifyContent: "center" }}
-      behavior="padding"
-    >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.upper}>
         <View style={styles.first}>
           <View style={styles.second}>
@@ -61,70 +60,51 @@ const auth = () => {
                 <TouchableOpacity onPress={() => router.back()}>
                   <MaterialIcons name="arrow-back" size={20} />
                 </TouchableOpacity>
-                <Text style={{ left: 20, color: "#666" }}>{email}</Text>
+                <Text style={{ left: 20, color: "#666" }}>Go back</Text>
               </View>
-              <Text
-                style={{
-                  left: 20,
-                  fontSize: 16,
-                  fontWeight: "500",
-                  marginBottom: 5,
-                }}
-              >
-                Enter Code
-              </Text>
-              <Text
-                style={{
-                  left: 20,
-                  fontSize: 14,
-                  marginBottom: 15,
-                  marginRight: 30,
-                  lineHeight: 20,
-                }}
-              >
-                Enter the code sent to your email to change your password
+              <Text style={{ left: 20, fontSize: 14 }}>
+                Enter your Email Address
               </Text>
 
               <View style={{ rowGap: 14 }}>
                 <View style={styles.inputContainer}>
-                  <MaterialIcons name="pin" size={30} color="#bbb" />
+                  <MaterialIcons name="email" size={24} color="#808080" />
                   <TextInput
-                    placeholder="Code"
-                    keyboardType="number-pad"
-                    value={newCode}
-                    onChangeText={setNewCode}
-                    maxLength={6}
-                    inputMode="numeric"
+                    placeholder="Email Address"
+                    value={emailAddress}
+                    onChangeText={setEmailAddress}
                     style={{ width: "100%" }}
                   />
                 </View>
-                {/*<TouchableOpacity style={styles.button} onPress={handleConfirm}>*/}
-                {/*  <Text*/}
-                {/*    style={{*/}
-                {/*      textAlign: "center",*/}
-                {/*      color: "#fff",*/}
-                {/*      fontSize: 18,*/}
-                {/*      fontWeight: "bold",*/}
-                {/*    }}*/}
-                {/*  >*/}
-                {/*    Confirm*/}
-                {/*  </Text>*/}
-                {/*</TouchableOpacity>*/}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleForgotRequest}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#fff",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Send Verification
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   first: {
     padding: 20,
-    marginTop: 60,
     backgroundColor: "#4d83e4",
-    top: 140,
+    top: 200,
     borderTopStartRadius: 300,
     borderTopEndRadius: 300,
     left: -120,
@@ -165,6 +145,11 @@ const styles = StyleSheet.create({
     marginTop: -20,
     marginBottom: 20,
   },
+  forgotText: {
+    textDecorationLine: "underline",
+    fontStyle: "italic",
+    color: "#666",
+  },
   button: {
     backgroundColor: "#ffbf18",
     borderRadius: 40,
@@ -192,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(auth);
+export default memo(forgotPass);
