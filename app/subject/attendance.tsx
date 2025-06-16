@@ -2,11 +2,12 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import React, { memo, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { getAttendance } from "@/utils/query";
@@ -23,6 +24,7 @@ const attendanceDetails = () => {
   const [attendanceList, setAttendanceList] = useState<
     { id: string; date: string; date_created: string; date_updated?: string }[]
   >([]);
+  const [loading, setLoading] = useState(true);
 
   const handleAttendanceSelect = (attendanceId: string) => {
     router.push({
@@ -44,11 +46,30 @@ const attendanceDetails = () => {
           }),
         );
         setAttendanceList(mapped);
+        setLoading(false);
       }
     };
 
     fetchAttendance();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[globalStyles.container, { flex: 1 }]}>

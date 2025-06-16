@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -70,6 +70,8 @@ const AuditoryScores = () => {
           }),
         );
         setFeedbacks(formatted);
+
+        console.log(feedbacks);
       }
     };
 
@@ -109,21 +111,21 @@ const AuditoryScores = () => {
           </View>
         )}
 
-        {role === "teacher" && (
-          <View style={globalStyles.cardContainer}>
-            <Text style={styles.sectionTitle}>Teacher Feedback</Text>
-            {feedbacks.length === 0 ? (
-              <Text style={styles.feedbackText}>No feedback provided.</Text>
-            ) : (
-              feedbacks.map((item, index) => (
-                <View key={item.id} style={{ marginBottom: 20 }}>
-                  <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
-                  <Text style={styles.feedbackText}>{item.feedback}</Text>
-                </View>
-              ))
-            )}
-          </View>
-        )}
+        {/*{role === "teacher" && (*/}
+        <View style={globalStyles.cardContainer}>
+          <Text style={styles.sectionTitle}>Teacher Feedback</Text>
+          {feedbacks.length === 0 ? (
+            <Text style={styles.feedbackText}>No feedback provided.</Text>
+          ) : (
+            feedbacks.map((item, index) => (
+              <View key={item.id} style={{ marginBottom: 20 }}>
+                <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
+                <Text style={styles.feedbackText}>{item.feedback}</Text>
+              </View>
+            ))
+          )}
+        </View>
+        {/*)}*/}
       </View>
     </ScrollView>
   );

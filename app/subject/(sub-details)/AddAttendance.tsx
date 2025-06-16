@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
+  ActivityIndicator,
   Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import useHeaderConfig from "@/utils/HeaderConfig";
@@ -33,6 +34,7 @@ const AddAttendance = () => {
   const [emptyStatus, setEmptyStatus] = useState<{ student_id: string }[]>([]);
   const [attendance_id, setAttendanceId] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   const handleStatusChange = (studentId: string, value: string) => {
     setStudents((prev) =>
@@ -109,11 +111,30 @@ const AddAttendance = () => {
         setAttendanceId(res.attendance_id);
         setDate(res.date);
         setStudents(studentEntries);
+        setLoading(false);
       }
     };
 
     fetchStudents();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={globalStyles.container}>

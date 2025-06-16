@@ -179,7 +179,10 @@ const newCourseDetails = () => {
           <TouchableOpacity
             style={styles.subCourse}
             onPress={useCallback(() => {
-              router.push("/subject/attendance");
+              router.push({
+                pathname: "/subject/attendance",
+                params: { subjectId: id, role: role },
+              });
             }, [router])}
           >
             <View style={styles.row}>
