@@ -2,7 +2,14 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { getProfile } from "@/utils/query";
 
 interface FileInfo {
@@ -16,6 +23,7 @@ const profile = () => {
   const [name, setName] = useState<string>("");
   const [bibliography, setBibliography] = useState<string>("");
   const [photo_url, setPhoto_url] = useState();
+  const [loading, setLoading] = useState(true);
 
   HeaderConfig("Profile");
 
@@ -27,11 +35,29 @@ const profile = () => {
       setBibliography(res.biography);
       setPhoto_url(res.photo_url);
 
-      console.log(res);
+      setLoading(false);
     };
 
     fetchProfile();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

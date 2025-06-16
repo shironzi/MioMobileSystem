@@ -2,6 +2,7 @@ import MessageCard from "@/components/MessageCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import React, { memo, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Modal,
   Pressable,
@@ -37,6 +38,7 @@ const Inbox = () => {
   const [mount, setMount] = useState<boolean>(false);
   const [inboxMessage, setInboxMessage] = useState<Message[]>([]);
   const [sentMessage, setSentMessage] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchMessages = async () => {
     try {
@@ -65,9 +67,28 @@ const Inbox = () => {
         await fetchMessages();
       }
     });
+    setLoading(false);
 
     return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff", // optional background
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container]}>

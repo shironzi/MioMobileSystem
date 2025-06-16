@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -35,6 +37,7 @@ const MessageDetails = () => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [messageInput, setMessageInput] = useState("");
   const [mount, setMount] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
 
   useHeaderConfig(name ?? "");
 
@@ -90,6 +93,8 @@ const MessageDetails = () => {
       }
     });
 
+    setLoading(false);
+
     return () => unsubscribe();
   }, [thread]);
 
@@ -106,6 +111,24 @@ const MessageDetails = () => {
       hideSubscription.remove();
     };
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff", // optional background
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

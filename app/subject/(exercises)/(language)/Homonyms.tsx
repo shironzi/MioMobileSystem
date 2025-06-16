@@ -1,7 +1,13 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import {
   getAttemptActivityLanguage,
@@ -259,8 +265,18 @@ const Homonyms = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading......</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
       </View>
     );
   }

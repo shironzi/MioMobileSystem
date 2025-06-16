@@ -1,10 +1,17 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import PlayCard from "@/components/playCard";
 import React, { memo, useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { useLocalSearchParams } from "expo-router";
-import { getActivities, getSpecializedActivities } from "@/utils/specialized";
+import { getSpecializedActivities } from "@/utils/specialized";
 
 const Play = () => {
   HeaderConfig("Play");
@@ -43,8 +50,18 @@ const Play = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading.......</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
       </View>
     );
   }

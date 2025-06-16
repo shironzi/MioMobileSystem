@@ -3,9 +3,14 @@ import { CourseCardViewContext } from "@/contexts/CourseCardViewContext";
 import globalStyles from "@/styles/globalStyles";
 import { getSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import { FontAwesome } from "@expo/vector-icons";
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const data = [
   { label: "All Subjects", value: "all" },
@@ -31,7 +36,7 @@ const index = () => {
   const { courseCardView } = useContext(CourseCardViewContext);
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
   const [role, setRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchSubjects() {
@@ -69,37 +74,55 @@ const index = () => {
     }
   }, [subjects, selectedValue]);
 
+  // if (loading) {
+  //   return (
+  //     <View>
+  //       <Text>Loading........</Text>
+  //       <View style={styles.feedContainer}>
+  //         <View
+  //           style={{ flexDirection: "row", justifyContent: "space-between" }}
+  //         >
+  //           <FontAwesome
+  //             name="comment"
+  //             size={30}
+  //             style={{
+  //               left: 5,
+  //               color: "#ffbf18",
+  //               alignSelf: "center",
+  //             }}
+  //           />
+  //           <Text
+  //             style={{
+  //               paddingHorizontal: 25,
+  //               // backgroundColor: "#1f1f1f",
+  //               marginLeft: -25,
+  //               left: 20,
+  //               paddingRight: 50,
+  //               lineHeight: 20,
+  //             }}
+  //           >
+  //             {feedback}
+  //           </Text>
+  //         </View>
+  //       </View>
+  //     </View>
+  //   );
+  // }
+
   if (loading) {
     return (
-      <View>
-        <Text>Loading........</Text>
-        <View style={styles.feedContainer}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <FontAwesome
-              name="comment"
-              size={30}
-              style={{
-                left: 5,
-                color: "#ffbf18",
-                alignSelf: "center",
-              }}
-            />
-            <Text
-              style={{
-                paddingHorizontal: 25,
-                // backgroundColor: "#1f1f1f",
-                marginLeft: -25,
-                left: 20,
-                paddingRight: 50,
-                lineHeight: 20,
-              }}
-            >
-              {feedback}
-            </Text>
-          </View>
-        </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff", // optional background
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
       </View>
     );
   }

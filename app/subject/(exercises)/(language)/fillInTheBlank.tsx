@@ -1,6 +1,6 @@
 import HeaderConfig from "@/utils/HeaderConfig";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import ActivityProgress from "@/components/activityProgress";
@@ -231,8 +231,18 @@ const fillInTheBlank = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading........</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
       </View>
     );
   }

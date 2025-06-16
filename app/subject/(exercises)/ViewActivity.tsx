@@ -1,9 +1,10 @@
 import React, { memo, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams } from "expo-router";
 import handleCategory from "@/app/subject/(exercises)/Category";
 import { getActiveActivity } from "@/utils/specialized";
+import globalStyles from "@/styles/globalStyles";
 
 const ViewActivity = () => {
   useHeaderConfig("Activity");
@@ -67,35 +68,84 @@ const ViewActivity = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading.......</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
+          Loading...
+        </Text>
       </View>
     );
   }
 
   return (
-    <View>
-      <View>
-        <Text>
-          Practice saying words by looking at pictures. This exercise helps you
-          improve your speech by naming what you see using the microphone.
-        </Text>
-      </View>
+    <View style={globalStyles.container}>
+      <View style={[globalStyles.cardContainer, { rowGap: 50 }]}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 15,
+          }}
+        >
+          <Text>
+            Practice saying words by looking at pictures. This exercise helps
+            you improve your speech by naming what you see using the microphone.
+          </Text>
+        </View>
 
-      <View>
-        <Text>Latest Attempts</Text>
-        {attempts?.map((attempt, index) => (
-          <View key={index} style={{ flexDirection: "row", marginVertical: 4 }}>
-            <Text>Attempt {index + 1}</Text>
-            <Text>Score: {attempt.score ?? "N/A"}</Text>
-            <Text>Submitted at: {attempt.submitted_at ?? "Not submitted"}</Text>
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 8 }}>
+            Latest Attempts
+          </Text>
+
+          {/* Table Header */}
+          <View
+            style={{
+              flexDirection: "row",
+              paddingVertical: 6,
+              borderBottomWidth: 1,
+            }}
+          >
+            <Text style={{ flex: 1, fontWeight: "bold" }}>Attempt</Text>
+            <Text style={{ flex: 1, fontWeight: "bold" }}>Score</Text>
+            <Text style={{ flex: 2, fontWeight: "bold" }}>Submitted At</Text>
           </View>
-        ))}
-      </View>
 
-      <TouchableOpacity onPress={handleOnStart}>
-        <Text>Start Activity</Text>
-      </TouchableOpacity>
+          {/* Table Rows */}
+          {attempts.map((attempt, index) => (
+            <View
+              key={index}
+              style={{
+                flexDirection: "row",
+                paddingVertical: 6,
+                borderBottomWidth: 0.5,
+                borderColor: "#ccc",
+              }}
+            >
+              <Text style={{ flex: 1 }}>#{index + 1}</Text>
+              <Text style={{ flex: 1 }}>{attempt.score ?? "N/A"}</Text>
+              <Text style={{ flex: 2 }}>
+                {attempt.submitted_at ?? "Not submitted"}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { marginTop: 20 }]}
+          onPress={handleOnStart}
+        >
+          <Text style={globalStyles.submitButtonText}>Start Activity</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
