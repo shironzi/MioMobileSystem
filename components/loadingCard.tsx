@@ -1,14 +1,44 @@
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
-const loadingCard = () => {
+const LoadingCard = () => {
 	return (
 		<View>
-			<Text>hello</Text>
+			<Image
+				source={require("@/assets/load/loading.png")}
+				resizeMode="cover"
+				style={styles.image}
+			/>
+			<Text style={styles.line1}>Loading, Please Wait..</Text>
+			<Text style={styles.line2}>
+				We're preparing for you.{"\n"}This won't take long
+			</Text>
 		</View>
 	);
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	image: {
+		width: 300,
+		height: 300,
+		margin: 20,
+		alignSelf: "center",
+		top: -50,
+	},
+	line1: {
+		left: 5,
+		fontSize: 20,
+		fontWeight: 500,
+		textAlign: "center",
+		top: -80,
+	},
+	line2: {
+		fontSize: 14,
+		fontWeight: 300,
+		textAlign: "center",
+		top: -60,
+		lineHeight: 20,
+	},
+});
 
-export default memo(loadingCard);
+export default memo(LoadingCard);
