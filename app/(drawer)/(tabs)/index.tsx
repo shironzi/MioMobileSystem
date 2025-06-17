@@ -12,7 +12,7 @@ const data = [
 	{ label: "Specialized Subjects", value: "specialized" },
 	{ label: "Previous Subjects", value: "previous" },
 ];
-
+const name = "Ava";
 const feedback =
 	"Piddie says Try emphasizing the ‘x’ sound a bit more for clearer pronunciation.";
 
@@ -89,6 +89,10 @@ const index = () => {
 
 	return (
 		<View style={globalStyles.container}>
+      <View style={styles.headerName}>
+        <View style={styles.yellow}></View>
+					<Text styles={styles.name}>Welcome back, {name}</Text>
+				</View>
 			<View style={styles.courseContainer}>
 				<Text style={styles.courseTitle}>Subjects</Text>
 				<View style={styles.dropdownContainer}>
@@ -114,6 +118,7 @@ const index = () => {
 			<ScrollView
 				contentContainerStyle={[courseCardView ? styles.gridContainer : null]}
 			>
+				
 				{filteredSubjects ? (
 					filteredSubjects.map((subject: Subject) => {
 						if (subject.subjectType === selectedValue) {
@@ -166,6 +171,31 @@ const index = () => {
 };
 
 const styles = StyleSheet.create({
+	headerName: {
+		margin: 10,
+    top:-5,
+		// backgroundColor: "#000",
+    borderColor:"#ddd",
+    borderWidth:1,
+    borderRadius:20,
+		// height: 100,
+	},
+  yellow:{
+    backgroundColor:"#ffbf18",
+    height:50,
+    width:"2%",
+    marginVertical:18,
+    marginHorizontal:15,
+    borderRadius:10,
+
+  },
+  name:{
+    fontSize:16,
+    margin: 10,
+    fontWeight:500,
+    top:-30,
+    color:"#2264dc",
+  },
 	feedContainer: {
 		width: "85%",
 		backgroundColor: "#fff",
@@ -185,6 +215,7 @@ const styles = StyleSheet.create({
 	},
 	courseTitle: {
 		fontSize: 20,
+		// color: "#ffbf18",
 	},
 	dropdownContainer: {
 		width: 200,
