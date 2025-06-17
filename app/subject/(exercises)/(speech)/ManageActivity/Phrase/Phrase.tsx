@@ -95,7 +95,7 @@ const PronunciationItem = ({
         ) : (
           textLimit && (
             <Text style={globalStyles.errorText}>
-              This should not exceed 30 characters
+              This should not exceed 50 characters
             </Text>
           )
         )}

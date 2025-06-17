@@ -1,14 +1,7 @@
 import React, { memo } from "react";
-import PictureItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureItem";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import Phrase from "@/app/subject/(exercises)/(speech)/ManageActivity/Phrase/Phrase";
 import { router } from "expo-router";
-
-interface FileInfo {
-  uri: string;
-  name: string;
-  mimeType?: string;
-}
 
 interface InputError {
   id: string;
@@ -79,7 +72,7 @@ const PhraseRenderItems = ({
   };
 
   const handleTextInput = (id: string, value: string) => {
-    if (value.length > 30) {
+    if (value.length > 50) {
       const update = [
         ...inputErrors.filter(
           (e) => !(e.id === id && e.error === "text length"),
