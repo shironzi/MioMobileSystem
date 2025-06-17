@@ -1,16 +1,13 @@
-import { FirebaseAuthTypes, getAuth } from "@react-native-firebase/auth";
-import { Stack, useRouter } from "expo-router";
+import { getAuth } from "@react-native-firebase/auth";
+import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { PermissionsAndroid, Text, View } from "react-native";
 import messaging from "@react-native-firebase/messaging";
-import { updateFCMToken } from "@/utils/notification";
 import EarthquakeAlertModal from "@/components/modals/EarthquakeAlertModal";
 import * as Notifications from "expo-notifications";
 
 export default function Layout() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
   const [showAlert, setShowAlert] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalBody, setModalBody] = useState("");
@@ -22,12 +19,6 @@ export default function Layout() {
     });
   }, []);
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace("/(drawer)/(tabs)");
-    }
-  }, [loading, user, router]);
-
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: true,
@@ -36,21 +27,6 @@ export default function Layout() {
       shouldShowList: true,
     }),
   });
-
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      const fcmToken = await messaging().getToken();
-      if (fcmToken && user?.uid) {
-        await updateFCMToken(user?.uid, fcmToken);
-        console.log(fcmToken);
-      }
-    }
-  }
 
   async function messageListener() {
     // Foreground
@@ -74,12 +50,22 @@ export default function Layout() {
           },
           trigger: null,
         });
+      } else if (type === "notification") {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title,
+            body,
+            sound: true,
+            priority: Notifications.AndroidNotificationPriority.HIGH,
+            data: remoteMessage.data,
+          },
+          trigger: null,
+        });
       }
     });
   }
 
   useEffect(() => {
-    requestUserPermission();
     messageListener();
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,

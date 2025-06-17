@@ -30,15 +30,15 @@ export default async function login(email: string, password: string) {
 
 export async function logout() {
   try {
-    await getAuth().signOut();
-    await SecureStore.deleteItemAsync("sessionId");
-
     const auth = getAuth();
     const user = auth.currentUser;
 
     if (user?.uid) {
       await removeFCMToken(user?.uid);
     }
+
+    await getAuth().signOut();
+    await SecureStore.deleteItemAsync("sessionId");
 
     delete api.defaults.headers.common.Authorization;
   } catch (error: any) {
