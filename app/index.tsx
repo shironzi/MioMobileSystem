@@ -18,7 +18,6 @@ import {
   View,
 } from "react-native";
 import * as yup from "yup";
-import { getAuth } from "@react-native-firebase/auth";
 
 type FormData = {
   email: string;
