@@ -5,16 +5,14 @@ import globalStyles from "@/styles/globalStyles";
 import { getSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 const data = [
-	{ label: "All Subjects", value: "all" },
-	{ label: "Academic Subjects", value: "academic" },
-	{ label: "Specialized Subjects", value: "specialized" },
-	{ label: "Previous Subjects", value: "previous" },
+	{ label: "All", value: "all" },
+	{ label: "Academic", value: "academic" },
+	{ label: "Specialized", value: "specialized" },
+	{ label: "Previous", value: "previous" },
 ];
-const name = "Ava";
-const feedback =
-	"Piddie says Try emphasizing the ‘x’ sound a bit more for clearer pronunciation.";
 
 type Subject = {
 	title: string;
@@ -31,6 +29,8 @@ const index = () => {
 	const [subjects, setSubjects] = useState<Subject[] | null>(null);
 	const [role, setRole] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState("All Subjects");
 
 	useEffect(() => {
 		async function fetchSubjects() {
@@ -79,43 +79,83 @@ const index = () => {
 				}}
 			>
 				<LoadingCard></LoadingCard>
-				{/* <ActivityIndicator size="large" color="#007bff" />
-				<Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
-					Loading...
-				</Text> */}
 			</View>
 		);
 	}
 
 	return (
-		<View style={globalStyles.container}>
+		<ScrollView 
+    showsVerticalScrollIndicator={false}
+    style={[globalStyles.container]}>
       <View style={styles.headerName}>
-        <View style={styles.yellow}></View>
-					<Text styles={styles.name}>Welcome back, {name}</Text>
+        <View style={{flexDirection:"row"}}>
+        <View style={styles.yellow}>
+        </View>
+					<Text style={styles.greet}>Welcome back, Ava!</Text>
 				</View>
+        <Text style={styles.banner}>Helping deaf children develop communication skills and confidence for a brighter future.</Text>
+      </View>
+      <View style={[styles.headerName, {top:-10}]}>
+        <View style={{flexDirection:"row"}}>
+        <View style={styles.yellow}>
+        </View>
+					<Text style={styles.greet}>School Year 2024 - 2025</Text>
+				</View>
+        <Text style={styles.banner}>June 2024 - March 2025 {"\n"}3rd Quarter</Text>
+      </View>
 			<View style={styles.courseContainer}>
 				<Text style={styles.courseTitle}>Subjects</Text>
-				<View style={styles.dropdownContainer}>
-					{/*<Dropdown*/}
-					{/*    style={styles.dropdown}*/}
-					{/*    selectedTextStyle={styles.selectedTextStyle}*/}
-					{/*    renderRightIcon={(isOpened) => (*/}
-					{/*        <MaterialIcons*/}
-					{/*            name={isOpened ? "keyboard-arrow-up" : "keyboard-arrow-down"}*/}
-					{/*            style={styles.iconStyle}*/}
-					{/*        />*/}
-					{/*    )}*/}
-					{/*    data={data}*/}
-					{/*    value={selectedValue}*/}
-					{/*    labelField="label"*/}
-					{/*    valueField="value"*/}
-					{/*    onChange={(item) => {*/}
-					{/*        setSelectedValue(item.value);*/}
-					{/*    }}*/}
-					{/*/>*/}
-				</View>
+				<TouchableOpacity
+          onPress={() => setShowDropdown(true)}
+          style={styles.dropdownTrigger}
+        >
+          <Text style={styles.selectedText}>{selectedLabel}</Text>
+          <MaterialIcons
+            name={showDropdown ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+            style={styles.iconStyle}
+          />
+        </TouchableOpacity>
+
 			</View>
+      <Modal
+        visible={showDropdown}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowDropdown(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          activeOpacity={1}
+          onPressOut={() => setShowDropdown(false)}
+        >
+          <View style={styles.dropdownModal}>
+          {data.map((item, index) => (
+            <React.Fragment key={item.value}>
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedValue(item.value);
+                  setSelectedLabel(item.label);
+                  setShowDropdown(false);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.dropdownItemText,
+                    item.value === selectedValue && { color: "#FFBF18", fontWeight: "600" },
+                  ]}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+              {index < data.length - 1 && <View style={styles.divider} />}
+            </React.Fragment>
+          ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
 			<ScrollView
+        showsVerticalScrollIndicator={false}
 				contentContainerStyle={[courseCardView ? styles.gridContainer : null]}
 			>
 				
@@ -144,7 +184,7 @@ const index = () => {
 						return (
 							<View
 								key={subject.subject_id}
-								style={courseCardView ? styles.gridItem : null}
+								style={[courseCardView ? styles.gridItem : null]}
 							>
 								<CourseCard
 									courseTitle={subject.title}
@@ -161,85 +201,126 @@ const index = () => {
 						);
 					})
 				) : (
-					<View>
-						<Text>No {selectedValue} subjects available.</Text>
+					<View style={{flex:1}}>
+						<Text style={{marginVertical:20, left:10}}>No {selectedValue} subjects available.</Text>
 					</View>
 				)}
 			</ScrollView>
-		</View>
+      <View style={{paddingBottom:50}}>
+        <Text style={styles.courseTitle}>Badges</Text>
+      </View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	headerName: {
-		margin: 10,
+    alignSelf:"center",
+		marginVertical: 10,
+    marginHorizontal:10,
+    left:-3,
+    width:340,
     top:-5,
-		// backgroundColor: "#000",
     borderColor:"#ddd",
     borderWidth:1,
     borderRadius:20,
-		// height: 100,
+    paddingVertical:5
 	},
   yellow:{
     backgroundColor:"#ffbf18",
-    height:50,
+    height:55,
     width:"2%",
-    marginVertical:18,
+    marginVertical:10,
     marginHorizontal:15,
     borderRadius:10,
+  },
+  greet:{
+    textAlign:"center",
+    fontSize:16,
+    fontWeight:500,
+    marginVertical:10,
+  },
+  banner:{
+    marginHorizontal:20,
+    textAlign:"justify",
+    marginLeft:40,
+    fontSize:12,
+    marginTop:-40,
+    marginVertical:10,
+    lineHeight:15,
+    fontWeight:300
 
   },
-  name:{
-    fontSize:16,
-    margin: 10,
-    fontWeight:500,
-    top:-30,
-    color:"#2264dc",
-  },
-	feedContainer: {
-		width: "85%",
-		backgroundColor: "#fff",
-		paddingVertical: 20,
-		padding: 10,
-		margin: 10,
-		borderRadius: 20,
-		alignSelf: "center",
-		elevation: 5,
-		marginRight: 10,
-	},
 	courseContainer: {
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
+    marginBottom:-10,
 	},
 	courseTitle: {
-		fontSize: 20,
-		// color: "#ffbf18",
+    top:-15,
+    marginHorizontal:10,
+		fontSize: 16,
+    fontWeight:500,
 	},
-	dropdownContainer: {
-		width: 200,
-	},
-	dropdown: {
-		flexDirection: "row-reverse",
-		alignItems: "center",
-		paddingHorizontal: 5,
-		paddingVertical: 8,
-	},
-	selectedTextStyle: {
-		color: "#FFBF18",
-		fontSize: 14,
-		textAlign: "right",
-		flex: 1,
-	},
+  divider: {
+    borderBottomColor: "#ffffff99",
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+  },
+	dropdownTrigger: {
+    paddingHorizontal: 30,
+    backgroundColor: "#fff",
+    width: 160,
+    justifyContent: "space-around",
+  },
+  
+  selectedText: {
+    color: "#FFBF18",
+    fontSize: 14,
+    top:-5,
+    left:30
+  },
+  
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    margin:20,
+    top:30
+  },
+  
+  dropdownModal: {
+    backgroundColor: "#2264dc",
+    width: 120,
+    borderRadius: 10,
+    elevation: 5,
+    paddingVertical:5,
+  },
+  
+  dropdownItem: {
+    paddingVertical: 8,
+    paddingHorizontal:12
+  },
+  
+  dropdownItemText: {
+    fontSize: 14,
+    color: "#fff",
+    paddingVertical:5
+  },
 	iconStyle: {
 		fontSize: 20,
 		color: "#FFBF18",
+    alignSelf:"flex-end",
+    top:-24,
+    left:25
 	},
 	gridContainer: {
 		flexDirection: "row",
 		flexWrap: "wrap",
 		paddingBottom: 20,
+    top:-10
 	},
 	gridItem: {
 		width: "50%",
