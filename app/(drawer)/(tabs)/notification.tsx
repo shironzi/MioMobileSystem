@@ -1,6 +1,13 @@
 import NotificationCard from "@/components/NotificationCard";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -9,72 +16,48 @@ import {
   Text,
   View,
 } from "react-native";
+import getCurrentDateTime, {
+  getFormattedTimeFromDateString,
+} from "@/utils/DateFormat";
+import { dismissNotification, getNotifications } from "@/utils/notification";
+import globalStyles from "@/styles/globalStyles";
+import messaging from "@react-native-firebase/messaging";
 
-const data = [
-  {
-    id: 1,
-    title: "Notification Title 1",
-    date: new Date(Date.now()),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-  {
-    id: 2,
-    title: "Notification Title 2",
-    date: new Date("2025-1-5"),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-  {
-    id: 3,
-    title: "Notification Title 3",
-    date: new Date("2025-1-5"),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-  {
-    id: 4,
-    title: "Notification Title 4",
-    date: new Date("2024-5-5"),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-  {
-    id: 5,
-    title: "Notification Title 5",
-    date: new Date("2024-5-5"),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-  {
-    id: 6,
-    title: "Notification Title 6w",
-    date: new Date("2024-5-5"),
-    time: "10:00 AM",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam accusamus aperiam vel quas minima iure...",
-    type: "activity",
-  },
-];
+type Notification = {
+  notification_id: string;
+  title: string;
+  body: string;
+  date: string;
+  subject_id: string;
+  announcement_id: string;
+  type: "announcement" | "emergency" | "assignment" | "achievement";
+  time?: string;
+};
 
 const Notification = () => {
   const [expandedSections, setExpandedSections] = useState(new Set<string>());
-  const [notifications, setNotifications] = useState(data);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [mount, setMount] = useState<boolean>(false);
   const openSwipeableRef = useRef<number | null>(null);
 
-  const deleteNotification = useCallback((id: number) => {
+  const deleteNotification = useCallback(async (id: string) => {
     openSwipeableRef.current = null;
 
+    const res = await dismissNotification(id);
+
+    if (res.success) {
+      console.log(res.message);
+    }
+
     setTimeout(() => {
-      setNotifications((prev) => prev.filter((item) => item.id !== id));
+      setNotifications((prev) =>
+        prev.filter((item) => item.notification_id !== id),
+      );
     }, 100);
   }, []);
 
-  const now = useMemo(() => new Date(), []);
+  const now = getCurrentDateTime();
   const filteredData = useMemo(
     () => notifications.filter((item) => now > item.date),
     [notifications, now],
@@ -83,7 +66,7 @@ const Notification = () => {
   const sections = Object.values(
     filteredData.reduce(
       (acc, item) => {
-        const dateStr = item.date.toLocaleDateString("en-US", {
+        const dateStr = new Date(item.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
           year: "numeric",
@@ -110,23 +93,78 @@ const Notification = () => {
     });
   };
 
+  const fetchAnnouncements = async () => {
+    const res = await getNotifications();
+
+    if (res.success) {
+      setNotifications(res.notifications);
+      setExpandedSections(new Set());
+
+      const sorted = res.notifications
+        .filter((item: any) => getCurrentDateTime() > item.date)
+        .sort(
+          (
+            a: { date: string | number | Date },
+            b: { date: string | number | Date },
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
+
+      if (sorted.length > 0) {
+        const firstDate = new Date(sorted[0].date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        setExpandedSections(new Set([firstDate]));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!mount) {
+      fetchAnnouncements();
+      setMount(true);
+    }
+
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      const type = remoteMessage.data?.type;
+
+      if (type === "notification") {
+        await fetchAnnouncements();
+      }
+    });
+
+    setLoading(false);
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>loading........</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <SectionList
         sections={sections}
         extraData={[expandedSections, notifications]}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.notification_id}
         renderItem={({ section, item }) => {
           const isExpanded = expandedSections.has(section.date);
           if (!isExpanded) return null;
           return (
             <NotificationCard
-              key={item.id}
+              key={item.notification_id}
               title={item.title}
-              desc={item.desc}
-              time={item.time}
+              desc={item.body}
+              time={getFormattedTimeFromDateString(item.date)}
               type={item.type}
-              handleDelete={() => deleteNotification(item.id)}
+              handleDelete={() => deleteNotification(item.notification_id)}
             />
           );
         }}
@@ -135,14 +173,18 @@ const Notification = () => {
           return (
             <Pressable onPress={() => handleToggle(date)}>
               <View style={styles.header}>
-                <Text>{date}</Text>
+                <Text style={globalStyles.text1}>{date}</Text>
                 {isExpanded ? (
-                  <MaterialIcons name="arrow-drop-up" size={24} color="black" />
+                  <MaterialIcons
+                    name="arrow-drop-up"
+                    size={30}
+                    color="#FFBF18"
+                  />
                 ) : (
                   <MaterialIcons
                     name="arrow-drop-down"
-                    size={24}
-                    color="black"
+                    size={30}
+                    color="#FFBF18"
                   />
                 )}
               </View>
@@ -157,7 +199,7 @@ const Notification = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
   },
   header: {
     fontSize: 16,
@@ -165,8 +207,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
+    paddingHorizontal: 20,
     justifyContent: "space-between",
     backgroundColor: "white",
+    marginHorizontal: "auto",
   },
 });
 

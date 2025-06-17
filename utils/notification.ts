@@ -1,6 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
-
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function updateFCMToken(student_id: string, token: string) {
@@ -21,6 +19,28 @@ export async function updateFCMToken(student_id: string, token: string) {
 export async function removeFCMToken(student_id: string) {
   try {
     const { data } = await api.put(`/removeFCMToken/${student_id}`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getNotifications() {
+  try {
+    const { data } = await api.get(`/notifications`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function dismissNotification(notificationId: string) {
+  try {
+    const { data } = await api.post(`/notification/${notificationId}`);
 
     return data;
   } catch (err) {

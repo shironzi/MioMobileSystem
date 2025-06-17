@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import globalStyles from "@/styles/globalStyles";
 
 const NotificationCard = (props: {
   title: string;
@@ -49,22 +50,53 @@ const NotificationCard = (props: {
 
         <GestureDetector gesture={panGesture}>
           <Animated.View style={[styles.card, animatedStyle]}>
-            <Image
-              source={require("@/assets/images/icons/earthquakeIcon.png")}
-              style={{ height: 50, width: 50 }}
-            />
-            <View>
+            <View
+              style={{
+                width: "20%",
+                marginVertical: "auto",
+              }}
+            >
+              <Image
+                source={require("@/assets/images/icons/earthquakeIcon.png")}
+                style={{
+                  height: 50,
+                  width: 50,
+                  marginHorizontal: "auto",
+                  marginTop: -5,
+                }}
+              />
+            </View>
+            <View style={{ width: "70%" }}>
               <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  width: "100%",
                 }}
               >
-                <Text>{props.title}</Text>
-                <Text>{props.time}</Text>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={[globalStyles.title, { paddingRight: 20 }]}
+                >
+                  {props.title}
+                </Text>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={[globalStyles.title, { paddingRight: 20 }]}
+                >
+                  {props.time}
+                </Text>
               </View>
               <View>
-                <Text>{props.desc}</Text>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={3}
+                  style={[globalStyles.label, { paddingRight: 20 }]}
+                >
+                  {props.desc}
+                </Text>
               </View>
             </View>
           </Animated.View>
@@ -81,9 +113,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    width: "100%",
-    height: 120,
+    borderRadius: 20,
+    height: 110,
     justifyContent: "center",
+    backgroundColor: "#fff",
+    marginBottom: 15,
   },
   iconBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -91,19 +125,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     paddingRight: 30,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#00000024",
   },
   card: {
     backgroundColor: "white",
     height: "100%",
-    justifyContent: "center",
-    paddingVertical: 25,
-    paddingHorizontal: 60,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    flexDirection: "row",
-    columnGap: 30,
     width: "100%",
+    flexDirection: "row",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#00000024",
   },
   text: {
     fontSize: 18,

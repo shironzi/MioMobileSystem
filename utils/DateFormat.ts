@@ -100,7 +100,7 @@ export function getSmartFormattedDate(date: string) {
     timeZone: "Asia/Manila",
     hour: "numeric",
     minute: "2-digit",
-    hour12: true, // ✅ 12-hour format with AM/PM
+    hour12: true,
   });
 
   const time = timeFormatter.format(dateObj);
@@ -129,4 +129,19 @@ export function getSmartFormattedDate(date: string) {
   });
 
   return fullFormatter.format(dateObj);
+}
+
+export function getFormattedTimeFromDateString(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute, second);
+
+  return new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
 }

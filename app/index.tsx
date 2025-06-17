@@ -3,7 +3,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import * as yup from "yup";
+import { getAuth } from "@react-native-firebase/auth";
 
 type FormData = {
   email: string;
@@ -109,6 +110,14 @@ const Index = () => {
   const handleForgotPass = () => {
     router.push("/(login)/ForgotPassword");
   };
+
+  useEffect(() => {
+    const user = getAuth().currentUser;
+
+    if (user) {
+      router.replace("/(drawer)/(tabs)");
+    }
+  }, []);
 
   useFocusEffect(() => {
     navigation.setOptions({ headerShown: false });

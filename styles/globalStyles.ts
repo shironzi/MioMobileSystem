@@ -60,6 +60,18 @@ const globalStyles = StyleSheet.create({
     color: "#1F1F1F",
     fontWeight: "500",
   },
+  title: {
+    fontSize: 14,
+    lineHeight: 44,
+    color: "#1F1F1F",
+    fontWeight: "400",
+  },
+  label: {
+    fontSize: 12,
+    lineHeight: 15,
+    color: "#1F1F1F",
+    fontWeight: "300",
+  },
   textInputContainer: {
     borderWidth: 1,
     borderColor: "#ddd",

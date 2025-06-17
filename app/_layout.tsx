@@ -13,8 +13,7 @@ export default function Layout() {
   const [modalBody, setModalBody] = useState("");
 
   useEffect(() => {
-    return getAuth().onAuthStateChanged((u) => {
-      setUser(u);
+    return getAuth().onAuthStateChanged(() => {
       setLoading(false);
     });
   }, []);
