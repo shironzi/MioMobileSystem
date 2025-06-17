@@ -2,8 +2,8 @@ import AnnounceCard from "@/components/AnnounceCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAnnouncements, getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import React, { memo, useCallback, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -39,20 +39,32 @@ function Announcements() {
     null,
   );
 
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const response = await getAnnouncements(subjectId);
-        setAnnouncements(response.announcements);
-      } catch (err) {
-        useAuthGuard(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-    fetchAnnouncements();
-  }, [subjectId]);
+      const fetchAnnouncements = async () => {
+        try {
+          const response = await getAnnouncements(subjectId);
+          if (isActive) {
+            setAnnouncements(response.announcements);
+          }
+        } catch (err) {
+          useAuthGuard(err);
+        } finally {
+          if (isActive) {
+            setLoading(false);
+          }
+        }
+      };
+
+      fetchAnnouncements();
+
+      return () => {
+        isActive = false;
+      };
+    }, [subjectId]),
+  );
 
   const handleAdd = () => {
     router.push({

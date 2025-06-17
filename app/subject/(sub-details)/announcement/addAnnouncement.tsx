@@ -5,14 +5,16 @@ import { getAnnouncementById } from "@/utils/query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { getDate, parseFormattedDate } from "@/utils/DateFormat";
+import { getDate } from "@/utils/DateFormat";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface FileInfo {
@@ -123,11 +125,11 @@ const addAnnouncement = () => {
     (async () => {
       try {
         const res = await getAnnouncementById(subjectId, announcementId);
-        const data = res.assignment;
+        const data = res.announcement;
 
         setTitle(data.title);
         setDescription(data.description);
-        setDate(parseFormattedDate(data.date_posted));
+        setDate(new Date(data.date_posted));
         setUrls(data.links);
 
         data.files.forEach((item: any) => {
@@ -150,125 +152,137 @@ const addAnnouncement = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View style={styles.section}>
-          <Text style={styles.label}>Title</Text>
-          {inputError.some((item) => item.error === "title") && (
-            <Text style={globalStyles.errorText}>This field is required</Text>
-          )}
-          <TextInput
-            placeholder="Enter title"
-            style={[
-              styles.input,
-              inputError.some((err) => err.error === "title") &&
-                styles.inputError,
-            ]}
-            value={title}
-            onChangeText={setTitle}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Date</Text>
-          <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
-            <Text>{date.toDateString()}</Text>
-            {show && (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="calendar"
-                onChange={onChange}
-                maximumDate={new Date(2100, 12, 31)}
-                minimumDate={new Date(2000, 0, 1)}
-              />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <View style={styles.section}>
+            <Text style={styles.label}>Title</Text>
+            {inputError.some((item) => item.error === "title") && (
+              <Text style={globalStyles.errorText}>This field is required</Text>
             )}
-          </TouchableOpacity>
-        </View>
+            <TextInput
+              placeholder="Enter title"
+              style={[
+                styles.input,
+                inputError.some((err) => err.error === "title") &&
+                  styles.inputError,
+              ]}
+              value={title}
+              onChangeText={setTitle}
+            />
+          </View>
 
-        <View style={styles.section}>
-          <Text style={styles.label}>Description</Text>
-          {inputError.some((item) => item.error === "description") && (
-            <Text style={globalStyles.errorText}>This field is required</Text>
-          )}
-          <TextInput
-            style={[
-              styles.descriptionInput,
-              { height: Math.max(descHeight, 200) },
-              inputError.some((err) => err.error === "description") &&
-                styles.inputError,
-            ]}
-            placeholder="Enter description..."
-            multiline
-            onContentSizeChange={(e) =>
-              setDescHeight(e.nativeEvent.contentSize.height)
-            }
-            textAlignVertical="top"
-            value={description}
-            onChangeText={setDescription}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>URLs</Text>
-          {urls.map((url, index) => (
-            <View key={index} style={styles.urlRow}>
-              <TextInput
-                value={url}
-                placeholder="Enter a URL"
-                onChangeText={(value) =>
-                  setUrls((prev) =>
-                    prev.map((u, i) => (i === index ? value : u)),
-                  )
-                }
-                style={[
-                  styles.urlInput,
-                  urlError.find((e) => e.index === index) && styles.inputError,
-                ]}
-              />
-              <TouchableOpacity onPress={() => handleRemoveUrl(index)}>
-                <AntDesign
-                  name="close"
-                  size={24}
-                  color="#aaa"
-                  style={styles.closeIcon}
-                />
-              </TouchableOpacity>
-            </View>
-          ))}
-          <TouchableOpacity onPress={handleAddUrl} style={styles.addUrlButton}>
-            <Text style={styles.addUrlText}>+ Add URL</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={globalStyles.contentPadding}>
-          {imageUrl.map((item, index) => (
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-              key={index}
+          <View style={styles.section}>
+            <Text style={styles.label}>Date</Text>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => setShow(true)}
             >
-              <Text>{item.name}</Text>
-              <TouchableOpacity onPress={() => handleImageRemove(index)}>
-                <AntDesign
-                  name="close"
-                  size={24}
-                  color="#aaa"
-                  style={{ left: 20 }}
+              <Text>{date.toDateString()}</Text>
+              {show && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display="calendar"
+                  onChange={onChange}
+                  maximumDate={new Date(2100, 12, 31)}
+                  minimumDate={new Date(2000, 0, 1)}
                 />
-              </TouchableOpacity>
-            </View>
-          ))}
-          <FileUpload handleFiles={handleFileUpload} />
-        </View>
+              )}
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity
-          style={globalStyles.submitButton}
-          onPress={handlePreview}
-        >
-          <Text style={globalStyles.submitButtonText}>Preview</Text>
-        </TouchableOpacity>
+          <View style={styles.section}>
+            <Text style={styles.label}>Description</Text>
+            {inputError.some((item) => item.error === "description") && (
+              <Text style={globalStyles.errorText}>This field is required</Text>
+            )}
+            <TextInput
+              style={[
+                styles.descriptionInput,
+                { height: Math.max(descHeight, 200) },
+                inputError.some((err) => err.error === "description") &&
+                  styles.inputError,
+              ]}
+              placeholder="Enter description..."
+              multiline
+              onContentSizeChange={(e) =>
+                setDescHeight(e.nativeEvent.contentSize.height)
+              }
+              textAlignVertical="top"
+              value={description}
+              onChangeText={setDescription}
+            />
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>URLs</Text>
+            {urls.map((url, index) => (
+              <View key={index} style={styles.urlRow}>
+                <TextInput
+                  value={url}
+                  placeholder="Enter a URL"
+                  onChangeText={(value) =>
+                    setUrls((prev) =>
+                      prev.map((u, i) => (i === index ? value : u)),
+                    )
+                  }
+                  style={[
+                    styles.urlInput,
+                    urlError.find((e) => e.index === index) &&
+                      styles.inputError,
+                  ]}
+                />
+                <TouchableOpacity onPress={() => handleRemoveUrl(index)}>
+                  <AntDesign
+                    name="close"
+                    size={24}
+                    color="#aaa"
+                    style={styles.closeIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <TouchableOpacity
+              onPress={handleAddUrl}
+              style={styles.addUrlButton}
+            >
+              <Text style={styles.addUrlText}>+ Add URL</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={globalStyles.contentPadding}>
+            {imageUrl.map((item, index) => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+                key={index}
+              >
+                <Text>{item.name}</Text>
+                <TouchableOpacity onPress={() => handleImageRemove(index)}>
+                  <AntDesign
+                    name="close"
+                    size={24}
+                    color="#aaa"
+                    style={{ left: 20 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <FileUpload handleFiles={handleFileUpload} />
+          </View>
+
+          <TouchableOpacity
+            style={globalStyles.submitButton}
+            onPress={handlePreview}
+          >
+            <Text style={globalStyles.submitButtonText}>Preview</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
