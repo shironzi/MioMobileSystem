@@ -136,6 +136,18 @@ const level = () => {
       style={{ backgroundColor: "#fff", flex: 1 }}
     >
       <View style={styles.header_act}>
+      <FontAwesome
+        name="circle"
+        size={40}
+        color="#FFCEA1"
+        style={styles.circle}
+      />
+      <FontAwesome
+        name="circle"
+        size={40}
+        color="#ffe9ae"
+        style={styles.circle2}
+      />
         <Image source={card.img} resizeMode={"contain"} style={styles.img} />
         <View>
           <Text style={[styles.practice]}>PRACTICE WITH</Text>
