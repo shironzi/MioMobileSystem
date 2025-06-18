@@ -13,7 +13,7 @@ import { Pressable, Text, View } from "react-native";
 
 function HeaderRightToggle() {
   const { toggleCourseCardView, courseCardView } = useContext(
-    CourseCardViewContext
+    CourseCardViewContext,
   );
   return (
     <Pressable onPress={toggleCourseCardView}>
@@ -21,14 +21,14 @@ function HeaderRightToggle() {
         <MaterialIcons
           name="splitscreen"
           size={24}
-          color="white"
+          color="#282727"
           style={{ marginRight: 15 }}
         />
       ) : (
         <AntDesign
           name="appstore1"
           size={24}
-          color="white"
+          color="#282727"
           style={{ marginRight: 15 }}
         />
       )}
@@ -50,7 +50,7 @@ export default function Layout() {
             height: 75,
             paddingTop: 10,
           },
-          headerLeft: () => <DrawerToggleButton tintColor="white" />,
+          headerLeft: () => <DrawerToggleButton tintColor="#282727" />,
         })}
       >
         <Tabs.Screen
@@ -63,12 +63,19 @@ export default function Layout() {
               <Ionicons name="apps" size={20} color={color} />
             ),
             headerTitle: () => (
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
+              <Text
+                style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}
+              >
                 Dashboard
               </Text>
             ),
             headerBackground: () => (
-              <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
+              <View
+                style={{
+                  backgroundColor: "#fff",
+                  flex: 1,
+                }}
+              />
             ),
             headerRight: () => <HeaderRightToggle />,
           }}
@@ -81,12 +88,14 @@ export default function Layout() {
               <MaterialIcons name="checklist" size={24} color={color} />
             ),
             headerTitle: () => (
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
+              <Text
+                style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}
+              >
                 To do
               </Text>
             ),
             headerBackground: () => (
-              <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
+              <View style={{ backgroundColor: "#fff", flex: 1 }} />
             ),
           }}
         />
@@ -100,12 +109,14 @@ export default function Layout() {
               <Ionicons name="notifications-outline" size={24} color={color} />
             ),
             headerTitle: () => (
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
+              <Text
+                style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}
+              >
                 Notification
               </Text>
             ),
             headerBackground: () => (
-              <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
+              <View style={{ backgroundColor: "#fff", flex: 1 }} />
             ),
           }}
         />
@@ -117,12 +128,14 @@ export default function Layout() {
               <Feather name="mail" size={24} color={color} />
             ),
             headerTitle: () => (
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
+              <Text
+                style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}
+              >
                 Inbox
               </Text>
             ),
             headerBackground: () => (
-              <View style={{ backgroundColor: "#2264DC", flex: 1 }} />
+              <View style={{ backgroundColor: "#fff", flex: 1 }} />
             ),
           }}
         />

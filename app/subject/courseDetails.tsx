@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   subContainer: {},
   speech: {
-    height: 110,
+    height: 115,
     width: "91%",
     left: 20,
     marginVertical: -10,
