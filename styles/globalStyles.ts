@@ -14,9 +14,9 @@ const globalStyles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: "#FFBF18",
-    borderRadius: 50,
+    borderRadius: 15,
     paddingVertical: 17,
-    width: "100%",
+    width: 165,
     marginBottom: 10,
   },
   submitButtonText: {
@@ -97,6 +97,21 @@ const globalStyles = StyleSheet.create({
     right: 20,
     width: "100%",
     justifyContent: "center",
+  },
+  cardContainer1: {
+    borderWidth: 1,
+    borderColor: "#00000024",
+    margin: 20,
+    padding: 20,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    gap: 15,
+  },
+  text2: {
+    color: "#0000004D",
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: 14,
   },
 });
 

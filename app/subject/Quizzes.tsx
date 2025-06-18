@@ -1,16 +1,25 @@
 import {
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from "react-native";
 import React, { memo, useEffect, useState } from "react";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import QuizCard from "@/components/QuizCard";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import globalStyles from "@/styles/globalStyles";
 import { getQuizzes } from "@/utils/query";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { formatToLongDateTime } from "@/utils/DateFormat";
+
+interface Quiz {
+  quiz_id: string;
+  title: string;
+  total_points: string;
+  deadline_date: string;
+}
 
 const Quiz = () => {
   HeaderConfig("Quiz");
@@ -21,20 +30,13 @@ const Quiz = () => {
     role: string;
   }>();
 
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [quizzes, setQuizzes] = useState<
-    {
-      quiz_id: string;
-      total: number;
-      title: string;
-    }[]
-  >([]);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
         const res = await getQuizzes(subjectId);
-
         setQuizzes(res.quizzes);
         setLoading(false);
       } catch (err) {
@@ -45,6 +47,13 @@ const Quiz = () => {
     fetchQuizzes();
   }, []);
 
+  const handleSelectQuiz = (quizId: string, index: number) => {
+    router.push({
+      pathname: "/subject/(sub-details)/quiz/ViewActivity",
+      params: { quizId: quizId, subjectId: subjectId, index: index + 1 },
+    });
+  };
+
   if (loading) {
     return (
       <View>
@@ -54,62 +63,85 @@ const Quiz = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        {quizzes.length > 0 ? (
-          <View style={styles.content}>
-            {quizzes.map((item, index) => (
-              <QuizCard
-                key={index}
-                title={item.title}
-                quizId={item.quiz_id}
-                total={item.total}
-                subjectId={subjectId}
-                role={role}
-              />
-            ))}
-          </View>
-        ) : (
-          <View>
-            <Text>no quizzes yet</Text>
-          </View>
+    <ScrollView
+      style={{ backgroundColor: "#fff", height: "100%", paddingTop: 20 }}
+    >
+      <View>
+        {role === "teacher" && (
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 6,
+              borderStyle: "dashed",
+              borderWidth: 2,
+              borderRadius: 20,
+              paddingVertical: 20,
+              justifyContent: "center",
+              backgroundColor: "#FFBF1840",
+              borderColor: "#FFBF18",
+            }}
+            onPress={() =>
+              router.push({
+                pathname: "/subject/(sub-details)/quiz/AddQuiz",
+                params: { subjectId: subjectId },
+              })
+            }
+          >
+            <Ionicons name="add-circle-sharp" size={24} color="#FFB200" />
+            <Text style={[globalStyles.title, { color: "#FFB200" }]}>
+              Add Quiz
+            </Text>
+          </TouchableOpacity>
         )}
-      </ScrollView>
-      {role === "teacher" && (
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            router.push("/subject/quiz/AddQuiz");
-          }}
-        >
-          <MaterialIcon name="add" size={30} color="#fff" />
-        </TouchableOpacity>
-      )}
-    </View>
+
+        {quizzes.map((quiz, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              globalStyles.cardContainer1,
+              { flexDirection: "row", alignItems: "center", marginVertical: 5 },
+            ]}
+            onPress={() => handleSelectQuiz(quiz.quiz_id, index)}
+          >
+            <View style={styles.yellowBulletin}></View>
+            <View style={{ width: "40%" }}>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                style={[globalStyles.textLabel, { fontWeight: 400 }]}
+              >
+                Quiz {index + 1}
+              </Text>
+              <Text style={globalStyles.text2}>{quiz.total_points} Pts</Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                columnGap: 15,
+                width: "60%",
+                alignItems: "center",
+              }}
+            >
+              <Text style={globalStyles.text2}>
+                {formatToLongDateTime(quiz.deadline_date)}
+              </Text>
+              <FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    padding: 2,
-  },
-  headerStyle: {
-    backgroundColor: "#2264DC",
-  },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#2264DC",
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
+  yellowBulletin: {
+    backgroundColor: "#FFBF18",
+    height: 45,
+    width: "1.5%",
+    borderRadius: 100,
   },
 });
 

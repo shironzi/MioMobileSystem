@@ -1,0 +1,215 @@
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import Fontisto from "@expo/vector-icons/Fontisto";
+import globalStyles from "@/styles/globalStyles";
+import FileUpload from "@/components/FileUpload";
+import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+
+interface Props {
+  item_no: number;
+  question: string;
+  type: "multiple_choice" | "essay" | "file_upload" | "fill" | "dropdown";
+  multiple_type?: "radio" | "checkbox";
+  choices: { id: string; label: string }[];
+  onAnswerChange: (answer: any) => void;
+}
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
+const QuestionCard = ({
+  item_no,
+  question,
+  type,
+  multiple_type = "radio",
+  choices,
+  onAnswerChange,
+}: Props) => {
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+  const [essayAnswer, setEssayAnswer] = useState("");
+  const [fillAnswer, setFillAnswer] = useState("");
+  const [dropdownAnswer, setDropdownAnswer] = useState<string | null>(null);
+  const [fileAnswer, setFileAnswer] = useState<FileInfo[]>([]);
+
+  useEffect(() => {
+    if (type === "multiple_choice") {
+      if (multiple_type === "checkbox") {
+        onAnswerChange(selectedAnswers);
+      } else {
+        onAnswerChange(selectedAnswer);
+      }
+    } else if (type === "essay") {
+      onAnswerChange(essayAnswer);
+    } else if (type === "fill") {
+      onAnswerChange(fillAnswer);
+    } else if (type === "dropdown") {
+      onAnswerChange(dropdownAnswer);
+    } else if (type === "file_upload") {
+      onAnswerChange(fileAnswer);
+    }
+  }, [
+    selectedAnswer,
+    selectedAnswers,
+    essayAnswer,
+    fillAnswer,
+    dropdownAnswer,
+    fileAnswer,
+  ]);
+
+  return (
+    <View
+      style={[
+        globalStyles.cardContainer1,
+        { padding: 0, marginVertical: 10, rowGap: 0 },
+      ]}
+    >
+      <View
+        style={{
+          backgroundColor: "#AAC8FF45",
+          paddingHorizontal: 20,
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
+          height: 44,
+        }}
+      >
+        <Text style={[{ marginVertical: "auto" }, globalStyles.text1]}>
+          Question {item_no}
+        </Text>
+      </View>
+
+      <View style={{ padding: 20 }}>
+        <Text>{question}</Text>
+
+        <View
+          style={[
+            globalStyles.divider,
+            { marginHorizontal: -20, marginVertical: 15 },
+          ]}
+        />
+        <View style={{ paddingHorizontal: 10 }}>
+          {type === "multiple_choice" && (
+            <View style={{ rowGap: 10 }}>
+              {choices.map((choice) => (
+                <TouchableOpacity
+                  key={choice.id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                  onPress={() => {
+                    if (multiple_type === "checkbox") {
+                      setSelectedAnswers((prev) =>
+                        prev.includes(choice.id)
+                          ? prev.filter((id) => id !== choice.id)
+                          : [...prev, choice.id],
+                      );
+                    } else {
+                      setSelectedAnswer(choice.id);
+                    }
+                  }}
+                >
+                  {multiple_type === "checkbox" ? (
+                    <Ionicons
+                      name={
+                        selectedAnswers.includes(choice.id)
+                          ? "checkbox"
+                          : "checkbox-outline"
+                      }
+                      size={20}
+                      color="black"
+                    />
+                  ) : (
+                    <Fontisto
+                      name={
+                        selectedAnswer === choice.id
+                          ? "radio-btn-active"
+                          : "radio-btn-passive"
+                      }
+                      size={20}
+                      color="black"
+                    />
+                  )}
+                  <Text>{choice.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {type === "essay" && (
+            <TextInput
+              placeholder="Write your answer..."
+              multiline
+              value={essayAnswer}
+              onChangeText={setEssayAnswer}
+              style={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 5,
+                padding: 10,
+                textAlignVertical: "top",
+                minHeight: 100,
+              }}
+            />
+          )}
+
+          {type === "fill" && (
+            <TextInput
+              placeholder="Enter your answer..."
+              value={fillAnswer}
+              onChangeText={setFillAnswer}
+              style={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 5,
+                padding: 10,
+              }}
+            />
+          )}
+
+          {type === "file_upload" && (
+            <FileUpload
+              handleFiles={(file: FileInfo[]) => {
+                setFileAnswer(file);
+              }}
+            />
+          )}
+
+          {type === "dropdown" && (
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 5,
+                marginTop: 10,
+              }}
+            >
+              <Picker
+                selectedValue={dropdownAnswer}
+                onValueChange={(itemValue) => setDropdownAnswer(itemValue)}
+              >
+                <Picker.Item label="Select an option..." value={null} />
+                {choices.map((choice) => (
+                  <Picker.Item
+                    key={choice.id}
+                    label={choice.label}
+                    value={choice.id}
+                  />
+                ))}
+              </Picker>
+            </View>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default QuestionCard;
