@@ -13,7 +13,6 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { logout } from "@/utils/auth";
 import { StackActions } from "@react-navigation/native";
 import { getAuth } from "@react-native-firebase/auth";
-import { getProfilePic } from "@/utils/query";
 import { FontAwesome } from "@expo/vector-icons";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
@@ -23,7 +22,6 @@ interface CustomDrawerContentProps extends DrawerContentComponentProps {
 const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const navigation = useNavigation();
 
-  const [profileLoading, setProfileLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState<{
     id: string;
     name: string | null;
@@ -37,20 +35,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       }
     });
 
-    const fetchProfile = async () => {
-      const res = await getProfilePic();
-
-      if (res.success) {
-        setUserData((prev) =>
-          prev ? { ...prev, photoUrl: res.photo_url } : prev,
-        );
-        console.log(res.photo_url);
-      }
-
-      setProfileLoading(false);
-    };
-
-    fetchProfile();
+    console.log(userData);
 
     return () => unsubscribe();
   }, []);
