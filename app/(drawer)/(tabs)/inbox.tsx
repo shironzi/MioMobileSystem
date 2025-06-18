@@ -1,6 +1,6 @@
 import MessageCard from "@/components/MessageCard";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,9 +15,8 @@ import {
 } from "react-native";
 import { getInboxMessages, getSentMessages } from "@/utils/messages";
 import { getSmartFormattedDate } from "@/utils/DateFormat";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import messaging from "@react-native-firebase/messaging";
-import { getAuth } from "@react-native-firebase/auth";
 
 enum messageType {
   inbox = "Inbox",
@@ -36,7 +35,6 @@ const Inbox = () => {
     messageType.inbox,
   );
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [mount, setMount] = useState<boolean>(false);
   const [inboxMessage, setInboxMessage] = useState<Message[]>([]);
   const [sentMessage, setSentMessage] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,25 +53,33 @@ const Inbox = () => {
     }
   };
 
-  useEffect(() => {
-    if (!getAuth().onAuthStateChanged) return;
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-    if (!mount) {
-      fetchMessages();
-      setMount(true);
-    }
+      const fetchOnFocus = async () => {
+        if (isActive) {
+          await fetchMessages();
+          setLoading(false);
+        }
+      };
 
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      const type = remoteMessage.data?.type;
-      if (type === "message") {
-        console.log("New message notification received. Refetching...");
-        await fetchMessages();
-      }
-    });
-    setLoading(false);
+      fetchOnFocus();
 
-    return () => unsubscribe();
-  }, []);
+      const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+        const type = remoteMessage.data?.type;
+        if (type === "message") {
+          console.log("New message notification received. Refetching...");
+          await fetchMessages();
+        }
+      });
+
+      return () => {
+        isActive = false;
+        unsubscribe();
+      };
+    }, []),
+  );
 
   if (loading) {
     return (
@@ -82,7 +88,7 @@ const Inbox = () => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#fff", // optional background
+          backgroundColor: "#fff",
         }}
       >
         <ActivityIndicator size="large" color="#007bff" />

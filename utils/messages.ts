@@ -25,14 +25,9 @@ export async function getSentMessages() {
   }
 }
 
-export async function sendMessage(
-  receiver_id: string,
-  subject: string,
-  body: string,
-) {
+export async function sendMessage(receiver_id: string, body: string) {
   try {
     const { data } = await api.post(`/message/sent/${receiver_id}`, {
-      subject: subject,
       body: body,
     });
 
@@ -78,6 +73,28 @@ export async function getConversation(conversation_id: string) {
 export async function getSubjectTeachers() {
   try {
     const { data } = await api.get(`/message/subjectTeachers`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getSubjectStudents(subjectId: string) {
+  try {
+    const { data } = await api.get(`/message/${subjectId}`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getMessageSubjects() {
+  try {
+    const { data } = await api.get(`/message/subjects`);
 
     return data;
   } catch (err) {
