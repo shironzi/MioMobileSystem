@@ -14,6 +14,9 @@ import { logout } from "@/utils/auth";
 import { StackActions } from "@react-navigation/native";
 import { getAuth } from "@react-native-firebase/auth";
 import { FontAwesome } from "@expo/vector-icons";
+import { getProfile } from "@/utils/query";
+import messaging from "@react-native-firebase/messaging";
+import * as SecureStore from "expo-secure-store";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -25,19 +28,50 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   const [userData, setUserData] = useState<{
     id: string;
     name: string | null;
-    photoUrl: string | null;
   } | null>(null);
+  const [profile, setProfile] = useState<{
+    biography: string;
+    name: string;
+    photo_url: string;
+  }>();
+  const [role, setRole] = useState("");
 
   useEffect(() => {
-    const unsubscribe = getAuth().onAuthStateChanged((u) => {
+    const auth = getAuth();
+
+    const unsubscribeAuth = auth.onAuthStateChanged((u) => {
       if (u) {
-        setUserData({ id: u.uid, name: u.displayName, photoUrl: u.photoURL });
+        setUserData({ id: u.uid, name: u.displayName });
       }
     });
 
-    console.log(userData);
+    const fetchProfile = async () => {
+      const res = await getProfile();
+      setProfile({
+        name: res.name,
+        biography: res.biography,
+        photo_url: res.photo_url,
+      });
+    };
 
-    return () => unsubscribe();
+    const getRole = async () => {
+      setRole((await SecureStore.getItemAsync("role")) ?? "");
+    };
+    getRole();
+
+    fetchProfile();
+
+    const unsubscribeFCM = messaging().onMessage(async (remoteMessage) => {
+      if (remoteMessage.data?.type === "profile_update") {
+        console.log("Received profile update");
+        await fetchProfile();
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeFCM();
+    };
   }, []);
 
   const handleLogout = useCallback(async () => {
@@ -74,11 +108,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         >
           <Image
             source={
-              userData?.photoUrl
-                ? { uri: userData.photoUrl }
+              profile?.photo_url
+                ? { uri: profile?.photo_url }
                 : require("@/assets/images/default_profile.png")
             }
-            style={{ width: 70, height: 70, resizeMode: "contain" }}
+            style={{
+              width: 70,
+              height: 70,
+              resizeMode: "contain",
+              borderRadius: 360,
+            }}
           />
         </View>
         <View>
@@ -91,7 +130,11 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label="Profile"
         labelStyle={styles.drawerItemLabel}
         onPress={() => {
-          props.navigation.navigate("profile");
+          props.navigation.navigate("profile", {
+            biography: profile?.biography,
+            name: profile?.name,
+            photo_url: profile?.photo_url,
+          });
           props.navigation.closeDrawer();
         }}
         icon={() => <MaterialIcons name="person" size={30} color="#fff" />}
@@ -119,16 +162,18 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         )}
         style={styles.drawerItem}
       />
-      <DrawerItem
-        label="Logout"
-        labelStyle={styles.drawerItemLabel}
-        onPress={() => {
-          props.navigation.navigate("analytics/Analytics");
-          props.navigation.closeDrawer();
-        }}
-        icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
-        style={styles.drawerItem}
-      />
+      {role === "teacher" && (
+        <DrawerItem
+          label="Data Analytics"
+          labelStyle={styles.drawerItemLabel}
+          onPress={() => {
+            props.navigation.navigate("analytics/Analytics");
+            props.navigation.closeDrawer();
+          }}
+          icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
+          style={styles.drawerItem}
+        />
+      )}
       <DrawerItem
         label="Logout"
         labelStyle={styles.drawerItemLabel}

@@ -477,17 +477,6 @@ export async function editAttendance(
   }
 }
 
-export async function getProfilePic() {
-  try {
-    const { data } = await api.get(`/profile/photo`);
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
 export async function getProfile() {
   try {
     const { data } = await api.get(`profile`);

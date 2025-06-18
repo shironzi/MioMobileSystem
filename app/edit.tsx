@@ -53,7 +53,7 @@ const Edit = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await editProfile(profile_pic, biography);
+      const res = await editProfile(profile_pic, newBiography);
 
       if (res.success) {
         Alert.alert(
@@ -136,7 +136,7 @@ const Edit = () => {
             <Text style={styles.sectionTitle}>Biography</Text>
             <View style={styles.bio}>
               <TextInput
-                placeholder="I am..."
+                placeholder="Tell something about yourself..."
                 placeholderTextColor="#aaa"
                 value={newBiography}
                 onChangeText={setNewBiography}

@@ -1,16 +1,7 @@
 import HeaderConfig from "@/utils/HeaderConfig";
-import { FontAwesome } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { getProfile } from "@/utils/query";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { memo } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface FileInfo {
   uri: string;
@@ -20,44 +11,16 @@ interface FileInfo {
 
 const profile = () => {
   const router = useRouter();
-  const [name, setName] = useState<string>("");
-  const [bibliography, setBibliography] = useState<string>("");
-  const [photo_url, setPhoto_url] = useState();
-  const [loading, setLoading] = useState(true);
+
+  const { biography, name, photo_url } = useLocalSearchParams<{
+    biography: string;
+    name: string;
+    photo_url: string;
+  }>();
 
   HeaderConfig("Profile");
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const res = await getProfile();
-
-      setName(res.name);
-      setBibliography(res.biography);
-      setPhoto_url(res.photo_url);
-
-      setLoading(false);
-    };
-
-    fetchProfile();
-  }, []);
-
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
-          Loading...
-        </Text>
-      </View>
-    );
-  }
+  console.log(photo_url);
 
   return (
     <View style={styles.container}>
@@ -78,16 +41,13 @@ const profile = () => {
               resizeMode="contain"
             />
           </View>
-          <View style={styles.iconWrapper}>
-            <Text style={styles.pencil}>
-              <FontAwesome name="pencil" size={15} color="#fff" />
-            </Text>
-          </View>
         </View>
         <View style={styles.cardContent}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.sectionTitle}>Biography</Text>
-          <Text style={styles.bibliography}>{bibliography}</Text>
+          <Text style={styles.bibliography}>
+            {biography ?? "Tell something about yourself..."}
+          </Text>
           {/*<Text style={styles.sectionTitle}>Contact</Text>*/}
           {/*<Text style={styles.contact}>{data.contact}</Text>*/}
           {/*<Text style={styles.sectionTitle}>Social Links</Text>*/}
@@ -101,7 +61,7 @@ const profile = () => {
               params: {
                 name: name,
                 photo_url: photo_url,
-                bibliography: bibliography,
+                biography: biography,
               },
             })
           }
