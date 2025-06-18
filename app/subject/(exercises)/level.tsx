@@ -89,7 +89,7 @@ const level = () => {
       params: {
         subjectId: subjectId,
         activity_type: activity_type,
-        difficulty: "Average",
+        difficulty: "average",
         category: category,
         role: role,
       },
