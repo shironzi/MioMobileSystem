@@ -166,7 +166,7 @@ const level = () => {
 				<Fontisto name="star" size={70} color="#439558" style={styles.shape2} />
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={[styles.subLevel, difficultyStyles.Average, { marginTop: -5 }]}
+				style={[styles.subLevel, difficultyStyles.average, { marginTop: -5 }]}
 				onPress={handleAverageRoute}
 			>
 				<Ionicons
@@ -185,7 +185,7 @@ const level = () => {
 				/>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={[styles.subLevel, difficultyStyles.Difficult, { marginTop: -5 }]}
+				style={[styles.subLevel, difficultyStyles.difficult, { marginTop: -5 }]}
 				onPress={handleDifficultRoute}
 			>
 				<Ionicons
@@ -204,7 +204,7 @@ const level = () => {
 				/>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={[styles.subLevel, difficultyStyles.Challenge, { marginTop: -5 }]}
+				style={[styles.subLevel, difficultyStyles.challenge, { marginTop: -5 }]}
 				onPress={handleChallengeRoute}
 			>
 				<FontAwesome
