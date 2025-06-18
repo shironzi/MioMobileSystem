@@ -4,91 +4,93 @@ import { CourseCardViewContext } from "@/contexts/CourseCardViewContext";
 import globalStyles from "@/styles/globalStyles";
 import { getSubjects } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import { MaterialIcons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 import React, { memo, useContext, useEffect, useMemo, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
-	Modal,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 const data = [
-	{ label: "All", value: "all" },
-	{ label: "Academic", value: "academic" },
-	{ label: "Specialized", value: "specialized" },
-	{ label: "Previous", value: "previous" },
+  { label: "All", value: "all" },
+  { label: "Academic", value: "academic" },
+  { label: "Specialized", value: "specialized" },
+  { label: "Previous", value: "previous" },
 ];
 
 type Subject = {
-	title: string;
-	section: string;
-	subject_id: string;
-	description: string;
-	subjectType: string;
-	specialized_type: string | null;
+  title: string;
+  section: string;
+  subject_id: string;
+  description: string;
+  subjectType: string;
+  specialized_type: string | null;
 };
 
 const index = () => {
-	const [selectedValue, setSelectedValue] = useState("all");
-	const { courseCardView } = useContext(CourseCardViewContext);
-	const [subjects, setSubjects] = useState<Subject[] | null>(null);
-	const [role, setRole] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [showDropdown, setShowDropdown] = useState(false);
-	const [selectedLabel, setSelectedLabel] = useState("All Subjects");
+  const [selectedValue, setSelectedValue] = useState("all");
+  const { courseCardView } = useContext(CourseCardViewContext);
+  const [subjects, setSubjects] = useState<Subject[] | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState("All Subjects");
 
-	useEffect(() => {
-		async function fetchSubjects() {
-			try {
-				const data = await getSubjects();
-				setSubjects(data.subjects);
-				setRole(data.role);
-				setLoading(false);
-			} catch (err) {
-				console.error("Error fetching subjects: ", err);
-				useAuthGuard(err);
-			}
-		}
-		fetchSubjects();
-	}, []);
+  useEffect(() => {
+    async function fetchSubjects() {
+      try {
+        const data = await getSubjects();
+        setSubjects(data.subjects);
+        setRole(data.role);
+        await SecureStore.setItemAsync("role", data.role);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching subjects: ", err);
+        useAuthGuard(err);
+      }
+    }
+    fetchSubjects();
+  }, []);
 
-	const filteredSubjects = useMemo<Subject[] | null>(() => {
-		if (!subjects) return [];
-		switch (selectedValue) {
-			case "academic":
-			case "specialized":
-				return subjects.filter(
-					(s) =>
-						s.specialized_type === "auditory" ||
-						s.specialized_type === "language" ||
-						s.specialized_type === "speech"
-				);
+  const filteredSubjects = useMemo<Subject[] | null>(() => {
+    if (!subjects) return [];
+    switch (selectedValue) {
+      case "academic":
+      case "specialized":
+        return subjects.filter(
+          (s) =>
+            s.specialized_type === "auditory" ||
+            s.specialized_type === "language" ||
+            s.specialized_type === "speech",
+        );
 
-			case "previous":
-				return null;
+      case "previous":
+        return null;
 
-			case "all":
-			default:
-				return subjects;
-		}
-	}, [subjects, selectedValue]);
+      case "all":
+      default:
+        return subjects;
+    }
+  }, [subjects, selectedValue]);
 
-	if (loading) {
-		return (
-			<View
-				style={{
-					flex: 1,
-					justifyContent: "center",
-					alignItems: "center",
-					backgroundColor: "#fff",
-				}}
-			>
-				<LoadingCard></LoadingCard>
-			</View>
-		);
-	}
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
 	return (
 		<ScrollView

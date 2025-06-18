@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 import {
   View,
   Text,
@@ -11,36 +12,90 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { getSubjectTeachers, sendMessage } from "@/utils/messages";
+import {
+  getMessageSubjects,
+  getSubjectStudents,
+  getSubjectTeachers,
+  sendMessage,
+} from "@/utils/messages";
+import { router } from "expo-router";
 
 const AddMessage = () => {
   useHeaderConfig("Message");
-  const router = useRouter();
 
   const [receiver, setReceiver] = useState("");
-  const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [teachers, setTeachers] = useState<
-    { subject_id: string; teacher_id: string; name: string }[]
+  const [role, setRole] = useState("");
+  const [users, setUsers] = useState<
+    { subject_id: string; user_id: string; name: string }[]
   >([]);
+  const [subjects, setSubjects] = useState<
+    {
+      subject_id: string;
+      title: string;
+    }[]
+  >([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>();
 
   const handleSendMessage = async () => {
-    const res = await sendMessage(receiver, title, message);
+    const res = await sendMessage(receiver, message);
 
-    console.log(res);
+    if (res.success) {
+      Keyboard.dismiss;
+      router.replace({
+        pathname: "/(notification)/messageDetails",
+        params: { thread: res.thread, name: res.name, selectedType: "Sent" },
+      });
+    }
   };
 
   useEffect(() => {
-    const fetchSubjectTeachers = async () => {
-      const res = await getSubjectTeachers();
-      if (res.success) {
-        setTeachers(res.teachers);
+    const init = async () => {
+      const roleValue = await SecureStore.getItemAsync("role");
+      setRole(roleValue ?? "");
+
+      if (roleValue === "student") {
+        const res = await getSubjectTeachers();
+        if (res.success) setUsers(res.users);
+      } else if (roleValue === "teacher") {
+        const res = await getMessageSubjects();
+        if (res.success) setSubjects(res.subjects);
       }
     };
-    fetchSubjectTeachers();
+
+    init();
   }, []);
+
+  useEffect(() => {
+    if (role === "student") {
+      const fetchSubjectTeachers = async () => {
+        const res = await getSubjectTeachers();
+        if (res.success) {
+          setUsers(res.users);
+        }
+      };
+
+      fetchSubjectTeachers();
+    } else if (role === "teacher") {
+      const fetchSubjects = async () => {
+        const res = await getMessageSubjects();
+
+        setSubjects(res.subjects);
+      };
+      fetchSubjects();
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!selectedSubject) return;
+
+      const res = await getSubjectStudents(selectedSubject);
+      setUsers(res.users);
+    };
+    fetchUsers();
+  }, [selectedSubject]);
 
   return (
     <KeyboardAvoidingView
@@ -51,7 +106,29 @@ const AddMessage = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.card}>
-            <Text style={styles.label}>Subject</Text>
+            {role === "teacher" && (
+              <View>
+                <Text style={styles.label}>Subject</Text>
+                <View style={styles.pickerWrapper}>
+                  <Picker
+                    selectedValue={receiver}
+                    onValueChange={(value) => setSelectedSubject(value)}
+                    style={styles.picker}
+                    mode={"dropdown"}
+                  >
+                    {subjects?.map((subject) => (
+                      <Picker.Item
+                        key={subject.subject_id}
+                        label={subject.title}
+                        value={subject.subject_id}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            )}
+
+            <Text style={styles.label}>To</Text>
             <View style={styles.pickerWrapper}>
               <Picker
                 selectedValue={receiver}
@@ -59,24 +136,15 @@ const AddMessage = () => {
                 style={styles.picker}
                 mode={"dropdown"}
               >
-                {teachers.map((teacher) => (
+                {users.map((teacher) => (
                   <Picker.Item
-                    key={teacher.teacher_id}
+                    key={teacher.user_id}
                     label={teacher.name}
-                    value={teacher.teacher_id}
+                    value={teacher.user_id}
                   />
                 ))}
               </Picker>
             </View>
-
-            <Text style={styles.label}>Title</Text>
-            <TextInput
-              placeholder="Input Title"
-              value={title}
-              onChangeText={setTitle}
-              style={styles.input}
-            />
-
             <Text style={styles.label}>Message</Text>
             <TextInput
               placeholder="Input Message"

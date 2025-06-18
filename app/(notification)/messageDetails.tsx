@@ -21,7 +21,6 @@ type Message = {
   message: string;
   receiver_id: string;
   sender_id: string;
-  subject: string;
   timestamp: number;
 };
 
@@ -42,14 +41,11 @@ const MessageDetails = () => {
   useHeaderConfig(name ?? "");
 
   const handleSent = async () => {
+    if (!messageInput.trim()) return;
     const res =
-      selectedType === "Sent"
-        ? await sendMessage(senderId, messageInput, messageInput)
+      selectedType.toUpperCase() === "sent"
+        ? await sendMessage(senderId, messageInput)
         : await replyMessage(receiverId, messageInput, messageInput);
-
-    console.log(res);
-    console.log(receiverId);
-    console.log(senderId);
 
     if (res.success) {
       setMessageData((prev) => [
@@ -58,7 +54,6 @@ const MessageDetails = () => {
           message: messageInput,
           receiver_id: receiverId,
           sender_id: senderId,
-          subject: messageInput,
           timestamp: Math.floor(Date.now() / 1000),
         },
       ]);
@@ -119,7 +114,7 @@ const MessageDetails = () => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#fff", // optional background
+          backgroundColor: "#fff",
         }}
       >
         <ActivityIndicator size="large" color="#007bff" />
@@ -132,13 +127,13 @@ const MessageDetails = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ height: "100%" }}
+      style={{ height: "100%", flex: 1, backgroundColor: "#fff" }}
       behavior={"padding"}
       keyboardVerticalOffset={keyboardVisible ? 0 : 100}
     >
-      <View style={{ height: "100%", flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <ScrollView
-          style={{ padding: 16, height: "90%" }}
+          style={{ padding: 16 }}
           contentContainerStyle={{ paddingBottom: 80 }}
           keyboardShouldPersistTaps="handled"
         >
@@ -166,8 +161,11 @@ const MessageDetails = () => {
               paddingHorizontal: 16,
               flexDirection: "row",
               alignItems: "center",
-              width: "90%",
+              width: "100%",
               columnGap: 15,
+              paddingTop: 10,
+              borderTopWidth: 1,
+              borderColor: "#00000024",
             },
             !keyboardVisible && { marginBottom: 45 },
           ]}
@@ -179,7 +177,7 @@ const MessageDetails = () => {
               borderRadius: 10,
               padding: 10,
               backgroundColor: "#fff",
-              width: "100%",
+              width: "90%",
             }}
             value={messageInput}
             onChangeText={(value: string) => setMessageInput(value)}
