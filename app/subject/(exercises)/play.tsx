@@ -6,14 +6,7 @@ import { getSpecializedActivities } from "@/utils/specialized";
 import { FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import {
-	Alert,
-	FlatList,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 
 const Play = () => {
 	HeaderConfig("Play");
@@ -106,7 +99,7 @@ const Play = () => {
 				);
 			case "average":
 				return (
-					<View style={[styles.subLevel, difficultyStyles.Average]}>
+					<View style={[styles.subLevel, difficultyStyles.average]}>
 						<Ionicons
 							name="square"
 							size={40}
@@ -125,7 +118,7 @@ const Play = () => {
 				);
 			case "difficult":
 				return (
-					<View style={[styles.subLevel, difficultyStyles.Difficult]}>
+					<View style={[styles.subLevel, difficultyStyles.difficult]}>
 						<Ionicons
 							name="triangle"
 							size={40}
@@ -144,7 +137,7 @@ const Play = () => {
 				);
 			case "challenge":
 				return (
-					<View style={[styles.subLevel, difficultyStyles.Challenge]}>
+					<View style={[styles.subLevel, difficultyStyles.challenge]}>
 						<FontAwesome
 							name="circle"
 							size={40}
@@ -180,26 +173,22 @@ const Play = () => {
 	);
 
 	return (
-		<ScrollView
-			showsVerticalScrollIndicator={false}
-			contentContainerStyle={{ paddingBottom: 50 }}
+		<View
 			style={[
 				globalStyles.container,
 				{ marginHorizontal: -20, marginTop: -20 },
 			]}
 		>
-			{renderHeaderCard()}
-			{/* <Text style={styles.title}>{difficulty}</Text> */}
-			<View>
-				<FlatList
-					data={activities}
-					renderItem={renderItem}
-					keyExtractor={(item) => item}
-					contentContainerStyle={styles.listContainer}
-					style={{ paddingHorizontal: 5 }}
-				/>
-			</View>
-		</ScrollView>
+			<FlatList
+				data={activities}
+				renderItem={renderItem}
+				keyExtractor={(item) => item}
+				ListHeaderComponent={renderHeaderCard}
+				contentContainerStyle={styles.listContainer}
+				style={{ paddingHorizontal: 5 }}
+				showsVerticalScrollIndicator={false}
+			/>
+		</View>
 	);
 };
 

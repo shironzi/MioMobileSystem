@@ -3,13 +3,6 @@ import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const difficultyColors: Record<string, string> = {
-	easy: "#439558",
-	average: "#ffbf18",
-	difficult: "#FF7A00",
-	challenge: "#DB4141",
-};
-
 const PlayCard = (props: {
 	id: number;
 	label: string;
@@ -77,6 +70,12 @@ const PlayCard = (props: {
 				},
 			});
 		}
+	};
+	const difficultyColors: Record<string, string> = {
+		easy: "#439558",
+		average: "#ffbf18",
+		difficult: "#FF7A00",
+		challenge: "#DB4141",
 	};
 
 	const difficultyColor =
