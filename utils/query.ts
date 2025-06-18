@@ -1,5 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
+import { getDateAndTime } from "@/utils/DateFormat";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -323,16 +324,6 @@ export async function editAssignment(
   }
 }
 
-export async function getQuizzes(subjectId: string) {
-  try {
-    const { data } = await api.get(`/subject/${subjectId}/quizzes`);
-
-    return data;
-  } catch (err) {
-    console.error("Get Quizzes Error: " + err);
-  }
-}
-
 export async function getQuizById(subjectId: string, quizId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
@@ -533,6 +524,189 @@ export async function editProfile(picture: FileInfo | null, biography: string) {
     });
 
     return await res.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+interface QuizInfo {
+  title: string;
+  description: string;
+  deadline: string;
+  availableFrom: string;
+  availableTo: string;
+  attempts: number;
+  access_code: string;
+  time_limit: string;
+}
+
+interface QuizItem {
+  id: string;
+  question: string;
+  choices: string[];
+  answer: string[];
+  questionType:
+    | "multiple_choice"
+    | "essay"
+    | "file_upload"
+    | "fill"
+    | "dropdown";
+  multiple_type: "radio" | "checkbox";
+  points: number;
+}
+
+export async function createQuiz(
+  subjectId: string,
+  quizInfo: QuizInfo,
+  quizItems: QuizItem[],
+) {
+  try {
+    const formdata = new FormData();
+
+    formdata.append("title", quizInfo.title);
+    formdata.append("description", quizInfo.description);
+    formdata.append("attempts", quizInfo.attempts.toString());
+    formdata.append("deadline_date", getDateAndTime(quizInfo.deadline) || "");
+    formdata.append("start_time", quizInfo.availableFrom);
+    formdata.append("end_time", quizInfo.availableTo);
+    formdata.append("time_limit", quizInfo.time_limit);
+    formdata.append("access_code", quizInfo.access_code || "");
+    formdata.append("show_correct_answers", "false");
+
+    quizItems.forEach((item, index) => {
+      console.log(item);
+      formdata.append(`questions[${index}][question]`, item.question);
+      formdata.append(
+        `questions[${index}][answer]`,
+        Array.isArray(item.answer) ? item.answer.join("||") : item.answer,
+      );
+      formdata.append(`questions[${index}][points]`, item.points.toString());
+      formdata.append(`questions[${index}][questionType]`, item.questionType);
+
+      if (item.multiple_type) {
+        formdata.append(
+          `questions[${index}][multiple_type]`,
+          item.multiple_type,
+        );
+      }
+
+      if (item.choices && item.choices.length > 0) {
+        item.choices.forEach((choice, optIdx) => {
+          formdata.append(`questions[${index}][options][${optIdx}]`, choice);
+        });
+      }
+    });
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/quiz`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formdata,
+    });
+
+    return await res.json();
+  } catch (err) {
+    console.error("Quiz creation failed:", err);
+    throw err;
+  }
+}
+
+export async function getQuizzes(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/quiz`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getQuizAttempts(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function takeQuiz(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.post(`/subject/${subjectId}/quiz/${quizId}`);
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function submitAnswer(
+  subjectId: string,
+  quizId: string,
+  attemptId: string,
+  itemId: string,
+  answer: string | string[] | null,
+  file?: FileInfo[] | null,
+) {
+  try {
+    const formdata = new FormData();
+
+    if (answer) {
+      formdata.append(
+        "answer_text",
+        Array.isArray(answer) ? JSON.stringify(answer) : answer,
+      );
+    }
+
+    if (file && file.length > 0) {
+      const firstFile = file[0];
+      formdata.append("answer_file", {
+        uri: firstFile.uri,
+        name: firstFile.name,
+        type: firstFile.mimeType,
+      } as any);
+    }
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formdata,
+      },
+    );
+
+    return await res.json();
+  } catch (err) {
+    console.error("Submit answer failed:", err);
+    throw err;
+  }
+}
+
+export async function finalizeQuiz(
+  subjectId: string,
+  quizId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
+    );
+    return data;
   } catch (err) {
     console.error(err);
     throw err;

@@ -145,3 +145,65 @@ export function getFormattedTimeFromDateString(dateStr: string): string {
     hour12: true,
   }).format(date);
 }
+
+export function getDateAndTime(date: string) {
+  const now = new Date(date);
+
+  const formatter = new Intl.DateTimeFormat("en-PH", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  const [
+    { value: month },
+    ,
+    { value: day },
+    ,
+    { value: year },
+    ,
+    { value: hour },
+    ,
+    { value: minute },
+    ,
+    { value: second },
+  ] = formatter.formatToParts(now);
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
+export function formatToLongDateTime(dateTimeStr: string): string {
+  const [datePart, timePart] = dateTimeStr.split(" ");
+  const isoString = `${datePart}T${timePart}`;
+  const date = new Date(isoString);
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  }).format(date);
+
+  const formattedTime = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+
+  return `${formattedDate} ${formattedTime}`;
+}
+
+export function formatToLongDate(dateTimeStr: string): string {
+  const [datePart] = dateTimeStr.split(" ");
+  const date = new Date(datePart);
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
+  }).format(date);
+}

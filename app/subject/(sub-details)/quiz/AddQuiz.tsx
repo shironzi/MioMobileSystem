@@ -1,502 +1,900 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  ScrollView,
-  StyleSheet,
+  FlatList,
+  View,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
 } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { MaterialIcons } from "@expo/vector-icons";
-import { DatePickerField } from "@/components/DatePickerField";
 import globalStyles from "@/styles/globalStyles";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import QuizQuestion from "@/components/QuizQuestion";
-import { getQuizById } from "@/utils/query";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Picker } from "@react-native-picker/picker";
+import QuizFooter from "@/app/subject/(sub-details)/quiz/QuizFooter";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { createQuiz } from "@/utils/query";
+import { useLocalSearchParams } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import useDebouncedCallback from "@/utils/useDebounceCallback";
 
-interface InputErrorState {
-  deadline: boolean;
-  availabilityFrom: boolean;
-  availabilityTo: boolean;
-  attempt: boolean;
-  title: boolean;
-  description: boolean;
+interface QuizInfo {
+  title: string;
+  description: string;
+  deadline: string;
+  availableFrom: string;
+  availableTo: string;
+  attempts: number;
+  access_code: string;
+  time_limit: string;
+}
+
+interface QuizItem {
+  id: string;
+  question: string;
+  choices: string[];
+  answer: string[];
+  questionType:
+    | "multiple_choice"
+    | "essay"
+    | "file_upload"
+    | "fill"
+    | "dropdown";
+  multiple_type: "radio" | "checkbox";
+  points: number;
+}
+
+interface QuizItemError {
+  name: string;
+  id: string;
+  index?: number;
 }
 
 const AddQuiz = () => {
   useHeaderConfig("Quiz");
-  const router = useRouter();
 
-  const { quizId, subjectId } = useLocalSearchParams<{
-    quizId: string;
-    subjectId: string;
-  }>();
+  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
 
-  const [deadline, setDeadline] = useState<Date | null>(null);
-  const [availabilityFrom, setAvailabilityFrom] = useState<Date | null>(null);
-  const [availabilityTo, setAvailabilityTo] = useState<Date | null>(null);
-  const [attempt, setAttempt] = useState<number>(1);
-  const [points, setPoints] = useState<number>(1);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [descHeight, setDescHeight] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [questions, setQuestions] = useState<
-    {
-      questionId: string | null;
-      question: string;
-      options: string[];
-      answer: string;
-      type: string;
-    }[]
-  >([{ questionId: null, question: "", options: [], answer: "", type: "" }]);
-
-  const [error, setError] = useState<InputErrorState>({
-    deadline: false,
-    availabilityFrom: false,
-    availabilityTo: false,
-    attempt: false,
-    title: false,
-    description: false,
+  const [quizInfo, setQuizInfo] = useState<QuizInfo>({
+    title: "",
+    description: "",
+    deadline: "",
+    availableFrom: "",
+    availableTo: "",
+    attempts: 1,
+    access_code: "",
+    time_limit: "",
   });
 
-  const handleAddAttempt = () => {
-    setAttempt(attempt + 1);
-  };
-
-  const handleMinusAttempt = () => {
-    if (attempt > 1) {
-      setAttempt(attempt - 1);
-    }
-  };
-
-  const sanitizeAttemptInput = (raw: string, prev: number): number => {
-    if (raw === "") return 1;
-
-    const digitsOnly = raw.replace(/\D/g, "");
-    if (digitsOnly === "") {
-      return 1;
-    }
-
-    const n = parseInt(digitsOnly, 10);
-    const clamped = n < 1 ? 1 : n;
-
-    return clamped;
-  };
-
-  //   const [quizItems, setQuizItems] = useState<{ question: string; answer: string }[]>([]);
-
-  const handlePreviewAssignment = async () => {
-    setError({
-      deadline: false,
-      availabilityFrom: false,
-      availabilityTo: false,
-      attempt: false,
-      title: false,
-      description: false,
-    });
-
-    let hasError = false;
-
-    if (!(deadline instanceof Date) || isNaN(deadline.getTime())) {
-      setError((prev) => ({ ...prev, deadline: true }));
-      hasError = true;
-    }
-
-    // if (
-    //   !(availabilityFrom instanceof Date) ||
-    //   isNaN(availabilityFrom.getTime())
-    // ) {
-    //   setError((prev) => ({ ...prev, availabilityFrom: true }));
-    //   hasError = true;
-    // }
-
-    // if (!(availabilityTo instanceof Date) || isNaN(availabilityTo.getTime())) {
-    //   setError((prev) => ({ ...prev, availabilityTo: true }));
-    //   hasError = true;
-    // }
-
-    if (
-      !title ||
-      title.trim().length === 0 ||
-      description.trim().length > 250
-    ) {
-      setError((prev) => ({ ...prev, title: true }));
-      hasError = true;
-    }
-
-    if (
-      !description ||
-      description.trim().length === 0 ||
-      description.trim().length > 1000
-    ) {
-      setError((prev) => ({ ...prev, description: true }));
-      hasError = true;
-    }
-
-    if (!attempt || attempt < 1) {
-      setError((prev) => ({ ...prev, attempt: true }));
-      hasError = true;
-    }
-
-    if (hasError) return;
-
-    router.push({
-      pathname: "/subject/(sub-details)/assignment/AssignmentPreview",
-      params: {
-        subjectId,
-        availabilityFrom: availabilityFrom?.toISOString() ?? null,
-        availabilityTo: availabilityTo?.toISOString() ?? null,
-        deadline: deadline?.toISOString() ?? null,
-        title: title,
-        description: description,
-        attempt: attempt.toString(),
-        points: points.toString(),
-        quizId: quizId,
-      },
-    });
-  };
-
-  const handleAddQuiz = useCallback(
-    (
-      item: {
-        questionId: string | null;
-        question: string;
-        options: string[];
-        answer: string;
-        type: string;
-      },
-      index: number,
-    ) => {
-      setQuestions((prev) => {
-        const updated = [...prev];
-        updated[index] = item;
-        return updated;
-      });
+  const [quizItems, setQuizItems] = useState<QuizItem[]>([
+    {
+      id: Date.now().toString(),
+      question: "",
+      choices: [""],
+      answer: [""],
+      questionType: "multiple_choice",
+      multiple_type: "radio",
+      points: 1,
     },
-    [],
-  );
+  ]);
 
-  const handleAddQuestion = useCallback(() => {
-    setQuestions((prev) => [
-      ...prev,
-      { questionId: null, question: "", options: [], answer: "", type: "" },
-    ]);
-  }, []);
+  const [isKeyboardActive, setIsKeyboardActive] = useState<boolean>(true);
 
-  if (loading) {
-    return (
-      <View>
-        <Text>Loading..........</Text>
-      </View>
+  const [inputErrors, setInputErrors] = useState<QuizItemError[]>([]);
+
+  const handleQuestionInput = (value: string, id: string) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, question: value } : item,
+      ),
     );
-  }
 
-  useEffect(() => {
-    if (quizId !== null && subjectId !== null) {
-      const fetchQuiz = async () => {
-        try {
-          const res = await getQuizById(subjectId, quizId);
-          const data = res.quiz;
+    setInputErrors((prev) =>
+      prev.filter((err) => !(err.id === id && err.name === "question")),
+    );
+  };
 
-          // console.log(data);
+  const handleChoiceInput = (
+    text: string,
+    itemId: string,
+    choiceIndex: number,
+  ) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              choices: item.choices.map((choice, idx) =>
+                idx === choiceIndex ? text : choice,
+              ),
+            }
+          : item,
+      ),
+    );
+  };
 
-          setTitle(data.title);
-          setDescription(data.description);
-          setAttempt(data.attempt ?? 1);
-          setPoints(data.total ?? 1);
-          setDeadline(data.deadline ? new Date(data.deadline) : null);
+  const handleRemoveChoice = (itemId: string, choiceIndex: number) => {
+    const item = quizItems.find((item) => item.id === itemId);
 
-          // console.log(data.questions);
+    if (!item || item.choices.length <= 1) return;
 
-          const questionsArray = Object.entries(data.questions).map(
-            ([questionId, q]) => ({
-              questionId: questionId,
-              // @ts-ignore
-              question: q.question,
-              // @ts-ignore
-              options: q.options,
-              // @ts-ignore
-              answer: q.answer,
-              // @ts-ignore
-              type: q.type,
-            }),
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              choices: item.choices.filter((_, idx) => idx !== choiceIndex),
+            }
+          : item,
+      ),
+    );
+  };
+
+  const handleRemoveItem = (itemId: string) => {
+    setQuizItems((prev) => prev.filter((item) => item.id !== itemId));
+  };
+
+  const handleAddChoice = (itemId: string) => {
+    setQuizItems((prev) =>
+      prev.map((item) => {
+        if (item.id === itemId) {
+          const lastChoice = item.choices[item.choices.length - 1];
+
+          if (!lastChoice || !lastChoice.trim()) {
+            setInputErrors((prevErrors) => [
+              ...prevErrors,
+              {
+                name: "choices",
+                id: item.id,
+                index: item.choices.length - 1,
+              },
+            ]);
+            return item;
+          }
+
+          setInputErrors((prevErrors) =>
+            prevErrors.filter(
+              (err) =>
+                !(
+                  err.name === "choices" &&
+                  err.id === item.id &&
+                  err.index === item.choices.length - 1
+                ),
+            ),
           );
 
-          setQuestions(questionsArray);
-
-          // console.log(questionsArray);
-          // data.questions.map((item: Object) => {
-          //   console.log(item);
-          //   console.log();
-          // });
-          // setQuestions(
-          //   data.options.map(
-          //     (item: {
-          //       question: string;
-          //       options: string[];
-          //       answer: string;
-          //       type: string;
-          //     }) => ({
-          //       question: item.question,
-          //       options: item.options,
-          //       answer: item.answer,
-          //       type: item.type,
-          //     }),
-          //   ),
-          // );
-        } catch (err) {
-          console.error("Fetch Quiz By Id Failed:", err);
+          return { ...item, choices: [...item.choices, ""] };
         }
-      };
+        return item;
+      }),
+    );
+  };
 
-      fetchQuiz();
+  const handleMultipleAnswer = (itemId: string) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, answer: [...item.answer, ""] } : item,
+      ),
+    );
+  };
+
+  const handleChangeQuestionType = (
+    itemId: string,
+    newType: QuizItem["questionType"],
+  ) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, questionType: newType } : item,
+      ),
+    );
+  };
+
+  const handleChangeMultipleType = (
+    itemId: string,
+    newType: QuizItem["multiple_type"],
+  ) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, multiple_type: newType } : item,
+      ),
+    );
+  };
+
+  const handleAnswer = (value: string, itemId: string) => {
+    setQuizItems((prev) =>
+      prev.map((quizItem) =>
+        quizItem.id === itemId ? { ...quizItem, answer: [value] } : quizItem,
+      ),
+    );
+  };
+
+  const validateQuizItems = (items: QuizItem[]) => {
+    const errors: { name: string; id: string; index?: number }[] = [];
+    let hasError = false;
+
+    items.forEach((item) => {
+      if (!item.question.trim()) {
+        hasError = true;
+        errors.push({ name: "question", id: item.id });
+      }
+
+      if (!item.points || item.points < 1) {
+        hasError = true;
+        errors.push({ name: "points", id: item.id });
+      }
+
+      if (
+        item.questionType === "multiple_choice" ||
+        item.questionType === "dropdown"
+      ) {
+        if (item.choices.length < 1) {
+          hasError = true;
+          errors.push({ name: "choices_length", id: item.id });
+        }
+
+        item.choices.forEach((choice, index) => {
+          if (!choice.trim()) {
+            hasError = true;
+            errors.push({ name: "choices", id: item.id, index });
+          }
+        });
+      }
+
+      if (item.questionType === "fill" && !item.answer[0].trim()) {
+        hasError = true;
+        errors.push({ name: "fill", id: item.id });
+      }
+    });
+
+    return { hasError, errors };
+  };
+
+  const handleAddItem = () => {
+    const { hasError, errors } = validateQuizItems(quizItems);
+
+    if (hasError) {
+      setInputErrors(errors);
+      return;
     }
-  }, [quizId, subjectId]);
+
+    setInputErrors([]);
+
+    setQuizItems((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        question: "",
+        choices: [""],
+        answer: [""],
+        questionType: "multiple_choice",
+        multiple_type: "radio",
+        points: 1,
+      },
+    ]);
+  };
+
+  const handleCreateQuiz = async () => {
+    setInputErrors([]);
+
+    const infoErrors: QuizItemError[] = [];
+    if (!quizInfo.title.trim()) {
+      infoErrors.push({ name: "title", id: "" });
+    }
+
+    if (!quizInfo.description.trim()) {
+      infoErrors.push({ name: "description", id: "" });
+    }
+
+    if (!quizInfo.deadline.trim()) {
+      infoErrors.push({ name: "deadline", id: "" });
+    }
+
+    if (!quizInfo.availableFrom.trim()) {
+      infoErrors.push({ name: "availableFrom", id: "" });
+    }
+
+    if (!quizInfo.availableTo.trim()) {
+      infoErrors.push({ name: "availableTo", id: "" });
+    }
+
+    const now = new Date();
+    const deadline = new Date(quizInfo.deadline);
+    const availableFrom = new Date(quizInfo.availableFrom);
+    const availableTo = new Date(quizInfo.availableTo);
+
+    if (!isNaN(deadline.getTime()) && deadline < now) {
+      infoErrors.push({ name: "deadline", id: "" });
+    }
+
+    if (
+      !isNaN(availableFrom.getTime()) &&
+      !isNaN(availableTo.getTime()) &&
+      availableFrom > availableTo
+    ) {
+      infoErrors.push({ name: "availableFrom", id: "" });
+      infoErrors.push({ name: "availableTo", id: "" });
+    }
+
+    if (infoErrors.length > 0) {
+      setInputErrors((prev) => [...prev, ...infoErrors]);
+      return;
+    }
+
+    const { hasError, errors } = validateQuizItems(quizItems);
+
+    if (hasError) {
+      setInputErrors(errors);
+      return;
+    }
+    setInputErrors([]);
+
+    const res = await createQuiz(subjectId, quizInfo, quizItems);
+    console.log(res);
+  };
+
+  const [showDeadlinePicker, setShowDeadlinePicker] = useState(false);
+  const [showAvailableFromPicker, setShowAvailableFromPicker] = useState(false);
+  const [showAvailableToPicker, setShowAvailableToPicker] = useState(false);
+
+  useEffect(() => {
+    let hasChanges = false;
+
+    const updated = quizItems.map((item) => {
+      if (
+        (item.questionType === "dropdown" || item.questionType === "fill") &&
+        item.answer.length !== 1
+      ) {
+        hasChanges = true;
+        return { ...item, answer: [""] };
+      }
+      return item;
+    });
+
+    if (hasChanges) {
+      setQuizItems(updated);
+    }
+  }, [quizItems]);
+
+  // useEffect(() => {
+  //   const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+  //     setIsKeyboardActive(true);
+  //   });
+  //   const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+  //     setIsKeyboardActive(false);
+  //   });
+  //
+  //   return () => {
+  //     showSubscription.remove();
+  //     hideSubscription.remove();
+  //   };
+  // }, []);
+
+  const debouncedTitle = useDebouncedCallback(quizInfo.title, 300);
 
   return (
-    <ScrollView style={globalStyles.container}>
-      <View style={{ rowGap: 15, paddingBottom: 15 }}>
-        <View style={[globalStyles.cardContainer, { rowGap: 15 }]}>
-          <View
-            style={[styles.row, error.deadline ? { borderColor: "red" } : {}]}
-          >
-            <Text style={globalStyles.textLabel}>Deadline</Text>
-            <DatePickerField
-              date={deadline}
-              onChange={setDeadline}
-              error={error.deadline}
-              style={styles.dropdown}
-            />
-          </View>
-
-          <View style={styles.row}>
-            <Text style={globalStyles.textLabel}>Availability From</Text>
-            <DatePickerField
-              date={availabilityFrom}
-              onChange={setAvailabilityFrom}
-              error={error.availabilityFrom}
-              style={styles.dropdown}
-            />
-          </View>
-
-          <View style={styles.row}>
-            <Text style={globalStyles.textLabel}>Availability To</Text>
-            <DatePickerField
-              date={availabilityTo}
-              onChange={setAvailabilityTo}
-              error={error.availabilityTo}
-              style={styles.dropdown}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={globalStyles.textLabel}>Attempts</Text>
-            <View
-              style={[
-                {
-                  width: "55%",
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  backgroundColor: "#f9f9f9",
-                  flexDirection: "row",
-                  height: 50,
-                },
-                error.attempt
-                  ? { borderColor: "red", borderWidth: 1 }
-                  : { borderColor: "#ddd" },
-              ]}
-            >
+    <FlatList
+      keyboardShouldPersistTaps="handled"
+      data={quizItems}
+      keyExtractor={(item) => item.id}
+      style={{ backgroundColor: "#fff" }}
+      ListHeaderComponent={() => (
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: "#00000024",
+            margin: 20,
+            padding: 20,
+            borderRadius: 20,
+            backgroundColor: "#fff",
+            gap: 15,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "25%" }]}>Title</Text>
+            <View style={{ width: "75%" }}>
+              {inputErrors.find((err) => err.name === "title") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
+              )}
               <TextInput
-                style={{ width: "85%" }}
-                value={attempt.toString()}
-                onChangeText={(text) =>
-                  setAttempt((prev: number) => sanitizeAttemptInput(text, prev))
-                }
-                keyboardType={"numeric"}
+                value={quizInfo.title}
+                onChangeText={(value) => {
+                  setQuizInfo((prev) => ({
+                    ...prev,
+                    title: value,
+                  }));
+                }}
+                placeholder="Title"
+                style={globalStyles.inputContainer}
               />
-              <View style={{ marginVertical: "auto" }}>
-                <TouchableOpacity onPress={handleAddAttempt}>
-                  <MaterialIcons
-                    name="arrow-drop-up"
-                    size={25}
-                    color="#ffbf18"
-                    style={{ marginTop: 0 }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleMinusAttempt}>
-                  <MaterialIcons
-                    name="arrow-drop-down"
-                    size={25}
-                    color="#ffbf18"
-                    style={{ marginTop: -10 }}
-                  />
-                </TouchableOpacity>
-              </View>
             </View>
           </View>
 
-          <View style={styles.row}>
-            <Text style={globalStyles.textLabel}>Points</Text>
-            <TextInput
-              style={[
-                styles.dropdown,
-                error.title
-                  ? { borderColor: "red", borderWidth: 1 }
-                  : { borderColor: "#ddd" },
-              ]}
-              placeholder="Title"
-              placeholderTextColor="#aaa"
-              value={points.toString()}
-              onChangeText={(text) =>
-                setPoints((prev: number) => sanitizeAttemptInput(text, prev))
-              }
-            />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "25%" }]}>
+              Description
+            </Text>
+            <View style={{ width: "75%" }}>
+              {inputErrors.find((err) => err.name === "description") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
+              )}
+              <TextInput
+                value={quizInfo.description}
+                onChangeText={(value) =>
+                  setQuizInfo((prev) => ({ ...prev, description: value }))
+                }
+                style={[
+                  globalStyles.inputContainer,
+                  inputErrors.find((err) => err.name === "description") && {
+                    borderColor: "red",
+                  },
+                ]}
+              />
+            </View>
           </View>
 
-          <View style={styles.separator}></View>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              marginHorizontal: -20,
+              borderColor: "#00000024",
+            }}
+          ></View>
 
-          <View style={styles.row}>
-            <Text style={globalStyles.textLabel}>Title</Text>
-            <TextInput
-              style={[
-                styles.dropdown,
-                error.title
-                  ? { borderColor: "red", borderWidth: 1 }
-                  : { borderColor: "#ddd" },
-              ]}
-              placeholder="Title"
-              placeholderTextColor="#aaa"
-              multiline={true}
-              value={title}
-              onChangeText={setTitle}
-            />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
+            <TouchableOpacity
+              onPress={() => setShowDeadlinePicker(true)}
+              style={[globalStyles.inputContainer, { width: "60%" }]}
+            >
+              <Text>
+                {quizInfo.deadline
+                  ? new Date(quizInfo.deadline).toDateString()
+                  : "Set Deadline"}
+              </Text>
+            </TouchableOpacity>
+            {showDeadlinePicker && (
+              <DateTimePicker
+                value={
+                  quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()
+                }
+                mode="date"
+                display={"default"}
+                onChange={(event, selectedDate) => {
+                  setShowDeadlinePicker(false);
+                  if (selectedDate) {
+                    setQuizInfo((prev) => ({
+                      ...prev,
+                      deadline: selectedDate.toISOString(),
+                    }));
+                  }
+                }}
+              />
+            )}
           </View>
 
-          <View style={{ rowGap: 5 }}>
-            <Text style={globalStyles.textLabel}>Description</Text>
-            <TextInput
-              style={[
-                globalStyles.inputContainer,
-                { height: Math.max(150, descHeight) },
-                error.description
-                  ? { borderColor: "red", borderWidth: 1 }
-                  : { borderColor: "#ddd" },
-              ]}
-              onContentSizeChange={(e) =>
-                setDescHeight(e.nativeEvent.contentSize.height)
-              }
-              textAlignVertical="top"
-              placeholder="Description"
-              placeholderTextColor="#aaa"
-              multiline={true}
-              value={description}
-              onChangeText={setDescription}
-            />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "40%" }]}>
+              Available From
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowAvailableFromPicker(true)}
+              style={[globalStyles.inputContainer, { width: "60%" }]}
+            >
+              <Text>
+                {quizInfo.availableFrom
+                  ? new Date(quizInfo.availableFrom).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Set Available To"}
+              </Text>
+            </TouchableOpacity>
+            {showAvailableFromPicker && (
+              <DateTimePicker
+                value={
+                  quizInfo.availableFrom
+                    ? new Date(quizInfo.availableFrom)
+                    : new Date()
+                }
+                mode="time"
+                display={"default"}
+                onChange={(event, selectedDate) => {
+                  setShowAvailableFromPicker(false);
+                  if (selectedDate) {
+                    setQuizInfo((prev) => ({
+                      ...prev,
+                      availableFrom: selectedDate.toISOString(),
+                    }));
+                  }
+                }}
+              />
+            )}
           </View>
 
-          <TouchableOpacity
-            style={[
-              globalStyles.submitButton,
-              { flexDirection: "row", justifyContent: "center" },
-            ]}
-            onPress={handlePreviewAssignment}
-          >
-            <Text style={globalStyles.submitButtonText}>Preview</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "40%" }]}>
+              Available To
+            </Text>
+            <View style={{ width: "60%" }}>
+              <TouchableOpacity
+                onPress={() => setShowAvailableToPicker(true)}
+                style={[globalStyles.inputContainer]}
+              >
+                <Text>
+                  {quizInfo.availableTo
+                    ? new Date(quizInfo.availableTo).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "Set Available To"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {showAvailableToPicker && (
+              <DateTimePicker
+                value={
+                  quizInfo.availableTo
+                    ? new Date(quizInfo.availableTo)
+                    : new Date()
+                }
+                mode="time"
+                display={"default"}
+                onChange={(event, selectedDate) => {
+                  setShowAvailableToPicker(false);
+                  if (selectedDate) {
+                    setQuizInfo((prev) => ({
+                      ...prev,
+                      availableTo: selectedDate.toISOString(),
+                    }));
+                  }
+                }}
+              />
+            )}
+          </View>
 
-        <View style={globalStyles.cardContainer}>
-          <Text>Quiz Questions</Text>
-
-          {questions.map((data, index) => (
-            <QuizQuestion
-              questionData={data}
-              key={index}
-              questionIndex={index}
-              handleAddQuestion={(
-                questionId: string | null,
-                question,
-                choices,
-                answer,
-                type,
-              ) => {
-                handleAddQuiz(
-                  { questionId, question, options: choices, answer, type },
-                  index,
-                );
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "40%" }]}>Attempts</Text>
+            <TextInput
+              value={quizInfo.attempts.toString()}
+              onChangeText={(value: string) => {
+                const num = parseInt(value);
+                setQuizInfo((prev) => ({
+                  ...prev,
+                  attempts: isNaN(num) ? 1 : num,
+                }));
               }}
+              keyboardType="numeric"
+              style={[globalStyles.inputContainer, { width: "60%" }]}
             />
-          ))}
-          <TouchableOpacity
-            style={globalStyles.submitButton}
-            onPress={handleAddQuestion}
-          >
-            <Text style={globalStyles.submitButtonText}>Add Question</Text>
-          </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[globalStyles.title, { width: "40%" }]}>
+              Time Limit
+            </Text>
+            <TextInput
+              value={quizInfo.time_limit}
+              onChangeText={(value: string) => {
+                setQuizInfo((prev) => ({
+                  ...prev,
+                  time_limit: value,
+                }));
+              }}
+              keyboardType="numeric"
+              placeholder="in minutes"
+              style={[globalStyles.inputContainer, { width: "60%" }]}
+            />
+          </View>
+
+          <View>
+            <TouchableOpacity
+              style={globalStyles.submitButton}
+              onPress={() => handleCreateQuiz()}
+            >
+              <Text style={globalStyles.submitButtonText}>Create Quiz</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      )}
+      renderItem={({ item, index }) => {
+        const isFirst = index === 0;
+        const isLast = index === quizItems.length - 1;
+
+        return (
+          <View
+            style={[
+              isFirst && {
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderTopWidth: 1,
+              },
+              isLast && {
+                borderBottomLeftRadius: 20,
+                borderBottomRightRadius: 20,
+                borderBottomWidth: 1,
+              },
+              {
+                marginHorizontal: 20,
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
+                padding: 20,
+                borderColor: "#00000024",
+                rowGap: 15,
+              },
+            ]}
+          >
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={globalStyles.text1}>Question {index + 1}</Text>
+                <TouchableOpacity>
+                  <Ionicons
+                    name="close-outline"
+                    size={30}
+                    color="black"
+                    onPress={() => handleRemoveItem(item.id)}
+                    style={{ marginLeft: 5 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                {inputErrors.find((err) => err.id === item.id)?.name ===
+                  "question" && (
+                  <Text style={globalStyles.errorText}>
+                    This field is required
+                  </Text>
+                )}
+              </View>
+              <TextInput
+                value={item.question}
+                onChangeText={(value) => handleQuestionInput(value, item.id)}
+                style={[
+                  { borderBottomWidth: 1, borderColor: "#FFBF18" },
+                  inputErrors.find((err) => err.id === item.id)?.name ===
+                  "question"
+                    ? { borderColor: "red" }
+                    : { borderColor: "#FFBF18" },
+                ]}
+                placeholder={"Enter Question"}
+              />
+            </View>
+            <View>
+              <Text style={globalStyles.text1}>Points</Text>
+              {inputErrors.some(
+                (err) => err.id === item.id && err.name === "points",
+              ) && (
+                <Text style={globalStyles.errorText}>
+                  Points must be at least 1.
+                </Text>
+              )}
+              <TextInput
+                value={item.points?.toString() || ""}
+                onChangeText={(value) => {
+                  const parsed = parseFloat(value);
+                  setQuizItems((prev) =>
+                    prev.map((quizItem) =>
+                      quizItem.id === item.id
+                        ? {
+                            ...quizItem,
+                            points: isNaN(parsed) ? 0 : parsed,
+                          }
+                        : quizItem,
+                    ),
+                  );
+                }}
+                keyboardType="numeric"
+                style={[
+                  globalStyles.inputContainer,
+                  { width: 100 },
+                  inputErrors.some(
+                    (err) => err.id === item.id && err.name === "points",
+                  ) && {
+                    borderColor: "red",
+                  },
+                ]}
+                placeholder={"Points"}
+              />
+            </View>
+
+            <View>
+              <Text style={globalStyles.text1}>Answer Type</Text>
+              <View style={globalStyles.textInputContainer}>
+                <Picker
+                  selectedValue={item.questionType}
+                  onValueChange={(value) =>
+                    handleChangeQuestionType(
+                      item.id,
+                      value as QuizItem["questionType"],
+                    )
+                  }
+                >
+                  <Picker.Item
+                    label="Multiple Choice"
+                    value="multiple_choice"
+                  />
+                  <Picker.Item label="Essay" value="essay" />
+                  <Picker.Item label="File Upload" value="file_upload" />
+                  <Picker.Item label="Fill in the Blank" value="fill" />
+                  <Picker.Item label="Dropdown" value="dropdown" />
+                </Picker>
+              </View>
+            </View>
+
+            {item.questionType === "multiple_choice" && (
+              <View>
+                <Text style={globalStyles.text1}>Multiple Type</Text>
+                <View style={globalStyles.textInputContainer}>
+                  <Picker
+                    selectedValue={item.multiple_type}
+                    onValueChange={(value) =>
+                      handleChangeMultipleType(
+                        item.id,
+                        value as QuizItem["multiple_type"],
+                      )
+                    }
+                  >
+                    <Picker.Item label="Radio" value="radio" />
+                    <Picker.Item label="Checkbox" value="checkbox" />
+                  </Picker>
+                </View>
+              </View>
+            )}
+
+            {(item.questionType === "multiple_choice" ||
+              item.questionType === "dropdown") && (
+              <View>
+                <Text style={globalStyles.text1}>Choices</Text>
+                {item.choices.map((choice, choiceIndex) => (
+                  <View
+                    key={choiceIndex}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <View style={{ width: "90%" }}>
+                      {inputErrors.find(
+                        (err) =>
+                          err.id === item.id &&
+                          err.name === "choices" &&
+                          err.index === choiceIndex,
+                      ) && (
+                        <Text style={globalStyles.errorText}>
+                          This field is required
+                        </Text>
+                      )}
+                      <TextInput
+                        value={choice}
+                        onChangeText={(text) =>
+                          handleChoiceInput(text, item.id, choiceIndex)
+                        }
+                        style={[
+                          globalStyles.inputContainer,
+                          inputErrors.find(
+                            (err) =>
+                              err.id === item.id &&
+                              err.name === "choices" &&
+                              err.index === choiceIndex,
+                          )
+                            ? { borderColor: "red" }
+                            : { borderColor: "#FFBF18" },
+                        ]}
+                        placeholder={`Choice ${choiceIndex + 1}`}
+                      />
+                    </View>
+                    <Ionicons
+                      name="close-outline"
+                      size={30}
+                      color="black"
+                      onPress={() => handleRemoveChoice(item.id, choiceIndex)}
+                      style={{ marginLeft: 5 }}
+                    />
+                  </View>
+                ))}
+                <TouchableOpacity
+                  style={{ flexDirection: "row", alignItems: "center" }}
+                  onPress={() => handleAddChoice(item.id)}
+                >
+                  <MaterialIcons name="add" size={24} color="#FFBF18" />
+                  <Text style={[globalStyles.text1, { color: "#FFBF18" }]}>
+                    Add Choice
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <View>
+              {item.questionType !== "essay" &&
+                item.questionType !== "file_upload" && (
+                  <Text style={globalStyles.text1}>Answer</Text>
+                )}
+              {(item.questionType === "multiple_choice" ||
+                item.questionType === "dropdown") && (
+                <View style={{ rowGap: 10 }}>
+                  <View style={[globalStyles.textInputContainer]}>
+                    {item.answer.map((answer, index) => (
+                      <Picker
+                        key={index}
+                        selectedValue={item.answer[0] || ""}
+                        onValueChange={(value) => {
+                          setQuizItems((prev) =>
+                            prev.map((q) =>
+                              q.id === item.id ? { ...q, answer: [value] } : q,
+                            ),
+                          );
+                        }}
+                      >
+                        {item.choices.map((choice, i) => (
+                          <Picker.Item label={choice} value={choice} key={i} />
+                        ))}
+                      </Picker>
+                    ))}
+                  </View>
+                  {item.multiple_type === "checkbox" && (
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                      onPress={() => handleMultipleAnswer(item.id)}
+                    >
+                      <MaterialIcons name="add" size={24} color="#FFBF18" />
+                      <Text style={[globalStyles.text1, { color: "#FFBF18" }]}>
+                        Add Answer
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+
+              {item.questionType === "fill" && (
+                <View>
+                  {inputErrors.find((err) => err.id === item.id)?.name ===
+                    "fill" && (
+                    <Text style={globalStyles.errorText}>
+                      This field is required
+                    </Text>
+                  )}
+                  <TextInput
+                    value={item.answer[0]}
+                    style={[
+                      { borderBottomWidth: 1 },
+                      inputErrors.find(
+                        (err) => err.id === item.id && err.name === "fill",
+                      )
+                        ? { borderColor: "red" }
+                        : { borderColor: "#FFBF18" },
+                    ]}
+                    placeholder={"Enter Answer"}
+                    onChangeText={(value: string) =>
+                      handleAnswer(value, item.id)
+                    }
+                  />
+                </View>
+              )}
+            </View>
+            {!isLast && (
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  marginHorizontal: -20,
+                  borderColor: "#00000024",
+                  marginTop: 20,
+                  paddingBottom: 0,
+                }}
+              ></View>
+            )}
+          </View>
+        );
+      }}
+      ListFooterComponent={() => <QuizFooter onAddItem={handleAddItem} />}
+    />
   );
 };
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  separator: {
-    height: 3,
-    backgroundColor: "#f0f0f0",
-  },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  dropdown: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    padding: 12,
-    borderRadius: 10,
-    backgroundColor: "#f9f9f9",
-    width: "55%",
-  },
-  dropdownButton: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    backgroundColor: "#f9f9f9",
-    width: "55%",
-  },
-  dropdownList: {
-    position: "absolute",
-    top: 75,
-    left: 161,
-    width: "55%",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    zIndex: 999,
-  },
-  dropdownItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-});
-
-export default memo(AddQuiz);
+export default AddQuiz;
