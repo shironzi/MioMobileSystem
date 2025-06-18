@@ -648,3 +648,67 @@ export async function takeQuiz(subjectId: string, quizId: string) {
     throw err;
   }
 }
+
+export async function submitAnswer(
+  subjectId: string,
+  quizId: string,
+  attemptId: string,
+  itemId: string,
+  answer: string | string[] | null,
+  file?: FileInfo[] | null,
+) {
+  try {
+    const formdata = new FormData();
+
+    if (answer) {
+      formdata.append(
+        "answer_text",
+        Array.isArray(answer) ? JSON.stringify(answer) : answer,
+      );
+    }
+
+    if (file && file.length > 0) {
+      const firstFile = file[0];
+      formdata.append("answer_file", {
+        uri: firstFile.uri,
+        name: firstFile.name,
+        type: firstFile.mimeType,
+      } as any);
+    }
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formdata,
+      },
+    );
+
+    return await res.json();
+  } catch (err) {
+    console.error("Submit answer failed:", err);
+    throw err;
+  }
+}
+
+export async function finalizeQuiz(
+  subjectId: string,
+  quizId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
+    );
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}

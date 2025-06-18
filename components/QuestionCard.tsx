@@ -12,7 +12,7 @@ interface Props {
   type: "multiple_choice" | "essay" | "file_upload" | "fill" | "dropdown";
   multiple_type?: "radio" | "checkbox";
   choices: { id: string; label: string }[];
-  onAnswerChange: (answer: any) => void;
+  onAnswerChange: (answer: string | string[], file?: FileInfo[]) => void;
 }
 
 interface FileInfo {
@@ -39,18 +39,18 @@ const QuestionCard = ({
   useEffect(() => {
     if (type === "multiple_choice") {
       if (multiple_type === "checkbox") {
-        onAnswerChange(selectedAnswers);
+        onAnswerChange(selectedAnswers ?? []);
       } else {
-        onAnswerChange(selectedAnswer);
+        onAnswerChange(selectedAnswer ?? "");
       }
     } else if (type === "essay") {
       onAnswerChange(essayAnswer);
     } else if (type === "fill") {
       onAnswerChange(fillAnswer);
     } else if (type === "dropdown") {
-      onAnswerChange(dropdownAnswer);
+      onAnswerChange(dropdownAnswer ?? "");
     } else if (type === "file_upload") {
-      onAnswerChange(fileAnswer);
+      onAnswerChange("", fileAnswer);
     }
   }, [
     selectedAnswer,
@@ -105,19 +105,19 @@ const QuestionCard = ({
                   onPress={() => {
                     if (multiple_type === "checkbox") {
                       setSelectedAnswers((prev) =>
-                        prev.includes(choice.id)
-                          ? prev.filter((id) => id !== choice.id)
-                          : [...prev, choice.id],
+                        prev.includes(choice.label)
+                          ? prev.filter((id) => id !== choice.label)
+                          : [...prev, choice.label],
                       );
                     } else {
-                      setSelectedAnswer(choice.id);
+                      setSelectedAnswer(choice.label);
                     }
                   }}
                 >
                   {multiple_type === "checkbox" ? (
                     <Ionicons
                       name={
-                        selectedAnswers.includes(choice.id)
+                        selectedAnswers.includes(choice.label)
                           ? "checkbox"
                           : "checkbox-outline"
                       }
@@ -127,7 +127,7 @@ const QuestionCard = ({
                   ) : (
                     <Fontisto
                       name={
-                        selectedAnswer === choice.id
+                        selectedAnswer === choice.label
                           ? "radio-btn-active"
                           : "radio-btn-passive"
                       }
@@ -196,11 +196,11 @@ const QuestionCard = ({
                 onValueChange={(itemValue) => setDropdownAnswer(itemValue)}
               >
                 <Picker.Item label="Select an option..." value={null} />
-                {choices.map((choice) => (
+                {choices.map((choice, index) => (
                   <Picker.Item
-                    key={choice.id}
+                    key={index}
                     label={choice.label}
-                    value={choice.id}
+                    value={choice.label}
                   />
                 ))}
               </Picker>

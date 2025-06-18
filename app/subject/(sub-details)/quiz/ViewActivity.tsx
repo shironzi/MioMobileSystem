@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useState } from "react";
 import { getQuizAttempts } from "@/utils/query";
 import globalStyles from "@/styles/globalStyles";
 import { formatToLongDate, formatToLongDateTime } from "@/utils/DateFormat";
@@ -43,15 +43,19 @@ const ViewActivity = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchActivity = async () => {
-      const res = await getQuizAttempts(subjectId, quizId);
-      setQuizInfo(res.quiz_info);
-      setAttempts(res.scores);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchActivity = async () => {
+        const res = await getQuizAttempts(subjectId, quizId);
+        setQuizInfo(res.quiz_info);
+        setAttempts(res.scores);
+      };
 
-    fetchActivity();
-  }, []);
+      fetchActivity();
+
+      return () => {};
+    }, [subjectId, quizId]),
+  );
 
   return (
     <View>

@@ -13,8 +13,8 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import { logout } from "@/utils/auth";
 import { StackActions } from "@react-navigation/native";
 import { getAuth } from "@react-native-firebase/auth";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { getProfilePic } from "@/utils/query";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -132,6 +132,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         icon={() => (
           <MaterialCommunityIcons name="help-circle" size={30} color="white" />
         )}
+        style={styles.drawerItem}
+      />
+      <DrawerItem
+        label="Logout"
+        labelStyle={styles.drawerItemLabel}
+        onPress={() => {
+          props.navigation.navigate("analytics/Analytics");
+          props.navigation.closeDrawer();
+        }}
+        icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
         style={styles.drawerItem}
       />
       <DrawerItem
