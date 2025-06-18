@@ -78,9 +78,9 @@ const Play = () => {
 		{ backgroundColor: string; borderColor: string }
 	> = {
 		easy: { backgroundColor: "#C8FFB7", borderColor: "#439558" },
-		Average: { backgroundColor: "#ffe9ae", borderColor: "#ffbf18" },
-		Difficult: { backgroundColor: "#FFCEA1", borderColor: "#FF7A00" },
-		Challenge: { backgroundColor: "#FFB1B1", borderColor: "#DB4141" },
+		average: { backgroundColor: "#ffe9ae", borderColor: "#ffbf18" },
+		difficult: { backgroundColor: "#FFCEA1", borderColor: "#FF7A00" },
+		challenge: { backgroundColor: "#FFB1B1", borderColor: "#DB4141" },
 	};
 
 	const renderHeaderCard = () => {
@@ -190,13 +190,15 @@ const Play = () => {
 		>
 			{renderHeaderCard()}
 			{/* <Text style={styles.title}>{difficulty}</Text> */}
-			<FlatList
-				data={activities}
-				renderItem={renderItem}
-				keyExtractor={(item) => item}
-				contentContainerStyle={styles.listContainer}
-				style={{ paddingHorizontal: 5 }}
-			/>
+			<View>
+				<FlatList
+					data={activities}
+					renderItem={renderItem}
+					keyExtractor={(item) => item}
+					contentContainerStyle={styles.listContainer}
+					style={{ paddingHorizontal: 5 }}
+				/>
+			</View>
 		</ScrollView>
 	);
 };

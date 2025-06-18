@@ -5,9 +5,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const difficultyColors: Record<string, string> = {
 	easy: "#439558",
-	Average: "#ffbf18",
-	Difficult: "#FF7A00",
-	Challenge: "#DB4141",
+	average: "#ffbf18",
+	difficult: "#FF7A00",
+	challenge: "#DB4141",
 };
 
 const PlayCard = (props: {
