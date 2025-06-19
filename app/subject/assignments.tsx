@@ -95,7 +95,7 @@ const assignments = () => {
 
 	return (
 		<View style={styles.container}>
-			<ScrollView>
+			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.content}>
 					{assignments.length > 0 ? (
 						<View style={{ rowGap: 15 }}>
