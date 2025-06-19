@@ -184,7 +184,7 @@ const MessageDetails = () => {
             placeholder="Type a message..."
           />
           <TouchableOpacity onPress={handleSent}>
-            <MaterialIcons name="send" size={24} color="black" />
+            <MaterialIcons name="send" size={24} color="#FFBF18" />
           </TouchableOpacity>
         </View>
       </View>
