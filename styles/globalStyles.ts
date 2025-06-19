@@ -17,7 +17,7 @@ const globalStyles = StyleSheet.create({
 	submitButton: {
 		backgroundColor: "#FFBF18",
 		borderRadius: 15,
-		paddingVertical: 17,
+		paddingVertical: 15,
 		width: 165,
 		marginBottom: 10,
 	},
@@ -47,20 +47,21 @@ const globalStyles = StyleSheet.create({
 		paddingVertical: 15,
 		borderRadius: 10,
 		backgroundColor: "#fff",
-		elevation: 5,
+		// elevation: 5,
 	},
 	cardBody: {
 		paddingHorizontal: 0,
 		paddingVertical: 0,
 	},
 	sectionHeader: {
-		backgroundColor: "#434242",
+		backgroundColor: "#e8f0ff",
 		width: "100%",
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		paddingHorizontal: 26,
 		paddingVertical: 15,
-		color: "#fff",
+		color: "#000",
+		fontWeight: 500,
 	},
 	contentPadding: {
 		paddingHorizontal: 26,
@@ -117,7 +118,7 @@ const globalStyles = StyleSheet.create({
 	},
 	cardContainer1: {
 		borderWidth: 1,
-		borderColor: "#00000024",
+		borderColor: "#ddd",
 		margin: 20,
 		padding: 20,
 		borderRadius: 20,
@@ -125,9 +126,8 @@ const globalStyles = StyleSheet.create({
 		gap: 15,
 	},
 	text2: {
-		color: "#0000004D",
+		color: "#888",
 		fontSize: 12,
-		fontWeight: 400,
 		lineHeight: 14,
 	},
 });

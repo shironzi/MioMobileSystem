@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
 	},
 	yellowBulletin: {
 		backgroundColor: "#FFBF18",
-		height: 25,
+		height: 40,
 		width: "1.5%",
 		borderRadius: 100,
 		marginRight: 20,
