@@ -93,19 +93,9 @@ const Notification = () => {
 
     if (res.success) {
       setNotifications(res.notifications);
-      setExpandedSections(new Set());
 
-      if (notifications.length > 0) {
-        const firstDate = new Date(notifications[0].date).toLocaleDateString(
-          "en-US",
-          {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          },
-        );
-
-        setExpandedSections(new Set([firstDate]));
+      if (res.notifications.length > 0) {
+        handleToggle(res.notifications[0].date);
       }
     }
   };
