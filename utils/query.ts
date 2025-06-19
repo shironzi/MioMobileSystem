@@ -638,6 +638,23 @@ export async function takeQuiz(subjectId: string, quizId: string) {
   }
 }
 
+export async function continueQuiz(
+  subjectId: string,
+  quizId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 export async function submitAnswer(
   subjectId: string,
   quizId: string,
@@ -649,11 +666,12 @@ export async function submitAnswer(
   try {
     const formdata = new FormData();
 
-    if (answer) {
-      formdata.append(
-        "answer_text",
-        Array.isArray(answer) ? JSON.stringify(answer) : answer,
-      );
+    if (typeof answer === "string") {
+      formdata.append("answer_text", answer);
+    } else if (Array.isArray(answer)) {
+      answer.forEach((val, index) => {
+        formdata.append(`answer_array[${index}]`, val);
+      });
     }
 
     if (file && file.length > 0) {

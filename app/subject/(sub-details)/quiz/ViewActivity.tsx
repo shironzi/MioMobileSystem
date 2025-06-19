@@ -35,11 +35,16 @@ const ViewActivity = () => {
 
   const [quizInfo, setQuizInfo] = useState<QuizInfo>();
   const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [prevAttemptId, setPrevAttemptId] = useState<string>("");
 
   const startQuiz = () => {
     router.push({
       pathname: "/subject/(sub-details)/quiz/TakeQuiz",
-      params: { subjectId: subjectId, quizId: quizId },
+      params: {
+        subjectId: subjectId,
+        quizId: quizId,
+        prevAttemptId: prevAttemptId,
+      },
     });
   };
 
@@ -49,6 +54,7 @@ const ViewActivity = () => {
         const res = await getQuizAttempts(subjectId, quizId);
         setQuizInfo(res.quiz_info);
         setAttempts(res.scores);
+        setPrevAttemptId(res.active_attempt ?? "");
       };
 
       fetchActivity();

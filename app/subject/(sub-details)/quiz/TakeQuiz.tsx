@@ -1,13 +1,7 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { useEffect, useState } from "react";
-import { submitAnswer, takeQuiz } from "@/utils/query";
+import { continueQuiz, submitAnswer, takeQuiz } from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import QuestionCard from "@/components/QuestionCard";
 import globalStyles from "@/styles/globalStyles";
@@ -34,14 +28,20 @@ const TakeQuiz = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const { subjectId, quizId } = useLocalSearchParams<{
+  const { subjectId, quizId, prevAttemptId } = useLocalSearchParams<{
     subjectId: string;
     quizId: string;
+    prevAttemptId: string;
   }>();
 
   const [quizItems, setQuizItems] = useState<QuizItem[]>([]);
   const [answers, setAnswers] = useState<
-    { itemId: string | string[]; answer: any; file: FileInfo[] | null }[]
+    {
+      itemId: string;
+      answer: string | string[];
+      file: FileInfo[] | null;
+      hasChanged: boolean;
+    }[]
   >([]);
   const [currentItem, setCurrentItem] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>("");
@@ -49,21 +49,25 @@ const TakeQuiz = () => {
   const handleNext = async () => {
     const currentAnswer = answers[currentItem];
 
-    if (currentAnswer) {
+    if (currentAnswer && currentAnswer.hasChanged) {
       const { itemId, answer, file } = currentAnswer;
 
       if (answer !== null || (file && file.length > 0)) {
         try {
-          const res = await submitAnswer(
+          await submitAnswer(
             subjectId,
             quizId,
             attemptId,
-            typeof itemId === "string" ? itemId : itemId[0], // handle array fallback
+            itemId,
             answer,
             file,
           );
 
-          console.log("Submitted:", res);
+          setAnswers((prev) =>
+            prev.map((a) =>
+              a.itemId === itemId ? { ...a, hasChanged: false } : a,
+            ),
+          );
         } catch (err) {
           console.error("Submission error:", err);
           return;
@@ -91,7 +95,9 @@ const TakeQuiz = () => {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const res = await takeQuiz(subjectId, quizId);
+      const res = prevAttemptId.length
+        ? await continueQuiz(subjectId, quizId, prevAttemptId)
+        : await takeQuiz(subjectId, quizId);
 
       const itemsArray: QuizItem[] = Object.entries(res.items).map(
         ([id, item]: [string, any]) => ({
@@ -105,6 +111,16 @@ const TakeQuiz = () => {
             : [],
         }),
       );
+      if (Array.isArray(res.answers) && res.answers.length > 0) {
+        setAnswers(
+          res.answers.map((a: any) => ({
+            ...a,
+            hasChanged: false,
+          })),
+        );
+      } else {
+        setAnswers([]);
+      }
 
       setAttemptId(res.attemptId);
       setQuizItems(itemsArray);
@@ -121,17 +137,35 @@ const TakeQuiz = () => {
   ) => {
     setAnswers((prev) => {
       const index = prev.findIndex((a) => a.itemId === itemId);
-      if (index > -1) {
-        const updated = [...prev];
-        updated[index] = {
-          ...updated[index],
-          answer,
-          file,
-        };
-        return updated;
-      } else {
-        return [...prev, { itemId, answer, file }];
+      const existing = index > -1 ? prev[index] : null;
+
+      const isSameAnswer =
+        JSON.stringify(existing?.answer ?? "") === JSON.stringify(answer);
+      const isSameFile =
+        JSON.stringify(existing?.file ?? []) === JSON.stringify(file ?? []);
+
+      const isEmptyAnswer =
+        (typeof answer === "string" && answer.trim() === "") ||
+        (Array.isArray(answer) && answer.length === 0);
+      const isEmptyFile = !file || file.length === 0;
+
+      if (isEmptyAnswer && isEmptyFile) {
+        return prev;
       }
+
+      if (existing && isSameAnswer && isSameFile) {
+        return prev;
+      }
+
+      const updatedAnswer = { itemId, answer, file, hasChanged: true };
+
+      if (existing) {
+        const updated = [...prev];
+        updated[index] = updatedAnswer;
+        return updated;
+      }
+
+      return [...prev, updatedAnswer];
     });
   };
 
@@ -152,6 +186,9 @@ const TakeQuiz = () => {
         type={quizItems[currentItem].type}
         multiple_type={quizItems[currentItem].multiple_type}
         choices={quizItems[currentItem].choices ?? []}
+        answer={answers.find(
+          (answer) => answer.itemId === quizItems[currentItem].id,
+        )}
         onAnswerChange={(answer, file) =>
           handleAnswer(quizItems[currentItem].id, answer, file ?? null)
         }

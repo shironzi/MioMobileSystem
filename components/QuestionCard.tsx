@@ -11,6 +11,7 @@ interface Props {
   question: string;
   type: "multiple_choice" | "essay" | "file_upload" | "fill" | "dropdown";
   multiple_type?: "radio" | "checkbox";
+  answer?: Answer;
   choices: { id: string; label: string }[];
   onAnswerChange: (answer: string | string[], file?: FileInfo[]) => void;
 }
@@ -21,6 +22,12 @@ interface FileInfo {
   mimeType?: string;
 }
 
+interface Answer {
+  itemId: string;
+  answer: string | string[];
+  file: FileInfo[] | null;
+}
+
 const QuestionCard = ({
   item_no,
   question,
@@ -28,6 +35,7 @@ const QuestionCard = ({
   multiple_type = "radio",
   choices,
   onAnswerChange,
+  answer,
 }: Props) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
@@ -60,6 +68,30 @@ const QuestionCard = ({
     dropdownAnswer,
     fileAnswer,
   ]);
+
+  useEffect(() => {
+    if (!answer) return;
+
+    const ans = answer.answer;
+
+    if (type === "multiple_choice") {
+      if (multiple_type === "checkbox" && Array.isArray(ans)) {
+        setSelectedAnswers(ans);
+      } else if (typeof ans === "string") {
+        setSelectedAnswer(ans);
+      }
+    } else if (type === "essay" && typeof ans === "string") {
+      setEssayAnswer(ans);
+    } else if (type === "fill" && typeof ans === "string") {
+      setFillAnswer(ans);
+    } else if (type === "dropdown" && typeof ans === "string") {
+      setDropdownAnswer(ans);
+    }
+
+    if (answer.file) {
+      setFileAnswer(answer.file);
+    }
+  }, []);
 
   return (
     <View
