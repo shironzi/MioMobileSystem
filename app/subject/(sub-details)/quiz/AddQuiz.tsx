@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   View,
@@ -13,7 +13,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import QuizFooter from "@/app/subject/(sub-details)/quiz/QuizFooter";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { createQuiz } from "@/utils/query";
+import { createQuiz, getQuiz, updateQuiz } from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import QuizHeader from "@/app/subject/(sub-details)/quiz/QuizHeader";
 
@@ -30,6 +30,7 @@ interface QuizInfo {
 
 interface QuizItem {
   id: string;
+  item_id?: string;
   question: string;
   choices: string[];
   answer: string[];
@@ -52,7 +53,10 @@ interface QuizItemError {
 const AddQuiz = () => {
   useHeaderConfig("Quiz");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, quizId } = useLocalSearchParams<{
+    subjectId: string;
+    quizId: string;
+  }>();
 
   const [quizInfo, setQuizInfo] = useState<QuizInfo>({
     title: "",
@@ -78,6 +82,7 @@ const AddQuiz = () => {
   ]);
 
   const [inputErrors, setInputErrors] = useState<QuizItemError[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleQuestionInput = (value: string, id: string) => {
     setQuizItems((prev) =>
@@ -270,6 +275,8 @@ const AddQuiz = () => {
     ]);
   };
 
+  console.log(inputErrors);
+
   const handleCreateQuiz = async () => {
     setInputErrors([]);
 
@@ -325,7 +332,11 @@ const AddQuiz = () => {
     }
     setInputErrors([]);
 
-    const res = await createQuiz(subjectId, quizInfo, quizItems);
+    const res = quizId
+      ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
+      : await createQuiz(subjectId, quizInfo, quizItems);
+
+    console.log(res);
     if (res.success) {
       Alert.alert(
         "Success",
@@ -344,18 +355,6 @@ const AddQuiz = () => {
       Alert.alert("Error", "Something went wrong. Please try again.");
     }
   };
-
-  const renderHeader = useMemo(
-    () => (
-      <QuizHeader
-        handleCreateQuiz={() => handleCreateQuiz()}
-        setInfo={(info: QuizInfo) => setQuizInfo(info)}
-        info={quizInfo}
-        errors={inputErrors}
-      />
-    ),
-    [quizInfo, inputErrors],
-  );
 
   useEffect(() => {
     let hasChanges = false;
@@ -376,13 +375,58 @@ const AddQuiz = () => {
     }
   }, [quizItems]);
 
+  useEffect(() => {
+    console.log(quizId);
+    if (quizId) {
+      setLoading(true);
+      const fetchQuiz = async () => {
+        const res = await getQuiz(subjectId, quizId);
+
+        if (res.success) {
+          const items = res.items.map((item: any) => ({
+            id: item.id,
+            item_id: item.id,
+            question: item.question,
+            choices: item.options || [],
+            answer:
+              typeof item.answer === "string" ? [item.answer] : item.answer,
+            questionType: item.questionType,
+            multiple_type: item.multiple_type || "radio",
+            points: item.points,
+          }));
+
+          setQuizItems(items);
+          setQuizInfo(res.quiz_info);
+        }
+        setLoading(false);
+      };
+
+      fetchQuiz();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>loading....</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       keyboardShouldPersistTaps="handled"
       data={quizItems}
       keyExtractor={(item) => item.id}
       style={{ backgroundColor: "#fff" }}
-      ListHeaderComponent={renderHeader}
+      ListHeaderComponent={
+        <QuizHeader
+          handleCreateQuiz={handleCreateQuiz}
+          setInfo={(info: QuizInfo) => setQuizInfo(info)}
+          info={quizInfo}
+          errors={inputErrors}
+        />
+      }
       renderItem={({ item, index }) => {
         const isFirst = index === 0;
         const isLast = index === quizItems.length - 1;
@@ -603,16 +647,26 @@ const AddQuiz = () => {
               {(item.questionType === "multiple_choice" ||
                 item.questionType === "dropdown") && (
                 <View style={{ rowGap: 10 }}>
-                  <View style={[globalStyles.textInputContainer]}>
+                  <View
+                    style={[globalStyles.textInputContainer, { rowGap: 5 }]}
+                  >
                     {item.answer.map((answer, index) => (
                       <Picker
                         key={index}
-                        selectedValue={item.answer[0] || ""}
+                        selectedValue={answer}
                         onValueChange={(value) => {
                           setQuizItems((prev) =>
-                            prev.map((q) =>
-                              q.id === item.id ? { ...q, answer: [value] } : q,
-                            ),
+                            prev.map((q) => {
+                              if (q.id !== item.id) return q;
+
+                              const updatedAnswers = [...q.answer];
+                              updatedAnswers[index] = value;
+
+                              return {
+                                ...q,
+                                answer: updatedAnswers,
+                              };
+                            }),
                           );
                         }}
                       >

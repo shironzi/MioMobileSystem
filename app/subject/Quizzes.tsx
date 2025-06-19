@@ -48,10 +48,17 @@ const Quiz = () => {
   }, []);
 
   const handleSelectQuiz = (quizId: string, index: number) => {
-    router.push({
-      pathname: "/subject/(sub-details)/quiz/ViewActivity",
-      params: { quizId: quizId, subjectId: subjectId, index: index + 1 },
-    });
+    if (role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/quiz/AddQuiz",
+        params: { subjectId: subjectId, quizId: quizId },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/quiz/ViewActivity",
+        params: { quizId: quizId, subjectId: subjectId, index: index + 1 },
+      });
+    }
   };
 
   if (loading) {
