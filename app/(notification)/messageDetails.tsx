@@ -131,10 +131,10 @@ const MessageDetails = () => {
       behavior={"padding"}
       keyboardVerticalOffset={keyboardVisible ? 0 : 100}
     >
-      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={{ flex: 1, backgroundColor: "#fff", height: "100%" }}>
         <ScrollView
-          style={{ padding: 16 }}
-          contentContainerStyle={{ paddingBottom: 80 }}
+          style={{ padding: 16, height: "100%" }}
+          contentContainerStyle={{ paddingBottom: 30 }}
           keyboardShouldPersistTaps="handled"
         >
           {messageData.map((msg, index) => (

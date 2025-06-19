@@ -4,7 +4,7 @@ const MessageSenderCard = ({ message }: { message: string }) => {
   return (
     <View
       style={{
-        backgroundColor: "#2264DC",
+        backgroundColor: "#1F1F1F",
         paddingVertical: 10,
         paddingHorizontal: 20,
         maxWidth: "75%",

@@ -24,7 +24,7 @@ import { router } from "expo-router";
 const AddMessage = () => {
   useHeaderConfig("Message");
 
-  const [receiver, setReceiver] = useState("");
+  const [receiver, setReceiver] = useState();
   const [message, setMessage] = useState("");
   const [role, setRole] = useState("");
   const [users, setUsers] = useState<
@@ -39,6 +39,10 @@ const AddMessage = () => {
   const [selectedSubject, setSelectedSubject] = useState<string>();
 
   const handleSendMessage = async () => {
+    console.log("working");
+    console.log(receiver);
+    if (!receiver) return;
+
     const res = await sendMessage(receiver, message);
 
     if (res.success) {
@@ -57,7 +61,10 @@ const AddMessage = () => {
 
       if (roleValue === "student") {
         const res = await getSubjectTeachers();
-        if (res.success) setUsers(res.users);
+        if (res.success) {
+          setUsers(res.users);
+          setReceiver(res.users[0].user_id);
+        }
       } else if (roleValue === "teacher") {
         const res = await getMessageSubjects();
         if (res.success) setSubjects(res.subjects);
@@ -73,6 +80,8 @@ const AddMessage = () => {
         const res = await getSubjectTeachers();
         if (res.success) {
           setUsers(res.users);
+          setReceiver(res.users[0].user_id);
+          console.log(receiver);
         }
       };
 
@@ -99,7 +108,7 @@ const AddMessage = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ height: "100%" }}
+      style={{ height: "100%", backgroundColor: "#fff" }}
       behavior={"padding"}
       keyboardVerticalOffset={100}
     >
