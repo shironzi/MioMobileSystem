@@ -80,6 +80,8 @@ const Quiz = () => {
               justifyContent: "center",
               backgroundColor: "#FFBF1840",
               borderColor: "#FFBF18",
+              marginHorizontal: 20,
+              marginBottom: 10,
             }}
             onPress={() =>
               router.push({

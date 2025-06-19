@@ -200,9 +200,9 @@ const newCourseDetails = () => {
           onPress={useCallback(() => {
             router.push({
               pathname: "/subject/Quizzes",
-              params: { subjectId: id },
+              params: { subjectId: id, role: role },
             });
-          }, [router, id])}
+          }, [router, id, role])}
         >
           <View style={styles.row}>
             <Image
