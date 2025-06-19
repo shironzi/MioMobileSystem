@@ -115,7 +115,12 @@ const newCourseDetails = () => {
 							style={styles.courseImg}
 						/>
 						<Text style={{ fontSize: 14, left: -40 }}>Announcements</Text>
-						<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
 					</View>
 				</TouchableOpacity>
 
@@ -131,10 +136,38 @@ const newCourseDetails = () => {
 					<View style={styles.row}>
 						<Image
 							source={require("@/assets/course/ass.png")}
-							style={styles.courseImg}
+							style={[styles.courseImg, { left: -20 }]}
 						/>
 						<Text style={{ fontSize: 14, left: -50 }}>Assignments</Text>
-						<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
+					</View>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.subCourse}
+					onPress={useCallback(() => {
+						router.push({
+							pathname: "/subject/Quizzes",
+							params: { subjectId: id },
+						});
+					}, [router, id])}
+				>
+					<View style={styles.row}>
+						<Image
+							source={require("@/assets/course/qz.png")}
+							style={[styles.courseImg, { width: 48, left: -20 }]}
+						/>
+						<Text style={{ fontSize: 14, left: -70 }}>Quizzes</Text>
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
 					</View>
 				</TouchableOpacity>
 
@@ -150,10 +183,16 @@ const newCourseDetails = () => {
 					<View style={styles.row}>
 						<Image
 							source={require("@/assets/course/score.png")}
-							style={styles.courseImg}
+							style={[styles.courseImg, { left: -15 }]}
+							// resizeMode="contain"
 						/>
 						<Text style={{ fontSize: 14, left: -70 }}>Scores</Text>
-						<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
 					</View>
 				</TouchableOpacity>
 
@@ -169,10 +208,16 @@ const newCourseDetails = () => {
 					<View style={styles.row}>
 						<Image
 							source={require("@/assets/course/module.png")}
-							style={[styles.courseImg, { width: 48, left: -10 }]}
+							resizeMode="contain"
+							style={[styles.courseImg, { width: 48, left: -20 }]}
 						/>
 						<Text style={{ fontSize: 14, left: -65 }}>Modules</Text>
-						<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
 					</View>
 				</TouchableOpacity>
 
@@ -192,28 +237,15 @@ const newCourseDetails = () => {
 								style={[styles.courseImg, { width: 40 }]}
 							/>
 							<Text style={{ fontSize: 14, left: -50 }}>Attendance</Text>
-							<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+							<FontAwesome6
+								name="arrow-right-long"
+								size={20}
+								color="#1f1f1f"
+								style={{ left: 15 }}
+							/>
 						</View>
 					</TouchableOpacity>
 				)}
-				<TouchableOpacity
-					style={styles.subCourse}
-					onPress={useCallback(() => {
-						router.push({
-							pathname: "/subject/Quizzes",
-							params: { subjectId: id },
-						});
-					}, [router, id])}
-				>
-					<View style={styles.row}>
-						<Image
-							source={require("@/assets/course/module.png")}
-							style={[styles.courseImg, { width: 48, left: -10 }]}
-						/>
-						<Text style={{ fontSize: 14, left: -65 }}>Quizzes</Text>
-						<FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
-					</View>
-				</TouchableOpacity>
 			</View>
 		</ScrollView>
 	);

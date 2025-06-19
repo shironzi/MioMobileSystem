@@ -99,7 +99,11 @@ const announceCard = (props: {
 								<Text style={styles.date}>
 									{newDate} {props.time}
 								</Text>
-								<FontAwesome6 name="arrow-right-long" size={15} color="#000" />
+								<FontAwesome6
+									name="arrow-right-long"
+									size={15}
+									color="#1f1f1f"
+								/>
 							</View>
 						</View>
 					</TouchableOpacity>
