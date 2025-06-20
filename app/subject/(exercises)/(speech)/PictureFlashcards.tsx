@@ -15,6 +15,7 @@ import React, { memo, useEffect, useState } from "react";
 import {
 	Alert,
 	Image,
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -172,7 +173,11 @@ const PictureFlashcards = () => {
 		"Look at the picture. Tap and hold the microphone and say the name out loud. Try to pronounce it clearly.";
 	return (
 		<GestureHandlerRootView>
-			<View style={[styles.container, { flex: 1, backgroundColor: "#fff" }]}>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ paddingBottom: 50 }}
+				style={[styles.container, { flex: 1, backgroundColor: "#fff" }]}
+			>
 				<ActivityProgress
 					difficulty={difficulty}
 					totalItems={cards.length}
@@ -278,7 +283,7 @@ const PictureFlashcards = () => {
 						</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
+			</ScrollView>
 		</GestureHandlerRootView>
 	);
 };
@@ -317,11 +322,12 @@ const styles = StyleSheet.create({
 	continueButton: {
 		flex: 1,
 		marginHorizontal: 5,
-		left: 5,
+		left: -25,
 		padding: 17,
 		borderRadius: 15,
 		alignItems: "center",
 		width: "100%",
+		top: 70,
 	},
 	continueButtonText: {
 		color: "#fff",

@@ -224,40 +224,44 @@ const bingo = () => {
 				paddingBottom: 50,
 			}}
 			ListHeaderComponent={
-				<View
-					style={{
-						marginHorizontal: 10,
-						borderColor: "#ddd",
-						borderWidth: 1,
-						borderRadius: 20,
-						paddingHorizontal: 10,
-						marginBottom: 15,
-						marginTop: 20,
-					}}
-				>
-					<Text
+				<View>
+					{/* <Text style={styles.difficulty}>{difficulty}</Text> */}
+					<View
 						style={{
 							marginHorizontal: 10,
-							textAlign: "justify",
-							fontWeight: "500",
-							fontSize: 16,
-							color: "#2264dc",
-							marginTop: 10,
+							borderColor: "#ddd",
+							borderWidth: 1,
+							borderRadius: 20,
+							paddingHorizontal: 10,
+							marginBottom: 15,
+							marginTop: 20,
+							left: -5,
 						}}
 					>
-						Piddie Tips!
-					</Text>
-					{/* <Text style={styles.difficulty}>{difficulty}</Text> */}
-					<Text
-						style={{
-							marginTop: 5,
-							margin: 10,
-							textAlign: "justify",
-							fontWeight: "300",
-						}}
-					>
-						{getInstruction}
-					</Text>
+						<Text
+							style={{
+								marginHorizontal: 10,
+								textAlign: "justify",
+								fontWeight: "500",
+								fontSize: 16,
+								color: "#2264dc",
+								marginTop: 10,
+							}}
+						>
+							Piddie Tips!
+						</Text>
+
+						<Text
+							style={{
+								marginTop: 5,
+								margin: 10,
+								textAlign: "justify",
+								fontWeight: "300",
+							}}
+						>
+							{getInstruction}
+						</Text>
+					</View>
 				</View>
 			}
 			ListFooterComponent={
@@ -270,9 +274,21 @@ const bingo = () => {
 							marginVertical: 15,
 							marginHorizontal: 10,
 							width: "93%",
-							top: 10,
+							top: 0,
 						}}
 					>
+						<Text
+							style={{
+								textAlign: "center",
+								marginTop: -20,
+								top: 45,
+								left: 10,
+								fontWeight: 300,
+								fontSize: 14,
+							}}
+						>
+							Tap the speaker
+						</Text>
 						<TouchableOpacity
 							style={[
 								styles.speakerIcon,
@@ -306,12 +322,15 @@ const bingo = () => {
 
 const styles = StyleSheet.create({
 	difficulty: {
-		fontSize: 20,
-		fontWeight: "bold",
+		textTransform: "capitalize",
+		fontSize: 16,
+		marginTop: 15,
+		marginBottom: -5,
+		margin: 15,
+		color: "#000",
+		fontWeight: "500",
 		textAlign: "left",
-		height: "5%",
-		left: 5,
-		top: 10,
+		left: -5,
 	},
 	bingoCards: {
 		margin: "auto",
@@ -329,7 +348,6 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		paddingHorizontal: 10,
 		paddingVertical: 12,
-		// alignItems: "center",
 	},
 
 	listen: {
@@ -338,12 +356,11 @@ const styles = StyleSheet.create({
 	},
 	nextButton: {
 		flex: 1,
+		marginTop: -10,
 		marginHorizontal: 10,
 		padding: 17,
 		borderRadius: 15,
 		alignItems: "center",
-		// width: "30%",
-		// left: 220,
 	},
 
 	nextText: {
