@@ -33,7 +33,7 @@ const globalStyles = StyleSheet.create({
 	submitButtonText: {
 		textAlign: "center",
 		color: "#fff",
-		fontWeight: 500,
+		fontWeight: "bold",
 		fontSize: 16,
 	},
 	inactivityButtonText: {
