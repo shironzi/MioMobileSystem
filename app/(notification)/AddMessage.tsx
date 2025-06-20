@@ -20,6 +20,13 @@ import {
   sendMessage,
 } from "@/utils/messages";
 import { router } from "expo-router";
+import FileUpload from "@/components/FileUpload";
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
 
 const AddMessage = () => {
   useHeaderConfig("Message");
@@ -38,12 +45,13 @@ const AddMessage = () => {
   >([]);
   const [selectedSubject, setSelectedSubject] = useState<string>();
 
+  const [files, setFiles] = useState<FileInfo[]>([]);
+
   const handleSendMessage = async () => {
-    console.log("working");
-    console.log(receiver);
     if (!receiver) return;
 
-    const res = await sendMessage(receiver, message);
+    const res = await sendMessage(receiver, message, files);
+    console.log(res);
 
     if (res.success) {
       Keyboard.dismiss;
@@ -164,6 +172,11 @@ const AddMessage = () => {
               style={[styles.input, { height: 100, textAlignVertical: "top" }]}
             />
 
+            <View
+              style={{ width: "90%", marginHorizontal: "auto", marginTop: 10 }}
+            >
+              <FileUpload handleFiles={(file: FileInfo[]) => setFiles(file)} />
+            </View>
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={styles.cancelButton}
