@@ -696,6 +696,28 @@ export async function getQuiz(subjectId: string, quizId: string) {
   }
 }
 
+export async function getScoreActivityAttempt(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+  userId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
+    );
+
+    console.log(
+      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
+    );
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 export async function getQuizAttempts(subjectId: string, quizId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);

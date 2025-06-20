@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { getAttempts } from "@/utils/query";
+import { getScoreActivityAttempt } from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
@@ -48,7 +48,7 @@ const ScoreAttempts = () => {
 
   useEffect(() => {
     const fetchAttempts = async () => {
-      const res = await getAttempts(
+      const res = await getScoreActivityAttempt(
         subjectId,
         activityType,
         activityId,
