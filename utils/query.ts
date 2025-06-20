@@ -532,6 +532,7 @@ interface QuizInfo {
 
 interface QuizItem {
   id: string;
+  item_id?: string;
   question: string;
   choices: string[];
   answer: string[];
@@ -605,10 +606,89 @@ export async function createQuiz(
   }
 }
 
+export async function updateQuiz(
+  subjectId: string,
+  quizId: string,
+  quizInfo: QuizInfo,
+  quizItems: QuizItem[],
+) {
+  try {
+    const formdata = new FormData();
+
+    formdata.append("title", quizInfo.title);
+    formdata.append("description", quizInfo.description);
+    formdata.append("attempts", quizInfo.attempts.toString());
+    formdata.append("deadline_date", getDateAndTime(quizInfo.deadline) || "");
+    formdata.append("start_time", quizInfo.availableFrom);
+    formdata.append("end_time", quizInfo.availableTo);
+    formdata.append("time_limit", quizInfo.time_limit);
+    formdata.append("access_code", quizInfo.access_code || "");
+    formdata.append("show_correct_answers", "false");
+
+    quizItems.forEach((item, index) => {
+      formdata.append(`questions[${index}][question]`, item.question);
+
+      formdata.append(
+        `questions[${index}][answer]`,
+        Array.isArray(item.answer) ? item.answer.join("||") : item.answer,
+      );
+
+      formdata.append(`questions[${index}][points]`, item.points.toString());
+      formdata.append(`questions[${index}][questionType]`, item.questionType);
+
+      if (item.item_id) {
+        formdata.append(`questions[${index}][item_id]`, item.item_id);
+      }
+
+      if (item.multiple_type) {
+        formdata.append(
+          `questions[${index}][multiple_type]`,
+          item.multiple_type,
+        );
+      }
+
+      if (item.choices && item.choices.length > 0) {
+        item.choices.forEach((choice, optIdx) => {
+          formdata.append(`questions[${index}][options][${optIdx}]`, choice);
+        });
+      }
+    });
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formdata,
+      },
+    );
+
+    return await res.json();
+  } catch (err) {
+    console.error("Quiz update failed:", err);
+    throw err;
+  }
+}
+
 export async function getQuizzes(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/quiz`);
 
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function getQuiz(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
     return data;
   } catch (err) {
     console.error(err);

@@ -221,34 +221,52 @@ const newCourseDetails = () => {
 					</View>
 				</TouchableOpacity>
 
-				{role === "teacher" && (
-					<TouchableOpacity
-						style={styles.subCourse}
-						onPress={useCallback(() => {
-							router.push({
-								pathname: "/subject/attendance",
-								params: { subjectId: id, role: role },
-							});
-						}, [router, id, role])}
-					>
-						<View style={styles.row}>
-							<Image
-								source={require("@/assets/course/attendance.png")}
-								style={[styles.courseImg, { width: 40 }]}
-							/>
-							<Text style={{ fontSize: 14, left: -50 }}>Attendance</Text>
-							<FontAwesome6
+        {role === "teacher" && (
+          <TouchableOpacity
+            style={styles.subCourse}
+            onPress={useCallback(() => {
+              router.push({
+                pathname: "/subject/attendance",
+                params: { subjectId: id, role: role },
+              });
+            }, [router, id, role])}
+          >
+            <View style={styles.row}>
+              <Image
+                source={require("@/assets/course/attendance.png")}
+                style={[styles.courseImg, { width: 40 }]}
+              />
+              <Text style={{ fontSize: 14, left: -50 }}>Attendance</Text>
+              <FontAwesome6
 								name="arrow-right-long"
 								size={20}
 								color="#1f1f1f"
 								style={{ left: 15 }}
 							/>
-						</View>
-					</TouchableOpacity>
-				)}
-			</View>
-		</ScrollView>
-	);
+            </View>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={styles.subCourse}
+          onPress={useCallback(() => {
+            router.push({
+              pathname: "/subject/Quizzes",
+              params: { subjectId: id, role: role },
+            });
+          }, [router, id, role])}
+        >
+          <View style={styles.row}>
+            <Image
+              source={require("@/assets/course/module.png")}
+              style={[styles.courseImg, { width: 48, left: -10 }]}
+            />
+            <Text style={{ fontSize: 14, left: -65 }}>Quizzes</Text>
+            <FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
 };
 
 export default memo(newCourseDetails);

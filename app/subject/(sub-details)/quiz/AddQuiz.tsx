@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
@@ -12,10 +13,9 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import QuizFooter from "@/app/subject/(sub-details)/quiz/QuizFooter";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { createQuiz } from "@/utils/query";
-import { useLocalSearchParams } from "expo-router";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import useDebouncedCallback from "@/utils/useDebounceCallback";
+import { createQuiz, getQuiz, updateQuiz } from "@/utils/query";
+import { router, useLocalSearchParams } from "expo-router";
+import QuizHeader from "@/app/subject/(sub-details)/quiz/QuizHeader";
 
 interface QuizInfo {
   title: string;
@@ -30,6 +30,7 @@ interface QuizInfo {
 
 interface QuizItem {
   id: string;
+  item_id?: string;
   question: string;
   choices: string[];
   answer: string[];
@@ -52,7 +53,10 @@ interface QuizItemError {
 const AddQuiz = () => {
   useHeaderConfig("Quiz");
 
-  const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
+  const { subjectId, quizId } = useLocalSearchParams<{
+    subjectId: string;
+    quizId: string;
+  }>();
 
   const [quizInfo, setQuizInfo] = useState<QuizInfo>({
     title: "",
@@ -77,9 +81,8 @@ const AddQuiz = () => {
     },
   ]);
 
-  const [isKeyboardActive, setIsKeyboardActive] = useState<boolean>(true);
-
   const [inputErrors, setInputErrors] = useState<QuizItemError[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleQuestionInput = (value: string, id: string) => {
     setQuizItems((prev) =>
@@ -272,6 +275,8 @@ const AddQuiz = () => {
     ]);
   };
 
+  console.log(inputErrors);
+
   const handleCreateQuiz = async () => {
     setInputErrors([]);
 
@@ -327,13 +332,29 @@ const AddQuiz = () => {
     }
     setInputErrors([]);
 
-    const res = await createQuiz(subjectId, quizInfo, quizItems);
-    console.log(res);
-  };
+    const res = quizId
+      ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
+      : await createQuiz(subjectId, quizInfo, quizItems);
 
-  const [showDeadlinePicker, setShowDeadlinePicker] = useState(false);
-  const [showAvailableFromPicker, setShowAvailableFromPicker] = useState(false);
-  const [showAvailableToPicker, setShowAvailableToPicker] = useState(false);
+    console.log(res);
+    if (res.success) {
+      Alert.alert(
+        "Success",
+        res.message,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.back();
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
+  };
 
   useEffect(() => {
     let hasChanges = false;
@@ -354,21 +375,43 @@ const AddQuiz = () => {
     }
   }, [quizItems]);
 
-  // useEffect(() => {
-  //   const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-  //     setIsKeyboardActive(true);
-  //   });
-  //   const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-  //     setIsKeyboardActive(false);
-  //   });
-  //
-  //   return () => {
-  //     showSubscription.remove();
-  //     hideSubscription.remove();
-  //   };
-  // }, []);
+  useEffect(() => {
+    console.log(quizId);
+    if (quizId) {
+      setLoading(true);
+      const fetchQuiz = async () => {
+        const res = await getQuiz(subjectId, quizId);
 
-  const debouncedTitle = useDebouncedCallback(quizInfo.title, 300);
+        if (res.success) {
+          const items = res.items.map((item: any) => ({
+            id: item.id,
+            item_id: item.id,
+            question: item.question,
+            choices: item.options || [],
+            answer:
+              typeof item.answer === "string" ? [item.answer] : item.answer,
+            questionType: item.questionType,
+            multiple_type: item.multiple_type || "radio",
+            points: item.points,
+          }));
+
+          setQuizItems(items);
+          setQuizInfo(res.quiz_info);
+        }
+        setLoading(false);
+      };
+
+      fetchQuiz();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <View>
+        <Text>loading....</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -376,229 +419,14 @@ const AddQuiz = () => {
       data={quizItems}
       keyExtractor={(item) => item.id}
       style={{ backgroundColor: "#fff" }}
-      ListHeaderComponent={() => (
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: "#00000024",
-            margin: 20,
-            padding: 20,
-            borderRadius: 20,
-            backgroundColor: "#fff",
-            gap: 15,
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "25%" }]}>Title</Text>
-            <View style={{ width: "75%" }}>
-              {inputErrors.find((err) => err.name === "title") && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              <TextInput
-                value={quizInfo.title}
-                onChangeText={(value) => {
-                  setQuizInfo((prev) => ({
-                    ...prev,
-                    title: value,
-                  }));
-                }}
-                placeholder="Title"
-                style={globalStyles.inputContainer}
-              />
-            </View>
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "25%" }]}>
-              Description
-            </Text>
-            <View style={{ width: "75%" }}>
-              {inputErrors.find((err) => err.name === "description") && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              <TextInput
-                value={quizInfo.description}
-                onChangeText={(value) =>
-                  setQuizInfo((prev) => ({ ...prev, description: value }))
-                }
-                style={[
-                  globalStyles.inputContainer,
-                  inputErrors.find((err) => err.name === "description") && {
-                    borderColor: "red",
-                  },
-                ]}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              borderBottomWidth: 1,
-              marginHorizontal: -20,
-              borderColor: "#00000024",
-            }}
-          ></View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
-            <TouchableOpacity
-              onPress={() => setShowDeadlinePicker(true)}
-              style={[globalStyles.inputContainer, { width: "60%" }]}
-            >
-              <Text>
-                {quizInfo.deadline
-                  ? new Date(quizInfo.deadline).toDateString()
-                  : "Set Deadline"}
-              </Text>
-            </TouchableOpacity>
-            {showDeadlinePicker && (
-              <DateTimePicker
-                value={
-                  quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()
-                }
-                mode="date"
-                display={"default"}
-                onChange={(event, selectedDate) => {
-                  setShowDeadlinePicker(false);
-                  if (selectedDate) {
-                    setQuizInfo((prev) => ({
-                      ...prev,
-                      deadline: selectedDate.toISOString(),
-                    }));
-                  }
-                }}
-              />
-            )}
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "40%" }]}>
-              Available From
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowAvailableFromPicker(true)}
-              style={[globalStyles.inputContainer, { width: "60%" }]}
-            >
-              <Text>
-                {quizInfo.availableFrom
-                  ? new Date(quizInfo.availableFrom).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : "Set Available To"}
-              </Text>
-            </TouchableOpacity>
-            {showAvailableFromPicker && (
-              <DateTimePicker
-                value={
-                  quizInfo.availableFrom
-                    ? new Date(quizInfo.availableFrom)
-                    : new Date()
-                }
-                mode="time"
-                display={"default"}
-                onChange={(event, selectedDate) => {
-                  setShowAvailableFromPicker(false);
-                  if (selectedDate) {
-                    setQuizInfo((prev) => ({
-                      ...prev,
-                      availableFrom: selectedDate.toISOString(),
-                    }));
-                  }
-                }}
-              />
-            )}
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "40%" }]}>
-              Available To
-            </Text>
-            <View style={{ width: "60%" }}>
-              <TouchableOpacity
-                onPress={() => setShowAvailableToPicker(true)}
-                style={[globalStyles.inputContainer]}
-              >
-                <Text>
-                  {quizInfo.availableTo
-                    ? new Date(quizInfo.availableTo).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : "Set Available To"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {showAvailableToPicker && (
-              <DateTimePicker
-                value={
-                  quizInfo.availableTo
-                    ? new Date(quizInfo.availableTo)
-                    : new Date()
-                }
-                mode="time"
-                display={"default"}
-                onChange={(event, selectedDate) => {
-                  setShowAvailableToPicker(false);
-                  if (selectedDate) {
-                    setQuizInfo((prev) => ({
-                      ...prev,
-                      availableTo: selectedDate.toISOString(),
-                    }));
-                  }
-                }}
-              />
-            )}
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "40%" }]}>Attempts</Text>
-            <TextInput
-              value={quizInfo.attempts.toString()}
-              onChangeText={(value: string) => {
-                const num = parseInt(value);
-                setQuizInfo((prev) => ({
-                  ...prev,
-                  attempts: isNaN(num) ? 1 : num,
-                }));
-              }}
-              keyboardType="numeric"
-              style={[globalStyles.inputContainer, { width: "60%" }]}
-            />
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[globalStyles.title, { width: "40%" }]}>
-              Time Limit
-            </Text>
-            <TextInput
-              value={quizInfo.time_limit}
-              onChangeText={(value: string) => {
-                setQuizInfo((prev) => ({
-                  ...prev,
-                  time_limit: value,
-                }));
-              }}
-              keyboardType="numeric"
-              placeholder="in minutes"
-              style={[globalStyles.inputContainer, { width: "60%" }]}
-            />
-          </View>
-
-          <View>
-            <TouchableOpacity
-              style={globalStyles.submitButton}
-              onPress={() => handleCreateQuiz()}
-            >
-              <Text style={globalStyles.submitButtonText}>Create Quiz</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      ListHeaderComponent={
+        <QuizHeader
+          handleCreateQuiz={handleCreateQuiz}
+          setInfo={(info: QuizInfo) => setQuizInfo(info)}
+          info={quizInfo}
+          errors={inputErrors}
+        />
+      }
       renderItem={({ item, index }) => {
         const isFirst = index === 0;
         const isLast = index === quizItems.length - 1;
@@ -819,16 +647,26 @@ const AddQuiz = () => {
               {(item.questionType === "multiple_choice" ||
                 item.questionType === "dropdown") && (
                 <View style={{ rowGap: 10 }}>
-                  <View style={[globalStyles.textInputContainer]}>
+                  <View
+                    style={[globalStyles.textInputContainer, { rowGap: 5 }]}
+                  >
                     {item.answer.map((answer, index) => (
                       <Picker
                         key={index}
-                        selectedValue={item.answer[0] || ""}
+                        selectedValue={answer}
                         onValueChange={(value) => {
                           setQuizItems((prev) =>
-                            prev.map((q) =>
-                              q.id === item.id ? { ...q, answer: [value] } : q,
-                            ),
+                            prev.map((q) => {
+                              if (q.id !== item.id) return q;
+
+                              const updatedAnswers = [...q.answer];
+                              updatedAnswers[index] = value;
+
+                              return {
+                                ...q,
+                                answer: updatedAnswers,
+                              };
+                            }),
                           );
                         }}
                       >
