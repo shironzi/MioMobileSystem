@@ -24,10 +24,8 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PictureFlashcards = () => {
-	const router = useRouter();
-
 	HeaderConfigQuiz("Flashcards");
-
+	const router = useRouter();
 	interface PictureItem {
 		flashcard_id: string;
 		text: string;
@@ -297,7 +295,7 @@ const styles = StyleSheet.create({
 	flashcardContainer: {
 		backgroundColor: "#fff",
 		padding: 20,
-		height: 290,
+		height: 230,
 		borderRadius: 20,
 		borderColor: "#ddd",
 		borderWidth: 1,

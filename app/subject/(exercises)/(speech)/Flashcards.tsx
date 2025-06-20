@@ -223,7 +223,11 @@ const Flashcards = () => {
 							setRecordingAudio(uri);
 						}}
 					/>
-					{recordingAudio && <AudioPlayer uri={recordingAudio} />}
+					{recordingAudio && (
+						<View style={{ marginTop: 10 }}>
+							<AudioPlayer uri={recordingAudio} />
+						</View>
+					)}
 				</View>
 
 				<View>
@@ -256,7 +260,7 @@ const styles = StyleSheet.create({
 	flashcardContainer: {
 		backgroundColor: "#fff",
 		padding: 20,
-		height: 250,
+		height: 230,
 		borderRadius: 20,
 		borderColor: "#ddd",
 		borderWidth: 1,
