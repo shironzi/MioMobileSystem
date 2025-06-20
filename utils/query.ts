@@ -364,7 +364,7 @@ export async function getAttempts(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
+      `/subject/${subjectId}/attempts/${activityType}/${activityId}`,
     );
 
     return data;

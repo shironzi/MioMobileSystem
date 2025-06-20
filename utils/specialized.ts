@@ -61,23 +61,11 @@ export async function getActiveActivity(
   activityId: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/${activity_type}/${activityId}`;
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.get(
+      `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
+    );
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Error: " + text);
-    }
-
-    return await response.json();
+    return data;
   } catch (err) {
     console.error("Get Activities Fetch Failed: " + err);
   }
