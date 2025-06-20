@@ -71,10 +71,10 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 	},
 	title: {
-		fontSize: 16,
-		fontWeight: 500,
+		fontSize: 18,
+		fontWeight: "bold",
 		color: "#2264dc",
-		marginBottom: 10,
+		marginBottom: 15,
 	},
 	description: {
 		fontSize: 14,

@@ -15,6 +15,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+
 const data = [
 	{ label: "All", value: "all" },
 	{ label: "Academic", value: "academic" },
@@ -38,7 +39,15 @@ const index = () => {
 	const [role, setRole] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [selectedLabel, setSelectedLabel] = useState("All Subjects");
+	const [selectedLabel, setSelectedLabel] = useState("All");
+	const dropdownRef = React.useRef<View | null>(null);
+
+	const [dropdownPosition, setDropdownPosition] = useState({
+		x: 0,
+		y: 0,
+		width: 0,
+		height: 0,
+	});
 
 	useEffect(() => {
 		async function fetchSubjects() {
@@ -60,6 +69,12 @@ const index = () => {
 		if (!subjects) return [];
 		switch (selectedValue) {
 			case "academic":
+				return subjects.filter(
+					(s) => s.subjectType === "academics"
+					// s.subjectType === "academic" ||
+					// s.specialized_type === "language" ||
+					// s.specialized_type === "speech"
+				);
 			case "specialized":
 				return subjects.filter(
 					(s) =>
@@ -119,7 +134,13 @@ const index = () => {
 			<View style={styles.courseContainer}>
 				<Text style={styles.courseTitle}>Subjects</Text>
 				<TouchableOpacity
-					onPress={() => setShowDropdown(true)}
+					ref={dropdownRef}
+					onPress={() => {
+						dropdownRef.current?.measureInWindow?.((x, y, width, height) => {
+							setDropdownPosition({ x, y, width, height });
+							setShowDropdown(true);
+						});
+					}}
 					style={styles.dropdownTrigger}
 				>
 					<Text style={styles.selectedText}>{selectedLabel}</Text>
@@ -136,7 +157,13 @@ const index = () => {
 				onRequestClose={() => setShowDropdown(false)}
 			>
 				<TouchableOpacity
-					style={styles.modalBackdrop}
+					style={[
+						styles.modalBackdrop,
+						{
+							top: dropdownPosition.y + dropdownPosition.height,
+							left: dropdownPosition.x,
+						},
+					]}
 					activeOpacity={1}
 					onPressOut={() => setShowDropdown(false)}
 				>
@@ -299,11 +326,15 @@ const styles = StyleSheet.create({
 	},
 
 	modalBackdrop: {
-		flex: 1,
+		position: "absolute",
+		// flex: 1,
 		justifyContent: "center",
 		alignItems: "flex-end",
 		margin: 20,
-		top: 30,
+		right: 5,
+		marginTop: -10,
+
+		// top: 15,
 	},
 
 	dropdownModal: {
