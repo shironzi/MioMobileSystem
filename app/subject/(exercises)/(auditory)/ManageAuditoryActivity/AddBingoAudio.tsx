@@ -1,8 +1,7 @@
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
 import EditPlayer from "@/components/trainingActivities/EditPlayer";
-import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -47,10 +46,10 @@ const AddBingoAudio = ({
     >
       <View style={{ paddingHorizontal: 20 }}>
         {isFirst && (
-          <View>
-            <Text style={[globalStyles.text1, {paddingVertical:5}]}>
+          <View style={{marginVertical:5}}>
+            {/* <Text style={[globalStyles.text1, {paddingVertical:5, left:-10}]}>
               Audio
-            </Text>
+            </Text> */}
             {/* <View style={styles.divider} /> */}
           </View>
         )}
@@ -70,12 +69,5 @@ const AddBingoAudio = ({
   );
 };
 
-const styles = StyleSheet.create({
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: -20,
-  },
-});
 
 export default memo(AddBingoAudio);

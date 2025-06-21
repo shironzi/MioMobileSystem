@@ -1,3 +1,7 @@
+import LanguageAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageAudioUpload";
+import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { memo, useState } from "react";
 import {
   StyleSheet,
@@ -6,10 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import LanguageAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageAudioUpload";
-import { MaterialIcons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface FileInfo {
@@ -97,17 +97,17 @@ const LanguageFillActivity = ({
       >
         {item_id === 0 && (
           <View style={styles.headerContainer}>
-            <Text style={[globalStyles.text1, styles.headerText]}>
-              Fill in the Blanks
+            <Text style={[globalStyles.text1,{ marginTop:5 }]}>
+              Fill in the Blank
             </Text>
-            <View style={styles.divider} />
+            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
           </View>
         )}
         <View style={styles.itemBodyContainer}>
           <View style={[styles.itemHeaderRow]}>
             <Text style={globalStyles.text1}>Sentence</Text>
             <TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-              <AntDesign name="close" size={24} color="red" />
+              <AntDesign name="close" size={20} color="#aaa" />
             </TouchableOpacity>
           </View>
           {textError && <Text style={styles.errorText}>{textError}</Text>}
@@ -127,11 +127,11 @@ const LanguageFillActivity = ({
             onChangeText={(value: string) => handleTextInput(item.id, value)}
           />
         </View>
-        <View style={{ marginBottom: 20, rowGap: 7.5 }}>
+        <View style={{ marginBottom: 20, rowGap: 10 }}>
           {item.distractors.map((value, index) => (
             <View key={index}>
               {index === 0 && (
-                <Text style={globalStyles.text1}>Distractors</Text>
+                <Text style={[globalStyles.text1, { marginVertical:10, marginTop:-5 }]}>Distractors</Text>
               )}
               <View style={styles.distractorRow}>
                 <View style={{ width: "90%" }}>
@@ -156,7 +156,7 @@ const LanguageFillActivity = ({
                   <TouchableOpacity
                     onPress={() => handleRemoveDistractor(item.id, index)}
                   >
-                    <AntDesign name="close" size={24} color="red" />
+                    <AntDesign name="close" size={20} color="#aaa" />
                   </TouchableOpacity>
                 )}
               </View>
@@ -166,7 +166,7 @@ const LanguageFillActivity = ({
             style={styles.addItemRow}
             onPress={() => handleAddDistractor(item.id)}
           >
-            <MaterialIcons name="add" size={24} color="#FFBF18" />
+            <MaterialIcons name="add" size={20} color="#FFBF18" />
             <Text style={styles.addFileText}>Add distractor</Text>
           </TouchableOpacity>
         </View>
@@ -181,23 +181,33 @@ const LanguageFillActivity = ({
           }
           handleRemoveAudio={(id) => handleRemoveAudio(id)}
         />
-        <View style={styles.divider} />
-        {item.id === lastIndex && (
+            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
+            {item.id === lastIndex && (
           <View style={styles.footerContainer}>
             <TouchableOpacity
               style={styles.addItemRow}
               onPress={() => handleAddItem()}
             >
-              <MaterialIcons name="add" size={24} color="#FFBF18" />
+              <MaterialIcons name="add" size={20} color="#FFBF18" />
               <Text style={styles.addFileText}>Add Item</Text>
             </TouchableOpacity>
 
+            <View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10}}>
             <TouchableOpacity
-              style={globalStyles.submitButton}
+              style={[globalStyles.inactivityButton, {width:"48%"}]}
               onPress={handleSubmit}
             >
-              <Text style={globalStyles.submitButtonText}>Submit</Text>
+              <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+                style={[ globalStyles.submitButton, {width:"48%"} ]}
+              onPress={handleSubmit}
+            >
+              <Text style={[globalStyles.submitButtonText, {top:3}]}>Submit</Text>
+            </TouchableOpacity>
+            </View>
+
+            
           </View>
         )}
       </View>
@@ -208,9 +218,12 @@ const LanguageFillActivity = ({
 const styles = StyleSheet.create({
   itemContainer: {
     marginTop: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 25,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius:20
   },
   itemTopRounded: {
     borderTopLeftRadius: 20,
@@ -234,10 +247,11 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 10,
     paddingHorizontal: 10,
-    fontSize: 16,
+    fontSize: 14,
+    width:"100%"
   },
   errorBorder: {
-    borderColor: "red",
+    borderColor: "#db4141",
   },
   addFileText: {
     color: "#FFBF18",
@@ -253,7 +267,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 20,
+    marginTop:0,
+    marginVertical: 10,
   },
   footerContainer: {
     backgroundColor: "#fff",
@@ -262,6 +277,7 @@ const styles = StyleSheet.create({
   },
   addItemRow: {
     flexDirection: "row",
+    marginVertical:5
   },
   errorText: {
     color: "red",

@@ -1,12 +1,12 @@
+import AudioUpload from "@/components/trainingActivities/AudioUpload";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
+import Recording from "@/components/trainingActivities/Recording";
+import globalStyles from "@/styles/globalStyles";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Picker } from "@react-native-picker/picker";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import React, { memo, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import { Picker } from "@react-native-picker/picker";
-import AudioUpload from "@/components/trainingActivities/AudioUpload";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Recording from "@/components/trainingActivities/Recording";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -47,12 +47,13 @@ const LanguageAudioUpload = (props: {
 
   return (
     <View style={styles.audioRow}>
-      <Text style={globalStyles.text1}>Audio Type</Text>
+      <Text style={[globalStyles.text1, { marginVertical: 10, marginTop:-5 }]}>Audio Type</Text>
       <View
         style={{
           borderWidth: 1,
           borderRadius: 20,
           paddingHorizontal: 10,
+          borderColor:"#ddd"
         }}
       >
         <Picker
@@ -87,7 +88,7 @@ const LanguageAudioUpload = (props: {
                   <TouchableOpacity
                     onPress={() => props.handleRemoveAudio(props.item.id)}
                   >
-                    <AntDesign name="close" size={24} color="red" />
+                    <AntDesign name="close" size={24} color="#db4141" />
                   </TouchableOpacity>
                 </View>
                 {(props.item.audio_path || props.item.audio) && (
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
   audioRow: {
     flexDirection: "column",
     justifyContent: "space-around",
+  
   },
   itemHeaderRow: {
     flexDirection: "row",

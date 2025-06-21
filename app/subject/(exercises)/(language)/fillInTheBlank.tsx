@@ -1,11 +1,9 @@
-import HeaderConfig from "@/utils/HeaderConfig";
-import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import ActivityProgress from "@/components/activityProgress";
+import LoadingCard from "@/components/loadingCard";
+import FillInTheBlanks from "@/components/trainingActivities/language/FillInTheBlanks";
 import globalStyles from "@/styles/globalStyles";
-import { router, useLocalSearchParams } from "expo-router";
+import getCurrentDateTime from "@/utils/DateFormat";
+import HeaderConfig from "@/utils/HeaderConfig";
 import {
   getAttemptActivityLanguage,
   startFillActivity,
@@ -13,7 +11,10 @@ import {
 } from "@/utils/language";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import getCurrentDateTime from "@/utils/DateFormat";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const fillInTheBlank = () => {
   HeaderConfig("Fill in the Blank");
@@ -239,10 +240,7 @@ const fillInTheBlank = () => {
           backgroundColor: "#fff",
         }}
       >
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={{ marginTop: 10, fontSize: 16, color: "#333" }}>
-          Loading...
-        </Text>
+        <LoadingCard></LoadingCard>
       </View>
     );
   }

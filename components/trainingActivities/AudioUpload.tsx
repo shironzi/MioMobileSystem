@@ -67,12 +67,12 @@ const AudioUpload = (props: {
           </View>
         ) : (
             <View style={{
-              borderColor: "#ddd",
-              borderWidth: 1,
-              borderRadius: 20,
-              padding: 20,
-              width: "125%",
-              left: -35
+              // borderColor: "#ddd",
+              // borderWidth: 1,
+              // borderRadius: 20,
+              // padding: 20,
+              // width: "125%",
+              // left: -35
             }}>
               <TouchableOpacity
             style={[
@@ -124,10 +124,11 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderStyle: "dashed",
     padding: 15,
-    width: "100%",
+    width: "110%",
     borderRadius: 20,
     rowGap: 10,
     height: 100,
+    left:-13
   },
   addFileText: {
     color: "#1F1F1F68",

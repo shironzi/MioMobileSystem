@@ -42,7 +42,7 @@ const data = {
 };
 
 const AddSpeechActivity = () => {
-  useHeaderConfig("Add Flashcard");
+  useHeaderConfig("Add Speech Activity");
   const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
