@@ -24,10 +24,8 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const PictureFlashcards = () => {
-	const router = useRouter();
-
 	HeaderConfigQuiz("Flashcards");
-
+	const router = useRouter();
 	interface PictureItem {
 		flashcard_id: string;
 		text: string;
@@ -247,10 +245,11 @@ const PictureFlashcards = () => {
 						<Image
 							source={{ uri: cards[currentCard].image_url }}
 							style={{
-								width: 210,
-								height: 210,
+								width: 150,
+								height: 150,
 								borderRadius: 8,
 								margin: "auto",
+								// backgroundColor: "#ddd",
 							}}
 							resizeMode="contain"
 						/>
@@ -264,7 +263,11 @@ const PictureFlashcards = () => {
 								setRecordingAudio(uri);
 							}}
 						/>
-						{recordingAudio && <AudioPlayer uri={recordingAudio} />}
+						{recordingAudio && (
+							<View style={{ marginTop: 10 }}>
+								<AudioPlayer uri={recordingAudio} />
+							</View>
+						)}
 					</View>
 				</View>
 				<View style={globalStyles.submitWrapper}>
@@ -297,7 +300,7 @@ const styles = StyleSheet.create({
 	flashcardContainer: {
 		backgroundColor: "#fff",
 		padding: 20,
-		height: 290,
+		height: 230,
 		borderRadius: 20,
 		borderColor: "#ddd",
 		borderWidth: 1,
