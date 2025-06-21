@@ -34,7 +34,7 @@ const SpeechHeader = (props: {
      </View>
       
       
-      <Text style={{ fontSize: 16, fontWeight: 500 }}>Difficulty</Text>
+      <Text style={{ fontSize: 16, fontWeight: 500 }}>Difficulty Level</Text>
       <View style={styles.picker}>
       <Picker
         mode="dropdown"

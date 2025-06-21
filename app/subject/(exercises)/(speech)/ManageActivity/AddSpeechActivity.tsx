@@ -41,7 +41,7 @@ const data = {
 };
 
 const AddSpeechActivity = () => {
-  useHeaderConfig("Add Flashcard");
+  
 
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
@@ -87,14 +87,15 @@ const AddSpeechActivity = () => {
     }
   });
 
-  const header = (
+  const header = !activityId ? (
     <SpeechHeader
       activityType={activityType}
       setActivityType={setActivityType}
       activityDifficulty={activityDifficulty}
       setActivityDifficulty={setActivityDifficulty}
     />
-  );
+  ) : null;
+  
 
   useEffect(() => {
     if (!activityId) return;
@@ -149,6 +150,8 @@ const AddSpeechActivity = () => {
 
     fetchActivity();
   }, []);
+
+  useHeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
 
   return (
     <View style={{backgroundColor:"#fff"}}>

@@ -2,6 +2,7 @@ import ImageUpload from "@/components/ImageUpload";
 import globalStyles from "@/styles/globalStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import {
   StyleSheet,
@@ -68,6 +69,8 @@ const PictureItem = ({
       image_url: "",
     });
   };
+
+  const router = useRouter();
 
   const imageError = hasError.some((item) => item.error === "image");
   const wordError = hasError.some((item) => item.error === "word");
@@ -141,6 +144,7 @@ const PictureItem = ({
             style={[
               globalStyles.textInputContainer,
               wordError && styles.errorBorder,
+              {marginVertical:5, marginBottom:-5}
             ]}
             placeholder={"E.g., 'bare' for 'bear'"}
             value={item.text}
@@ -161,31 +165,21 @@ const PictureItem = ({
 
           <View style={{flexDirection:"row", justifyContent:"center", columnGap:10}}>
           <TouchableOpacity
-            style={[globalStyles.inactivityButton, {width:"48%"}]}
-            onPress={handlePreview}
+              style={[globalStyles.inactivityButton, { width: "48%" }]}
+              onPress={() => router.back()}
           >
-         
-              {/* <MaterialIcons name="add" size={20} color="#fff" /> */}
-              {/* <Ionicons name="add-circle" size={20} color="#fff" /> */}
             <Text style={globalStyles.inactivityButtonText}> Cancel
-              {/* {activityId ? "Update" : "Create"} Activity */}
             </Text>
           </TouchableOpacity>
             <TouchableOpacity
             style={[globalStyles.submitButton, {width:"48%"}]}
             onPress={handlePreview}
           >
-         
-              {/* <MaterialIcons name="add" size={20} color="#fff" /> */}
-              {/* <Ionicons name="add-circle" size={20} color="#fff" /> */}
             <Text style={[globalStyles.submitButtonText, {top:3}]}>
               {activityId ? "Update" : "Create"}
             </Text>
             </TouchableOpacity>
-     
           </View>
-         
-          
         </View>
       )}
     </View>
