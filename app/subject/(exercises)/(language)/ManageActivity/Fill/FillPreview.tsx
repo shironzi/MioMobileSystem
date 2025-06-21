@@ -92,6 +92,7 @@ const FillPreview = () => {
 
   return (
     <GestureHandlerRootView style={globalStyles.container}>
+      <View style={{borderColor:"#ddd", borderWidth:1, borderRadius:20, padding:10, marginBottom:20, flexDirection:"row"}}>
       <TouchableOpacity
         style={{
           backgroundColor: "#FFBF18",
@@ -101,8 +102,12 @@ const FillPreview = () => {
         }}
         onPress={handleAudioPlay}
       >
-        <FontAwesome6 name="volume-high" size={25} color="#fff" />
-      </TouchableOpacity>
+          <FontAwesome6 name="volume-high" size={25} color="#fff" />
+        </TouchableOpacity>
+        <Text style={{fontSize:14, fontWeight:300, alignSelf:"center", left:60, lineHeight:20}}>Tap the speaker icon.{"\n"}     Listen carefully!</Text>
+
+      </View>
+
 
       <FillInTheBlanks
         key={currentItem}

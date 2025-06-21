@@ -2,6 +2,7 @@ import LanguageAudioUpload from "@/app/subject/(exercises)/(language)/ManageActi
 import globalStyles from "@/styles/globalStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 import React, { memo, useState } from "react";
 import {
   StyleSheet,
@@ -85,6 +86,8 @@ const LanguageFillActivity = ({
       (err) => err.id === item.id && err.index === index,
     )?.errorMessage;
   };
+
+  const router = useRouter();
 
   return (
     <GestureHandlerRootView>
@@ -195,7 +198,7 @@ const LanguageFillActivity = ({
             <View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10}}>
             <TouchableOpacity
               style={[globalStyles.inactivityButton, {width:"48%"}]}
-              onPress={handleSubmit}
+              onPress={() => router.back()}
             >
               <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
             </TouchableOpacity>
