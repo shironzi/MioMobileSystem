@@ -1,7 +1,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -70,13 +70,5 @@ const AddMatchingCards = (props: {
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: -20,
-  },
-});
 
 export default memo(AddMatchingCards);

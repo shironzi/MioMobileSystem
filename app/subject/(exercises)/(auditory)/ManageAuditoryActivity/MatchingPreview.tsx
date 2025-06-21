@@ -1,3 +1,12 @@
+import globalStyles from "@/styles/globalStyles";
+import {
+  createMatchingActivity,
+  updateMatchingActivity,
+} from "@/utils/auditory";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useAudioPlayer } from "expo-audio";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -5,18 +14,9 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
-import {
-  createMatchingActivity,
-  updateMatchingActivity,
-} from "@/utils/auditory";
-import globalStyles from "@/styles/globalStyles";
-import { FontAwesome6 } from "@expo/vector-icons";
 import Svg, { Line } from "react-native-svg";
-import { useAudioPlayer } from "expo-audio";
-import useHeaderConfig from "@/utils/HeaderConfig";
 
 const { width, height } = Dimensions.get("window");
 
@@ -278,7 +278,7 @@ const MatchingPreview = () => {
   });
 
   return (
-    <View style={[globalStyles.container, { height: "100%" }]}>
+    <View style={[globalStyles.container, { flex: 1}]}>
       <View style={{ flex: 1 }}>
         <Svg
           height={height}
@@ -286,8 +286,8 @@ const MatchingPreview = () => {
           style={{
             position: "absolute",
             top: 0,
-            left: 0,
-            zIndex: -1,
+            left: -22,
+            zIndex: 1,
           }}
         >
           {connections.map((line, idx) => (
@@ -297,8 +297,8 @@ const MatchingPreview = () => {
               y1={line.y1}
               x2={line.x2}
               y2={line.y2}
-              stroke="blue"
-              strokeWidth={3}
+              stroke="#2264dc"
+              strokeWidth={2}
             />
           ))}
         </Svg>
@@ -319,17 +319,17 @@ const MatchingPreview = () => {
                 }}
                 style={[
                   {
-                    padding: 20,
-                    borderWidth: 1.5,
+                    padding: 10,
+                    borderWidth: 1,
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
                     backgroundColor: "#fff",
-                    marginVertical: 5,
+                    marginVertical: 2,
                   },
                   selectedAudio === index
-                    ? { borderColor: "#2264DC", borderWidth: 1.5 }
-                    : { borderColor: "#00000024" },
+                    ? { borderColor: "#ffbf18", borderWidth: 1 }
+                    : { borderColor: "#ddd" },
                 ]}
                 onLayout={(e) => {
                   const { x, y, height } = e.nativeEvent.layout;
@@ -342,12 +342,12 @@ const MatchingPreview = () => {
                 <View
                   style={{
                     borderRadius: 12,
-                    padding: 20,
-                    margin: "auto",
+                    padding: 18,
+                    margin: 3,
                     backgroundColor: "#FFBF18",
                   }}
                 >
-                  <FontAwesome6 name="volume-high" size={25} color="#fff" />
+                  <FontAwesome6 name="volume-high" size={20} color="#fff" />
                 </View>
               </TouchableOpacity>
             ))}
@@ -361,17 +361,18 @@ const MatchingPreview = () => {
                 }}
                 style={[
                   {
-                    padding: 5,
-                    borderWidth: 1.5,
+                    padding: 2,
+                    borderWidth: 1,
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
                     backgroundColor: "#fff",
-                    marginVertical: 5,
+                    marginVertical: 2,
+                    // marginVertical: 5,
                   },
                   selectedImage === index
-                    ? { borderColor: "#2264DC", borderWidth: 1.5 }
-                    : { borderColor: "#00000024" },
+                    ? { borderColor: "#2264DC", borderWidth: 1 }
+                    : { borderColor: "#ddd" },
                 ]}
                 onLayout={(e) => {
                   const { x, y, height } = e.nativeEvent.layout;
@@ -382,10 +383,11 @@ const MatchingPreview = () => {
                 }}
               >
                 <Image
+                  resizeMode="contain"
                   source={{ uri: item.file?.uri || item.image_path || "" }}
                   style={{
-                    width: 105,
-                    height: 97,
+                    width: 100,
+                    height: 80,
                     borderRadius: 15,
                   }}
                 />
@@ -394,12 +396,22 @@ const MatchingPreview = () => {
           </View>
         </View>
       </View>
+      <View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, bottom:10}}>
       <TouchableOpacity
-        style={globalStyles.submitButton}
+        style={[globalStyles.inactivityButton, {width:"48%"}]}
         onPress={handleSubmit}
       >
-        <Text style={globalStyles.submitButtonText}>Submit</Text>
+        <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+          style={[globalStyles.submitButton, {width:"48%"}]}
+        onPress={handleSubmit}
+      >
+        <Text style={[globalStyles.submitButtonText, {top:3}]}>Submit</Text>
+      </TouchableOpacity>
+
+      </View>
+     
     </View>
   );
 };

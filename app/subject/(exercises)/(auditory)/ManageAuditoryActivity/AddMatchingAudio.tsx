@@ -2,7 +2,7 @@ import AudioUpload from "@/components/trainingActivities/AudioUpload";
 import EditPlayer from "@/components/trainingActivities/EditPlayer";
 import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -69,12 +69,5 @@ const AddMatchingAudio = ({
   );
 };
 
-const styles = StyleSheet.create({
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#82828257",
-    marginHorizontal: -20,
-  },
-});
 
 export default memo(AddMatchingAudio);
