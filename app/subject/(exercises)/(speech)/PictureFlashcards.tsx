@@ -245,10 +245,11 @@ const PictureFlashcards = () => {
 						<Image
 							source={{ uri: cards[currentCard].image_url }}
 							style={{
-								width: 210,
-								height: 210,
+								width: 150,
+								height: 150,
 								borderRadius: 8,
 								margin: "auto",
+								// backgroundColor: "#ddd",
 							}}
 							resizeMode="contain"
 						/>
@@ -262,7 +263,11 @@ const PictureFlashcards = () => {
 								setRecordingAudio(uri);
 							}}
 						/>
-						{recordingAudio && <AudioPlayer uri={recordingAudio} />}
+						{recordingAudio && (
+							<View style={{ marginTop: 10 }}>
+								<AudioPlayer uri={recordingAudio} />
+							</View>
+						)}
 					</View>
 				</View>
 				<View style={globalStyles.submitWrapper}>
