@@ -1,4 +1,8 @@
-import React, { memo, useState } from "react";
+import ImageUpload from "@/components/ImageUpload";
+import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import React, { memo } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,10 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import ImageUpload from "@/components/ImageUpload";
-import globalStyles from "@/styles/globalStyles";
-import { MaterialIcons } from "@expo/vector-icons";
 
 interface InputError {
   id: string;
@@ -77,10 +77,14 @@ const PictureItem = ({
     <View
       style={[
         {
-          marginHorizontal: 20,
+          margin: 20,
           padding: 20,
           backgroundColor: "#fff",
           rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius:20,
+
         },
         item.id === firstIndex && styles.itemTopRounded,
         item.id === lastIndex && styles.itemBottomRounded,
@@ -88,8 +92,8 @@ const PictureItem = ({
     >
       {item.id === firstIndex && (
         <View>
-          <Text style={globalStyles.text1}>Picture Flashcards</Text>
-          <View style={[globalStyles.divider]} />
+          <Text style={[globalStyles.text1, {marginTop:-5}]}>Picture Flashcards</Text>
+          <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
         </View>
       )}
       <View
@@ -101,7 +105,7 @@ const PictureItem = ({
       >
         <Text style={globalStyles.text1}>Number {index + 1}</Text>
         <TouchableOpacity onPress={() => handleRemove(item.id)}>
-          <AntDesign name="close" size={24} color="red" />
+          <AntDesign name="close" size={24} color="#aaa" />
         </TouchableOpacity>
       </View>
       <View style={{ rowGap: 10 }}>
@@ -142,22 +146,29 @@ const PictureItem = ({
           />
         </View>
       </View>
-      <View style={[globalStyles.divider]} />
+      <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
+
 
       {item.id === lastIndex && (
         <View style={styles.footerContainer}>
           <TouchableOpacity style={styles.addItemRow} onPress={handleAdd}>
-            <MaterialIcons name="add" size={24} color="#FFBF18" />
+            <MaterialIcons name="add" size={20} color="#FFBF18" />
             <Text style={styles.addFileText}>Add Item</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={globalStyles.submitButton}
+            style={[globalStyles.submitButton, {width:"100%"}]}
             onPress={handlePreview}
           >
+            <View style={{flexDirection:"row", justifyContent:"space-between", alignSelf:"center", columnGap:5}}>
+              {/* <MaterialIcons name="add" size={20} color="#fff" /> */}
+              {/* <Ionicons name="add-circle" size={20} color="#fff" /> */}
             <Text style={globalStyles.submitButtonText}>
               {activityId ? "Update" : "Create"} Activity
             </Text>
+
+            </View>
+         
           </TouchableOpacity>
         </View>
       )}

@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
 import { getAttempt } from "@/utils/query";
+import { useLocalSearchParams } from "expo-router";
+import React, { memo, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
@@ -79,8 +79,9 @@ const AuditoryScores = () => {
   }, []);
 
   return (
-    <ScrollView>
-      <View style={[globalStyles.container, { rowGap: 20 }]}>
+    <ScrollView showsVerticalScrollIndicator={false}
+    contentContainerStyle={{paddingBottom:50, flex:1}}>
+      <View style={[globalStyles.container, { rowGap: 20, flex:1, margin:20, }]}>
         <View>
           <Text style={styles.title}>{getTitle(activityType)}</Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
@@ -142,6 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     lineHeight: 28,
+    textTransform:"capitalize"
   },
   sectionTitle: {
     fontWeight: "bold",
