@@ -821,3 +821,13 @@ export async function finalizeQuiz(
     throw err;
   }
 }
+
+export async function generateScorebook(subjectId: string) {
+  try {
+    const { data } = await api.get(``);
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}

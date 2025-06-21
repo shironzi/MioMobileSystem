@@ -61,7 +61,9 @@
     "react-native-system-setting": "^1.7.6",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "expo-file-system": "~18.1.10",
+    "expo-sharing": "~13.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
