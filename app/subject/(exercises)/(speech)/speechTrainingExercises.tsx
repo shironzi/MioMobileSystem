@@ -83,7 +83,7 @@ const SpeechTrainingExercise = () => {
           style={styles.img}
         />
         <Text style={[styles.practice]}>PRACTICE WITH</Text>
-        <Text style={[styles.actName]}>Picture FlashCards</Text>
+        <Text style={[styles.actName]}>Picture Flashcards</Text>
         <View style={styles.choose}>
           <Text
             style={{
@@ -108,7 +108,7 @@ const SpeechTrainingExercise = () => {
           style={styles.img}
         />
         <Text style={[styles.practice]}>PRACTICE WITH</Text>
-        <Text style={[styles.actName]}>Word FlashCards</Text>
+        <Text style={[styles.actName]}>Word Flashcards</Text>
         <View style={styles.choose}>
           <Text
             style={{
@@ -134,7 +134,7 @@ const SpeechTrainingExercise = () => {
           style={[styles.img, { height: 50, width: 50 }]}
         />
         <Text style={[styles.practice]}>PRACTICE WITH</Text>
-        <Text style={[styles.actName]}>Reading FlashCards</Text>
+        <Text style={[styles.actName]}>Reading Flashcards</Text>
         <View style={styles.choose}>
           <Text
             style={{

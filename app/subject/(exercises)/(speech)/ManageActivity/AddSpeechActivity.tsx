@@ -1,13 +1,13 @@
-import React, { memo, useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
-import PictureRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureRenderItem";
-import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionRenderItem";
 import PhraseRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Phrase/PhraseRenderItem";
+import PictureRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureRenderItem";
 import PronunciationRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Pronunciation/PronunciationRenderItem";
+import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionRenderItem";
 import SpeechHeader from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechHeader";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { useLocalSearchParams } from "expo-router";
 import { getActivityById } from "@/utils/specialized";
+import { useLocalSearchParams } from "expo-router";
+import React, { memo, useEffect, useState } from "react";
+import { FlatList, View } from "react-native";
 
 interface FileInfo {
   uri: string;
@@ -41,7 +41,7 @@ const data = {
 };
 
 const AddSpeechActivity = () => {
-  useHeaderConfig("Add Flashcard");
+  
 
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
@@ -87,14 +87,15 @@ const AddSpeechActivity = () => {
     }
   });
 
-  const header = (
+  const header = !activityId ? (
     <SpeechHeader
       activityType={activityType}
       setActivityType={setActivityType}
       activityDifficulty={activityDifficulty}
       setActivityDifficulty={setActivityDifficulty}
     />
-  );
+  ) : null;
+  
 
   useEffect(() => {
     if (!activityId) return;
@@ -113,7 +114,7 @@ const AddSpeechActivity = () => {
         if (activity_type === "picture") {
           const formatted: PictureItem[] = Object.values(flashcards).map(
             (item: any) => ({
-              id: item.flashcard_id, // ensure UUID key
+              id: item.flashcard_id, 
               flashcard_id: item.flashcard_id,
               file: null,
               image_url: item.image_url,
@@ -150,8 +151,10 @@ const AddSpeechActivity = () => {
     fetchActivity();
   }, []);
 
+  useHeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
+
   return (
-    <View>
+    <View style={{backgroundColor:"#fff"}}>
       {activityType === "picture" && (
         <FlatList
           data={pictureFlashcard}

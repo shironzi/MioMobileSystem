@@ -1,3 +1,7 @@
+import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import {
   StyleSheet,
@@ -6,9 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import globalStyles from "@/styles/globalStyles";
-import { MaterialIcons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface InputError {
   id: string;
@@ -54,17 +56,27 @@ const QuestionItem = ({
     });
   };
 
+  const router = useRouter();
   const wordError = hasError.some((item) => item.error === "word");
   const textLimit = hasError.some((item) => item.error === "text length");
 
   return (
-    <View
+    <SafeAreaView
+      style={{ paddingBottom: 50, flex: 1,}}>
+          <View
       style={[
         {
           marginHorizontal: 20,
           padding: 20,
           backgroundColor: "#fff",
           rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          marginTop: -5,
+          marginVertical:-80,
+          flex:1,
+          // marginBottom:150
         },
         item.id === firstIndex && styles.itemTopRounded,
         item.id === lastIndex && styles.itemBottomRounded,
@@ -72,8 +84,8 @@ const QuestionItem = ({
     >
       {item.id === firstIndex && (
         <View>
-          <Text style={globalStyles.text1}>Question Flashcards</Text>
-          <View style={[globalStyles.divider]} />
+          <Text style={[globalStyles.text1, {marginTop:-5}]}>Word Flashcards</Text>
+          <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
         </View>
       )}
       <View
@@ -85,7 +97,7 @@ const QuestionItem = ({
       >
         <Text style={globalStyles.text1}>Number {index + 1}</Text>
         <TouchableOpacity onPress={() => handleRemove(item.id)}>
-          <AntDesign name="close" size={24} color="red" />
+          <AntDesign name="close" size={24} color="#aaa" />
         </TouchableOpacity>
       </View>
       <View style={{ marginBottom: 10 }}>
@@ -103,14 +115,16 @@ const QuestionItem = ({
           style={[
             globalStyles.textInputContainer,
             wordError && styles.errorBorder,
+            {marginVertical:5, marginBottom:-5}
           ]}
           placeholder={"E.g., 'bare' for 'bear'"}
           value={item.text}
           onChangeText={(value) => handleTextInput(item.id, value)}
         />
       </View>
-      <View style={[globalStyles.divider]} />
-
+      {item.id === lastIndex && (
+        <View style={[globalStyles.divider, { marginVertical: 10, width: 350, left: -10 }]} />
+      )}
       {item.id === lastIndex && (
         <View style={styles.footerContainer}>
           <TouchableOpacity style={styles.addItemRow} onPress={handleAdd}>
@@ -118,17 +132,29 @@ const QuestionItem = ({
             <Text style={styles.addFileText}>Add Item</Text>
           </TouchableOpacity>
 
+          <View style={{flexDirection:"row", justifyContent:"center", columnGap:10}}>
           <TouchableOpacity
-            style={globalStyles.submitButton}
-            onPress={handlePreview}
+              style={[globalStyles.inactivityButton, { width: "48%" }]}
+              onPress={() => router.back()}
           >
-            <Text style={globalStyles.submitButtonText}>
-              {activityId ? "Update" : "Create"} Activity
+            <Text style={globalStyles.inactivityButtonText}> Cancel
             </Text>
           </TouchableOpacity>
+            <TouchableOpacity
+            style={[globalStyles.submitButton, {width:"48%"}]}
+            onPress={handlePreview}
+          >
+            <Text style={[globalStyles.submitButtonText, {top:3}]}>
+              {activityId ? "Update" : "Create"}
+            </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
+
+    </SafeAreaView>
+
   );
 };
 

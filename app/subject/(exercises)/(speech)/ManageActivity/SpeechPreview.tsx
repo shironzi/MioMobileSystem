@@ -1,3 +1,10 @@
+import globalStyles from "@/styles/globalStyles";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import {
+  createSpeechActivity,
+  updateSpeechActivity
+} from "@/utils/specialized";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useMemo, useState } from "react";
 import {
@@ -8,14 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import globalStyles from "@/styles/globalStyles";
-import {
-  createPictureSpeechActivity,
-  createSpeechActivity,
-  updateSpeechActivity,
-} from "@/utils/specialized";
-import useHeaderConfig from "@/utils/HeaderConfig";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -133,7 +132,7 @@ const SpeechPreview = () => {
     <View style={styles.container}>
       <Animated.View style={styles.flashcardContainer}>
         <Image
-          source={require("@/assets/images/orange.png")}
+          source={require("@/assets/images/face/echo.png")}
           style={styles.bannerLogo}
         />
         <Animated.View style={[styles.textContainer, animatedStyle]}>
@@ -177,7 +176,8 @@ const SpeechPreview = () => {
           style={globalStyles.submitButton}
           onPress={handleSubmit}
         >
-          <Text style={globalStyles.submitButtonText}>Create Activity</Text>
+          {/* <FontAwesome6 name="add" size={20} color="#fff" /> */}
+          <Text style={globalStyles.submitButtonText}>Create</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -187,7 +187,7 @@ const SpeechPreview = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
     padding: 20,
   },
   flashcardContainer: {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFBF18",
   },
   nextButtonDisabled: {
-    backgroundColor: "gray",
+    backgroundColor: "#ddd",
   },
   nextButtonText: {
     color: "#fff",

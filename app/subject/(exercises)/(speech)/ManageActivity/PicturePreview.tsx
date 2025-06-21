@@ -1,3 +1,10 @@
+import globalStyles from "@/styles/globalStyles";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import {
+  createPictureSpeechActivity,
+  updatePictureActivity,
+} from "@/utils/specialized";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useMemo, useState } from "react";
 import {
@@ -8,13 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import globalStyles from "@/styles/globalStyles";
-import {
-  createPictureSpeechActivity,
-  updatePictureActivity,
-} from "@/utils/specialized";
-import useHeaderConfig from "@/utils/HeaderConfig";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -137,8 +137,9 @@ const PictureFlashcards = () => {
     <View style={styles.container}>
       <Animated.View style={styles.flashcardContainer}>
         <Image
-          source={require("@/assets/images/orange.png")}
+          source={require("@/assets/images/face/echo.png")}
           style={styles.bannerLogo}
+          resizeMode="contain"
         />
         <Animated.Image
           source={{
@@ -176,17 +177,26 @@ const PictureFlashcards = () => {
           onPress={handlePrev}
         >
           <FontAwesome6 name="arrow-left-long" size={16} color="#fff" />
-          <Text style={styles.nextButtonText}>prev</Text>
+          <Text style={styles.nextButtonText}>Prev</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.submitWrapper}>
+      <View style={[styles.submitWrapper,{flexDirection:"row", columnGap:10}]}>
+      <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+           
+        >
+          <Text style={globalStyles.inactivityButtonText}> Cancel
+            {/* {activityId ? "Update" : "Create"} Activity */}
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
-          style={globalStyles.submitButton}
+          style={[globalStyles.submitButton, {width:"48%"}]}
           onPress={handleSubmit}
         >
-          <Text style={globalStyles.submitButtonText}>
-            {activityId ? "Update" : "Create"} Activity
+          <Text style={[globalStyles.submitButtonText, {top:3}]}>
+            {activityId ? "Update" : "Create"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -197,13 +207,15 @@ const PictureFlashcards = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
     padding: 20,
   },
   flashcardContainer: {
     backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth:1,
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 20,
     alignItems: "center",
   },
   bannerLogo: {
@@ -215,9 +227,10 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   flashcardImage: {
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 200,
     borderRadius: 8,
+    marginTop: 40
   },
   flashcardText: {
     fontSize: 20,
@@ -256,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFBF18",
   },
   nextButtonDisabled: {
-    backgroundColor: "gray",
+    backgroundColor: "#aaa",
   },
   nextButtonText: {
     color: "#fff",
