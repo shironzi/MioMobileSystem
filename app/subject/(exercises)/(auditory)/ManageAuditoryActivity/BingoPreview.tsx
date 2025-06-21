@@ -1,3 +1,9 @@
+import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
+import globalStyles from "@/styles/globalStyles";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import { createBingoActivity, updateBingoActivity } from "@/utils/auditory";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
 import {
@@ -8,12 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { FontAwesome6 } from "@expo/vector-icons";
-import globalStyles from "@/styles/globalStyles";
-import { useAudioPlayer } from "expo-audio";
-import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
-import useHeaderConfig from "@/utils/HeaderConfig";
-import { createBingoActivity, updateBingoActivity } from "@/utils/auditory";
 
 interface FileInfo {
   uri: string;
@@ -160,7 +160,7 @@ const BingoPreview = () => {
   };
 
   return (
-    <View style={[globalStyles.container, { height: "100%", padding: 20 }]}>
+    <View style={[globalStyles.container, { flex:1, padding: 20 }]}>
       <Text style={styles.difficulty}>select answers: </Text>
       <FlatList
         style={styles.bingoCards}

@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AddBingoAudio from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddBingoAudio";
 import AddMatchingAudio from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddMatchingAudio";
-import { MaterialIcons } from "@expo/vector-icons";
 import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface FileInfo {
   uri: string;
@@ -17,7 +18,7 @@ interface Audio {
   audio_path: string;
   audio: FileInfo | null;
 }
-
+const router = useRouter();
 const ListFooter = (props: {
   activityType: string | null;
   activityId: string;
@@ -29,16 +30,17 @@ const ListFooter = (props: {
   handleAddAudio: () => void;
   handleRoute: () => void;
 }) => (
-  <View style={[{ marginBottom: 50 }]}>
-    <View style={styles.addItems}>
+  
+  <View style={[{ marginBottom: 50, flex:1}]}>
+    <View style={[styles.addItems, {marginBottom:-10}]}>
       <TouchableOpacity
         style={styles.addFileRow}
         onPress={() => props.handleAddItem()}
       >
-        <MaterialIcons name="add" size={24} color="#FFBF18" />
+        <MaterialIcons name="add" size={20} color="#FFBF18" />
         <Text style={styles.addFileText}>Add Image</Text>
       </TouchableOpacity>
-      <View style={styles.divider} />
+      {/* <View style={styles.divider} /> */}
     </View>
     {props.activityType === "bingo"
       ? props.bingoAudio.map((item, index) => (
@@ -64,22 +66,29 @@ const ListFooter = (props: {
           />
         ))}
 
-    <View style={styles.addItems}>
+    <View style={[styles.addItems]}>
       <TouchableOpacity
         style={styles.addFileRow}
         onPress={() => props.handleAddAudio()}
       >
-        <MaterialIcons name="add" size={24} color="#FFBF18" />
+        <MaterialIcons name="add" size={20} color="#FFBF18" />
         <Text style={styles.addFileText}>Add Audio</Text>
       </TouchableOpacity>
     </View>
     <View style={styles.continueContainer}>
       <TouchableOpacity
-        style={globalStyles.submitButton}
+        style={[globalStyles.inactivityButton, { width: "48%" }]}
+        onPress={() => router.back()}>
+        <Text style={[globalStyles.inactivityButtonText]}>Cancel
+          {/* {props.activityId ? "Update" : "Create"} */}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[globalStyles.submitButton, {width:"48%"}]}
         onPress={props.handleRoute}
       >
         <Text style={[globalStyles.submitButtonText, styles.continueButton]}>
-          {props.activityId ? "Edit Answers" : "Continue to Answer Selection"}
+          {props.activityId ? "Update" : "Create"}
         </Text>
       </TouchableOpacity>
     </View>
@@ -89,8 +98,9 @@ const ListFooter = (props: {
 const styles = StyleSheet.create({
   addItems: {
     paddingHorizontal: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     backgroundColor: "#fff",
+    // marginVertical:-5
   },
   addFileRow: {
     flexDirection: "row",
@@ -100,27 +110,21 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   continueContainer: {
-    paddingHorizontal: 20,
-    marginHorizontal: 20,
-    backgroundColor: "#fff",
-    paddingBottom: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    flexDirection: "row",
+    columnGap: 10,
+    marginHorizontal: 30,
+    marginTop:10,
   },
   addFileText: {
     color: "#FFBF18",
     fontSize: 16,
   },
   continueButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: "auto",
-    justifyContent: "center",
-    columnGap: 15,
+    top:3,
   },
   divider: {
     borderTopWidth: 1,
-    borderColor: "#82828257",
+    borderColor: "#ddd",
   },
 });
 

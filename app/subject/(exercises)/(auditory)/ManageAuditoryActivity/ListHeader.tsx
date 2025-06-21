@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const ListHeader = (props: {
   activityType: string;
@@ -11,7 +11,8 @@ const ListHeader = (props: {
 }) => (
   <View style={styles.header}>
     <View style={globalStyles.cardContainer}>
-      <Text>Type of Exercise</Text>
+      <Text style={{fontSize:16, fontWeight:500}}>Type of Exercise</Text>
+      <View style={styles.picker}>
       <Picker
         mode="dropdown"
         selectedValue={props.activityType}
@@ -19,11 +20,14 @@ const ListHeader = (props: {
           props.setActivityType(value);
         }}
       >
-        <Picker.Item label="Bingo Cards" value="bingo" />
+        <Picker.Item label="Piddie Says" value="bingo" />
         <Picker.Item label="Matching Cards" value="matching" />
       </Picker>
 
-      <Text>Difficulty</Text>
+      </View>
+     
+      <Text style={{fontSize:16, fontWeight:500}}>Difficulty Level</Text>
+      <View style={styles.picker}>
       <Picker
         mode="dropdown"
         selectedValue={props.activityDifficulty}
@@ -34,20 +38,36 @@ const ListHeader = (props: {
         <Picker.Item label="Difficult" value="difficult" />
         <Picker.Item label="Challenge" value="challenge" />
       </Picker>
+
+      </View>
+     
     </View>
   </View>
 );
 
 const styles = StyleSheet.create({
   header: {
-    padding: 16,
-    backgroundColor: "#f2f2f2",
-    marginTop: 20,
+    padding: 3,
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    margin: 20,
+    marginBottom: 5,
+
   },
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
   },
+  picker: {
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginVertical:10
+  }
+
 });
 
 export default ListHeader;

@@ -1,3 +1,6 @@
+import AudioUpload from "@/components/trainingActivities/AudioUpload";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
+import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -5,9 +8,6 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
-import globalStyles from "@/styles/globalStyles";
-import AudioUpload from "@/components/trainingActivities/AudioUpload";
-import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -49,9 +49,8 @@ const AddMatchingAudio = ({
         {isFirst && (
           <View>
             <Text style={[globalStyles.text1, { paddingVertical: 10 }]}>
-              Card Audio
+              Audio
             </Text>
-            <View style={styles.divider} />
           </View>
         )}
         <AudioUpload
