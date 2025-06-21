@@ -1,3 +1,6 @@
+import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { memo } from "react";
 import {
   StyleSheet,
@@ -6,9 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import globalStyles from "@/styles/globalStyles";
-import { MaterialIcons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface InputError {
   id: string;
@@ -58,13 +59,18 @@ const PronunciationItem = ({
   const textLimit = hasError.some((item) => item.error === "text length");
 
   return (
-    <View
+    <SafeAreaView style={{paddingBottom: 50,flex:1}}>
+          <View
       style={[
         {
-          marginHorizontal: 20,
+          margin: 20,
           padding: 20,
           backgroundColor: "#fff",
           rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          marginTop:-5,
         },
         item.id === firstIndex && styles.itemTopRounded,
         item.id === lastIndex && styles.itemBottomRounded,
@@ -72,9 +78,9 @@ const PronunciationItem = ({
     >
       {item.id === firstIndex && (
         <View>
-          <Text style={globalStyles.text1}>Phrase Flashcards</Text>
-          <View style={[globalStyles.divider]} />
-        </View>
+        <Text style={[globalStyles.text1, {marginTop:-5}]}>Reading Flashcards</Text>
+        <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
+      </View>
       )}
       <View
         style={{
@@ -85,7 +91,7 @@ const PronunciationItem = ({
       >
         <Text style={globalStyles.text1}>Number {index + 1}</Text>
         <TouchableOpacity onPress={() => handleRemove(item.id)}>
-          <AntDesign name="close" size={24} color="red" />
+          <AntDesign name="close" size={24} color="#aaa" />
         </TouchableOpacity>
       </View>
       <View style={{ marginBottom: 10 }}>
@@ -104,12 +110,12 @@ const PronunciationItem = ({
             globalStyles.textInputContainer,
             wordError && styles.errorBorder,
           ]}
-          placeholder={"E.g., 'bare' for 'bear'"}
+          placeholder={"E.g., The dog is barking."}
           value={item.text}
           onChangeText={(value) => handleTextInput(item.id, value)}
         />
       </View>
-      <View style={[globalStyles.divider]} />
+      <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
 
       {item.id === lastIndex && (
         <View style={styles.footerContainer}>
@@ -119,16 +125,21 @@ const PronunciationItem = ({
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={globalStyles.submitButton}
+            style={[globalStyles.submitButton, {width:"100%"}]}
             onPress={handlePreview}
           >
+            <View style={{flexDirection:"row", justifyContent:"space-between", alignSelf:"center", columnGap:5}}>
             <Text style={globalStyles.submitButtonText}>
               {activityId ? "Update" : "Create"} Activity
             </Text>
+            </View>
           </TouchableOpacity>
         </View>
       )}
     </View>
+
+    </SafeAreaView>
+
   );
 };
 

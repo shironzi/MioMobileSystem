@@ -23,7 +23,7 @@ const SpeechHeader = (props: {
         >
         <Picker.Item label="Picture Flashcards" value="picture" />
         <Picker.Item label="Word Flashcards" value="question" />
-        <Picker.Item label="ReadMe Flashcards" value="phrase" />
+        <Picker.Item label="Reading Flashcards" value="phrase" />
         {/* <Picker.Item
           label="Readme: Pronunciation Challenge"
           value="pronunciation"

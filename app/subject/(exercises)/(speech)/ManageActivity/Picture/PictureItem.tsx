@@ -83,7 +83,9 @@ const PictureItem = ({
           rowGap: 10,
           borderColor: "#ddd",
           borderWidth: 1,
-          borderRadius:20,
+          borderRadius: 20,
+          marginBottom:-5,
+          // marginVertical:10
 
         },
         item.id === firstIndex && styles.itemTopRounded,
@@ -146,8 +148,9 @@ const PictureItem = ({
           />
         </View>
       </View>
-      <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
-
+      {item.id === lastIndex && (
+        <View style={[globalStyles.divider, { marginVertical: 10, width: 350, left: -10 }]} />
+      )}
 
       {item.id === lastIndex && (
         <View style={styles.footerContainer}>
@@ -156,20 +159,33 @@ const PictureItem = ({
             <Text style={styles.addFileText}>Add Item</Text>
           </TouchableOpacity>
 
+          <View style={{flexDirection:"row", justifyContent:"center", columnGap:10}}>
           <TouchableOpacity
-            style={[globalStyles.submitButton, {width:"100%"}]}
+            style={[globalStyles.inactivityButton, {width:"48%"}]}
             onPress={handlePreview}
           >
-            <View style={{flexDirection:"row", justifyContent:"space-between", alignSelf:"center", columnGap:5}}>
+         
               {/* <MaterialIcons name="add" size={20} color="#fff" /> */}
               {/* <Ionicons name="add-circle" size={20} color="#fff" /> */}
-            <Text style={globalStyles.submitButtonText}>
-              {activityId ? "Update" : "Create"} Activity
+            <Text style={globalStyles.inactivityButtonText}> Cancel
+              {/* {activityId ? "Update" : "Create"} Activity */}
             </Text>
-
-            </View>
-         
           </TouchableOpacity>
+            <TouchableOpacity
+            style={[globalStyles.submitButton, {width:"48%"}]}
+            onPress={handlePreview}
+          >
+         
+              {/* <MaterialIcons name="add" size={20} color="#fff" /> */}
+              {/* <Ionicons name="add-circle" size={20} color="#fff" /> */}
+            <Text style={[globalStyles.submitButtonText, {top:3}]}>
+              {activityId ? "Update" : "Create"}
+            </Text>
+            </TouchableOpacity>
+     
+          </View>
+         
+          
         </View>
       )}
     </View>
