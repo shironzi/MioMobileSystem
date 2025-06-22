@@ -1,13 +1,13 @@
-import React, { memo } from "react";
-import { ScrollView, StyleSheet, View, Text } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import globalStyles from "@/styles/globalStyles";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
-import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
 import ScoreFeedback from "@/components/ScoreFeedback";
+import globalStyles from "@/styles/globalStyles";
+import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
+import { useLocalSearchParams } from "expo-router";
+import React, { memo } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const AuditoryScores = () => {
-  headerConfigScoreDetails("Score Details");
+  headerConfigScoreDetails("Score Detail");
 
   const { score, activity_type, difficulty } = useLocalSearchParams<{
     score: string;
@@ -32,27 +32,29 @@ const AuditoryScores = () => {
       case "matching":
         return "Matching Cards";
       default:
-        return "Activity Score";
+        return "Activity";
     }
   };
 
   return (
-    <ScrollView>
-      <View style={[globalStyles.container, { rowGap: 20 }]}>
-        <View>
+    <ScrollView style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={[globalStyles.container, { rowGap: 20, flex:1 }]}>
+        <View style={{marginHorizontal:15}}>
           <Text style={styles.title}>{getTitle(activity_type)}</Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
         </View>
 
-        <View style={[globalStyles.cardContainer, { paddingVertical: 25 }]}>
+        <View style={[globalStyles.cardContainer, {}]}>
           <Text style={styles.sectionTitle}>Score</Text>
           <View style={styles.scoreRow}>
             <AnimatedCircularProgress
               size={150}
-              width={10}
+              width={5}
               fill={parseFloat(score)}
               tintColor="#2264DC"
-              backgroundColor="#e7eaea"
+              backgroundColor="#fff"
               rotation={0}
               lineCap="round"
             >
@@ -75,25 +77,27 @@ const AuditoryScores = () => {
 
 const styles = StyleSheet.create({
   title: {
-    color: "#1F1F1F",
     lineHeight: 28,
     fontWeight: "500" as const,
     fontSize: 18,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: "500" as const,
+    fontSize: 15,
+    fontWeight: 300 as const,
     lineHeight: 28,
+    textTransform:"capitalize"
   },
   sectionTitle: {
-    fontWeight: "bold" as const,
+    fontWeight: 500 as const,
     fontSize: 18,
+    marginVertical: 10,
+    marginBottom:20
   },
   scoreRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
   scoreText: {
     fontSize: 24,
@@ -115,7 +119,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     padding: 16,
     backgroundColor: "#fff",
-    borderRadius: 8,
+    borderRadius: 20,
+    borderColor: "#ddd",
+    borderWidth:1
   },
   wordTitle: {
     fontSize: 18,
