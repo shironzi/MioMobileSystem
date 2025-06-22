@@ -5,11 +5,12 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import React, { useEffect, useState } from "react";
-import { getAnalyticsDashboard } from "@/utils/analytics";
+import { getAnalyticsDashboard, getStudents } from "@/utils/analytics";
 import { CurveType, LineChart, PieChart } from "react-native-gifted-charts";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import globalStyles from "@/styles/globalStyles";
@@ -18,11 +19,12 @@ import AnalyticsCard from "@/app/analytics/AnalyticsCard";
 import { FontAwesome6 } from "@expo/vector-icons";
 import LoadingCard from "@/components/loadingCard";
 import { Picker } from "@react-native-picker/picker";
+import { router } from "expo-router";
 
 const Analytics = () => {
   useHeaderConfig("Analytics");
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>();
   const [data, setData] = useState<{
     active_today: number;
     overall_completion_rate: number;
@@ -43,10 +45,17 @@ const Analytics = () => {
     { subjectId: string; title: string }[]
   >([]);
 
-  const [subject, setSubject] = useState<string>();
-  const [student, setStudent] = useState<string>();
+  const [studentList, setStudentList] = useState<
+    { name: string; student_id: string }[]
+  >([]);
+
+  const [subject, setSubject] = useState<string>("");
+  const [student, setStudent] = useState<string>("");
+  const [openModal, setCloseModal] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchData = async () => {
       const res = await getAnalyticsDashboard();
       if (res.success) {
@@ -64,12 +73,6 @@ const Analytics = () => {
           passing_rate: res.passing_rate,
         });
 
-        // Object.entries(res.subjects_data).map(([key, value]: [string, any]) => {
-        //   setSubjectList((prev) => [...prev, { subjectId: key, title: value }]);
-        // });
-        //
-        // setSubject(subjectList[0].subjectId);
-
         const transformedData = Object.entries(res.weekly_engagement).map(
           ([dateStr, value]: [string, any]) => {
             const date = new Date(dateStr);
@@ -82,6 +85,16 @@ const Analytics = () => {
           },
         );
 
+        const subjects = Object.values(res.subjects_data).map(
+          (subject: any) => ({
+            subjectId: subject.subjectId,
+            title: subject.title,
+          }),
+        );
+
+        setSubjectList(subjects);
+        setSubject(subjects[0].subjectId);
+
         setLoading(false);
         setLineData(transformedData);
       }
@@ -89,6 +102,18 @@ const Analytics = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const res = await getStudents(subject);
+
+      if (res.success) {
+        setStudentList(res.peoples);
+      }
+    };
+
+    fetchStudents();
+  }, [subject]);
 
   if (loading) {
     return (
@@ -105,21 +130,82 @@ const Analytics = () => {
     );
   }
 
+  const handleModalBackgroundPress = () => {
+    setCloseModal(false);
+  };
+
+  const handleStudentSelect = () => {
+    router.push({
+      pathname: "/analytics/StudentAnalytics",
+      params: { studentId: student },
+    });
+  };
+
   return (
     <ScrollView style={{ paddingHorizontal: 20, backgroundColor: "#fff" }}>
-      <View style={{ justifyContent: "flex-end" }}>
-        {/*<TouchableOpacity>*/}
-        {/*  <FontAwesome6 name="sliders" size={24} color="black" />*/}
-        {/*</TouchableOpacity>*/}
-
-        <Picker
-          selectedValue={subject}
-          onValueChange={(itemValue) => setSubject(itemValue)}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Button
+          title="Select Subject"
+          onPress={() => setCloseModal(!openModal)}
+        />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal}
+          onRequestClose={() => setCloseModal(false)}
         >
-          {subjectList?.map((subject) => (
-            <Picker.Item label={subject.title} value={subject.subjectId} />
-          ))}
-        </Picker>
+          <TouchableWithoutFeedback onPress={handleModalBackgroundPress}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.2)",
+              }}
+            >
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View
+                  style={{
+                    width: "80%",
+                    backgroundColor: "white",
+                    borderRadius: 10,
+                    padding: 20,
+                  }}
+                >
+                  <Text>Select a Subject</Text>
+
+                  <Picker
+                    selectedValue={subject}
+                    onValueChange={(itemValue) => setSubject(itemValue)}
+                  >
+                    {subjectList.map((subject) => (
+                      <Picker.Item
+                        label={subject.title}
+                        value={subject.subjectId}
+                        key={subject.subjectId}
+                      />
+                    ))}
+                  </Picker>
+
+                  <Picker
+                    selectedValue={subject}
+                    onValueChange={(itemValue) => setStudent(itemValue)}
+                  >
+                    {studentList.map((subject) => (
+                      <Picker.Item
+                        label={subject.name}
+                        value={subject.student_id}
+                        key={subject.student_id}
+                      />
+                    ))}
+                  </Picker>
+                  <Button title="Apply" onPress={() => handleStudentSelect()} />
+                  <Button title="Close" onPress={() => setCloseModal(false)} />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
       <View style={styles.headerContainer}>
         <View style={{ flexDirection: "column", width: "49%", rowGap: 10 }}>
