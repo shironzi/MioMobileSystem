@@ -71,9 +71,8 @@ const globalStyles = StyleSheet.create({
 		paddingVertical: 15,
 	},
 	textLabel: {
-		fontSize: 15,
-		color: "#000",
-		fontWeight: "bold",
+		fontSize: 16,
+		fontWeight: 500,
 	},
 	text1: {
 		fontSize: 16,

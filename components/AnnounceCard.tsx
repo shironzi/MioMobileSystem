@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 	},
 	deleteBackground: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: "#FF5646",
+		backgroundColor: "#db4141",
 		paddingHorizontal: 30,
 		justifyContent: "center",
 		alignItems: "flex-end",

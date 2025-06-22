@@ -121,18 +121,18 @@ function Announcements() {
 				style={styles.addButton}
 				onPress={handleAdd}
 			>
-				<View
-					style={{
-						top: 20,
-						alignSelf: "center",
-						flexDirection: "row",
-					}}
-				>
-					<Ionicons name="add-circle" size={20} color="#ffbf18" />
-					<Text style={styles.addText}>Add Announcement</Text>
-				</View>
-			</TouchableOpacity>
-			)}
+					<View
+						style={{
+							top: 20,
+							alignSelf: "center",
+							flexDirection: "row",
+						}}
+					>
+						<Ionicons name="add-circle" size={20} color="#ffbf18" />
+						<Text style={styles.addText}>Add Announcement</Text>
+					</View>
+				</TouchableOpacity>
+				)}
 				{announcements.length > 0 ? (
 					<View style={{ rowGap: 15 }}>
 						{announcements.map((item, index) => (
@@ -197,8 +197,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 	},
 	addButton: {
-		// position: "absolute",
-		// position:"relative",
 		left: -8,
 		width: "88%",
 		backgroundColor: "#fcefcc",
@@ -208,8 +206,6 @@ const styles = StyleSheet.create({
 		borderStyle: "dashed",
 		margin: 30,
 		marginBottom:20,
-		// top: 0,
-		// bottom: 0,
 		height: 60,
 		marginVertical:5
 	},

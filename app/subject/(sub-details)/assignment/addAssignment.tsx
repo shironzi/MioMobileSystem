@@ -1,7 +1,9 @@
 import { DatePickerField } from "@/components/DatePickerField";
+import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { createAssignment } from "@/utils/query";
+import { FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useState } from "react";
 import {
@@ -13,18 +15,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { createAssignment } from "@/utils/query";
 
 enum SubmissionOptions {
-  text = "text",
-  file = "file",
+  Text = "Text",
+  File = "File",
 }
 
 type SubmissionOption =
   (typeof SubmissionOptions)[keyof typeof SubmissionOptions];
 
 const addAssignment = () => {
-  HeaderConfig("Add Assignment");
+  HeaderConfig("Assignment")
+
   const router = useRouter();
 
   const tomorrow = new Date();
@@ -33,7 +35,7 @@ const addAssignment = () => {
   const { assignmentId } = useLocalSearchParams<{ assignmentId: string }>();
   const { subjectId } = useLocalSearchParams<{ subjectId: string }>();
   const [submissionType, setSubmissionType] = useState<SubmissionOptions>(
-    SubmissionOptions.text,
+    SubmissionOptions.Text,
   );
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deadline, setDeadline] = useState<Date>(tomorrow);
@@ -85,11 +87,11 @@ const addAssignment = () => {
       errorList.push({ error: "deadline" });
     }
 
-    if (fileSize < 5120 && submissionType === "file") {
+    if (fileSize < 5120 && submissionType === "File") {
       errorList.push({ error: "fileSize" });
     }
 
-    if (fileTypes.length < 1 && submissionType === "file") {
+    if (fileTypes.length < 1 && submissionType === "File") {
       errorList.push({ error: "fileTypes" });
     }
 
@@ -177,8 +179,15 @@ const addAssignment = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading..........</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
       </View>
     );
   }
@@ -238,7 +247,7 @@ const addAssignment = () => {
             style={[
               styles.attemptInputContainer,
               error.some((err) => err.error === "attempts")
-                ? { borderColor: "#ee6b6e", borderWidth: 1 }
+                ? { borderColor: "#db4141", borderWidth: 1 }
                 : { borderColor: "#ddd" },
             ]}
           >
@@ -277,8 +286,8 @@ const addAssignment = () => {
           <TextInput
             style={[
               styles.dropdown,
-              error.some((err) => err.error === "title")
-                ? { borderColor: "#ee6b6e", borderWidth: 1 }
+              error.some((err) => err.error === "points")
+                ? { borderColor: "#db4141", borderWidth: 1 }
                 : { borderColor: "#ddd" },
             ]}
             placeholder="Points"
@@ -289,6 +298,7 @@ const addAssignment = () => {
               setPoints(sanitized ? parseInt(sanitized, 10) : 0);
             }}
           />
+          <MaterialCommunityIcons name="numeric" size={25} color="#ffbf18"  style={styles.iconInsideInput}/>
         </View>
 
         <View style={styles.row}>
@@ -297,7 +307,7 @@ const addAssignment = () => {
             style={[
               styles.dropdownButton,
               error.some((err) => err.error === "submissionType")
-                ? { borderColor: "#ee6b6e", borderWidth: 1 }
+                ? { borderColor: "db4141", borderWidth: 1 }
                 : null,
             ]}
             onPress={() => setDropdownVisible(!dropdownVisible)}
@@ -331,7 +341,7 @@ const addAssignment = () => {
           )}
         </View>
 
-        {submissionType !== "text" && (
+        {submissionType !== "Text" && (
           <View>
             <View>
               <Text>File Type</Text>
@@ -386,14 +396,14 @@ const addAssignment = () => {
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
-            <Text>Visibility</Text>
+            <Text style={globalStyles.textLabel}>Visibility</Text>
           </View>
           <View>
             <TouchableOpacity onPress={() => setVisibility(!visibility)}>
               {visibility ? (
-                <FontAwesome5 name="toggle-on" size={24} color="black" />
+                <FontAwesome5 name="toggle-on" size={30} color="#ffbf18" />
               ) : (
-                <FontAwesome5 name="toggle-off" size={24} color="black" />
+                <FontAwesome5 name="toggle-off" size={30} color="#ddd" />
               )}
             </TouchableOpacity>
           </View>
@@ -402,21 +412,29 @@ const addAssignment = () => {
         <View style={styles.separator}></View>
 
         <Text style={globalStyles.textLabel}>Title</Text>
-        <TextInput
-          style={[
-            styles.dropdown,
-            error.some((err) => err.error === "title")
-              ? { borderColor: "#ee6b6e", borderWidth: 1 }
-              : { borderColor: "#ddd" },
-            { width: 300 },
-          ]}
-          placeholder="Enter title"
-          placeholderTextColor="#aaa"
-          multiline={true}
-          value={title}
-          onChangeText={setTitle}
-        />
-
+        <View>
+          <TextInput
+            style={[
+              styles.dropdown,
+              error.some((err) => err.error === "title")
+                ? { borderColor: "#db4141", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+              { width: 300 },
+            ]}
+            placeholder="Enter title"
+            placeholderTextColor="#aaa"
+            multiline={true}
+            value={title}
+            onChangeText={setTitle}
+          />
+          <FontAwesome
+              name="pencil-square-o"
+              size={20}
+              color="#ffbf18"
+              style={styles.iconInsideInput}
+            />
+          
+        </View>
         <View style={{ rowGap: 5 }}>
           <Text style={globalStyles.textLabel}>Description</Text>
           <TextInput
@@ -430,7 +448,7 @@ const addAssignment = () => {
                 height: 150,
               },
               error.some((err) => err.error === "description")
-                ? { borderColor: "#ee6b6e", borderWidth: 1 }
+                ? { borderColor: "#db4141", borderWidth: 1 }
                 : { borderColor: "#ddd" },
             ]}
             textAlignVertical="top"
@@ -442,16 +460,30 @@ const addAssignment = () => {
           />
         </View>
 
+        <View
+        style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        bottom: 0,
+        marginTop:40
+        }}
+      >
         <TouchableOpacity
-          style={[
-            globalStyles.submitButton,
-            { flexDirection: "row", justifyContent: "center", elevation: 5 },
-          ]}
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+        >
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handlePreviewAssignment}
         >
-          <Text style={globalStyles.submitButtonText}>Preview</Text>
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+          {assignmentId ? "Update" : "Create"}
+          </Text>
         </TouchableOpacity>
-      </View>
+        </View>
+        </View>
     </ScrollView>
   );
 };
@@ -529,6 +561,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  iconInsideInput: {
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: [{ translateY: -10 }],
+    zIndex: 1,
   },
 });
 

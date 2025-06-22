@@ -32,6 +32,7 @@ interface UrlError {
 
 const addAnnouncement = () => {
   useHeaderConfig("Announcement");
+
   const router = useRouter();
 
   const { subjectId, announcementId } = useLocalSearchParams<{
@@ -146,7 +147,6 @@ const addAnnouncement = () => {
     })();
   }, [subjectId, announcementId]);
 
- 
   if (loading) {
     return (
       <View
@@ -161,7 +161,6 @@ const addAnnouncement = () => {
       </View>
     );
   }
- 
 
   return (
     <ScrollView style={{ flex: 1 }}
