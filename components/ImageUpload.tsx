@@ -1,10 +1,10 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as DocumentPicker from "expo-document-picker";
+import { Image } from "expo-image";
 import React, { memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Image } from "expo-image";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface FileInfo {
   uri: string;
@@ -65,14 +65,14 @@ const ImageUpload = (props: {
                     style={styles.fileUpload}
                   >
                     <MaterialIcons name="edit" size={24} color="#FFBF18" />
-                    <Text style={{ color: "#FFBF18" }}>Edit</Text>
+                    <Text style={{ color: "#FFBF18",  fontWeight:500 }}>Edit</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={props.handleImageRemove}
                     style={styles.fileUpload}
                   >
-                    <AntDesign name="close" size={24} color="red" />
-                    <Text style={{ color: "red" }}>Remove</Text>
+                    <AntDesign name="close" size={24} color="#db4141" />
+                    <Text style={{ color: "#db4141", fontWeight:500 }}>Delete</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -89,7 +89,7 @@ const ImageUpload = (props: {
                   onPress={props.handleImageRemove}
                   style={[styles.fileUpload]}
                 >
-                  <AntDesign name="close" size={24} color="red" />
+                  <AntDesign name="close" size={20} color="#ddd" />
                 </TouchableOpacity>
               </View>
             )}
@@ -99,7 +99,7 @@ const ImageUpload = (props: {
             style={[
               styles.addFileRow,
               props.isError
-                ? { borderColor: "red" }
+                ? { borderColor: "#db4141" }
                 : { borderColor: "#ffbf18" },
             ]}
             onPress={handleFileUpload}
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   fileRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginHorizontal:40
   },
   fileUpload: {
     padding: 9,
@@ -166,7 +167,8 @@ const styles = StyleSheet.create({
   },
   fileSettings: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
+    alignSelf:"center",
     width: "100%",
   },
   imageStyle: { width: 150, height: 150, alignSelf: "center" },

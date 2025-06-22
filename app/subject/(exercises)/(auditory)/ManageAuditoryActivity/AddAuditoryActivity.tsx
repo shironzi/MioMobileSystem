@@ -1,16 +1,17 @@
-import React, { memo, useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import HeaderConfig from "@/utils/HeaderConfig";
-import Animated, { LinearTransition } from "react-native-reanimated";
 import AddBingoCards from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddBingoCards";
 import AddMatchingCards from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddMatchingCards";
-import { router, useLocalSearchParams } from "expo-router";
-import ListHeader from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/ListHeader";
 import ListFooter from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/ListFooter";
+import ListHeader from "@/app/subject/(exercises)/(auditory)/ManageAuditoryActivity/ListHeader";
+import LoadingCard from "@/components/loadingCard";
 import {
   getBingoActivityById,
   getMatchingActivityById,
 } from "@/utils/auditory";
+import HeaderConfig from "@/utils/HeaderConfig";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { memo, useEffect, useState } from "react";
+import { View } from "react-native";
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 interface FileInfo {
   uri: string;
@@ -278,8 +279,15 @@ const AddAuditoryActivity = () => {
 
   if (loading && activityId) {
     return (
-      <View>
-        <Text>loading.....</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
       </View>
     );
   }
@@ -310,9 +318,11 @@ const AddAuditoryActivity = () => {
     }
     return null;
   };
+    // HeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
+  
 
   return (
-    <View>
+    <View style={{ backgroundColor: "#fff", flex:1}}>
       {activityType === "bingo" && (
         <Animated.FlatList
           data={bingoItems}

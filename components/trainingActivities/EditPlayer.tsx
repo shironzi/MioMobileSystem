@@ -1,8 +1,8 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Slider from "@react-native-community/slider";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import React, { useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import Slider from "@react-native-community/slider";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
 const EditPlayer = (props: { uri: string }) => {
   const player = useAudioPlayer();
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#ddd",
     justifyContent: "center",
     alignItems: "center",
   },

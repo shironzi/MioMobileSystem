@@ -1,7 +1,7 @@
+import HomonymAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymAudioUpload";
+import globalStyles from "@/styles/globalStyles";
 import React, { memo, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import HomonymAudioUpload from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymAudioUpload";
 
 interface FileInfo {
   uri: string;
@@ -55,10 +55,10 @@ const HomonymItem = ({
   const [descHeight, setDescHeight] = useState<number>(100);
 
   return (
-    <View>
+    <View >
       <View>
-        <Text style={globalStyles.text1}>
-          Homonym sentence {item_index + 1}
+        <Text style={[globalStyles.text1,{marginBottom:10, marginTop:-5}]}>
+          Sentence {item_index + 1}
         </Text>
         {inputErrorMessage && (
           <Text style={styles.errorText}>{inputErrorMessage}</Text>
@@ -66,10 +66,11 @@ const HomonymItem = ({
         <TextInput
           style={[
             styles.textInputContainer,
-            { height: Math.max(descHeight, 100) },
+            { height: Math.max(descHeight, 150) },
             inputErrorMessage && styles.errorBorder,
+            {fontSize:14}
           ]}
-          placeholder="Write the sentence (e.g., The sun rises in the east.)"
+          placeholder="Type the sentence here. (e.g., The ____ rises in the east."
           multiline={true}
           onContentSizeChange={(e) =>
             setDescHeight(e.nativeEvent.contentSize.height)
@@ -82,7 +83,7 @@ const HomonymItem = ({
         />
       </View>
       <View>
-        <Text style={[globalStyles.text1]}>Answer</Text>
+        <Text style={[globalStyles.text1, {marginVertical:10}]}>Answer</Text>
         {answerErrorMessage && (
           <Text style={styles.errorText}>{answerErrorMessage}</Text>
         )}
@@ -90,6 +91,7 @@ const HomonymItem = ({
           style={[
             styles.textInputContainer,
             answerErrorMessage && styles.errorBorder,
+            {fontSize:14, borderRadius:10}
           ]}
           placeholder={"Enter homonym word (e.g., 'flower')"}
           value={item.answer[item_index]}

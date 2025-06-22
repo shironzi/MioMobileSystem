@@ -1,8 +1,8 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
 import * as DocumentPicker from "expo-document-picker";
 import React, { memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Feather from "@expo/vector-icons/Feather";
 
 interface FileInfo {
   uri: string;
@@ -61,16 +61,24 @@ const AudioUpload = (props: {
                 onPress={props.handleAudioRemove}
                 style={styles.fileUpload}
               >
-                <AntDesign name="close" size={24} color="red" />
+                <AntDesign name="close" size={20} color="#aaa" />
               </TouchableOpacity>
             </View>
           </View>
         ) : (
-          <TouchableOpacity
+            <View style={{
+              // borderColor: "#ddd",
+              // borderWidth: 1,
+              // borderRadius: 20,
+              // padding: 20,
+              // width: "125%",
+              // left: -35
+            }}>
+              <TouchableOpacity
             style={[
               styles.addFileRow,
               props.isError
-                ? { borderColor: "red" }
+                ? { borderColor: "#db4141" }
                 : { borderColor: "#ffbf18" },
             ]}
             onPress={handleFileUpload}
@@ -78,6 +86,8 @@ const AudioUpload = (props: {
             <Feather name="upload" size={24} color="#FFBF18" />
             <Text style={styles.addFileText}>Browse files to upload audio</Text>
           </TouchableOpacity>
+            </View>
+          
         )}
       </View>
     </View>
@@ -86,7 +96,7 @@ const AudioUpload = (props: {
 
 const styles = StyleSheet.create({
   uploadHeader: {
-    backgroundColor: "#434242",
+    backgroundColor: "#ddd",
     paddingVertical: 9,
     paddingHorizontal: 26,
   },
@@ -114,10 +124,11 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderStyle: "dashed",
     padding: 15,
-    width: "100%",
+    width: "110%",
     borderRadius: 20,
     rowGap: 10,
     height: 100,
+    left:-13
   },
   addFileText: {
     color: "#1F1F1F68",

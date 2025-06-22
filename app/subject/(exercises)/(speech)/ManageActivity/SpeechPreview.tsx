@@ -134,6 +134,8 @@ const SpeechPreview = () => {
         <Image
           source={require("@/assets/images/face/echo.png")}
           style={styles.bannerLogo}
+          resizeMode="contain"
+          
         />
         <Animated.View style={[styles.textContainer, animatedStyle]}>
           <Text style={styles.flashcardText}>
@@ -167,17 +169,27 @@ const SpeechPreview = () => {
           onPress={handlePrev}
         >
           <FontAwesome6 name="arrow-left-long" size={16} color="#fff" />
-          <Text style={styles.nextButtonText}>prev</Text>
+          <Text style={styles.nextButtonText}>Prev</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.submitWrapper}>
+      <View style={[styles.submitWrapper,{flexDirection:"row", columnGap:10}]}>
+      <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+           
+        >
+          <Text style={globalStyles.inactivityButtonText}> Cancel
+            {/* {activityId ? "Update" : "Create"} Activity */}
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
-          style={globalStyles.submitButton}
+          style={[globalStyles.submitButton, {width:"48%"}]}
           onPress={handleSubmit}
         >
-          {/* <FontAwesome6 name="add" size={20} color="#fff" /> */}
-          <Text style={globalStyles.submitButtonText}>Create</Text>
+          <Text style={[globalStyles.submitButtonText, {top:3}]}>
+            {activityId ? "Update" : "Create"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -192,10 +204,12 @@ const styles = StyleSheet.create({
   },
   flashcardContainer: {
     backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth:1,
     padding: 20,
-    borderRadius: 15,
+    borderRadius: 20,
     alignItems: "center",
-    height: 250,
+    height:250
   },
   bannerLogo: {
     position: "absolute",
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 20,
     textAlign: "center",
-    fontWeight: "500",
+    fontWeight: "300",
   },
   nextButtonWrapper: {
     width: "100%",

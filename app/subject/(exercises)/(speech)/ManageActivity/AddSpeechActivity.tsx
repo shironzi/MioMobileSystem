@@ -3,6 +3,7 @@ import PictureRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity
 import PronunciationRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Pronunciation/PronunciationRenderItem";
 import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionRenderItem";
 import SpeechHeader from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechHeader";
+import LoadingCard from "@/components/loadingCard";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActivityById } from "@/utils/specialized";
 import { useLocalSearchParams } from "expo-router";
@@ -41,8 +42,8 @@ const data = {
 };
 
 const AddSpeechActivity = () => {
-  
-
+  useHeaderConfig("Add Speech Activity");
+  const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
 
@@ -95,7 +96,7 @@ const AddSpeechActivity = () => {
       setActivityDifficulty={setActivityDifficulty}
     />
   ) : null;
-  
+
 
   useEffect(() => {
     if (!activityId) return;
@@ -143,6 +144,7 @@ const AddSpeechActivity = () => {
             setActivityType("pronunciation");
           }
         }
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch activity:", error);
       }
@@ -151,7 +153,24 @@ const AddSpeechActivity = () => {
     fetchActivity();
   }, []);
 
-  useHeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
+
+  if (loading && activityId) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
+
+
+  // useHeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
 
   return (
     <View style={{backgroundColor:"#fff"}}>

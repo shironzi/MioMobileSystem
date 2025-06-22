@@ -1,11 +1,12 @@
-import React, { memo, useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
-import useHeaderConfig from "@/utils/HeaderConfig";
+import FillRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/FillRenderItem";
 import LanguageHeader from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/LanguageHeader";
 import LanguageHomonymActivity from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/LanguageHomonymActivity";
-import FillRenderItem from "@/app/subject/(exercises)/(language)/ManageActivity/Fill/FillRenderItem";
-import { useLocalSearchParams } from "expo-router";
+import LoadingCard from "@/components/loadingCard";
+import useHeaderConfig from "@/utils/HeaderConfig";
 import { getFillActivity, getHomonymActivity } from "@/utils/language";
+import { useLocalSearchParams } from "expo-router";
+import React, { memo, useEffect, useState } from "react";
+import { FlatList, View } from "react-native";
 
 export interface FileInfo {
   uri: string;
@@ -160,14 +161,21 @@ const AddLanguageActivity = () => {
 
   if (loading) {
     return (
-      <View>
-        <Text>Loading.....</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
       </View>
     );
   }
 
   return (
-    <View>
+    <View style={{ backgroundColor: "#fff" }}>
       {activityType === "fill" && (
         <FlatList
           data={fillItems}

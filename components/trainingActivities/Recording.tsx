@@ -1,13 +1,13 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {
+  AudioModule,
+  AudioQuality,
+  IOSOutputFormat,
+  RecordingPresets,
+  useAudioRecorder,
+} from "expo-audio";
 import React, { memo, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import {
-  useAudioRecorder,
-  AudioModule,
-  RecordingPresets,
-  IOSOutputFormat,
-  AudioQuality,
-} from "expo-audio";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 
@@ -103,18 +103,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
-    rowGap: 5,
-    width: 250,
-    marginHorizontal: "auto",
+    rowGap: 10,
+    width: "112%",
+    borderColor: "#ffbf18",
+    borderRadius: 20,
+    left: -15,
+    paddingVertical: 10,
+    borderWidth: 2.5,
+    borderStyle: "dashed",
+    marginTop:10
   },
   micButton: {
     width: 80,
     height: 80,
+    padding: 3,
+    marginTop:10,
     borderRadius: 40,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#ddd",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1.5,
+    borderWidth: 1,
   },
   recordingText: {
     marginTop: 15,
@@ -127,8 +135,12 @@ const styles = StyleSheet.create({
   instructionText: {
     marginTop: 10,
     fontSize: 14,
-    color: "#555",
+    fontWeight:400,
     textAlign: "center",
+    color: "#1F1F1F68",
+    marginHorizontal: 10,
+    fontStyle: "italic",
+    marginBottom:10
   },
 });
 

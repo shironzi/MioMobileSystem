@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const LanguageHeader = (props: {
   activityType: string;
@@ -9,9 +9,10 @@ const LanguageHeader = (props: {
   activityDifficulty: string;
   setActivityDifficulty: (value: string) => void;
 }) => (
-  <View style={styles.header}>
+  <View style={[styles.header, {width:"87%", left:5}]}>
     <View style={globalStyles.cardContainer}>
-      <Text style={globalStyles.text1}>Type of Exercise</Text>
+      <Text style={{fontSize:16, fontWeight:500}}>Type of Exercise</Text>
+      <View style={styles.picker}>
       <Picker
         mode="dropdown"
         selectedValue={props.activityType}
@@ -19,11 +20,13 @@ const LanguageHeader = (props: {
           props.setActivityType(value);
         }}
       >
-        <Picker.Item label="Fill in the Blanks" value="fill" />
+        <Picker.Item label="Fill in the Blank" value="fill" />
         <Picker.Item label="Homonyms" value="homonyms" />
       </Picker>
-
-      <Text style={globalStyles.text1}>Difficulty</Text>
+      </View>
+     
+      <Text style={globalStyles.text1}>Difficulty Level</Text>
+      <View style={styles.picker}>
       <Picker
         mode="dropdown"
         selectedValue={props.activityDifficulty}
@@ -34,19 +37,35 @@ const LanguageHeader = (props: {
         <Picker.Item label="Difficult" value="difficult" />
         <Picker.Item label="Challenge" value="challenge" />
       </Picker>
+
+      </View>
+     
     </View>
   </View>
 );
 
 const styles = StyleSheet.create({
   header: {
-    padding: 16,
-    backgroundColor: "#f2f2f2",
+    padding: 3,
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    margin: 20,
+    marginBottom: -5,
+
   },
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
   },
+  picker: {
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    marginVertical:10
+  }
 });
 
 export default LanguageHeader;

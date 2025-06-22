@@ -1,12 +1,12 @@
+import AudioUpload from "@/components/trainingActivities/AudioUpload";
+import EditPlayer from "@/components/trainingActivities/EditPlayer";
+import Recording from "@/components/trainingActivities/Recording";
+import globalStyles from "@/styles/globalStyles";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Picker } from "@react-native-picker/picker";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import React, { memo, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import { Picker } from "@react-native-picker/picker";
-import AudioUpload from "@/components/trainingActivities/AudioUpload";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Recording from "@/components/trainingActivities/Recording";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import EditPlayer from "@/components/trainingActivities/EditPlayer";
 
 interface FileInfo {
   uri: string;
@@ -50,7 +50,7 @@ const HomonymAudioUpload = (props: {
 
   return (
     <View style={styles.audioRow}>
-      <Text style={globalStyles.text1}>Audio Type</Text>
+      <Text style={[globalStyles.text1, {marginVertical:10}]}>Audio Type</Text>
       {!!props.errorMessage && (
         <Text style={styles.errorText}>{props.errorMessage}</Text>
       )}
@@ -59,6 +59,7 @@ const HomonymAudioUpload = (props: {
           borderWidth: 1,
           borderRadius: 20,
           paddingHorizontal: 10,
+          borderColor:"#ddd"
         }}
       >
         <Picker
@@ -97,7 +98,7 @@ const HomonymAudioUpload = (props: {
                   <TouchableOpacity
                     onPress={() => props.handleRemoveAudio(props.item.id)}
                   >
-                    <AntDesign name="close" size={24} color="red" />
+                    <AntDesign name="close" size={20} color="#aaa" />
                   </TouchableOpacity>
                 </View>
                 {(props.item.audio_path[props.itemIndex] ||
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorText: {
-    color: "red",
+    color: "#db4141",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,

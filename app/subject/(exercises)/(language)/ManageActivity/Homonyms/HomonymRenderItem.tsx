@@ -1,3 +1,8 @@
+import HomonymItem from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymItem";
+import globalStyles from "@/styles/globalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import {
   StyleSheet,
@@ -6,11 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { MaterialIcons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import HomonymItem from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymItem";
 
 interface FileInfo {
   uri: string;
@@ -61,6 +62,7 @@ interface Props {
   handleAddItem: () => void;
   handleSubmit: () => void;
 }
+const router = useRouter();
 
 const HomonymRenderItem = ({
   item,
@@ -104,20 +106,21 @@ const HomonymRenderItem = ({
           item.id === lastIndex && styles.itemBottomRounded,
         ]}
       >
-        {item_id === 0 && (
-          <View style={styles.headerContainer}>
-            <Text style={[globalStyles.text1, styles.headerText]}>
-              Homonyms
-            </Text>
-            <View style={styles.divider} />
-          </View>
-        )}
+       
 
         <View style={styles.itemBodyContainer}>
-          <View style={[styles.itemHeaderRow]}>
-            <Text style={globalStyles.text1}>Homonym Item</Text>
+        {item_id === 0 && (
+          <View>
+            <Text style={[globalStyles.text1, styles.headerText, {top:-5}]}>
+              Homonyms
+            </Text>
+            <View style={[globalStyles.divider, { width: 340, left: -10 }]} />
+          </View>
+        )}
+          <View style={[styles.itemHeaderRow, {marginTop:5}]}>
+           <Text style={globalStyles.text1}>Number {item_id + 1}</Text>
             <TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-              <AntDesign name="close" size={24} color="red" />
+              <AntDesign name="close" size={20} color="#aaa" />
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
@@ -149,12 +152,11 @@ const HomonymRenderItem = ({
               handleRemoveAudio={handleRemoveAudio}
             />
           </View>
-        </View>
-        <View style={{ marginBottom: 20, rowGap: 7.5 }}>
+          <View style={{ marginBottom: 20, rowGap: 7.5 }}>
           {item.distractors.map((value, index) => (
             <View key={index}>
               {index === 0 && (
-                <Text style={globalStyles.text1}>Distractors</Text>
+                <Text style={[globalStyles.text1, {marginVertical:10, marginTop:-5}]}>Distractors</Text>
               )}
               <View
                 style={{
@@ -166,7 +168,7 @@ const HomonymRenderItem = ({
                 <TextInput
                   style={[
                     styles.textInputContainer,
-                    { width: "90%" },
+                    { width: "90%", marginVertical:3 },
                     distractorErrorInput.some(
                       (e) => e.index === index && e.id === item.id,
                     ) && styles.errorBorder,
@@ -180,7 +182,7 @@ const HomonymRenderItem = ({
                 <TouchableOpacity
                   onPress={() => handleRemoveDistractor(item.id, index)}
                 >
-                  <AntDesign name="close" size={24} color="red" />
+                  <AntDesign name="close" size={20} color="#aaa" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -189,13 +191,19 @@ const HomonymRenderItem = ({
             style={styles.addItemRow}
             onPress={() => handleAddDistractor(item.id)}
           >
-            <MaterialIcons name="add" size={24} color="#FFBF18" />
+            <MaterialIcons name="add" size={20} color="#FFBF18" />
             <Text style={styles.addFileText}>Add distractor</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.divider} />
-
-        {item.id === lastIndex && (
+          </View>
+          {item.id === lastIndex && (
+            <View
+              style={[
+                globalStyles.divider,
+                { width: 340, left: -10, marginTop: -20 },
+              ]}
+            />
+          )}
+          {item.id === lastIndex && (
           <View style={styles.footerContainer}>
             <TouchableOpacity
               style={styles.addItemRow}
@@ -204,15 +212,31 @@ const HomonymRenderItem = ({
               <MaterialIcons name="add" size={24} color="#FFBF18" />
               <Text style={styles.addFileText}>Add Item</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={globalStyles.submitButton}
-              onPress={handleSubmit}
-            >
-              <Text style={globalStyles.submitButtonText}>Submit</Text>
-            </TouchableOpacity>
+               <View
+                  style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom:-10
+                }}
+              >
+                <TouchableOpacity
+                  style={[globalStyles.inactivityButton, { width: "48%" }]}
+                  onPress={() => router.back()}
+                >
+                  <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[globalStyles.submitButton, { width: "48%" }]}
+                  onPress={handleSubmit}
+                >
+                  <Text style={[globalStyles.submitButtonText, { top: 3 }]}>Preview
+                    {/* {activityId ? "Update" : "Create"} */}
+                  </Text>
+                </TouchableOpacity>
+              </View>
           </View>
         )}
+        </View>
       </View>
     </GestureHandlerRootView>
   );
@@ -235,7 +259,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   headerContainer: {
-    paddingTop: 10,
+    // paddingTop:-20
+
   },
   divider: {
     borderTopWidth: 1,
@@ -247,11 +272,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   headerText: {
-    paddingVertical: 10,
+    paddingBottom: 10,
   },
   itemBodyContainer: {
-    marginBottom: 15,
-    rowGap: 15,
+    marginHorizontal:-13,
+    // margin: 20,
+    padding: 20,
+    backgroundColor: "#fff",
+    rowGap: 10,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    marginBottom: -5,
+    paddingBottom:-10
   },
   itemHeaderRow: {
     flexDirection: "row",
@@ -266,6 +299,7 @@ const styles = StyleSheet.create({
   },
   addItemRow: {
     flexDirection: "row",
+    marginVertical:10
   },
   errorBorder: {
     borderColor: "red",
