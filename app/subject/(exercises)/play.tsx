@@ -6,7 +6,7 @@ import { getSpecializedActivities } from "@/utils/specialized";
 import { FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, Image, StyleSheet, Text, View } from "react-native";
 
 const Play = () => {
 	HeaderConfig("Play");
@@ -60,9 +60,18 @@ const Play = () => {
 
 	if (!activities || activities.length === 0) {
 		return (
-			<View style={globalStyles.container}>
-				<Text>No activities found.</Text>
-			</View>
+			<View style={{justifyContent:"center", backgroundColor:"#fff", flex:1}}>
+                <Image
+                    source={require("@/assets/load/noavailable.png")}
+                    resizeMode="contain"
+                    style={globalStyles.image}
+                />
+                <Text style={globalStyles.line1}>No Exercises Available</Text>
+                <Text style={globalStyles.line2}>
+                     There's nothing here yet. Please{"\n"}check back later
+                </Text>
+            </View>
+
 		);
 	}
 
