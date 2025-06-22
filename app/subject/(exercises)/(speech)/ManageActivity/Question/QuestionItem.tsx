@@ -211,10 +211,12 @@ const QuestionItem = ({
             </View>
           </View>
         )}
-      </View>
+        </View>
+        </View>
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   itemTopRounded: {
