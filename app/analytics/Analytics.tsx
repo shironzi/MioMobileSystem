@@ -1,4 +1,6 @@
 import {
+  Button,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -37,7 +39,12 @@ const Analytics = () => {
     [],
   );
 
-  const [filter, setFilter] = useState<string>();
+  const [subjectList, setSubjectList] = useState<
+    { subjectId: string; title: string }[]
+  >([]);
+
+  const [subject, setSubject] = useState<string>();
+  const [student, setStudent] = useState<string>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +63,12 @@ const Analytics = () => {
             res.overall_auditory_completion_rate,
           passing_rate: res.passing_rate,
         });
+
+        // Object.entries(res.subjects_data).map(([key, value]: [string, any]) => {
+        //   setSubjectList((prev) => [...prev, { subjectId: key, title: value }]);
+        // });
+        //
+        // setSubject(subjectList[0].subjectId);
 
         const transformedData = Object.entries(res.weekly_engagement).map(
           ([dateStr, value]: [string, any]) => {
@@ -95,9 +108,18 @@ const Analytics = () => {
   return (
     <ScrollView style={{ paddingHorizontal: 20, backgroundColor: "#fff" }}>
       <View style={{ justifyContent: "flex-end" }}>
-        <TouchableOpacity>
-          <FontAwesome6 name="sliders" size={24} color="black" />
-        </TouchableOpacity>
+        {/*<TouchableOpacity>*/}
+        {/*  <FontAwesome6 name="sliders" size={24} color="black" />*/}
+        {/*</TouchableOpacity>*/}
+
+        <Picker
+          selectedValue={subject}
+          onValueChange={(itemValue) => setSubject(itemValue)}
+        >
+          {subjectList?.map((subject) => (
+            <Picker.Item label={subject.title} value={subject.subjectId} />
+          ))}
+        </Picker>
       </View>
       <View style={styles.headerContainer}>
         <View style={{ flexDirection: "column", width: "49%", rowGap: 10 }}>
