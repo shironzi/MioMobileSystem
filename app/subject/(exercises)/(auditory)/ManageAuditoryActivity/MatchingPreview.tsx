@@ -398,8 +398,8 @@ const MatchingPreview = () => {
       </View>
       <View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, bottom:10}}>
       <TouchableOpacity
-        style={[globalStyles.inactivityButton, {width:"48%"}]}
-        onPress={handleSubmit}
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
       >
         <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
       </TouchableOpacity>

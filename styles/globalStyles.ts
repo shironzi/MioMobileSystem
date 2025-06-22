@@ -45,8 +45,11 @@ const globalStyles = StyleSheet.create({
 	cardContainer: {
 		paddingHorizontal: 26,
 		paddingVertical: 15,
-		borderRadius: 10,
+		// borderRadius: 10,
 		backgroundColor: "#fff",
+		borderRadius: 20,
+		borderColor: "#ddd",
+		borderWidth:1
 		// elevation: 5,
 	},
 	cardBody: {

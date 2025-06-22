@@ -257,10 +257,12 @@ const MatchingCards = () => {
 	}
 
 	return (
-		<ScrollView style={[globalStyles.container, { height: "100%" }]}>
+		<ScrollView style={[globalStyles.container, { flex:1}]}>
 			{/* <Text style={styles.difficulty}>{difficulty}</Text> */}
 			<View style={{ flex: 1 }}>
-				<Svg height={height} width={width} style={styles.connectionLines}>
+				<Svg height={height} width={width}
+					style={[styles.connectionLines,{}]}
+				>
 					{connections.map((line, idx) => (
 						<Line
 							key={idx}
@@ -268,8 +270,8 @@ const MatchingCards = () => {
 							y1={line.y1}
 							x2={line.x2}
 							y2={line.y2}
-							stroke="blue"
-							strokeWidth={3}
+							stroke="#2264dc"
+							strokeWidth={2}
 						/>
 					))}
 				</Svg>
@@ -286,8 +288,8 @@ const MatchingCards = () => {
 									styles.itemContainer,
 									{ padding: 20 },
 									selectedAudio === index
-										? styles.selected
-										: styles.notSelected,
+									? { borderColor: "#ffbf18", borderWidth: 1 }
+									: { borderColor: "#ddd" },
 								]}
 								onLayout={(e) => {
 									const { x, y, height } = e.nativeEvent.layout;
@@ -298,7 +300,7 @@ const MatchingCards = () => {
 								}}
 							>
 								<View style={styles.audioContainer}>
-									<FontAwesome6 name="volume-high" size={25} color="#fff" />
+									<FontAwesome6 name="volume-high" size={20} color="#fff" />
 								</View>
 							</TouchableOpacity>
 						))}
@@ -312,10 +314,10 @@ const MatchingCards = () => {
 								}}
 								style={[
 									styles.itemContainer,
-									{ padding: 5 },
+									{ padding: 2 },
 									selectedImage === index
-										? styles.selected
-										: styles.notSelected,
+									? { borderColor: "#2264DC", borderWidth: 1 }
+									: { borderColor: "#ddd" },
 								]}
 								onLayout={(e) => {
 									const { x, y, height } = e.nativeEvent.layout;
@@ -328,19 +330,32 @@ const MatchingCards = () => {
 								<Image
 									key={index}
 									source={{ uri: item.image_url }}
-									style={styles.imageContainer}
+									// style={styles.imageContainer}
+									resizeMode="contain"
+									// source={{ uri: item.file?.uri || item.image_path || "" }}
+									style={{
+										width: 100,
+										height: 80,
+										borderRadius: 15,
+									}}
 								/>
 							</TouchableOpacity>
 						))}
 					</View>
 				</View>
-				<View>
-					<TouchableOpacity
-						onPress={handleSubmit}
-						style={globalStyles.submitButton}
-					>
-						<Text style={globalStyles.submitButtonText}>Submit</Text>
-					</TouchableOpacity>
+				<View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, bottom:10}}>
+				<TouchableOpacity
+						style={[globalStyles.inactivityButton, { width: "48%" }]}
+						onPress={() => router.back()}
+				>
+					<Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={[globalStyles.submitButton, {width:"48%"}]}
+					onPress={handleSubmit}
+				>
+					<Text style={[globalStyles.submitButtonText, {top:3}]}>Update</Text>
+				</TouchableOpacity>
 				</View>
 			</View>
 		</ScrollView>
@@ -363,12 +378,20 @@ const styles = StyleSheet.create({
 		padding: 100,
 	},
 	itemContainer: {
-		borderWidth: 1.5,
+		// borderWidth: 1.5,
+		// borderRadius: 20,
+		// alignItems: "center",
+		// justifyContent: "center",
+		// backgroundColor: "#fff",
+		// marginVertical: 5,
+		padding: 10,
+		borderWidth: 1,
 		borderRadius: 20,
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: "#fff",
-		marginVertical: 5,
+		marginVertical: 2,
+		
 	},
 	imageContainer: {
 		width: 105,
@@ -376,9 +399,13 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 	},
 	audioContainer: {
+		// borderRadius: 12,
+		// padding: 20,
+		// margin: "auto",
+		// backgroundColor: "#FFBF18",
 		borderRadius: 12,
-		padding: 20,
-		margin: "auto",
+		padding: 18,
+		margin: 3,
 		backgroundColor: "#FFBF18",
 	},
 	selected: { borderColor: "#2264DC", borderWidth: 1.5 },
@@ -389,10 +416,14 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 	},
 	connectionLines: {
+		// position: "absolute",
+		// top: 0,
+		// left: 0,
+		// zIndex: -1,
 		position: "absolute",
 		top: 0,
-		left: 0,
-		zIndex: -1,
+		left: -22,
+		zIndex: 1,
 	},
 });
 

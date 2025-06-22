@@ -1,10 +1,10 @@
 import globalStyles from "@/styles/globalStyles";
-import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 const ScoreFeedback = (props: { percentage: number }) => {
   return (
-    <View style={[globalStyles.cardContainer, { rowGap: 10 }]}>
+    <View style={[globalStyles.cardContainer, { rowGap: 10, flex:1, marginBottom:50 }]}>
       <Text style={styles.sectionTitle}>Feedback</Text>
       <View style={styles.feedbackRow}>
         <Image
@@ -70,8 +70,10 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   sectionTitle: {
-    fontWeight: "bold" as const,
+    fontWeight: 500 as const,
     fontSize: 18,
+    marginVertical: 10,
+    marginBottom:-10
   },
   feedbackRow: {
     flexDirection: "row",

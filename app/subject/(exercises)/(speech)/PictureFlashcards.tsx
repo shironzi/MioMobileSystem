@@ -275,7 +275,7 @@ const PictureFlashcards = () => {
 						style={[
 							styles.continueButton,
 							isAnswered && !isRecording
-								? { backgroundColor: "#FFBF18" }
+								? { backgroundColor: "#ffbf18" }
 								: { backgroundColor: "#ddd" },
 						]}
 						disabled={!isAnswered || isRecording || submitting}
