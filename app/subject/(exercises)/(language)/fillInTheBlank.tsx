@@ -169,9 +169,11 @@ const fillInTheBlank = () => {
   const status = useAudioPlayerStatus(player);
 
   const handleAudioPlay = async () => {
+    console.log(0);
     await player.seekTo(0);
     if (!status.playing) {
       player.replace({ uri: activity[currentItem].audio_path });
+      console.log(activity[currentItem].audio_path);
       player.play();
     }
   };

@@ -2,7 +2,7 @@ import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import {
   createSpeechActivity,
-  updateSpeechActivity
+  updateSpeechActivity,
 } from "@/utils/specialized";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { router, useLocalSearchParams } from "expo-router";

@@ -1,24 +1,46 @@
 import React, { useState } from "react";
-import { TouchableOpacity, Text, StyleProp, ViewStyle } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleProp,
+  ViewStyle,
+  View,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import globalStyles from "@/styles/globalStyles";
 
 type DatePickerFieldProps = {
-  date: Date | null;
+  date: string | Date | null;
   onChange: (d: Date) => void;
   error?: boolean;
-  placeholder?: string;
   style?: StyleProp<ViewStyle>;
+  mode?: "date" | "time" | "datetime";
 };
 
 export function DatePickerField({
   date,
   onChange,
   error = false,
-  placeholder = "Select date",
   style,
+  mode = "date",
 }: DatePickerFieldProps) {
   const [showPicker, setShowPicker] = useState(false);
+
+  let newDate: Date | null = null;
+  if (date instanceof Date) {
+    newDate = new Date(date);
+  }
+
+  newDate = newDate ?? new Date();
+
+  const formatToLongDate = (date: Date) => {
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <>
@@ -32,15 +54,15 @@ export function DatePickerField({
         onPress={() => setShowPicker(true)}
       >
         <Text style={{ color: date ? "#000" : "#aaa" }}>
-          {date ? date.toDateString() : placeholder}
+          {date instanceof Date ? formatToLongDate(date) : date ? date : ""}
         </Text>
         <MaterialIcons name="date-range" size={22} color="#ffbf18" />
       </TouchableOpacity>
 
       {showPicker && (
         <DateTimePicker
-          value={date || new Date()}
-          mode="date"
+          value={newDate}
+          mode={mode}
           display="default"
           onChange={(_, selected) => {
             setShowPicker(false);
@@ -51,3 +73,45 @@ export function DatePickerField({
     </>
   );
 }
+
+const addAssignment = () => {
+  const [quizInfo, setQuizInfo] = useState({
+    deadline: null as string | null,
+  });
+
+  const [showDeadlinePicker, setShowDeadlinePicker] = useState(false);
+
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
+      <TouchableOpacity
+        onPress={() => setShowDeadlinePicker(true)}
+        style={[globalStyles.inputContainer, { width: "60%" }]}
+      >
+        <Text>
+          {quizInfo.deadline
+            ? new Date(quizInfo.deadline).toDateString()
+            : "Set Deadline"}{" "}
+        </Text>
+      </TouchableOpacity>
+      {showDeadlinePicker && (
+        <DateTimePicker
+          value={quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()}
+          mode="date"
+          display={"default"}
+          onChange={(event, selectedDate) => {
+            setShowDeadlinePicker(false);
+            if (selectedDate) {
+              setQuizInfo((prev) => ({
+                ...prev,
+                deadline: selectedDate.toISOString(),
+              }));
+            }
+          }}
+        />
+      )}
+    </View>
+  );
+};
+
+export default addAssignment;

@@ -326,6 +326,7 @@ export async function updateSpeechActivity(
   flashcards: Flashcard[],
 ) {
   try {
+    console.log(flashcards);
     const { data } = await api.put(
       `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
       { flashcards: flashcards },

@@ -29,12 +29,12 @@ interface HomonymItem {
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const { subjectId, difficulty, activityId, activityType, prevAttemptId } =
+  const { subjectId, difficulty, activityId, activity_type, prevAttemptId } =
     useLocalSearchParams<{
       subjectId: string;
       difficulty: string;
       activityId: string;
-      activityType: string;
+      activity_type: string;
       prevAttemptId: string;
     }>();
   const [items, setItems] = useState<HomonymItem[]>([]);
@@ -182,7 +182,7 @@ const Homonyms = () => {
           params: {
             score: res.score,
             totalItems: items.length * 2,
-            activity: activityType,
+            activity: activity_type,
             difficulty: difficulty,
           },
         });
@@ -235,7 +235,7 @@ const Homonyms = () => {
       const res = prevAttemptId
         ? await getAttemptActivityLanguage(
             subjectId,
-            activityType,
+            activity_type,
             activityId,
             prevAttemptId,
           )

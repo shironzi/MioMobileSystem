@@ -161,6 +161,12 @@ export async function submitFillActivity(
   answer_logs: { item_id: string; answers: string[]; answered_at: string[] }[],
 ) {
   try {
+    console.log(
+      { answers: payload },
+      { audio_logs: audio_logs },
+      { answer_logs: answer_logs },
+    );
+
     const { data } = await api.patch(
       `/subject/${subjectId}/language/fill/${difficulty}/${activityId}/${attemptId}`,
       {

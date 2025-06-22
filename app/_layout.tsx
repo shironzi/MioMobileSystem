@@ -34,13 +34,21 @@ export default function Layout() {
       const body = remoteMessage.notification?.body ?? "No Body";
       const type = remoteMessage.data?.type ?? "No Type";
 
-      if (type === "earthquake") {
+      console.log(type);
+
+      let notificationType = "";
+      if (type instanceof String) {
+        notificationType = type.toLowerCase().trim();
+        console.log(notificationType);
+      }
+
+      if (notificationType === "earthquake") {
         setModalTitle(title);
         setModalBody(body);
         setShowAlert(true);
       }
 
-      if (type === "message") {
+      if (notificationType === "message") {
         await Notifications.scheduleNotificationAsync({
           content: {
             title,
@@ -49,7 +57,7 @@ export default function Layout() {
           },
           trigger: null,
         });
-      } else if (type === "notification") {
+      } else if (notificationType === "notification") {
         await Notifications.scheduleNotificationAsync({
           content: {
             title,
@@ -84,6 +92,13 @@ export default function Layout() {
       <Stack screenOptions={{ headerShown: true }}>
         <Stack.Screen name="index" />
       </Stack>
+
+      <EarthquakeAlertModal
+        visible={showAlert}
+        onClose={() => setShowAlert(false)}
+        title={modalTitle}
+        body={modalBody}
+      />
 
       <EarthquakeAlertModal
         visible={showAlert}

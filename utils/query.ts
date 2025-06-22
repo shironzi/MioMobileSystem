@@ -237,33 +237,65 @@ export async function getAssignmentById(
   }
 }
 
+function formatDateToCustomFormat(dateString: Date) {
+  const date = new Date(dateString);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+function formatDateToDateOnly(dateString: Date) {
+  const date = new Date(dateString);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 export async function createAssignment(
   subjectId: string,
-  availability: { start: string | null; end: string | null },
+  availabilityTo: string,
+  availabilityFrom: string,
   title: string,
   description: string,
   attempts: number,
   submissionType: string,
-  deadline: string | null,
+  deadline: Date | null,
   points: number,
+  publishDate: Date,
+  fileSize: number,
+  visibility: boolean,
+  fileTypes: string[],
 ) {
   try {
+    const availableTo = availabilityTo.replace(/\s?(AM|PM)/i, "").trim();
+    const availableFrom = availabilityFrom.replace(/\s?(AM|PM)/i, "").trim();
+
     const payload = JSON.stringify({
-      availability: {
-        start: "2025-06-01T08:00:00Z",
-        end: "2025-06-10T23:59:59Z",
-      },
-      attempts: 2,
-      title: "Midterm Essay Submission",
-      description:
-        "Please submit your midterm essay as a PDF. Late submissions will be penalized.",
-      total: 50,
-      submission_type: "file",
-      published_at: "2025-05-31T12:00:00Z",
-      deadline: "2025-06-10T23:59:59Z",
+      availabilityFrom: availableFrom,
+      availabilityTo: availableTo,
+      attempts: attempts,
+      title: title,
+      description: description,
+      total: points,
+      submission_type: submissionType,
+      published_at: formatDateToCustomFormat(publishDate),
+      deadline: deadline ? formatDateToDateOnly(deadline) : null,
+      file_size: fileSize,
+      visibility: visibility,
+      file_types_types: fileTypes ?? null,
     });
 
-    const { data } = await api.put(
+    console.log(payload);
+
+    const { data } = await api.post(
       `/subject/${subjectId}/assignment`,
       payload,
       {
@@ -276,7 +308,7 @@ export async function createAssignment(
 
     return data;
   } catch (err) {
-    console.error(err);
+    console.error("Error creating assignment:", err);
     throw err;
   }
 }
@@ -348,24 +380,6 @@ export async function getScores(subjectId: string | string[]) {
 export async function getStudents(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/peoples`);
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-export async function getAttempts(
-  subjectId: string,
-  activityType: string,
-  activityId: string,
-  userId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/attempts/${activityType}/${activityId}`,
-    );
 
     return data;
   } catch (err) {
