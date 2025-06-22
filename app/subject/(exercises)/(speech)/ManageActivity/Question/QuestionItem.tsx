@@ -61,7 +61,33 @@ const QuestionItem = ({
   const textLimit = hasError.some((item) => item.error === "text length");
 
   return (
-    <SafeAreaView style={{ paddingBottom: 50, flex: 1 }}>
+    <SafeAreaView
+      style={{ paddingBottom: 50,}}>
+          <View
+      style={[
+        {
+          marginHorizontal: 20,
+          padding: 20,
+          backgroundColor: "#fff",
+          rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          marginTop: -5,
+          marginVertical:-80,
+          flex:1,
+          // marginBottom:150
+        },
+        item.id === firstIndex && styles.itemTopRounded,
+        item.id === lastIndex && styles.itemBottomRounded,
+      ]}
+    >
+      {item.id === firstIndex && (
+        <View>
+          <Text style={[globalStyles.text1, {marginTop:-5}]}>Word Flashcards</Text>
+          <View style={[globalStyles.divider, {marginVertical:10, width:350, left:-10}]} />
+        </View>
+      )}
       <View
         style={[
           {
@@ -105,6 +131,24 @@ const QuestionItem = ({
           <TouchableOpacity onPress={() => handleRemove(item.id)}>
             <AntDesign name="close" size={24} color="#aaa" />
           </TouchableOpacity>
+
+          <View style={{flexDirection:"row", justifyContent:"center", columnGap:10}}>
+          <TouchableOpacity
+              style={[globalStyles.inactivityButton, { width: "48%" }]}
+              onPress={() => router.back()}
+          >
+            <Text style={globalStyles.inactivityButtonText}> Cancel
+            </Text>
+          </TouchableOpacity>
+            <TouchableOpacity
+            style={[globalStyles.submitButton, {width:"48%"}]}
+            onPress={handlePreview}
+          >
+            <Text style={[globalStyles.submitButtonText, {top:3}]}>
+              {activityId ? "Preview" : "Create"}
+            </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={{ marginBottom: 10 }}>
           <Text style={globalStyles.text1}>Word</Text>

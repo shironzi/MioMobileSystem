@@ -1,12 +1,12 @@
+import ImageUpload from "@/components/ImageUpload";
+import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
-import globalStyles from "@/styles/globalStyles";
-import ImageUpload from "@/components/ImageUpload";
 
 interface FileInfo {
   uri: string;
@@ -31,22 +31,30 @@ const AddMatchingCards = (props: {
         {
           backgroundColor: "#fff",
           paddingHorizontal: 20,
-          marginHorizontal: 20,
+          marginHorizontal:5,
+          marginVertical: 5,
         },
         props.isFirst && {
-          paddingTop: 20,
+          paddingTop: 10,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
       ]}
     >
-      <View style={{ paddingHorizontal: 20 }}>
+      <View style={{  padding: 20,
+          backgroundColor: "#fff",
+          rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          marginBottom: 5,
+          flex: 1, }}>
         {props.isFirst && (
           <View>
-            <Text style={[globalStyles.text1, { paddingVertical: 10 }]}>
-              Card Images
+            <Text style={[globalStyles.text1, { marginTop:-5 }]}>
+              Matching Cards
             </Text>
-            <View style={styles.divider} />
+            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
           </View>
         )}
         <ImageUpload
@@ -62,13 +70,5 @@ const AddMatchingCards = (props: {
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#82828257",
-    marginHorizontal: -20,
-  },
-});
 
 export default memo(AddMatchingCards);

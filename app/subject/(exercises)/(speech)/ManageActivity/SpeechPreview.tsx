@@ -167,7 +167,7 @@ const SpeechPreview = () => {
           onPress={handlePrev}
         >
           <FontAwesome6 name="arrow-left-long" size={16} color="#fff" />
-          <Text style={styles.nextButtonText}>prev</Text>
+          <Text style={styles.nextButtonText}>Prev</Text>
         </TouchableOpacity>
       </View>
 

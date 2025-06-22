@@ -1,19 +1,14 @@
+import globalStyles from "@/styles/globalStyles";
 import React, { memo, useEffect, useState } from "react";
 import {
-  Text,
-  View,
   StyleSheet,
-  TouchableOpacity,
-  ScrollView,
+  Text,
+  View
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+import {
+  runOnJS
 } from "react-native-reanimated";
-import globalStyles from "@/styles/globalStyles";
 
 const FillInTheBlanks = (props: {
   sentence: string;
@@ -53,11 +48,13 @@ const FillInTheBlanks = (props: {
             {
               flexDirection: "row",
               flexWrap: "wrap",
-              height: 250,
+              paddingVertical:30,
+              // height: 250,
               width: "100%",
               borderWidth: 1,
               borderRadius: 20,
               padding: 20,
+              marginBottom:5
             },
             props.hasError
               ? { borderColor: "red" }

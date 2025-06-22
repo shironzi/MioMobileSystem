@@ -1,3 +1,5 @@
+import ImageUpload from "@/components/ImageUpload";
+import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -5,8 +7,6 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from "react-native-reanimated";
-import globalStyles from "@/styles/globalStyles";
-import ImageUpload from "@/components/ImageUpload";
 
 interface FileInfo {
   uri: string;
@@ -31,22 +31,33 @@ const AddBingoCards = (props: {
         {
           backgroundColor: "#fff",
           paddingHorizontal: 20,
-          marginHorizontal: 20,
+          marginHorizontal:5,
+          marginVertical: 5,
         },
         props.isFirst && {
-          paddingTop: 20,
+          paddingTop: 10,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
       ]}
     >
-      <View style={{ paddingHorizontal: 20 }}>
+      <View style={{  
+          padding: 20,
+          backgroundColor: "#fff",
+          rowGap: 10,
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          marginBottom: 5,
+          flex: 1,
+           }}>
         {props.isFirst && (
           <View>
-            <Text style={[globalStyles.text1, { paddingVertical: 10 }]}>
-              Images
+            <Text style={[globalStyles.text1, {marginTop:-5}]}>
+              Piddie Says
             </Text>
-            <View style={styles.divider} />
+            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
+
           </View>
         )}
         <ImageUpload
@@ -58,6 +69,7 @@ const AddBingoCards = (props: {
           showPreview={!!props.image_path}
           index={props.index}
         />
+        
       </View>
     </Animated.View>
   );
@@ -66,7 +78,7 @@ const AddBingoCards = (props: {
 const styles = StyleSheet.create({
   divider: {
     borderTopWidth: 1,
-    borderColor: "#82828257",
+    borderColor: "#ddd",
     marginHorizontal: -20,
   },
   cardRow: {

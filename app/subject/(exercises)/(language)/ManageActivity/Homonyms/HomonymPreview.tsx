@@ -1,10 +1,10 @@
+import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymPreviewCard";
+import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { createHomonym, editHomonyms } from "@/utils/language";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import globalStyles from "@/styles/globalStyles";
-import HomonymPreviewCard from "@/app/subject/(exercises)/(language)/ManageActivity/Homonyms/HomonymPreviewCard";
-import { createHomonym, editHomonyms } from "@/utils/language";
 
 interface FileInfo {
   uri: string;
@@ -59,7 +59,7 @@ const Homonyms = () => {
     });
   };
 
-  const handeCreate = async () => {
+  const handleCreate = async () => {
     try {
       const res = activityId
         ? await editHomonyms(items, difficulty, subjectId, activityId)
@@ -106,12 +106,28 @@ const Homonyms = () => {
           />
         ))}
       </View>
-      <TouchableOpacity
-        style={[globalStyles.submitButton, { justifyContent: "flex-end" }]}
-        onPress={handeCreate}
-      >
-        <Text style={globalStyles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
+      <View
+            style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom:-10
+          }}
+        >
+          <TouchableOpacity
+            style={[globalStyles.inactivityButton, { width: "48%" }]}
+            onPress={() => router.back()}
+          >
+            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[globalStyles.submitButton, { width: "48%" }]}
+            onPress={handleCreate}
+          >
+            <Text style={[globalStyles.submitButtonText, { top: 3 }]}>Create
+              {/* {activityId ? "Update" : "Create"} */}
+            </Text>
+          </TouchableOpacity>
+        </View>
     </View>
   );
 };

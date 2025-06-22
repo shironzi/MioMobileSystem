@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Picker } from "@react-native-picker/picker";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface FileInfo {
   uri: string;
@@ -44,6 +44,8 @@ const HomonymPreviewCard = ({
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
+  const [isPlaying, setIsPlaying] = useState(false);
+
 
   const handleAudioPlay = (index: number) => {
     player.pause();
@@ -52,8 +54,10 @@ const HomonymPreviewCard = ({
     });
     player.seekTo(0);
     player.play();
+    // setIsPlaying(true);
     return;
   };
+ 
   const answer = answers?.filter((ans) => ans.id === activity.id)[0];
 
   useEffect(() => {
@@ -67,12 +71,17 @@ const HomonymPreviewCard = ({
   return (
     <View style={styles.container}>
       <View style={[styles.questionCard, styles.questionRow]}>
-        <TouchableOpacity
-          onPress={() => handleAudioPlay(0)}
-          style={styles.audioControl}
-        >
-          <FontAwesome name="volume-up" size={24} color="white" />
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => handleAudioPlay(0)}
+        style={[
+          styles.audioControl,
+          // { backgroundColor: isPlaying ? "#FFBF18" : "#ddd" },
+        ]}
+        // disabled={isPlaying}
+      >
+        <FontAwesome name="volume-up" size={24} color="white" />
+      </TouchableOpacity>
+
         <View style={styles.wordContainer}>
           {activitySentence1.map((word, i) => {
             if (/^_+$/.test(word)) {
@@ -86,7 +95,7 @@ const HomonymPreviewCard = ({
                 >
                   <Text style={styles.pickerText}>{answer?.answer[0]}</Text>
                   <Picker
-                    dropdownIconColor={"#FFBF19"}
+                    dropdownIconColor={"#FFBF18"}
                     style={styles.picker}
                     mode={"dropdown"}
                     selectedValue={activity.answer[0] ?? ""}
@@ -110,12 +119,17 @@ const HomonymPreviewCard = ({
       </View>
 
       <View style={[styles.questionCard, styles.questionRow]}>
-        <TouchableOpacity
-          onPress={() => handleAudioPlay(1)}
-          style={styles.audioControl}
-        >
-          <FontAwesome name="volume-up" size={24} color="white" />
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => handleAudioPlay(1)}
+        style={[
+          styles.audioControl,
+          // { backgroundColor: isPlaying ? "#FFBF18" : "#ddd" },
+        ]}
+        // disabled={isPlaying}
+      >
+        <FontAwesome name="volume-up" size={24} color="white" />
+      </TouchableOpacity>
+
         <View style={styles.wordContainer}>
           {activitySentence2.map((word, i) => {
             if (/^_+$/.test(word)) {
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
   questionCard: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#00000024",
+    borderColor: "#ddd",
     backgroundColor: "#fff",
     padding: 9,
     borderRadius: 20,
@@ -203,10 +217,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   pickerNormal: {
-    borderColor: "#00000024",
+    borderColor: "#ddd",
   },
   pickerError: {
-    borderColor: "red",
+    borderColor: "#db4141",
   },
   pickerText: {
     position: "absolute",
