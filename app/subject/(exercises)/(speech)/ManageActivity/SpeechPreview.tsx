@@ -135,6 +135,7 @@ const SpeechPreview = () => {
           source={require("@/assets/images/face/echo.png")}
           style={styles.bannerLogo}
           resizeMode="contain"
+          
         />
         <Animated.View style={[styles.textContainer, animatedStyle]}>
           <Text style={styles.flashcardText}>
