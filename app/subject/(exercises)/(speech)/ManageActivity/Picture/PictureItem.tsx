@@ -175,8 +175,8 @@ const PictureItem = ({
             style={[globalStyles.submitButton, {width:"48%"}]}
             onPress={handlePreview}
           >
-            <Text style={[globalStyles.submitButtonText, {top:3}]}>
-              {activityId ? "Update" : "Create"}
+            <Text style={[globalStyles.submitButtonText, {top:3}]}>Preview
+              {/* {activityId ? "Preview" : "Create"} */}
             </Text>
             </TouchableOpacity>
           </View>

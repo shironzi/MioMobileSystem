@@ -407,7 +407,7 @@ const MatchingPreview = () => {
           style={[globalStyles.submitButton, {width:"48%"}]}
         onPress={handleSubmit}
       >
-        <Text style={[globalStyles.submitButtonText, {top:3}]}>Submit</Text>
+        <Text style={[globalStyles.submitButtonText, {top:3}]}>Update</Text>
       </TouchableOpacity>
 
       </View>

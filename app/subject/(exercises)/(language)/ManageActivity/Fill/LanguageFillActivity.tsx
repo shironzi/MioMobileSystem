@@ -206,7 +206,7 @@ const LanguageFillActivity = ({
                 style={[ globalStyles.submitButton, {width:"48%"} ]}
               onPress={handleSubmit}
             >
-              <Text style={[globalStyles.submitButtonText, {top:3}]}>Proceed</Text>
+              <Text style={[globalStyles.submitButtonText, {top:3}]}>Preview</Text>
             </TouchableOpacity>
             </View>
 

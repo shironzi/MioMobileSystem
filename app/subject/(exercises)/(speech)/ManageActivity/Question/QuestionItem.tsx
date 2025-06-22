@@ -62,7 +62,7 @@ const QuestionItem = ({
 
   return (
     <SafeAreaView
-      style={{ paddingBottom: 50, flex: 1,}}>
+      style={{ paddingBottom: 50,}}>
           <View
       style={[
         {
@@ -145,7 +145,7 @@ const QuestionItem = ({
             onPress={handlePreview}
           >
             <Text style={[globalStyles.submitButtonText, {top:3}]}>
-              {activityId ? "Update" : "Create"}
+              {activityId ? "Preview" : "Create"}
             </Text>
             </TouchableOpacity>
           </View>

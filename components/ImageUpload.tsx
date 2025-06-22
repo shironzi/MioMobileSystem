@@ -89,7 +89,7 @@ const ImageUpload = (props: {
                   onPress={props.handleImageRemove}
                   style={[styles.fileUpload]}
                 >
-                  <AntDesign name="close" size={24} color="#db4141" />
+                  <AntDesign name="close" size={20} color="#ddd" />
                 </TouchableOpacity>
               </View>
             )}

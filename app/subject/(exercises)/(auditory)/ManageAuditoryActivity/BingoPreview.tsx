@@ -161,7 +161,47 @@ const BingoPreview = () => {
 
   return (
     <View style={[globalStyles.container, { flex:1, padding: 20 }]}>
-      <Text style={styles.difficulty}>select answers: </Text>
+      {/* <Text style={styles.difficulty}></Text> */}
+          <View
+                  style={{
+                    borderColor: "#ddd",
+                    borderWidth: 1,
+                    borderRadius: 20,
+                    padding: 10,
+                    marginBottom: 10,
+                    flexDirection: "row",
+                    
+                  }}
+                >
+                 <TouchableOpacity
+                  style={[
+                    {
+                      padding: 20,
+                      borderRadius: 15,
+                      maxWidth: 75,
+                    },
+                    isPlaying
+                      ? { backgroundColor: "#ffbf18" }
+                      : { backgroundColor: "#ddd" },
+                  ]}
+                  onPress={playAudio}
+                  disabled={isPlaying}
+                >
+
+                    <FontAwesome6 name="volume-high" size={25} color="#fff" />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "300",
+                      alignSelf: "center",
+                      left: 60,
+                      lineHeight: 20,
+                    }}
+                  >
+                    Tap the speaker icon.{"\n"}    Listen carefully!
+                  </Text>
+                </View>
       <FlatList
         style={styles.bingoCards}
         data={activityData}
@@ -176,7 +216,7 @@ const BingoPreview = () => {
         )}
       />
 
-      <View
+      {/* <View
         style={{ height: 120, justifyContent: "center", alignItems: "center" }}
       >
         <TouchableOpacity
@@ -191,15 +231,33 @@ const BingoPreview = () => {
         >
           <FontAwesome6 name="volume-high" size={25} color="#fff" />
         </TouchableOpacity>
-      </View>
-      <TouchableOpacity
-        style={globalStyles.submitButton}
-        onPress={handleSubmit}
+      </View> */}
+       <View
+          style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          position: "absolute",
+          bottom: 30,
+          left: 20,
+          right: 20,
+        }}
       >
-        <Text style={globalStyles.submitButtonText}>
-          {activityId ? "Update Bingo Activity" : "Create Bingo Activity"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+        >
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={handleSubmit}
+        >
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+            {activityId ? "Update" : "Create"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+     
     </View>
   );
 };

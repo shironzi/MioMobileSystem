@@ -50,7 +50,6 @@ const AddBingoCards = (props: {
           borderRadius: 20,
           marginBottom: 5,
           flex: 1,
-          // paddingBottom:50
            }}>
         {props.isFirst && (
           <View>

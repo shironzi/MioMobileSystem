@@ -61,7 +61,7 @@ const AudioUpload = (props: {
                 onPress={props.handleAudioRemove}
                 style={styles.fileUpload}
               >
-                <AntDesign name="close" size={50} color="#aaa" />
+                <AntDesign name="close" size={20} color="#aaa" />
               </TouchableOpacity>
             </View>
           </View>

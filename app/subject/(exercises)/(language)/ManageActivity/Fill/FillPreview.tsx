@@ -38,6 +38,8 @@ const FillPreview = () => {
 
   const items: FillItem[] = JSON.parse(data);
   const [currentItem, setCurrentItem] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  
 
   const handleNext = async () => {
     if (currentItem >= items.length - 1) {
@@ -91,10 +93,11 @@ const FillPreview = () => {
         items[currentItem].audio?.uri ?? items[currentItem]?.audio_path ?? "",
     });
     await player.seekTo(0);
-
     player.play();
+    setIsPlaying(true);
     return;
   };
+  
 
     return (
       <GestureHandlerRootView style={[globalStyles.container, { flex: 1 }]}>
@@ -113,14 +116,19 @@ const FillPreview = () => {
             }}
           >
             <TouchableOpacity
-              style={{
-                backgroundColor: "#FFBF18",
-                padding: 20,
-                borderRadius: 15,
-                maxWidth: 75,
-              }}
+              style={[
+                {
+                  padding: 20,
+                  borderRadius: 15,
+                  maxWidth: 75,
+                },
+                isPlaying
+                  ? { backgroundColor: "#ffbf18" }
+                  : { backgroundColor: "#ddd" },
+              ]}
               onPress={handleAudioPlay}
-            >
+              disabled={isPlaying}
+              >
               <FontAwesome6 name="volume-high" size={25} color="#fff" />
             </TouchableOpacity>
             <Text

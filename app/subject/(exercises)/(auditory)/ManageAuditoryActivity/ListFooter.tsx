@@ -87,8 +87,8 @@ const ListFooter = (props: {
         style={[globalStyles.submitButton, {width:"48%"}]}
         onPress={props.handleRoute}
       >
-        <Text style={[globalStyles.submitButtonText, styles.continueButton]}>
-          {props.activityId ? "Update" : "Create"}
+        <Text style={[globalStyles.submitButtonText, styles.continueButton]}>Preview
+          {/* {props.activityId ? "Preview" : "Create"} */}
         </Text>
       </TouchableOpacity>
     </View>
