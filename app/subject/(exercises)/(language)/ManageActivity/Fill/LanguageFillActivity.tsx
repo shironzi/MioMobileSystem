@@ -103,12 +103,12 @@ const LanguageFillActivity = ({
             <Text style={[globalStyles.text1,{ marginTop:5 }]}>
               Fill in the Blank
             </Text>
-            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
+            <View style={[globalStyles.divider, { marginTop: 10, width: 340, left: -10 }]} />
           </View>
         )}
         <View style={styles.itemBodyContainer}>
-          <View style={[styles.itemHeaderRow]}>
-            <Text style={globalStyles.text1}>Sentence</Text>
+          <View style={[styles.itemHeaderRow,   {marginTop:15}]}>
+            <Text style={[globalStyles.text1]}>Sentence</Text>
             <TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
               <AntDesign name="close" size={20} color="#aaa" />
             </TouchableOpacity>
@@ -117,10 +117,10 @@ const LanguageFillActivity = ({
           <TextInput
             style={[
               styles.textInputContainer,
-              { height: Math.min(Math.max(descHeight, 100), 200) },
+              { height: Math.min(Math.max(descHeight, 150), 200) },
               !!textError && styles.errorBorder,
             ]}
-            placeholder="Type a sentence with a blank for the answer (e.g., The sun _____ in the east.)"
+            placeholder="Type a sentence here."
             multiline={true}
             onContentSizeChange={(e) =>
               setDescHeight(e.nativeEvent.contentSize.height)
@@ -206,7 +206,7 @@ const LanguageFillActivity = ({
                 style={[ globalStyles.submitButton, {width:"48%"} ]}
               onPress={handleSubmit}
             >
-              <Text style={[globalStyles.submitButtonText, {top:3}]}>Submit</Text>
+              <Text style={[globalStyles.submitButtonText, {top:3}]}>Proceed</Text>
             </TouchableOpacity>
             </View>
 
@@ -239,11 +239,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingTop: 10,
-  },
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#82828257",
-    marginHorizontal: -10,
   },
   textInputContainer: {
     borderWidth: 1,
@@ -283,7 +278,7 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   errorText: {
-    color: "red",
+    color: "#db4141",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,

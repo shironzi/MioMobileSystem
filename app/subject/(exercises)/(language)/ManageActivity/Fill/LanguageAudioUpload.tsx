@@ -88,7 +88,7 @@ const LanguageAudioUpload = (props: {
                   <TouchableOpacity
                     onPress={() => props.handleRemoveAudio(props.item.id)}
                   >
-                    <AntDesign name="close" size={24} color="#db4141" />
+                    <AntDesign name="close" size={20} color="#aaa" />
                   </TouchableOpacity>
                 </View>
                 {(props.item.audio_path || props.item.audio) && (

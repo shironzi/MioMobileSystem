@@ -6,7 +6,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface FileInfo {
@@ -40,11 +40,17 @@ const FillPreview = () => {
   const [currentItem, setCurrentItem] = useState<number>(0);
 
   const handleNext = async () => {
-    if (currentItem >= items.length) {
-      setCurrentItem(0);
+    if (currentItem >= items.length - 1) {
       return;
     }
     setCurrentItem(currentItem + 1);
+  };
+
+  const handlePrev = async () => {
+    if (currentItem === 0) {
+      return;
+    }
+    setCurrentItem(currentItem - 1);
   };
 
   const handleSubmit = async () => {
@@ -90,54 +96,165 @@ const FillPreview = () => {
     return;
   };
 
-  return (
-    <GestureHandlerRootView style={globalStyles.container}>
-      <View style={{borderColor:"#ddd", borderWidth:1, borderRadius:20, padding:10, marginBottom:20, flexDirection:"row"}}>
-      <TouchableOpacity
-        style={{
-          backgroundColor: "#FFBF18",
-          padding: 20,
-          borderRadius: 15,
-          maxWidth: 75,
-        }}
-        onPress={handleAudioPlay}
-      >
-          <FontAwesome6 name="volume-high" size={25} color="#fff" />
-        </TouchableOpacity>
-        <Text style={{fontSize:14, fontWeight:300, alignSelf:"center", left:60, lineHeight:20}}>Tap the speaker icon.{"\n"}     Listen carefully!</Text>
-
-      </View>
-
-
-      <FillInTheBlanks
-        key={currentItem}
-        sentence={
-          items[currentItem].text +
-          " " +
-          items[currentItem].distractors.join(" ")
-        }
-        handleAnswers={() => {}}
-      />
-
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity
-          style={[globalStyles.submitButton, { width: "48%" }]}
-          onPress={handleNext}
+    return (
+      <GestureHandlerRootView style={[globalStyles.container, { flex: 1 }]}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          // contentContainerStyle={{ paddingBottom: 150 }}
         >
-          <Text style={globalStyles.submitButtonText}>Next</Text>
-        </TouchableOpacity>
+          <View
+            style={{
+              borderColor: "#ddd",
+              borderWidth: 1,
+              borderRadius: 20,
+              padding: 10,
+              marginBottom: 20,
+              flexDirection: "row",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#FFBF18",
+                padding: 20,
+                borderRadius: 15,
+                maxWidth: 75,
+              }}
+              onPress={handleAudioPlay}
+            >
+              <FontAwesome6 name="volume-high" size={25} color="#fff" />
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "300",
+                alignSelf: "center",
+                left: 60,
+                lineHeight: 20,
+              }}
+            >
+              Tap the speaker icon.{"\n"}    Listen carefully!
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: -20,
+              marginVertical: -10,
+              marginHorizontal: -20,
+            }}
+          >
+            <TouchableOpacity
+              style={[
+                globalStyles.submitButton,
+                {
+                  width: "30%",
+                  backgroundColor: "#fff",
+                  opacity: currentItem === 0 ? 0.5 : 1,
+                },
+              ]}
+              onPress={handlePrev}
+              disabled={currentItem === 0}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 5,
+                }}
+              >
+                <FontAwesome6
+                  name="arrow-left-long"
+                  size={16}
+                  color={currentItem === 0 ? "#1f1f1f" : "#ffbf18"}
+                  style={{ top: 3 }}
+                />
+                <Text
+                  style={[
+                    globalStyles.submitButtonText,
+                    { color: currentItem === 0 ? "#1f1f1f" : "#ffbf18" },
+                  ]}
+                >
+                  Prev
+                </Text>
+              </View>
+          </TouchableOpacity>
 
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              {
+                width: "30%",
+                backgroundColor: "#fff",
+                opacity: currentItem >= items.length - 1 ? 0.5 : 1,
+              },
+            ]}
+            onPress={handleNext}
+            disabled={currentItem >= items.length - 1}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 5,
+              }}
+            >
+              <Text
+                style={[
+                  globalStyles.submitButtonText,
+                  { color: currentItem >= items.length - 1 ? "#1f1f1f" : "#ffbf18" },
+                ]}
+              >
+                Next
+              </Text>
+              <FontAwesome6
+                name="arrow-right-long"
+                size={16}
+                color={currentItem >= items.length - 1 ? "#1f1f1f" : "#ffbf18"}
+                style={{ top: 3 }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <FillInTheBlanks
+          key={currentItem}
+          sentence={
+            items[currentItem].text +
+            " " +
+            items[currentItem].distractors.join(" ")
+          }
+          handleAnswers={() => {}}
+        />
+        </ScrollView>
+    
+        <View
+          style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          position: "absolute",
+          bottom: 20,
+          left: 20,
+          right: 20,
+        }}
+      >
+        <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+        >
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
         >
-          <Text style={globalStyles.submitButtonText}>
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
             {activityId ? "Update" : "Create"}
           </Text>
         </TouchableOpacity>
       </View>
-    </GestureHandlerRootView>
-  );
+   
+      </GestureHandlerRootView>
+    );
 };
 
 export default FillPreview;
