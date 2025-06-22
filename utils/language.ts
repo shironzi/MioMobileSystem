@@ -43,8 +43,14 @@ export async function getFillActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -60,8 +66,14 @@ export async function getHomonymActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -76,8 +88,14 @@ export async function startHomonymsActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error("Failed to start homonyms activity: ", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -92,8 +110,14 @@ export async function startFillActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error("Failed to start fill in the blanks activity: ", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -146,8 +170,14 @@ export async function submitHomonymsActivity(
     }
 
     return data;
-  } catch (err) {
-    console.error("Take Activity Failed");
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -177,8 +207,14 @@ export async function submitFillActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error("Take Activity Failed");
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -235,9 +271,14 @@ export async function createHomonym(
     }
 
     return data;
-  } catch (err) {
-    console.error("Network or submission error:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -287,9 +328,14 @@ export async function createFill(
     }
 
     return data;
-  } catch (err) {
-    console.error("Network or submission error:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -350,9 +396,14 @@ export async function editHomonyms(
     }
 
     return data;
-  } catch (err) {
-    console.error("Network or submission error:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -420,9 +471,14 @@ export async function editFill(
     }
 
     return data;
-  } catch (err) {
-    console.error("Network or submission error:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -450,7 +506,13 @@ export async function getAttemptActivityLanguage(
     }
 
     return await response.json();
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

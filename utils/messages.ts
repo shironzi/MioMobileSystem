@@ -14,9 +14,14 @@ export async function getInboxMessages() {
     const { data } = await api.get(`/messages/inbox`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -25,9 +30,14 @@ export async function getSentMessages() {
     const { data } = await api.get(`/messages/sent`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -66,9 +76,14 @@ export async function sendMessage(
     }
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -87,9 +102,14 @@ export async function replyMessage(
     console.log(body);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -98,9 +118,14 @@ export async function getConversation(conversation_id: string) {
     const { data } = await api.get(`/message/reply/${conversation_id}`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -109,9 +134,14 @@ export async function getSubjectTeachers() {
     const { data } = await api.get(`/message/subjectTeachers`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -120,9 +150,14 @@ export async function getSubjectStudents(subjectId: string) {
     const { data } = await api.get(`/message/${subjectId}`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -131,8 +166,13 @@ export async function getMessageSubjects() {
     const { data } = await api.get(`/message/subjects`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
