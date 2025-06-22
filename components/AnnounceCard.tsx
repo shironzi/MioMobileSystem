@@ -120,7 +120,8 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		borderColor: "#ddd",
 		borderWidth: 1,
-		// elevation: 5,
+		overflow: "hidden",
+		shadowColor: "#000", 
 	},
 	deleteBackground: {
 		...StyleSheet.absoluteFillObject,
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 30,
 		justifyContent: "center",
 		alignItems: "flex-end",
-		borderRadius: 10,
+		borderRadius: 20,
 		zIndex: 0,
 	},
 	row: {

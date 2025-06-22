@@ -1,19 +1,21 @@
 import AnnounceCard from "@/components/AnnounceCard";
-import LoadingCard from "@/components/loadingCard";
-
 import ConfirmationModal from "@/components/ConfirmationModal";
+import LoadingCard from "@/components/loadingCard";
+import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAnnouncements, getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { Ionicons } from "@expo/vector-icons";
+// import MaterialIc from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
+	Image,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View,
+	View
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -106,14 +108,40 @@ function Announcements() {
 
 	return (
 		<View style={styles.container}>
+			
 			<ScrollView
 				showsVerticalScrollIndicator={false}
 				contentContainerStyle={{ paddingBottom: 50 }}
 			>
+				{role === "teacher" && (
+				// <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+				// 	<MaterialIcon name="add" size={30} color="#fff" />
+				// </TouchableOpacity>
+				<TouchableOpacity
+				style={styles.addButton}
+				onPress={handleAdd}
+			>
+				<View
+					style={{
+						top: 20,
+						alignSelf: "center",
+						flexDirection: "row",
+					}}
+				>
+					<Ionicons name="add-circle" size={20} color="#ffbf18" />
+					<Text style={styles.addText}>Add Announcement</Text>
+				</View>
+			</TouchableOpacity>
+			)}
 				{announcements.length > 0 ? (
 					<View style={{ rowGap: 15 }}>
 						{announcements.map((item, index) => (
-							<GestureHandlerRootView key={index}>
+							<GestureHandlerRootView key={index}
+								style={{
+								borderRadius: 20,
+								backgroundColor: "#fff",
+								overflow: "hidden",      
+							  }}>
 								<AnnounceCard
 									subjectId={subjectId}
 									title={item.title}
@@ -131,8 +159,19 @@ function Announcements() {
 						))}
 					</View>
 				) : (
-					<View>
-						<Text>This subject has no announcements yet.</Text>
+					// <View>
+					// 	<Text>This subject has no announcements yet.</Text>
+						// </View>
+					<View style={{justifyContent:"center", backgroundColor:"#fff", flex:1}}>
+						<Image
+							source={require("@/assets/load/noavailable.png")}
+							resizeMode="contain"
+							style={globalStyles.image}
+						/>
+						<Text style={globalStyles.line1}>No Announcement Yet</Text>
+						<Text style={globalStyles.line2}>
+						There’s nothing available in this{"\n"}section right now.
+						</Text>
 					</View>
 				)}
 			</ScrollView>
@@ -146,11 +185,7 @@ function Announcements() {
 				handleApprove={() => handleDelete()}
 			/>
 
-			{role === "teacher" && (
-				<TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-					<MaterialIcon name="add" size={30} color="#fff" />
-				</TouchableOpacity>
-			)}
+			
 		</View>
 	);
 }
@@ -162,16 +197,26 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 	},
 	addButton: {
-		position: "absolute",
-		bottom: 20,
-		right: 20,
-		backgroundColor: "#2264DC",
+		// position: "absolute",
+		// position:"relative",
+		left: -8,
+		width: "88%",
+		backgroundColor: "#fcefcc",
+		borderColor: "#ffbf18",
+		borderWidth: 2,
+		borderRadius: 20,
+		borderStyle: "dashed",
+		margin: 30,
+		marginBottom:20,
+		// top: 0,
+		// bottom: 0,
 		height: 60,
-		width: 60,
-		borderRadius: 30,
-		justifyContent: "center",
-		alignItems: "center",
-		elevation: 5,
+		marginVertical:5
+	},
+	addText: {
+		color: "#ffbf18",
+		fontWeight: 500,
+		marginHorizontal: 10,
 	},
 });
 

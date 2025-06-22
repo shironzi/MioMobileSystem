@@ -1,21 +1,24 @@
 import FileUpload from "@/components/FileUpload";
+import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
+import { getDate } from "@/utils/DateFormat";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { getAnnouncementById } from "@/utils/query";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { getDate } from "@/utils/DateFormat";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
 interface FileInfo {
   uri: string;
@@ -143,42 +146,66 @@ const addAnnouncement = () => {
     })();
   }, [subjectId, announcementId]);
 
+ 
   if (loading) {
     return (
-      <View>
-        <Text>Loading......</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
       </View>
     );
   }
+ 
 
   return (
+    <ScrollView style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.card}>
-          <View style={styles.section}>
-            <Text style={styles.label}>Title</Text>
-            {inputError.some((item) => item.error === "title") && (
-              <Text style={globalStyles.errorText}>This field is required</Text>
-            )}
+        <View style={styles.section}>
+          <Text style={styles.label}>Title</Text>
+          {inputError.some((item) => item.error === "title") && (
+            <Text style={globalStyles.errorText}>This field is required</Text>
+          )}
+          <View style={styles.inputIconWrapper}>
             <TextInput
               placeholder="Enter title"
               style={[
                 styles.input,
-                inputError.some((err) => err.error === "title") &&
-                  styles.inputError,
+                { paddingRight: 35 }, 
+                inputError.some((err) => err.error === "title") && styles.inputError,
               ]}
               value={title}
               onChangeText={setTitle}
             />
+            <FontAwesome
+              name="pencil-square-o"
+              size={20}
+              color="#ffbf18"
+              style={styles.iconInsideInput}
+            />
           </View>
-
+        </View>
           <View style={styles.section}>
             <Text style={styles.label}>Date</Text>
             <TouchableOpacity
               style={styles.input}
               onPress={() => setShow(true)}
-            >
-              <Text>{date.toDateString()}</Text>
+              >
+                <View style={{flexDirection:"row", justifyContent:"space-between",marginHorizontal:5}}>
+                <Text>{date.toDateString()}</Text>
+                <MaterialIcons name="date-range" size={20} color="#ffbf18" />
+
+                </View>
+                
               {show && (
                 <DateTimePicker
                   value={date}
@@ -230,7 +257,8 @@ const addAnnouncement = () => {
                   style={[
                     styles.urlInput,
                     urlError.find((e) => e.index === index) &&
-                      styles.inputError,
+                    styles.inputError,
+                    {marginVertical:5}
                   ]}
                 />
                 <TouchableOpacity onPress={() => handleRemoveUrl(index)}>
@@ -246,8 +274,12 @@ const addAnnouncement = () => {
             <TouchableOpacity
               onPress={handleAddUrl}
               style={styles.addUrlButton}
-            >
-              <Text style={styles.addUrlText}>+ Add URL</Text>
+              >
+                <View style={{flexDirection:"row", marginVertical:10, marginTop:0}}>
+                <MaterialIcons name="add" size={20} color="#FFBF18" />
+                <Text style={styles.addUrlText}>Add URL</Text>
+
+                </View>
             </TouchableOpacity>
           </View>
 
@@ -274,15 +306,34 @@ const addAnnouncement = () => {
             <FileUpload handleFiles={handleFileUpload} />
           </View>
 
-          <TouchableOpacity
-            style={globalStyles.submitButton}
-            onPress={handlePreview}
-          >
-            <Text style={globalStyles.submitButtonText}>Preview</Text>
-          </TouchableOpacity>
+      <View
+        style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        bottom: 0,
+        marginTop:-70
+        }}
+      >
+        <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
+        >
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={handlePreview}
+        >
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+          Preview
+          </Text>
+        </TouchableOpacity>
+        </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
+  </ScrollView>
+
   );
 };
 
@@ -290,6 +341,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     rowGap: 15,
+    backgroundColor:"#fff"
   },
   card: {
     ...globalStyles.contentPadding,
@@ -301,6 +353,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "500",
     fontSize: 16,
+    marginBottom:15
   },
   input: {
     ...globalStyles.inputContainer,
@@ -328,14 +381,16 @@ const styles = StyleSheet.create({
     ...globalStyles.inputContainer,
   },
   urlInputError: {
-    borderColor: "red",
+    borderColor: "#db4141",
   },
   closeIcon: {
     marginLeft: 10,
   },
   addUrlText: {
     color: "#FFBF18",
-    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 5,
+    
   },
   submitButton: {
     width: "100%",
@@ -348,6 +403,19 @@ const styles = StyleSheet.create({
   addUrlButton: {
     marginTop: 10,
   },
+  inputIconWrapper: {
+    position: "relative",
+    justifyContent: "center",
+  },
+  
+  iconInsideInput: {
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: [{ translateY: -10 }],
+    zIndex: 1,
+  },
+  
 });
 
 export default memo(addAnnouncement);
