@@ -1,4 +1,10 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import React, { useEffect, useState } from "react";
 import { getAnalyticsDashboard } from "@/utils/analytics";
@@ -9,6 +15,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import AnalyticsCard from "@/app/analytics/AnalyticsCard";
 import { FontAwesome6 } from "@expo/vector-icons";
 import LoadingCard from "@/components/loadingCard";
+import { Picker } from "@react-native-picker/picker";
 
 const Analytics = () => {
   useHeaderConfig("Analytics");
@@ -29,6 +36,8 @@ const Analytics = () => {
   const [lineData, setLineData] = useState<{ value: number; label: string }[]>(
     [],
   );
+
+  const [filter, setFilter] = useState<string>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,40 +94,15 @@ const Analytics = () => {
 
   return (
     <ScrollView style={{ paddingHorizontal: 20, backgroundColor: "#fff" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          height: 160,
-          columnGap: 10,
-          marginHorizontal: "auto",
-          marginVertical: 10,
-          marginTop: 20,
-        }}
-      >
+      <View style={{ justifyContent: "flex-end" }}>
+        <TouchableOpacity>
+          <FontAwesome6 name="sliders" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.headerContainer}>
         <View style={{ flexDirection: "column", width: "49%", rowGap: 10 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#FFBF1926",
-              alignItems: "center",
-              width: "100%",
-              justifyContent: "center",
-              borderRadius: 20,
-              height: 75,
-              columnGap: 15,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#FFBF1947",
-                width: 35,
-                height: 35,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 360,
-              }}
-            >
+          <View style={[styles.header, { backgroundColor: "#FFBF1926" }]}>
+            <View style={styles.headerItem}>
               <MaterialIcons name="person" size={24} color="#FFBF19" />
             </View>
             <View>
@@ -126,28 +110,8 @@ const Analytics = () => {
               <Text style={globalStyles.label}>Active Today</Text>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#2264DC26",
-              alignItems: "center",
-              width: "100%",
-              justifyContent: "center",
-              borderRadius: 20,
-              height: 75,
-              columnGap: 15,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#2264DC47",
-                width: 35,
-                height: 35,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 360,
-              }}
-            >
+          <View style={styles.header}>
+            <View style={[styles.headerItem, { backgroundColor: "#2264DC47" }]}>
               <MaterialIcons name="av-timer" size={24} color="#2264DC" />
             </View>
             <View>
@@ -157,16 +121,7 @@ const Analytics = () => {
           </View>
         </View>
 
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            width: "48%",
-            backgroundColor: "#55BC8E26",
-            borderRadius: 20,
-            height: 160,
-          }}
-        >
+        <View style={styles.activities}>
           <PieChart
             data={[
               { value: data?.overall_completion_rate ?? 0, color: "#55BC8E" },
@@ -237,19 +192,7 @@ const Analytics = () => {
       </View>
 
       <View style={{ flexDirection: "row", columnGap: 10, marginVertical: 10 }}>
-        <View
-          style={{
-            width: "48%",
-            backgroundColor: "#fff",
-            borderRadius: 20,
-            alignItems: "center",
-            height: 230,
-            justifyContent: "center",
-            rowGap: 10,
-            borderColor: "#00000024",
-            borderWidth: 1,
-          }}
-        >
+        <View style={styles.activitiesContainer}>
           <Text style={globalStyles.text1}>Overall Result</Text>
           <PieChart
             data={[
@@ -318,19 +261,7 @@ const Analytics = () => {
           </View>
         </View>
 
-        <View
-          style={{
-            width: "48%",
-            backgroundColor: "#fff",
-            borderRadius: 20,
-            alignItems: "center",
-            height: 230,
-            justifyContent: "center",
-            rowGap: 10,
-            borderColor: "#00000024",
-            borderWidth: 1,
-          }}
-        >
+        <View style={styles.overallContainer}>
           <Text style={globalStyles.text1}>Overall Result</Text>
           <PieChart
             data={[
@@ -422,31 +353,20 @@ const Analytics = () => {
         </View>
       </View>
 
-      <View
-        style={{
-          width: "100%",
-          marginHorizontal: "auto",
-          borderWidth: 1,
-          borderRadius: 20,
-          paddingVertical: 20,
-          marginVertical: 10,
-          backgroundColor: "#fff",
-          borderColor: "#00000024",
-        }}
-      >
+      <View style={styles.lineChartContainer}>
         <LineChart
           initialSpacing={0}
           data={lineData}
           spacing={50}
           hideDataPoints
           thickness={2.5}
-          color="#2264DC" // Remove color1 as it's redundant
+          color="#2264DC"
           isAnimated
           hideRules
           yAxisColor="#2264DC"
           curveType={CurveType.QUADRATIC}
           curvature={1}
-          showVerticalLines={false} // Set to false if you want to remove vertical lines between points
+          showVerticalLines={false}
           xAxisColor="#2264DC"
           height={170}
           yAxisLabelWidth={40}
@@ -455,31 +375,10 @@ const Analytics = () => {
             fontSize: 15,
           }}
           xAxisLength={300}
-          xAxisLabelTextStyle={{
-            color: "#1F1F1F80",
-            fontSize: 15,
-            marginLeft: 20,
-          }}
+          xAxisLabelTextStyle={styles.lineChart}
         />
       </View>
-
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          borderColor: "#439558",
-          borderRadius: 20,
-          borderWidth: 3,
-          borderStyle: "dashed",
-          backgroundColor: "#43955826",
-          width: "100%",
-          height: 85,
-          alignItems: "center",
-          justifyContent: "center",
-          columnGap: 10,
-          marginBottom: 70,
-          marginTop: 10,
-        }}
-      >
+      <TouchableOpacity style={styles.exportButton}>
         <FontAwesome6 name="file-export" size={20} color="#439558" />
         <Text style={[globalStyles.text1, { color: "#439558" }]}>
           EXPORT CSV
@@ -488,5 +387,95 @@ const Analytics = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  exportButton: {
+    flexDirection: "row",
+    borderColor: "#439558",
+    borderRadius: 20,
+    borderWidth: 3,
+    borderStyle: "dashed",
+    backgroundColor: "#43955826",
+    width: "100%",
+    height: 85,
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 10,
+    marginBottom: 70,
+    marginTop: 10,
+  },
+  lineChart: {
+    color: "#1F1F1F80",
+    fontSize: 15,
+    marginLeft: 20,
+  },
+  lineChartContainer: {
+    width: "100%",
+    marginHorizontal: "auto",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingVertical: 20,
+    marginVertical: 10,
+    backgroundColor: "#fff",
+    borderColor: "#00000024",
+  },
+  overallContainer: {
+    width: "48%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    alignItems: "center",
+    height: 230,
+    justifyContent: "center",
+    rowGap: 10,
+    borderColor: "#00000024",
+    borderWidth: 1,
+  },
+  activitiesContainer: {
+    width: "48%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    alignItems: "center",
+    height: 230,
+    justifyContent: "center",
+    rowGap: 10,
+    borderColor: "#00000024",
+    borderWidth: 1,
+  },
+  activities: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: "48%",
+    backgroundColor: "#55BC8E26",
+    borderRadius: 20,
+    height: 160,
+  },
+  header: {
+    flexDirection: "row",
+    backgroundColor: "#2264DC26",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "center",
+    borderRadius: 20,
+    height: 75,
+    columnGap: 15,
+  },
+  headerItem: {
+    backgroundColor: "#FFBF1947",
+    width: 35,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 360,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 160,
+    columnGap: 10,
+    marginHorizontal: "auto",
+    marginVertical: 10,
+    marginTop: 20,
+  },
+});
 
 export default Analytics;
