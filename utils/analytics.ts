@@ -5,7 +5,13 @@ export async function getAnalyticsDashboard() {
     const { data } = await api.get(`/analytics/dashboard`);
 
     return data;
-  } catch (err) {
-    console.error();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

@@ -9,7 +9,7 @@ import getCurrentDateTime from "@/utils/DateFormat";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer } from "expo-audio";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
 	Dimensions,
@@ -52,6 +52,7 @@ interface answerLog {
 const MatchingCards = () => {
 	HeaderConfigQuiz("Matching Cards");
 
+	const router = useRouter();
 	const {
 		subjectId,
 		activity_type,
@@ -286,7 +287,7 @@ const MatchingCards = () => {
 								}}
 								style={[
 									styles.itemContainer,
-									{ padding: 20 },
+									{ padding: 10 },
 									selectedAudio === index
 									? { borderColor: "#ffbf18", borderWidth: 1 }
 									: { borderColor: "#ddd" },
@@ -300,7 +301,7 @@ const MatchingCards = () => {
 								}}
 							>
 								<View style={styles.audioContainer}>
-									<FontAwesome6 name="volume-high" size={20} color="#fff" />
+									<FontAwesome6 name="volume-high" size={30} color="#fff" />
 								</View>
 							</TouchableOpacity>
 						))}
@@ -343,18 +344,18 @@ const MatchingCards = () => {
 						))}
 					</View>
 				</View>
-				<View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, bottom:10}}>
-				<TouchableOpacity
+				<View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, marginTop:90}}>
+				{/* <TouchableOpacity
 						style={[globalStyles.inactivityButton, { width: "48%" }]}
 						onPress={() => router.back()}
 				>
 					<Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 				<TouchableOpacity
-					style={[globalStyles.submitButton, {width:"48%"}]}
+					style={[globalStyles.submitButton, {width:"100%"}]}
 					onPress={handleSubmit}
 				>
-					<Text style={[globalStyles.submitButtonText, {top:3}]}>Update</Text>
+					<Text style={[globalStyles.submitButtonText, {top:3}]}>Submit</Text>
 				</TouchableOpacity>
 				</View>
 			</View>
@@ -404,7 +405,7 @@ const styles = StyleSheet.create({
 		// margin: "auto",
 		// backgroundColor: "#FFBF18",
 		borderRadius: 12,
-		padding: 18,
+		padding: 13,
 		margin: 3,
 		backgroundColor: "#FFBF18",
 	},
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		top: 0,
 		left: -22,
-		zIndex: 1,
+		zIndex: -1,
 	},
 });
 

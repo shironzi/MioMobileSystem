@@ -21,8 +21,14 @@ export async function getBingoActivityById(
     );
 
     return data;
-  } catch (err) {
-    console.error("fetch activity by Id failed: ", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -42,8 +48,14 @@ export async function getMatchingActivityById(
     );
 
     return data;
-  } catch (err) {
-    console.error("fetch activity by Id failed: ", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -108,9 +120,14 @@ export async function createBingoActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Submit Activity Failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -156,9 +173,14 @@ export async function createMatchingActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Submit Activity Failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -227,9 +249,14 @@ export async function updateBingoActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Submit Activity Failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -245,8 +272,14 @@ export async function takeAuditoryActivity(
     );
 
     return data;
-  } catch (err) {
-    console.error("Take Activity Failed");
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -285,8 +318,14 @@ export async function submitBingoActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Take Activity Failed", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -326,8 +365,14 @@ export async function submitMatchingActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Submit Matching Activity Failed:", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -389,8 +434,14 @@ export async function updateMatchingActivity(
     );
 
     return await response.json();
-  } catch (err) {
-    console.error("Submit Matching Activity Failed:", err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -418,7 +469,13 @@ export async function getAttemptActivityAuditory(
     }
 
     return await response.json();
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

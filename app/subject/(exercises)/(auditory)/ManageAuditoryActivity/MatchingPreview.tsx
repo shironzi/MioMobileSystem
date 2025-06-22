@@ -287,7 +287,7 @@ const MatchingPreview = () => {
             position: "absolute",
             top: 0,
             left: -22,
-            zIndex: 1,
+            zIndex: -1,
           }}
         >
           {connections.map((line, idx) => (

@@ -133,6 +133,27 @@ const globalStyles = StyleSheet.create({
 		fontSize: 12,
 		lineHeight: 14,
 	},
+	image: {
+		width: 300,
+		height: 300,
+		margin: 20,
+		alignSelf: "center",
+		top: -50,
+	},
+	line1: {
+		// left: 5,
+		fontSize: 20,
+		fontWeight: 500,
+		textAlign: "center",
+		top: -80,
+	},
+	line2: {
+		fontSize: 14,
+		fontWeight: 300,
+		textAlign: "center",
+		top: -60,
+		lineHeight: 20,
+	},
 });
 
 export default globalStyles;

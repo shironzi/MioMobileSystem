@@ -1,6 +1,6 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 import { getDateAndTime } from "@/utils/DateFormat";
+import { getAuth } from "@react-native-firebase/auth";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -9,9 +9,14 @@ export async function getSubjects() {
     const { data } = await api.get(`/subjects`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -20,9 +25,14 @@ export async function getModules(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/modules`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -31,9 +41,14 @@ export async function getAnnouncements(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/announcements`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  }catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -52,9 +67,14 @@ export async function getAnnouncementById(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -107,9 +127,14 @@ export async function createAnnouncement(
     const responseJson = await res.json();
     console.log(responseJson);
     return responseJson;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -172,9 +197,14 @@ export async function editAnnouncement(
     }
 
     return await res.json();
-  } catch (err) {
-    console.error("editAnnouncement error:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -188,9 +218,14 @@ export async function deleteAnnouncements(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -199,9 +234,14 @@ export async function getAssignments(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/assignments`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -215,9 +255,14 @@ export async function deleteAssignment(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -231,9 +276,14 @@ export async function getAssignmentById(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -307,9 +357,14 @@ export async function createAssignment(
     );
 
     return data;
-  } catch (err) {
-    console.error("Error creating assignment:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -350,9 +405,14 @@ export async function editAssignment(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -361,8 +421,14 @@ export async function getQuizById(subjectId: string, quizId: string) {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
 
     return data;
-  } catch (err) {
-    console.error("Get Quizzes Error: " + err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -371,9 +437,14 @@ export async function getScores(subjectId: string | string[]) {
     const { data } = await api.get(`/subject/${subjectId}/scores`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -382,9 +453,14 @@ export async function getStudents(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/peoples`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -401,9 +477,14 @@ export async function getAttempt(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -412,9 +493,14 @@ export async function getAttendance(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/attendance`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -428,8 +514,14 @@ export async function getAttendanceById(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -437,9 +529,14 @@ export async function getAttendanceStudents(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/attendance/students`);
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -460,9 +557,14 @@ export async function addAttendance(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -485,9 +587,14 @@ export async function editAttendance(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -496,9 +603,14 @@ export async function getProfile() {
     const { data } = await api.get(`profile`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -527,9 +639,14 @@ export async function editProfile(picture: FileInfo | null, biography: string) {
     });
 
     return await res.json();
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -614,9 +731,14 @@ export async function createQuiz(
     });
 
     return await res.json();
-  } catch (err) {
-    console.error("Quiz creation failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -683,9 +805,14 @@ export async function updateQuiz(
     );
 
     return await res.json();
-  } catch (err) {
-    console.error("Quiz update failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -694,9 +821,14 @@ export async function getQuizzes(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/quiz`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -704,9 +836,14 @@ export async function getQuiz(subjectId: string, quizId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -726,9 +863,14 @@ export async function getScoreActivityAttempt(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -737,9 +879,14 @@ export async function getQuizAttempts(subjectId: string, quizId: string) {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -748,9 +895,14 @@ export async function takeQuiz(subjectId: string, quizId: string) {
     const { data } = await api.post(`/subject/${subjectId}/quiz/${quizId}`);
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -765,9 +917,14 @@ export async function continueQuiz(
     );
 
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -814,9 +971,14 @@ export async function submitAnswer(
     );
 
     return await res.json();
-  } catch (err) {
-    console.error("Submit answer failed:", err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }
 
@@ -830,8 +992,13 @@ export async function finalizeQuiz(
       `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
     );
     return data;
-  } catch (err) {
-    console.error(err);
-    throw err;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

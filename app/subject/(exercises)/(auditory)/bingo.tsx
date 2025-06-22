@@ -24,7 +24,7 @@ const bingo = () => {
 	HeaderConfigQuiz("Piddie Says");
 
 	const getInstruction =
-		"Click the speaker to hear a word from Piddie. Choose the picture that matches what you hear.";
+		"Click the speaker twice to hear the words from Piddie. Choose the picture that matches what you hear.";
 
 	const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
 		useLocalSearchParams<{
@@ -291,10 +291,10 @@ const bingo = () => {
 						</Text>
 						<TouchableOpacity
 							style={[
-								styles.speakerIcon,
-								isPlaying
-									? { backgroundColor: "#FFBF18" }
-									: { backgroundColor: "#ddd" },
+								styles.speakerIcon, {backgroundColor:"#ffbf18"}
+								// isPlaying
+								// 	? { backgroundColor: "#ffbf18" }
+								// 	: { backgroundColor: "#ddd" },
 							]}
 							onPress={playAudio}
 						>
