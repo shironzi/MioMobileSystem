@@ -31,7 +31,7 @@ const ScoreStudentList = () => {
           subjectId: subjectId,
           activityType: activityType,
           activityId: activityId,
-          userId: studentId,
+          studentId: studentId,
           role: role,
         },
       });

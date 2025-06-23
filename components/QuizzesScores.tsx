@@ -25,7 +25,7 @@ const QuizzesScores = ({
       pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
       params: {
         subjectId,
-        quizId: quizId,
+        activityId: quizId,
         role: role,
         activityType: placeholder.toLowerCase(),
       },

@@ -1053,8 +1053,50 @@ export async function finalizeQuiz(
   attemptId: string,
 ) {
   try {
-    const { data } = await api.post(
+    const { data } = await api.get(
       `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
+    );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getStudentQuizAttempt(
+  subjectId: string,
+  quizId: string,
+  studentId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/quiz/${quizId}/${studentId}`,
+    );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getStudentAssignmentAttempt(
+  subjectId: string,
+  assignment: string,
+  studentId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/assignment/${assignment}/${studentId}`,
     );
     return data;
   } catch (err: any) {

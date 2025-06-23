@@ -33,9 +33,6 @@ type Subject = {
   specialized_type: string | null;
 };
 
-const auth = getAuth().currentUser;
-console.log(auth?.displayName);
-
 const index = () => {
   const [selectedValue, setSelectedValue] = useState("all");
   const { courseCardView } = useContext(CourseCardViewContext);
@@ -53,13 +50,22 @@ const index = () => {
     height: 0,
   });
 
+  const name = getAuth().currentUser?.displayName;
+
+  let f_name;
+  if (name) {
+    f_name = name.split(" ")[0];
+  }
+
   useEffect(() => {
     async function fetchSubjects() {
       try {
         const data = await getSubjects();
         setSubjects(data.subjects);
         setRole(data.role);
-        await SecureStore.setItemAsync("role", data.role);
+        if (data.role) {
+          await SecureStore.setItemAsync("role", data.role);
+        }
         setLoading(false);
       } catch (err) {
         console.error("Error fetching subjects: ", err);
@@ -114,7 +120,7 @@ const index = () => {
       <View style={styles.headerName}>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.yellow}></View>
-          <Text style={styles.greet}>Welcome back, Ava!</Text>
+          <Text style={styles.greet}>Welcome back, {f_name}!</Text>
         </View>
         <Text style={styles.banner}>
           Helping deaf children develop communication skills and confidence for
