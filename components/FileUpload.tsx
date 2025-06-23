@@ -70,7 +70,7 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
                 style={[
                   styles.fileUpload,
                   fileErrors.some((err) => err.index === idx)
-                    ? { borderColor: "red" }
+                    ? { borderColor: "#db4141" }
                     : { borderColor: "rgba(0, 0, 0, 0.10)" },
                 ]}
               >
@@ -80,7 +80,7 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
                 style={[
                   styles.filename,
                   fileErrors.some((err) => err.index === idx) && {
-                    color: "red",
+                    color: "#db4141",
                   },
                 ]}
               >
@@ -94,7 +94,7 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
                   name="close"
                   size={24}
                   color="#aaa"
-                  style={{ left: 20 }}
+                  style={{ left: 25, top:-15 }}
                 />
               </TouchableOpacity>
             ) : null}
@@ -102,8 +102,12 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
         ))}
 
         <TouchableOpacity style={styles.addFileRow} onPress={handleAddFile}>
-          <MaterialIcons name="add" size={24} color="#FFBF18" />
+          <View style={{flexDirection:"row", marginLeft:10, left:-40, marginTop:-150}}>
+          <MaterialIcons name="add" size={20} color="#FFBF18" />
           <Text style={styles.addFileText}>Add File</Text>
+
+          </View>
+          
         </TouchableOpacity>
       </View>
     </View>
@@ -130,13 +134,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     columnGap: 10,
+    marginTop: -5,
+    bottom:15
   },
   fileUpload: {
     padding: 9,
     borderRadius: 15,
     borderWidth: 1,
     backgroundColor: "#F4F4F4",
-    elevation: 5,
     width: 100,
     alignItems: "center",
     left: -20,
@@ -148,18 +153,16 @@ const styles = StyleSheet.create({
   addFileRow: {
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 12,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: "#ffbf18",
+    columnGap: 5,
     padding: 5,
     width: 120,
     borderRadius: 20,
-    left: -20,
+    marginTop:60
   },
   addFileText: {
     color: "#FFBF18",
     fontSize: 16,
+    marginLeft:5
   },
   actionsRow: {
     flexDirection: "row",

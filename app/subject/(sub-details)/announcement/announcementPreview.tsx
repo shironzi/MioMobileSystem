@@ -1,16 +1,15 @@
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { createAnnouncement, editAnnouncement } from "@/utils/query";
-import { Alert, Linking } from "react-native";
-import { Image, Image as ExpoImage } from "expo-image";
+import { Image as ExpoImage, Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
-  ScrollView,
+  Alert, Linking, ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 interface FileInfo {
@@ -113,34 +112,34 @@ const AnnouncementPreview = () => {
   }, [fileList]);
 
   return (
-    <ScrollView>
-      <View style={[globalStyles.container, { marginBottom: 50 }]}>
-        <View style={globalStyles.cardContainer}>
-          <Text style={[styles.label, { color: "#2264dc" }]}>Title</Text>
-          <Text style={[styles.text, { top: 5 }]}>{title}</Text>
+    <ScrollView style={{flex:1}}>
+      <View style={[globalStyles.container, { flex:1, paddingBottom:200}]}>
+        <View style={[globalStyles.cardContainer]}>
+          {/* <Text style={[styles.label, { color: "#2264dc" }]}>Title</Text> */}
+          <Text style={[styles.text, { top: 5, fontWeight:500}]}>{title}</Text>
 
-          <Text style={[styles.label, { color: "#2264dc", top: 5 }]}>
+          {/* <Text style={[styles.label, { color: "#2264dc", top: 5 }]}>
             Description
-          </Text>
-          <Text style={[styles.text, { top: 10 }]}>{description}</Text>
-
+          </Text> */}
+          <Text style={[styles.text, { top: 10, fontSize:16, marginBottom:15 }]}>{description}</Text>
+{/* 
           {fileList.length > 0 && (
             <Text style={[styles.label, { color: "#2264dc", top: 10 }]}>
               Attachments
             </Text>
-          )}
+          )} */}
 
           {urlList.length > 0 && (
             <>
-              <Text style={[styles.label, { color: "#2264dc", top: 10 }]}>
+              {/* <Text style={[styles.label, { color: "#2264dc", top: 10 }]}>
                 URLs
-              </Text>
+              </Text> */}
               {urlList.map((url, index) => (
                 <Text
                   key={index}
                   style={[
                     styles.text,
-                    { color: "#1d4ed8", textDecorationLine: "underline" },
+                    { color: "#2264dc", textDecorationLine: "underline", fontSize:16, fontStyle:"italic", },
                   ]}
                   onPress={() => {
                     Linking.openURL(url).catch((err) =>
@@ -181,51 +180,31 @@ const AnnouncementPreview = () => {
           })}
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              top: 10,
-              marginTop: 20,
-              marginBottom: 20,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 30,
+            top: 20,
+            marginBottom:10,
             }}
           >
             <TouchableOpacity
-              style={[
-                globalStyles.submitButton,
-                {
-                  width: "49%",
-                  borderWidth: 1,
-                  borderColor: "#ffbf18",
-                  backgroundColor: "#fff",
-                  elevation: 5,
-                  padding: 10,
-                  borderRadius: 40,
-                },
-              ]}
+              style={[globalStyles.inactivityButton, { width: "48%" }]}
               onPress={() => router.back()}
             >
-              <Text
-                style={[
-                  globalStyles.submitButtonText,
-                  { color: "#ffbf18", fontSize: 16 },
-                ]}
-              >
-                Cancel
-              </Text>
+              <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
-              style={[
-                globalStyles.submitButton,
-                { width: "49%", elevation: 5 },
-              ]}
+              style={[globalStyles.submitButton, { width: "48%" }]}
               onPress={handleCreateAnnouncement}
             >
-              <Text style={globalStyles.submitButtonText}>Save</Text>
+           <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+              {announcementId ? "Update" : "Create"}
+            </Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+            </View>
+            </View>
+            </View>
+        </ScrollView>
   );
 };
 
@@ -244,8 +223,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 4,
-    fontSize: 16,
-    color: "#333",
+    fontSize: 19,
+    fontWeight: 300,
+    textAlign:"justify"
   },
   attachment: {
     marginTop: 12,

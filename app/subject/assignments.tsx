@@ -4,7 +4,7 @@ import LoadingCard from "@/components/loadingCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAssignment, getAssignments } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -96,7 +96,32 @@ const assignments = () => {
 	return (
 		<View style={styles.container}>
 			<ScrollView showsVerticalScrollIndicator={false}>
-				<View style={styles.content}>
+			{role === "teacher" && (
+				// <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+				// 	<MaterialIcon name="add" size={30} color="#fff" />
+				// </TouchableOpacity>
+				<TouchableOpacity
+				style={styles.addButton}
+				onPress={() => {
+					router.push({
+						pathname: "/subject/(sub-details)/assignment/addAssignment",
+						params: { subjectId: subjectId },
+					});
+				}}
+			>
+					<View
+						style={{
+							top: 20,
+							alignSelf: "center",
+							flexDirection: "row",
+						}}
+					>
+						<Ionicons name="add-circle" size={20} color="#ffbf18" />
+						<Text style={styles.addText}>Add Announcement</Text>
+					</View>
+				</TouchableOpacity>
+				)}
+				<View>
 					{assignments.length > 0 ? (
 						<View style={{ rowGap: 15 }}>
 							{assignments.map((item) => (
@@ -136,20 +161,6 @@ const assignments = () => {
 				handleCancel={() => setDeleteConfirm(false)}
 				handleApprove={() => handleDelete()}
 			/>
-
-			{role === "teacher" && (
-				<TouchableOpacity
-					style={styles.addButton}
-					onPress={() => {
-						router.push({
-							pathname: "/subject/(sub-details)/assignment/addAssignment",
-							params: { subjectId: subjectId },
-						});
-					}}
-				>
-					<MaterialIcon name="add" size={30} color="#fff" />
-				</TouchableOpacity>
-			)}
 		</View>
 	);
 };
@@ -157,26 +168,26 @@ const assignments = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingVertical: 20,
 		backgroundColor: "#fff",
 	},
-	content: {
-		padding: 2,
-		paddingVertical: 20,
-	},
-	headerStyle: {
-		backgroundColor: "#2264DC",
-	},
 	addButton: {
-		position: "absolute",
-		bottom: 20,
-		right: 20,
-		backgroundColor: "#2264DC",
+		left: -8,
+		width: "88%",
+		backgroundColor: "#fcefcc",
+		borderColor: "#ffbf18",
+		borderWidth: 2,
+		borderRadius: 20,
+		borderStyle: "dashed",
+		margin: 30,
+		marginBottom:20,
 		height: 60,
-		width: 60,
-		borderRadius: 30,
-		justifyContent: "center",
-		alignItems: "center",
-		elevation: 5,
+		marginVertical:5
+	},
+	addText: {
+		color: "#ffbf18",
+		fontWeight: 500,
+		marginHorizontal: 10,
 	},
 });
 
