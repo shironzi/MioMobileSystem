@@ -1,6 +1,5 @@
 import PhraseRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Phrase/PhraseRenderItem";
 import PictureRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureRenderItem";
-import PronunciationRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Pronunciation/PronunciationRenderItem";
 import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionRenderItem";
 import SpeechHeader from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechHeader";
 import LoadingCard from "@/components/loadingCard";
@@ -42,7 +41,6 @@ const data = {
 };
 
 const AddSpeechActivity = () => {
-  useHeaderConfig("Add Speech Activity");
   const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
@@ -60,9 +58,9 @@ const AddSpeechActivity = () => {
   const [questionFlashcard, setQuestionFlashcard] = useState<Flashcard[]>([
     data,
   ]);
-  const [pronunciationFlashcard, setPronunciationFlashcard] = useState<
-    Flashcard[]
-  >([data]);
+  // const [pronunciationFlashcard, setPronunciationFlashcard] = useState<
+  //   Flashcard[]
+  // >([data]);
   const [pictureFlashcard, setPictureFlashcards] = useState<PictureItem[]>([
     {
       id: "0",
@@ -76,17 +74,6 @@ const AddSpeechActivity = () => {
   const [pictureError, setPictureError] = useState<InputError[]>([]);
   const [questionError, setQuestionError] = useState<InputError[]>([]);
   const [phraseError, setPhraseError] = useState<InputError[]>([]);
-  const [pronunciationError, setPronunciationError] = useState<InputError[]>(
-    [],
-  );
-
-  useEffect(() => {
-    if (activityId) {
-      const fetchActivity = () => {};
-
-      fetchActivity();
-    }
-  });
 
   const header = !activityId ? (
     <SpeechHeader
@@ -96,7 +83,6 @@ const AddSpeechActivity = () => {
       setActivityDifficulty={setActivityDifficulty}
     />
   ) : null;
-
 
   useEffect(() => {
     if (!activityId) return;
@@ -115,7 +101,7 @@ const AddSpeechActivity = () => {
         if (activity_type === "picture") {
           const formatted: PictureItem[] = Object.values(flashcards).map(
             (item: any) => ({
-              id: item.flashcard_id, 
+              id: item.flashcard_id,
               flashcard_id: item.flashcard_id,
               file: null,
               image_url: item.image_url,
@@ -139,10 +125,11 @@ const AddSpeechActivity = () => {
           } else if (activity_type === "phrase") {
             setPhraseFlashcard(formatted);
             setActivityType("phrase");
-          } else if (activity_type === "pronunciation") {
-            setPronunciationFlashcard(formatted);
-            setActivityType("pronunciation");
           }
+          // else if (activity_type === "pronunciation") {
+          //   setPronunciationFlashcard(formatted);
+          //   setActivityType("pronunciation");
+          // }
         }
         setLoading(false);
       } catch (error) {
@@ -153,6 +140,9 @@ const AddSpeechActivity = () => {
     fetchActivity();
   }, []);
 
+  useHeaderConfig(
+    activityId ? "Update Speech Activity" : "Add Speech Activity",
+  );
 
   if (loading && activityId) {
     return (
@@ -169,11 +159,8 @@ const AddSpeechActivity = () => {
     );
   }
 
-
-  // useHeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
-
   return (
-    <View style={{backgroundColor:"#fff"}}>
+    <View style={{ backgroundColor: "#fff", height: "100%" }}>
       {activityType === "picture" && (
         <FlatList
           data={pictureFlashcard}
@@ -243,30 +230,30 @@ const AddSpeechActivity = () => {
         />
       )}
 
-      {activityType === "pronunciation" && (
-        <FlatList
-          data={pronunciationFlashcard}
-          renderItem={({ item, index }) => (
-            <PronunciationRenderItem
-              item={item}
-              items={pronunciationFlashcard}
-              index={index}
-              activityType={activityType}
-              difficulty={activityDifficulty}
-              inputErrors={pronunciationError}
-              setInputErrors={setPronunciationError}
-              setPictureItems={setPronunciationFlashcard}
-              firstIndex={pronunciationFlashcard[0].id}
-              lastIndex={
-                pronunciationFlashcard[pronunciationFlashcard.length - 1]?.id
-              }
-              subjectId={subjectId}
-              activityId={activityId}
-            />
-          )}
-          ListHeaderComponent={header}
-        />
-      )}
+      {/*{activityType === "pronunciation" && (*/}
+      {/*  <FlatList*/}
+      {/*    data={pronunciationFlashcard}*/}
+      {/*    renderItem={({ item, index }) => (*/}
+      {/*      <PronunciationRenderItem*/}
+      {/*        item={item}*/}
+      {/*        items={pronunciationFlashcard}*/}
+      {/*        index={index}*/}
+      {/*        activityType={activityType}*/}
+      {/*        difficulty={activityDifficulty}*/}
+      {/*        inputErrors={pronunciationError}*/}
+      {/*        setInputErrors={setPronunciationError}*/}
+      {/*        setPictureItems={setPronunciationFlashcard}*/}
+      {/*        firstIndex={pronunciationFlashcard[0].id}*/}
+      {/*        lastIndex={*/}
+      {/*          pronunciationFlashcard[pronunciationFlashcard.length - 1]?.id*/}
+      {/*        }*/}
+      {/*        subjectId={subjectId}*/}
+      {/*        activityId={activityId}*/}
+      {/*      />*/}
+      {/*    )}*/}
+      {/*    ListHeaderComponent={header}*/}
+      {/*  />*/}
+      {/*)}*/}
     </View>
   );
 };
