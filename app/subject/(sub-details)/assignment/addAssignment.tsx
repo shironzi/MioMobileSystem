@@ -2,10 +2,20 @@ import { DatePickerField } from "@/components/DatePickerField";
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { createAssignment } from "@/utils/query";
-import { FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import {
+  createAssignment,
+  editAssignment,
+  getAssignmentById,
+} from "@/utils/query";
+import {
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -25,7 +35,7 @@ type SubmissionOption =
   (typeof SubmissionOptions)[keyof typeof SubmissionOptions];
 
 const addAssignment = () => {
-  HeaderConfig("Assignment")
+  HeaderConfig("Assignment");
 
   const router = useRouter();
 
@@ -121,21 +131,40 @@ const addAssignment = () => {
       return;
     }
 
-    const res = await createAssignment(
-      subjectId,
-      availabilityTo,
-      availabilityFrom,
-      title,
-      description,
-      attempt,
-      submissionType,
-      deadline,
-      points,
-      publishDate,
-      fileSize,
-      visibility,
-      fileTypes,
-    );
+    const res = assignmentId
+      ? await editAssignment(
+          subjectId,
+          assignmentId,
+          availabilityTo,
+          availabilityFrom,
+          title,
+          description,
+          attempt,
+          submissionType.toLowerCase(),
+          deadline,
+          points,
+          publishDate,
+          fileSize,
+          visibility,
+          fileTypes,
+        )
+      : await createAssignment(
+          subjectId,
+          availabilityTo,
+          availabilityFrom,
+          title,
+          description,
+          attempt,
+          submissionType.toLowerCase(),
+          deadline,
+          points,
+          publishDate,
+          fileSize,
+          visibility,
+          fileTypes,
+        );
+
+    console.log(res);
 
     if (res.success) {
       Alert.alert(
@@ -176,6 +205,54 @@ const addAssignment = () => {
       }),
     );
   };
+
+  useEffect(() => {
+    if (assignmentId) {
+      const fetchAssignment = async () => {
+        setLoading(true);
+
+        try {
+          const res = await getAssignmentById(subjectId, assignmentId);
+
+          if (res.success && res.assignment) {
+            const assignment = res.assignment;
+
+            setTitle(assignment.title);
+            setDescription(assignment.description);
+            setAttempt(assignment.attempts);
+            setPoints(assignment.total);
+            setVisibility(assignment.visibility);
+            setFileTypes(assignment.file_types_types || []);
+
+            const parsedPublishedAt = new Date(assignment.published_at);
+            const parsedDeadline = new Date(assignment.deadline);
+
+            setPublishDate(parsedPublishedAt);
+            setDeadline(parsedDeadline);
+
+            setAvailabilityFrom(assignment.availability.start);
+            setAvailabilityTo(assignment.availability.end);
+
+            setSubmissionType(
+              assignment.submission_type === "file"
+                ? SubmissionOptions.File
+                : SubmissionOptions.Text,
+            );
+
+            setLoading(false);
+          } else {
+            Alert.alert("Error", "Failed to fetch the assignment details.");
+          }
+        } catch (error) {
+          console.error("Error fetching assignment: ", error);
+          Alert.alert("Error", "Something went wrong. Please try again.");
+          setLoading(false);
+        }
+      };
+
+      fetchAssignment();
+    }
+  }, [assignmentId, subjectId]);
 
   if (loading) {
     return (
@@ -298,7 +375,12 @@ const addAssignment = () => {
               setPoints(sanitized ? parseInt(sanitized, 10) : 0);
             }}
           />
-          <MaterialCommunityIcons name="numeric" size={25} color="#ffbf18"  style={styles.iconInsideInput}/>
+          <MaterialCommunityIcons
+            name="numeric"
+            size={25}
+            color="#ffbf18"
+            style={styles.iconInsideInput}
+          />
         </View>
 
         <View style={styles.row}>
@@ -428,12 +510,11 @@ const addAssignment = () => {
             onChangeText={setTitle}
           />
           <FontAwesome
-              name="pencil-square-o"
-              size={20}
-              color="#ffbf18"
-              style={styles.iconInsideInput}
-            />
-          
+            name="pencil-square-o"
+            size={20}
+            color="#ffbf18"
+            style={styles.iconInsideInput}
+          />
         </View>
         <View style={{ rowGap: 5 }}>
           <Text style={globalStyles.textLabel}>Description</Text>
@@ -461,29 +542,29 @@ const addAssignment = () => {
         </View>
 
         <View
-        style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        bottom: 0,
-        marginTop:40
-        }}
-      >
-        <TouchableOpacity
-          style={[globalStyles.inactivityButton, { width: "48%" }]}
-          onPress={() => router.back()}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            bottom: 0,
+            marginTop: 40,
+          }}
         >
-          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[globalStyles.submitButton, { width: "48%" }]}
-          onPress={handlePreviewAssignment}
-        >
-          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-          {assignmentId ? "Update" : "Create"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[globalStyles.inactivityButton, { width: "48%" }]}
+            onPress={() => router.back()}
+          >
+            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[globalStyles.submitButton, { width: "48%" }]}
+            onPress={handlePreviewAssignment}
+          >
+            <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+              {assignmentId ? "Update" : "Create"}
+            </Text>
+          </TouchableOpacity>
         </View>
-        </View>
+      </View>
     </ScrollView>
   );
 };

@@ -17,7 +17,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
 } from "react-native";
 
 interface FileInfo {
@@ -163,176 +163,192 @@ const addAnnouncement = () => {
   }
 
   return (
-    <ScrollView style={{ flex: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.card}>
-        <View style={styles.section}>
-          <Text style={styles.label}>Title</Text>
-          {inputError.some((item) => item.error === "title") && (
-            <Text style={globalStyles.errorText}>This field is required</Text>
-          )}
-          <View style={styles.inputIconWrapper}>
-            <TextInput
-              placeholder="Enter title"
-              style={[
-                styles.input,
-                { paddingRight: 35 }, 
-                inputError.some((err) => err.error === "title") && styles.inputError,
-              ]}
-              value={title}
-              onChangeText={setTitle}
-            />
-            <FontAwesome
-              name="pencil-square-o"
-              size={20}
-              color="#ffbf18"
-              style={styles.iconInsideInput}
-            />
-          </View>
-        </View>
-          <View style={styles.section}>
-            <Text style={styles.label}>Date</Text>
-            <TouchableOpacity
-              style={styles.input}
-              onPress={() => setShow(true)}
-              >
-                <View style={{flexDirection:"row", justifyContent:"space-between",marginHorizontal:5}}>
-                <Text>{date.toDateString()}</Text>
-                <MaterialIcons name="date-range" size={20} color="#ffbf18" />
-
-                </View>
-                
-              {show && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="calendar"
-                  onChange={onChange}
-                  maximumDate={new Date(2100, 12, 31)}
-                  minimumDate={new Date(2000, 0, 1)}
-                />
+    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.card}>
+            <View style={styles.section}>
+              <Text style={styles.label}>Title</Text>
+              {inputError.some((item) => item.error === "title") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
               )}
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.label}>Description</Text>
-            {inputError.some((item) => item.error === "description") && (
-              <Text style={globalStyles.errorText}>This field is required</Text>
-            )}
-            <TextInput
-              style={[
-                styles.descriptionInput,
-                { height: Math.max(descHeight, 200) },
-                inputError.some((err) => err.error === "description") &&
-                  styles.inputError,
-              ]}
-              placeholder="Enter description..."
-              multiline
-              onContentSizeChange={(e) =>
-                setDescHeight(e.nativeEvent.contentSize.height)
-              }
-              textAlignVertical="top"
-              value={description}
-              onChangeText={setDescription}
-            />
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.label}>URLs</Text>
-            {urls.map((url, index) => (
-              <View key={index} style={styles.urlRow}>
+              <View style={styles.inputIconWrapper}>
                 <TextInput
-                  value={url}
-                  placeholder="Enter a URL"
-                  onChangeText={(value) =>
-                    setUrls((prev) =>
-                      prev.map((u, i) => (i === index ? value : u)),
-                    )
-                  }
+                  placeholder="Enter title"
                   style={[
-                    styles.urlInput,
-                    urlError.find((e) => e.index === index) &&
-                    styles.inputError,
-                    {marginVertical:5}
+                    styles.input,
+                    { paddingRight: 35 },
+                    inputError.some((err) => err.error === "title") &&
+                      styles.inputError,
                   ]}
+                  value={title}
+                  onChangeText={setTitle}
                 />
-                <TouchableOpacity onPress={() => handleRemoveUrl(index)}>
-                  <AntDesign
-                    name="close"
-                    size={24}
-                    color="#aaa"
-                    style={styles.closeIcon}
-                  />
-                </TouchableOpacity>
+                <FontAwesome
+                  name="pencil-square-o"
+                  size={20}
+                  color="#ffbf18"
+                  style={styles.iconInsideInput}
+                />
               </View>
-            ))}
-            <TouchableOpacity
-              onPress={handleAddUrl}
-              style={styles.addUrlButton}
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.label}>Date</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setShow(true)}
               >
-                <View style={{flexDirection:"row", marginVertical:10, marginTop:0}}>
-                <MaterialIcons name="add" size={20} color="#FFBF18" />
-                <Text style={styles.addUrlText}>Add URL</Text>
-
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginHorizontal: 5,
+                  }}
+                >
+                  <Text>{date.toDateString()}</Text>
+                  <MaterialIcons name="date-range" size={20} color="#ffbf18" />
                 </View>
-            </TouchableOpacity>
-          </View>
 
-          <View style={globalStyles.contentPadding}>
-            {imageUrl.map((item, index) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-                key={index}
-              >
-                <Text>{item.name}</Text>
-                <TouchableOpacity onPress={() => handleImageRemove(index)}>
-                  <AntDesign
-                    name="close"
-                    size={24}
-                    color="#aaa"
-                    style={{ left: 20 }}
+                {show && (
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="calendar"
+                    onChange={onChange}
+                    maximumDate={new Date(2100, 12, 31)}
+                    minimumDate={new Date(2000, 0, 1)}
                   />
-                </TouchableOpacity>
-              </View>
-            ))}
-            <FileUpload handleFiles={handleFileUpload} />
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>Description</Text>
+              {inputError.some((item) => item.error === "description") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
+              )}
+              <TextInput
+                style={[
+                  styles.descriptionInput,
+                  { height: Math.max(descHeight, 200) },
+                  inputError.some((err) => err.error === "description") &&
+                    styles.inputError,
+                ]}
+                placeholder="Enter description..."
+                multiline
+                onContentSizeChange={(e) =>
+                  setDescHeight(e.nativeEvent.contentSize.height)
+                }
+                textAlignVertical="top"
+                value={description}
+                onChangeText={setDescription}
+              />
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.label}>URLs</Text>
+              {urls.map((url, index) => (
+                <View key={index} style={styles.urlRow}>
+                  <TextInput
+                    value={url}
+                    placeholder="Enter a URL"
+                    onChangeText={(value) =>
+                      setUrls((prev) =>
+                        prev.map((u, i) => (i === index ? value : u)),
+                      )
+                    }
+                    style={[
+                      styles.urlInput,
+                      urlError.find((e) => e.index === index) &&
+                        styles.inputError,
+                      { marginVertical: 5 },
+                    ]}
+                  />
+                  <TouchableOpacity onPress={() => handleRemoveUrl(index)}>
+                    <AntDesign
+                      name="close"
+                      size={24}
+                      color="#aaa"
+                      style={styles.closeIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              <TouchableOpacity
+                onPress={handleAddUrl}
+                style={styles.addUrlButton}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginVertical: 10,
+                    marginTop: 0,
+                  }}
+                >
+                  <MaterialIcons name="add" size={20} color="#FFBF18" />
+                  <Text style={styles.addUrlText}>Add URL</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={[globalStyles.contentPadding]}>
+              {imageUrl.map((item, index) => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginBottom: 20,
+                    marginTop: 0,
+                  }}
+                  key={index}
+                >
+                  <Text style={globalStyles.text1}>
+                    {item.name ?? "unnamed"}
+                  </Text>
+                  <TouchableOpacity onPress={() => handleImageRemove(index)}>
+                    <AntDesign
+                      name="close"
+                      size={24}
+                      color="#aaa"
+                      style={{ left: 20 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              <FileUpload handleFiles={handleFileUpload} />
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                bottom: 0,
+                marginTop: -70,
+              }}
+            >
+              <TouchableOpacity
+                style={[globalStyles.inactivityButton, { width: "48%" }]}
+                onPress={() => router.back()}
+              >
+                <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[globalStyles.submitButton, { width: "48%" }]}
+                onPress={handlePreview}
+              >
+                <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+                  Preview
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-      <View
-        style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        bottom: 0,
-        marginTop:-70
-        }}
-      >
-        <TouchableOpacity
-          style={[globalStyles.inactivityButton, { width: "48%" }]}
-          onPress={() => router.back()}
-        >
-          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[globalStyles.submitButton, { width: "48%" }]}
-          onPress={handlePreview}
-        >
-          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-          Preview
-          </Text>
-        </TouchableOpacity>
         </View>
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
-  </ScrollView>
-
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 };
 
@@ -340,7 +356,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     rowGap: 15,
-    backgroundColor:"#fff"
+    backgroundColor: "#fff",
   },
   card: {
     ...globalStyles.contentPadding,
@@ -352,7 +368,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "500",
     fontSize: 16,
-    marginBottom:15
+    marginBottom: 15,
   },
   input: {
     ...globalStyles.inputContainer,
@@ -389,7 +405,6 @@ const styles = StyleSheet.create({
     color: "#FFBF18",
     fontSize: 16,
     marginLeft: 5,
-    
   },
   submitButton: {
     width: "100%",
@@ -405,16 +420,15 @@ const styles = StyleSheet.create({
   inputIconWrapper: {
     position: "relative",
     justifyContent: "center",
+    width: "100%",
+    flexDirection: "row",
   },
-  
+
   iconInsideInput: {
     position: "absolute",
-    right: 10,
     top: "50%",
-    transform: [{ translateY: -10 }],
     zIndex: 1,
   },
-  
 });
 
 export default memo(addAnnouncement);

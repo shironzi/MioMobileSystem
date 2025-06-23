@@ -41,7 +41,7 @@ export async function getAnnouncements(subjectId: string) {
     const { data } = await api.get(`/subject/${subjectId}/announcements`);
 
     return data;
-  }catch (err: any) {
+  } catch (err: any) {
     if (err.response) {
       return err.response.status;
     } else if (err.request) {
@@ -370,31 +370,45 @@ export async function createAssignment(
 
 export async function editAssignment(
   subjectId: string,
-  availability: { start: string | null; end: string | null },
+  assignmentId: string,
+  availabilityTo: string,
+  availabilityFrom: string,
   title: string,
   description: string,
   attempts: number,
   submissionType: string,
-  deadline: string | null,
+  deadline: Date | null,
   points: number,
+  publishDate: Date,
+  fileSize: number,
+  visibility: boolean,
+  fileTypes: string[],
 ) {
   try {
+    const availableTo = availabilityTo.replace(/\s?(AM|PM)/i, "").trim();
+    const availableFrom = availabilityFrom.replace(/\s?(AM|PM)/i, "").trim();
+
     const payload = JSON.stringify({
       availability: {
-        start: availability.start,
-        end: availability.end,
+        start: availableFrom,
+        end: availableTo,
       },
       attempts: attempts,
       title: title,
       description: description,
       total: points,
       submission_type: submissionType,
-      deadline: deadline,
-      published_at: null,
+      published_at: formatDateToCustomFormat(publishDate),
+      deadline: deadline ? formatDateToDateOnly(deadline) : null,
+      file_size: fileSize,
+      visibility: visibility,
+      file_types_types: fileTypes ?? null,
     });
 
-    const { data } = await api.post(
-      `/subject/${subjectId}/assignment/`,
+    console.log(payload);
+
+    const { data } = await api.put(
+      `/subject/${subjectId}/assignment/${assignmentId}`,
       payload,
       {
         headers: {

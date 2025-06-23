@@ -44,7 +44,7 @@ const MessageDetails = () => {
     if (!messageInput.trim()) return;
     const res =
       selectedType.toUpperCase() === "sent"
-        ? await sendMessage(senderId, messageInput)
+        ? await sendMessage(senderId, messageInput, null)
         : await replyMessage(receiverId, messageInput, messageInput);
 
     if (res.success) {
