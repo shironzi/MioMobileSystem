@@ -88,6 +88,8 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     }, [navigation]),
   );
 
+  console.log(profile?.role);
+
   const rootNav = props.navigation.getParent();
 
   return (
@@ -135,16 +137,16 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         icon={() => <MaterialIcons name="person" size={30} color="#fff" />}
         style={styles.drawerItem}
       />
-      <DrawerItem
-        label="Calendar"
-        labelStyle={styles.drawerItemLabel}
-        onPress={() => {
-          props.navigation.navigate("calendar");
-          props.navigation.closeDrawer();
-        }}
-        icon={() => <AntDesign name="calendar" size={30} color="#fff" />}
-        style={styles.drawerItem}
-      />
+      {/*<DrawerItem*/}
+      {/*  label="Calendar"*/}
+      {/*  labelStyle={styles.drawerItemLabel}*/}
+      {/*  onPress={() => {*/}
+      {/*    props.navigation.navigate("calendar");*/}
+      {/*    props.navigation.closeDrawer();*/}
+      {/*  }}*/}
+      {/*  icon={() => <AntDesign name="calendar" size={30} color="#fff" />}*/}
+      {/*  style={styles.drawerItem}*/}
+      {/*/>*/}
       <DrawerItem
         label="Help & Support"
         labelStyle={styles.drawerItemLabel}
@@ -157,18 +159,23 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         )}
         style={styles.drawerItem}
       />
-      {profile?.role === "teacher" && (
-        <DrawerItem
-          label="Data Analytics"
-          labelStyle={styles.drawerItemLabel}
-          onPress={() => {
-            props.navigation.navigate("analytics/Analytics");
-            props.navigation.closeDrawer();
-          }}
-          icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
-          style={styles.drawerItem}
-        />
-      )}
+      {profile?.role === "teacher" ||
+        (profile?.role === "parent" && (
+          <DrawerItem
+            label="Data Analytics"
+            labelStyle={styles.drawerItemLabel}
+            onPress={() => {
+              profile?.role === "teacher"
+                ? props.navigation.navigate("analytics/Analytics")
+                : props.navigation.navigate("analytics/StudentAnalytics", {
+                    role: profile.role,
+                  });
+              props.navigation.closeDrawer();
+            }}
+            icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
+            style={styles.drawerItem}
+          />
+        ))}
       <DrawerItem
         label="Logout"
         labelStyle={styles.drawerItemLabel}

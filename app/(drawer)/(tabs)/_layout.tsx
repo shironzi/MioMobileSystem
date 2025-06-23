@@ -80,25 +80,25 @@ export default function Layout() {
             headerRight: () => <HeaderRightToggle />,
           }}
         />
-        <Tabs.Screen
-          name="todo"
-          options={{
-            tabBarLabel: () => <Text style={{ color: "white" }}>To-do</Text>,
-            tabBarIcon: ({ color }) => (
-              <MaterialIcons name="checklist" size={24} color={color} />
-            ),
-            headerTitle: () => (
-              <Text
-                style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}
-              >
-                To do
-              </Text>
-            ),
-            headerBackground: () => (
-              <View style={{ backgroundColor: "#fff", flex: 1 }} />
-            ),
-          }}
-        />
+        {/*<Tabs.Screen*/}
+        {/*  name="todo"*/}
+        {/*  options={{*/}
+        {/*    tabBarLabel: () => <Text style={{ color: "white" }}>To-do</Text>,*/}
+        {/*    tabBarIcon: ({ color }) => (*/}
+        {/*      <MaterialIcons name="checklist" size={24} color={color} />*/}
+        {/*    ),*/}
+        {/*    headerTitle: () => (*/}
+        {/*      <Text*/}
+        {/*        style={{ color: "#282727", fontSize: 20, fontWeight: "500" }}*/}
+        {/*      >*/}
+        {/*        To do*/}
+        {/*      </Text>*/}
+        {/*    ),*/}
+        {/*    headerBackground: () => (*/}
+        {/*      <View style={{ backgroundColor: "#fff", flex: 1 }} />*/}
+        {/*    ),*/}
+        {/*  }}*/}
+        {/*/>*/}
         <Tabs.Screen
           name="notification"
           options={{

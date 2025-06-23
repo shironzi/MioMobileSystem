@@ -34,8 +34,6 @@ export default function Layout() {
       const body = remoteMessage.notification?.body ?? "No Body";
       const type = remoteMessage.data?.type ?? "No Type";
 
-      console.log(type);
-
       if (type === "earthquake") {
         setModalTitle(title);
         setModalBody(body);

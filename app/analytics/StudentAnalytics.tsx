@@ -12,7 +12,7 @@ import { BarChart, PieChart } from "react-native-gifted-charts";
 import Entypo from "@expo/vector-icons/Entypo";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import AnalyticsCard from "@/app/analytics/AnalyticsCard";
-import { fetchStudentAnalytics } from "@/utils/analytics";
+import { fetchStudentAnalytics, getChildAnalytics } from "@/utils/analytics";
 import { useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
 import useHeaderConfig from "@/utils/HeaderConfig";
@@ -63,7 +63,10 @@ interface TotalPerDifficulty {
 }
 
 const StudentAnalytics = () => {
-  const { studentId } = useLocalSearchParams<{ studentId: string }>();
+  const { studentId, role } = useLocalSearchParams<{
+    studentId: string;
+    role: string;
+  }>();
   useHeaderConfig("Analytics");
   console.log(studentId);
   const [loading, setLoading] = useState<boolean>();
@@ -84,9 +87,11 @@ const StudentAnalytics = () => {
   useEffect(() => {
     setLoading(true);
     const fetchStudentData = async () => {
-      const res = await fetchStudentAnalytics(studentId);
+      const res =
+        role === "parent"
+          ? await getChildAnalytics()
+          : await fetchStudentAnalytics(studentId);
 
-      console.log(res);
       if (res.success) {
         setData({
           sessions: res.sessions,
