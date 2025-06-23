@@ -36,19 +36,13 @@ export default function Layout() {
 
       console.log(type);
 
-      let notificationType = "";
-      if (type instanceof String) {
-        notificationType = type.toLowerCase().trim();
-        console.log(notificationType);
-      }
-
-      if (notificationType === "earthquake") {
+      if (type === "earthquake") {
         setModalTitle(title);
         setModalBody(body);
         setShowAlert(true);
       }
 
-      if (notificationType === "message") {
+      if (type === "message") {
         await Notifications.scheduleNotificationAsync({
           content: {
             title,
@@ -57,7 +51,7 @@ export default function Layout() {
           },
           trigger: null,
         });
-      } else if (notificationType === "notification") {
+      } else if (type === "notification") {
         await Notifications.scheduleNotificationAsync({
           content: {
             title,
@@ -92,13 +86,6 @@ export default function Layout() {
       <Stack screenOptions={{ headerShown: true }}>
         <Stack.Screen name="index" />
       </Stack>
-
-      <EarthquakeAlertModal
-        visible={showAlert}
-        onClose={() => setShowAlert(false)}
-        title={modalTitle}
-        body={modalBody}
-      />
 
       <EarthquakeAlertModal
         visible={showAlert}

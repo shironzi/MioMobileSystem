@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { getAuth } from "@react-native-firebase/auth";
 
 const data = [
   { label: "All", value: "all" },
@@ -31,6 +32,9 @@ type Subject = {
   subjectType: string;
   specialized_type: string | null;
 };
+
+const auth = getAuth().currentUser;
+console.log(auth?.displayName);
 
 const index = () => {
   const [selectedValue, setSelectedValue] = useState("all");
@@ -55,7 +59,7 @@ const index = () => {
         const data = await getSubjects();
         setSubjects(data.subjects);
         setRole(data.role);
-        // await SecureStore.setItemAsync("role", data.role);
+        await SecureStore.setItemAsync("role", data.role);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching subjects: ", err);
