@@ -87,7 +87,7 @@ const assignments = () => {
 
       if (res.success) {
         setAssignments((prev) =>
-          prev.filter((ass) => ass.assignment_id !== targetAssignment),
+          prev.filter((ass) => ass.assignment_id != targetAssignment),
         );
       }
       setDeleteConfirm(false);
@@ -128,7 +128,7 @@ const assignments = () => {
         <View>
           {assignments.length > 0 ? (
             <View style={{ rowGap: 15 }}>
-              {assignments.map((item) => (
+              {assignments?.map((item) => (
                 <GestureHandlerRootView key={item.assignment_id}>
                   <AssCard
                     subjectId={subjectId}

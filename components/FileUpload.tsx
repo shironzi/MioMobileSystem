@@ -14,7 +14,10 @@ interface Errors {
   index: number;
 }
 
-const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
+const FileUpload = (props: {
+  handleFiles: (file: FileInfo[]) => void;
+  fileTypes?: string[];
+}) => {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [fileErrors, setFileErrors] = useState<Errors[]>([]);
 
@@ -94,7 +97,7 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
                   name="close"
                   size={24}
                   color="#aaa"
-                  style={{ left: 25, top:-15 }}
+                  style={{ left: 25, top: -15 }}
                 />
               </TouchableOpacity>
             ) : null}
@@ -102,12 +105,17 @@ const FileUpload = (props: { handleFiles: (file: FileInfo[]) => void }) => {
         ))}
 
         <TouchableOpacity style={styles.addFileRow} onPress={handleAddFile}>
-          <View style={{flexDirection:"row", marginLeft:10, left:-40, marginTop:-150}}>
-          <MaterialIcons name="add" size={20} color="#FFBF18" />
-          <Text style={styles.addFileText}>Add File</Text>
-
+          <View
+            style={{
+              flexDirection: "row",
+              marginLeft: 10,
+              left: -40,
+              marginTop: -150,
+            }}
+          >
+            <MaterialIcons name="add" size={20} color="#FFBF18" />
+            <Text style={styles.addFileText}>Add File</Text>
           </View>
-          
         </TouchableOpacity>
       </View>
     </View>
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     columnGap: 10,
     marginTop: -5,
-    bottom:15
+    bottom: 15,
   },
   fileUpload: {
     padding: 9,
@@ -157,12 +165,12 @@ const styles = StyleSheet.create({
     padding: 5,
     width: 120,
     borderRadius: 20,
-    marginTop:60
+    marginTop: 60,
   },
   addFileText: {
     color: "#FFBF18",
     fontSize: 16,
-    marginLeft:5
+    marginLeft: 5,
   },
   actionsRow: {
     flexDirection: "row",

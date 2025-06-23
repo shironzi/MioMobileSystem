@@ -1,320 +1,322 @@
-import FileUpload from "@/components/FileUpload";
-import MultipleChoiceQuestion from "@/components/assignment/MultipleChoiceQuestion";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams } from "expo-router";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { getAssignmentById, submitAssignment } from "@/utils/query";
+import { useLocalSearchParams } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
+import FileUploadSingle from "@/components/FileUploadSingle";
+import LoadingCard from "@/components/loadingCard";
 
 interface FileInfo {
-	uri: string;
-	name: string;
-	mimeType?: string;
+  uri: string;
+  name: string;
+  mimeType?: string;
 }
 
-const assignmentDetails = () => {
-	HeaderConfig("Assignment");
+enum SubmissionOptions {
+  Text = "Text",
+  File = "File",
+}
 
-	const {
-		title,
-		deadline,
-		availabilityStart,
-		availabilityEnd,
-		attempts,
-		totalPoints,
-		submission_type,
-	} = useLocalSearchParams<{
-		title: string;
-		deadline: string;
-		availabilityStart: string;
-		availabilityEnd: string;
-		attempts: string;
-		totalPoints: string;
-		submission_type: string;
-	}>();
+const AssignmentDetails = () => {
+  HeaderConfig("Assignment");
 
-	const [descHeight, setDescHeight] = useState<number>(200);
-	const [assignmentStatus, setAssignmentStatus] = useState<
-		"notStarted" | "inProgress" | "completed"
-	>("notStarted");
-	const [answer, setAnswer] = useState<string | string[] | FileInfo[] | null>();
-	const choices: Record<string, string>[] = [
-		{ A: "choice 1" },
-		{ B: "choice 2" },
-		{ C: "choice 3" },
-		{ D: "choice 4" },
-	];
-	const [showDropdown, setShowDropdown] = useState(false);
+  const { subjectId, assignmentId } = useLocalSearchParams<{
+    subjectId: string;
+    assignmentId: string;
+  }>();
 
-	const formatDateTime = (dateString: string): string => {
-		const date = new Date(dateString);
-		return date.toLocaleString("en-US", {
-			year: "numeric",
-			month: "short",
-			day: "2-digit",
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-			hour12: true,
-		});
-	};
+  const [submissionType, setSubmissionType] = useState<SubmissionOptions>(
+    SubmissionOptions.Text,
+  );
+  const [deadline, setDeadline] = useState<any>();
+  const [publishDate, setPublishDate] = useState<any>();
+  const [availabilityFrom, setAvailabilityFrom] = useState<string>("");
+  const [availabilityTo, setAvailabilityTo] = useState<string>("");
+  const [attempt, setAttempt] = useState<number>(1);
+  const [points, setPoints] = useState<number>(1);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fileTypes, setFileTypes] = useState<string[]>([]);
+  const [answer, setAnswer] = useState<any>();
+  const [answerFiles, setAnswerFiles] = useState<FileInfo>();
+  const [isAnswering, setIsAnswering] = useState<boolean>(false);
+  const [selected_attempt, setSelected_attempt] = useState<any>();
 
-	const handleTakeAssignment = () => {
-		// request from the backend first
+  const handleSubmitAnswer = async () => {
+    try {
+      const response = await submitAssignment(
+        subjectId,
+        assignmentId,
+        answer,
+        answerFiles,
+        submissionType,
+      );
+      if (response.success) {
+        Alert.alert("Success", "Your answer has been submitted!");
+      } else {
+        Alert.alert("Error", "Failed to submit the answer. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
+  };
 
-		setAssignmentStatus("inProgress");
-	};
+  useEffect(() => {
+    if (assignmentId) {
+      const fetchAssignment = async () => {
+        setLoading(true);
 
-	const handleSubmit = () => {
-		console.log(answer);
-	};
+        try {
+          const res = await getAssignmentById(subjectId, assignmentId);
+          console.log(res);
 
-	const handleFileUpload = (files: FileInfo[]) => {
-		setAnswer(files);
-	};
+          if (res.success && res.assignment) {
+            const assignment = res.assignment;
 
-	const handleChoice = (choice: string | string[]) => {
-		setAnswer(choice);
-	};
+            setTitle(assignment.title);
+            setDescription(assignment.description);
+            setAttempt(assignment.attempts);
+            setPoints(assignment.total);
+            setFileTypes(assignment.file_types_types || []);
+            setPublishDate(assignment.published_at);
+            setDeadline(assignment.deadline);
+            setAvailabilityFrom(assignment.availability.start);
+            setAvailabilityTo(assignment.availability.end);
+            setSubmissionType(
+              assignment.submission_type === "file"
+                ? SubmissionOptions.File
+                : SubmissionOptions.Text,
+            );
 
-	return (
-		<ScrollView
-			showsVerticalScrollIndicator={false}
-			contentContainerStyle={{ paddingBottom: 50 }}
-			style={[globalStyles.container, { rowGap: 15 }]}
-		>
-			<View
-				style={[
-					globalStyles.cardContainer,
-					{
-						borderColor: "#ddd",
-						borderWidth: 1,
-						borderRadius: 20,
-						paddingVertical: 10,
-					},
-				]}
-			>
-				<Text style={styles.title}>{title}</Text>
-				<View style={styles.row}>
-					<Text style={styles.deadline}>
-						Deadline:{" "}
-						{deadline === null || deadline === ""
-							? "No Due Date"
-							: formatDateTime(deadline)}
-					</Text>
-					<Text style={styles.points}>Points: {totalPoints}</Text>
-				</View>
-				<View style={styles.availabilityContainer}>
-					<Text style={{ fontWeight: 300 }}>Availability: </Text>
-					<Text style={styles.availability}>
-						{formatDateTime(availabilityStart)} -{" "}
-						{formatDateTime(availabilityEnd)}
-					</Text>
-				</View>
+            setLoading(false);
+          } else {
+            Alert.alert("Error", "Failed to fetch the assignment details.");
+          }
+        } catch (error) {
+          console.error("Error fetching assignment: ", error);
+          Alert.alert("Error", "Something went wrong. Please try again.");
+          setLoading(false);
+        }
+        setLoading(false);
+      };
 
-				<Text style={styles.attempt}>Attempts: {attempts}</Text>
-				<Text style={{ fontWeight: 300 }}>
-					Submission Type: {submission_type}
-				</Text>
-				{assignmentStatus !== "inProgress" ? (
-					<TouchableOpacity
-						style={[
-							globalStyles.submitButton,
-							{ marginVertical: 15, marginBottom: 5, alignSelf: "center" },
-						]}
-						onPress={handleTakeAssignment}
-					>
-						<Text style={globalStyles.submitButtonText}>Take Assignment</Text>
-					</TouchableOpacity>
-				) : null}
-			</View>
+      fetchAssignment();
+    }
+  }, [assignmentId, subjectId]);
 
-			<View
-				style={[
-					globalStyles.cardContainer,
-					globalStyles.cardBody,
-					{
-						minHeight: 100,
-						borderColor: "#ddd",
-						borderWidth: 1,
-						borderRadius: 20,
-						marginVertical: 15,
-					},
-				]}
-			>
-				<Text style={globalStyles.sectionHeader}>Question</Text>
-				<Text
-					style={{
-						paddingHorizontal: 26,
-						marginTop: 15,
-					}}
-				>
-					What is your opinion about...?
-				</Text>
-				{assignmentStatus === "inProgress" ? (
-					<View style={[globalStyles.contentPadding, { rowGap: 15 }]}>
-						{submission_type === "quiz" ? (
-							<MultipleChoiceQuestion
-								choices={choices}
-								handleChoice={handleChoice}
-								allowsMultipleChoice={false}
-							/>
-						) : submission_type === "text" ? (
-							<>
-								{/*<TextInput*/}
-								{/*  style={[globalStyles.inputContainer, { height: 50 }]}*/}
-								{/*/>*/}
-								<TextInput
-									placeholder="Your Answer Here"
-									onChangeText={setAnswer}
-									style={[
-										globalStyles.inputContainer,
-										{ height: Math.max(200, descHeight), fontSize: 14 },
-									]}
-									multiline
-									onContentSizeChange={(e) =>
-										setDescHeight(e.nativeEvent.contentSize.height)
-									}
-									textAlignVertical="top"
-								/>
-							</>
-						) : submission_type === "file" ? (
-							<FileUpload handleFiles={handleFileUpload} />
-						) : (
-							<>
-								{/* <Text>Error</Text> */}
-								<TextInput
-									placeholder="Type your answer here..."
-									onChangeText={setAnswer}
-									style={[
-										globalStyles.inputContainer,
-										{ height: Math.max(200, descHeight), fontSize: 14 },
-									]}
-									multiline
-									onContentSizeChange={(e) =>
-										setDescHeight(e.nativeEvent.contentSize.height)
-									}
-									textAlignVertical="top"
-								/>
-							</>
-						)}
-					</View>
-				) : null}
-			</View>
-			<TouchableOpacity
-				style={[globalStyles.submitButton, { alignSelf: "center" }]}
-				onPress={handleSubmit}
-			>
-				<Text style={globalStyles.submitButtonText}>Submit</Text>
-			</TouchableOpacity>
-			{assignmentStatus !== "inProgress" ? (
-				<View
-					style={[
-						globalStyles.cardContainer,
-						{
-							rowGap: 20,
-							borderColor: "#ddd",
-							borderWidth: 1,
-							borderRadius: 20,
-						},
-					]}
-				>
-					<Text style={{ fontWeight: 500, fontSize: 16 }}>Latest Attempt</Text>
-					<TouchableOpacity>
-						<Text
-							style={{
-								color: "#2264dc",
-								textDecorationColor: "#2264dc",
-								textDecorationLine: "underline",
-								marginVertical: -15,
-								marginBottom: 5,
-							}}
-						>
-							Dropdown (View Attempt)
-						</Text>
-						<MaterialIcons
-							name={showDropdown ? "arrow-drop-up" : "arrow-drop-down"}
-							style={styles.iconStyle}
-						/>
-					</TouchableOpacity>
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
-					<TextInput
-						placeholder="Answer..."
-						style={[
-							globalStyles.inputContainer,
-							{ height: Math.max(200, descHeight), marginTop: -30 },
-						]}
-						multiline
-						onContentSizeChange={(e) =>
-							setDescHeight(e.nativeEvent.contentSize.height)
-						}
-						textAlignVertical="top"
-					/>
-				</View>
-			) : null}
-		</ScrollView>
-	);
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 50 }}
+      style={[globalStyles.container, { backgroundColor: "#fff" }]}
+    >
+      <View
+        style={{
+          borderWidth: 1,
+          borderRadius: 20,
+          padding: 20,
+          borderColor: "#00000024",
+          marginBottom: 10,
+        }}
+      >
+        <Text style={[globalStyles.text1, { fontSize: 18 }]}>{title}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "90%",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 10,
+            }}
+          >
+            <Text style={globalStyles.text1}>Deadline</Text>
+            <Text>{deadline}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 10,
+            }}
+          >
+            <Text style={globalStyles.text1}>Points</Text>
+            <Text>{points}</Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", columnGap: 10 }}>
+          <Text style={globalStyles.text1}>Availability</Text>
+          <Text style={{ flexWrap: "wrap", width: "60%" }}>
+            {publishDate +
+              " " +
+              availabilityFrom +
+              " " +
+              deadline +
+              " " +
+              availabilityTo}
+          </Text>
+        </View>
+        <View
+          style={{ flexDirection: "row", columnGap: 10, alignItems: "center" }}
+        >
+          <Text style={globalStyles.text1}>Attempts</Text>
+          <Text>{attempt}</Text>
+        </View>
+        <View
+          style={{ flexDirection: "row", alignItems: "center", columnGap: 10 }}
+        >
+          <Text style={globalStyles.text1}>Submission Type</Text>
+          <Text>{submissionType} Entry</Text>
+        </View>
+        {!isAnswering && (
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              {
+                alignItems: "center",
+                justifyContent: "center",
+                marginHorizontal: "auto",
+                marginVertical: 20,
+              },
+            ]}
+            onPress={() => setIsAnswering(true)}
+          >
+            <Text style={globalStyles.submitButtonText}>Take Assignment</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {isAnswering && (
+        <View>
+          <View
+            style={{
+              marginVertical: 10,
+              borderRadius: 20,
+              backgroundColor: "#fff",
+              borderColor: "#00000024",
+              borderWidth: 1,
+              minHeight: 150,
+              rowGap: 20,
+            }}
+          >
+            <View>
+              <View style={globalStyles.sectionHeader}>
+                <Text style={[globalStyles.text1, { lineHeight: 20 }]}>
+                  {submissionType} Entry
+                </Text>
+              </View>
+              <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+                <Text>{description}</Text>
+              </View>
+            </View>
+            <View>
+              {submissionType.toLowerCase() === "text" ? (
+                <TextInput
+                  style={{
+                    minHeight: 150,
+                    padding: 15,
+                    borderColor: "#00000024",
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    margin: 15,
+                  }}
+                  placeholder={"Write your answer here...."}
+                  value={answer}
+                  onChangeText={(value) => setAnswer(value)}
+                  textAlignVertical="top"
+                  multiline={true}
+                />
+              ) : (
+                <View style={{ width: "80%", marginHorizontal: "auto" }}>
+                  <FileUploadSingle
+                    handleFile={(file: FileInfo) => {
+                      setAnswerFiles(file);
+                    }}
+                    fileTypes={fileTypes}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              { marginHorizontal: "auto", marginTop: 10 },
+            ]}
+            onPress={handleSubmitAnswer}
+          >
+            <Text style={globalStyles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {!isAnswering && (
+        <View
+          style={{
+            borderRadius: 20,
+            backgroundColor: "#fff",
+            borderColor: "#00000024",
+            borderWidth: 1,
+            minHeight: 150,
+            padding: 20,
+            marginVertical: 10,
+          }}
+        >
+          <Text style={globalStyles.text1}>Latest Attempt</Text>
+          <View style={{ width: "40%" }}>
+            <Picker
+              // selectedValue={selectedValue} // Pass selected value
+              // onValueChange={(itemValue) => setSelectedValue(itemValue)} // Update selected value
+              // style={styles.picker}
+              mode={"dropdown"}
+            >
+              <Picker.Item label="Java" value="java" />
+            </Picker>
+          </View>
+          <Text
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#fff",
+              borderColor: "#00000024",
+              borderWidth: 1,
+              minHeight: 125,
+            }}
+          ></Text>
+        </View>
+      )}
+    </ScrollView>
+  );
 };
 
-const styles = StyleSheet.create({
-	title: {
-		fontSize: 18,
-		color: "#2264dc",
-		marginVertical: 15,
-		fontWeight: "bold",
-		marginTop: 5,
-	},
-	row: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		width: "100%",
-		marginBottom: 10,
-	},
-	deadline: {
-		fontSize: 14,
-		color: "#000",
-		marginRight: 10,
-		fontWeight: 300,
-	},
-	points: {
-		fontSize: 14,
-		color: "#000",
-		fontWeight: 300,
-	},
-	availabilityContainer: {
-		fontSize: 14,
-		color: "#000",
-		marginBottom: 10,
-		lineHeight: 20,
-		maxWidth: "80%",
-		flexDirection: "row",
-	},
-	availability: {
-		flexWrap: "wrap",
-		maxWidth: "70%",
-		fontWeight: 300,
-	},
-	attempt: {
-		fontSize: 14,
-		color: "#000",
-		marginBottom: 10,
-		fontWeight: 300,
-	},
-	iconStyle: {
-		fontSize: 30,
-		color: "#FFBF18",
-		alignSelf: "center",
-		top: -28,
-		left: 30,
-	},
-});
-
-export default memo(assignmentDetails);
+export default memo(AssignmentDetails);

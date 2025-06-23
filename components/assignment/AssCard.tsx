@@ -44,15 +44,8 @@ const assCard = (props: {
       router.push({
         pathname: "/subject/(sub-details)/assignment/assignmentDetails",
         params: {
+          subjectId: props.subjectId,
           assignmentId: props.assignment_id,
-          attempts: props.attempts,
-          title: props.title,
-          description: props.description,
-          createdAt: props.createdAt,
-          availabilityStart: props.availability.start,
-          availabilityEnd: props.availability.deadline,
-          totalPoints: props.totalPoints,
-          submission_type: props.submission_type,
         },
       });
     }
@@ -62,11 +55,13 @@ const assCard = (props: {
 
   const panGesture = Gesture.Pan()
     .onUpdate((e) => {
+      if (props.role !== "teacher") return;
       if (e.translationX < 0 && e.translationX > -110) {
         translatedX.value = e.translationX;
       }
     })
     .onEnd(() => {
+      if (props.role !== "teacher") return;
       if (translatedX.value < -90) {
         translatedX.value = withTiming(-1000, { duration: 1500 });
         runOnJS(props.handleDelete)();

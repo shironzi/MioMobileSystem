@@ -266,6 +266,57 @@ export async function deleteAssignment(
   }
 }
 
+enum SubmissionOptions {
+  Text = "Text",
+  File = "File",
+}
+
+export async function submitAssignment(
+  subjectId: string,
+  assignmentId: string,
+  answer: string,
+  answerFiles: FileInfo | undefined,
+  submissionType: SubmissionOptions,
+) {
+  try {
+    const formdata = new FormData();
+
+    if (submissionType === SubmissionOptions.Text) {
+      formdata.append("answer_text", answer);
+    } else if (submissionType === SubmissionOptions.File && answerFiles) {
+      formdata.append("answer_file", {
+        uri: answerFiles.uri,
+        name: answerFiles.name,
+        type: answerFiles.mimeType,
+      } as any);
+    }
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/assignment/${assignmentId}/answer`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "multipart/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formdata,
+      },
+    );
+
+    return await res.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getAssignmentById(
   subjectId: string,
   assignmentId: string,
