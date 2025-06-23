@@ -14,7 +14,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Svg, { Line } from "react-native-svg";
 
@@ -133,6 +133,7 @@ const MatchingPreview = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(answers);
     if (answers.length !== 5) {
       console.error("all items must be have connections");
       return;
@@ -274,11 +275,11 @@ const MatchingPreview = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2500);
+    }, 1500);
   });
 
   return (
-    <View style={[globalStyles.container, { flex: 1}]}>
+    <View style={[globalStyles.container, { flex: 1 }]}>
       <View style={{ flex: 1 }}>
         <Svg
           height={height}
@@ -286,8 +287,7 @@ const MatchingPreview = () => {
           style={{
             position: "absolute",
             top: 0,
-            left: -22,
-            zIndex: -1,
+            left: -20,
           }}
         >
           {connections.map((line, idx) => (
@@ -334,10 +334,11 @@ const MatchingPreview = () => {
                 onLayout={(e) => {
                   const { x, y, height } = e.nativeEvent.layout;
                   audioPositions.current[index] = {
-                    x: x + 120,
+                    x: x + 100,
                     y: y + height / 2,
                   };
                 }}
+                activeOpacity={0.8}
               >
                 <View
                   style={{
@@ -377,10 +378,11 @@ const MatchingPreview = () => {
                 onLayout={(e) => {
                   const { x, y, height } = e.nativeEvent.layout;
                   imagePositions.current[index] = {
-                    x: x + 260,
+                    x: x + 300,
                     y: y + height / 2,
                   };
                 }}
+                activeOpacity={0.9}
               >
                 <Image
                   resizeMode="contain"
@@ -396,22 +398,29 @@ const MatchingPreview = () => {
           </View>
         </View>
       </View>
-      <View style={{flexDirection:"row", justifyContent:"space-between", marginHorizontal:10, bottom:10}}>
-      <TouchableOpacity
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginHorizontal: 10,
+          bottom: 10,
+        }}
+      >
+        <TouchableOpacity
           style={[globalStyles.inactivityButton, { width: "48%" }]}
           onPress={() => router.back()}
-      >
-        <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-          style={[globalStyles.submitButton, {width:"48%"}]}
-        onPress={handleSubmit}
-      >
-        <Text style={[globalStyles.submitButtonText, {top:3}]}>Update</Text>
-      </TouchableOpacity>
-
+        >
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={handleSubmit}
+        >
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+            Update
+          </Text>
+        </TouchableOpacity>
       </View>
-     
     </View>
   );
 };

@@ -9,38 +9,35 @@ const ListHeader = (props: {
   activityDifficulty: string;
   setActivityDifficulty: (value: string) => void;
 }) => (
-  <View style={styles.header}>
+  <View style={{ margin: 25, marginBottom: 0 }}>
     <View style={globalStyles.cardContainer}>
-      <Text style={{fontSize:16, fontWeight:500}}>Type of Exercise</Text>
+      <Text style={{ fontSize: 16, fontWeight: 500 }}>Type of Exercise</Text>
       <View style={styles.picker}>
-      <Picker
-        mode="dropdown"
-        selectedValue={props.activityType}
-        onValueChange={(value) => {
-          props.setActivityType(value);
-        }}
-      >
-        <Picker.Item label="Piddie Says" value="bingo" />
-        <Picker.Item label="Matching Cards" value="matching" />
-      </Picker>
-
+        <Picker
+          mode="dropdown"
+          selectedValue={props.activityType}
+          onValueChange={(value) => {
+            props.setActivityType(value);
+          }}
+        >
+          <Picker.Item label="Piddie Says" value="bingo" />
+          <Picker.Item label="Matching Cards" value="matching" />
+        </Picker>
       </View>
-     
-      <Text style={{fontSize:16, fontWeight:500}}>Difficulty Level</Text>
+
+      <Text style={{ fontSize: 16, fontWeight: 500 }}>Difficulty Level</Text>
       <View style={styles.picker}>
-      <Picker
-        mode="dropdown"
-        selectedValue={props.activityDifficulty}
-        onValueChange={props.setActivityDifficulty}
-      >
-        <Picker.Item label="Easy" value="easy" />
-        <Picker.Item label="Average" value="average" />
-        <Picker.Item label="Difficult" value="difficult" />
-        <Picker.Item label="Challenge" value="challenge" />
-      </Picker>
-
+        <Picker
+          mode="dropdown"
+          selectedValue={props.activityDifficulty}
+          onValueChange={props.setActivityDifficulty}
+        >
+          <Picker.Item label="Easy" value="easy" />
+          <Picker.Item label="Average" value="average" />
+          <Picker.Item label="Difficult" value="difficult" />
+          <Picker.Item label="Challenge" value="challenge" />
+        </Picker>
       </View>
-     
     </View>
   </View>
 );
@@ -54,7 +51,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 20,
     marginBottom: 5,
-
   },
   headerText: {
     fontSize: 20,
@@ -65,9 +61,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
-    marginVertical:10
-  }
-
+    marginVertical: 10,
+  },
 });
 
 export default ListHeader;

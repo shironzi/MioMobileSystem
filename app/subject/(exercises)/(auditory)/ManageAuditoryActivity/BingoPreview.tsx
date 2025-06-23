@@ -135,6 +135,8 @@ const BingoPreview = () => {
             parsedBingoAudio,
           );
 
+      console.log(res);
+
       if (res.success) {
         Alert.alert(
           "Success",
@@ -160,48 +162,46 @@ const BingoPreview = () => {
   };
 
   return (
-    <View style={[globalStyles.container, { flex:1, padding: 20 }]}>
+    <View style={[globalStyles.container, { flex: 1, padding: 20 }]}>
       {/* <Text style={styles.difficulty}></Text> */}
-          <View
-                  style={{
-                    borderColor: "#ddd",
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    padding: 10,
-                    marginBottom: 10,
-                    flexDirection: "row",
-                    
-                  }}
-                >
-                 <TouchableOpacity
-                  style={[
-                    {
-                      padding: 20,
-                      borderRadius: 15,
-                      maxWidth: 75,
-                    },
-                    isPlaying
-                      ? { backgroundColor: "#ffbf18" }
-                      : { backgroundColor: "#ddd" },
-                  ]}
-                  onPress={playAudio}
-                  disabled={isPlaying}
-                >
-
-                    <FontAwesome6 name="volume-high" size={25} color="#fff" />
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "300",
-                      alignSelf: "center",
-                      left: 60,
-                      lineHeight: 20,
-                    }}
-                  >
-                    Tap the speaker icon.{"\n"}    Listen carefully!
-                  </Text>
-                </View>
+      <View
+        style={{
+          borderColor: "#ddd",
+          borderWidth: 1,
+          borderRadius: 20,
+          padding: 10,
+          marginBottom: 10,
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          style={[
+            {
+              padding: 20,
+              borderRadius: 15,
+              maxWidth: 75,
+            },
+            isPlaying
+              ? { backgroundColor: "#ffbf18" }
+              : { backgroundColor: "#ddd" },
+          ]}
+          onPress={playAudio}
+          disabled={isPlaying}
+        >
+          <FontAwesome6 name="volume-high" size={25} color="#fff" />
+        </TouchableOpacity>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "300",
+            alignSelf: "center",
+            left: 60,
+            lineHeight: 20,
+          }}
+        >
+          Tap the speaker icon.{"\n"} Listen carefully!
+        </Text>
+      </View>
       <FlatList
         style={styles.bingoCards}
         data={activityData}
@@ -232,8 +232,8 @@ const BingoPreview = () => {
           <FontAwesome6 name="volume-high" size={25} color="#fff" />
         </TouchableOpacity>
       </View> */}
-       <View
-          style={{
+      <View
+        style={{
           flexDirection: "row",
           justifyContent: "space-between",
           position: "absolute",
@@ -257,7 +257,6 @@ const BingoPreview = () => {
           </Text>
         </TouchableOpacity>
       </View>
-     
     </View>
   );
 };

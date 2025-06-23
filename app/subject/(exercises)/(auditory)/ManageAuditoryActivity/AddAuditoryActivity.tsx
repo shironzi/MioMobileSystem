@@ -194,16 +194,33 @@ const AddAuditoryActivity = () => {
     }
   };
 
+  const [bingoError, setBingoError] = useState<{
+    errorMessage: string;
+    error: string;
+  }>({ errorMessage: "", error: "" });
+  const [matchingError, setMatchingError] = useState<{
+    errorMessage: string;
+    error: string;
+  }>({ errorMessage: "", error: "" });
+
   const handleRoute = () => {
     if (activityType === "bingo") {
       if (bingoItems.length !== 9 && bingoItems.length !== 12) {
-        console.error("Images must be either 9 or 12.");
+        setBingoError({
+          error: "images",
+          errorMessage: "Images must be either 9 or 12 images.",
+        });
         return;
       }
       if (bingoAudio.length < 1) {
-        console.error("There must be at least 1 audio.");
+        setBingoError({
+          error: "audio",
+          errorMessage: "There must be at least 1 audio.",
+        });
         return;
       }
+
+      setBingoError({ errorMessage: "", error: "" });
 
       const encodedItems = encodeURIComponent(JSON.stringify(bingoItems)) ?? [];
       const encodedAudio = encodeURIComponent(JSON.stringify(bingoAudio)) ?? [];
@@ -220,10 +237,24 @@ const AddAuditoryActivity = () => {
         },
       });
     } else if (activityType === "matching") {
-      if (matchingAudio.length !== 5 || matchingItems.length !== 5) {
-        console.error("There must be exactly 5 audios and 5 images.");
+      if (matchingAudio.length !== matchingItems.length) {
+        setMatchingError({
+          errorMessage:
+            "The number of audio items does not match the number of matching images.",
+          error: "length",
+        });
         return;
       }
+
+      if (matchingAudio.length > 5 || matchingItems.length > 5) {
+        setMatchingError({
+          errorMessage: `You can only have a maximum of 5 items.`,
+          error: "max",
+        });
+        return;
+      }
+
+      setMatchingError({ errorMessage: "", error: "" });
 
       const encodedItems =
         encodeURIComponent(JSON.stringify(matchingItems)) ?? [];
@@ -266,6 +297,8 @@ const AddAuditoryActivity = () => {
             difficulty,
             activityId,
           );
+
+          console.log(res);
           setMatchingItems(res.items);
           setMatchingAudio(res.audio);
           setMatchingAnswers(res.answers);
@@ -299,6 +332,7 @@ const AddAuditoryActivity = () => {
           isFirst={index === 0}
           index={index}
           image_path={item.image_path}
+          bingoError={bingoError}
           image={item.file ?? null}
           handleFileRemove={() => handleRemoveBingoItem(index)}
           handleFileUpload={(file: FileInfo) => handleFileUpload(index, file)}
@@ -313,16 +347,17 @@ const AddAuditoryActivity = () => {
           image={item.file ?? null}
           handleFileRemove={() => handleRemoveBingoItem(index)}
           handleFileUpload={(file: FileInfo) => handleFileUpload(index, file)}
+          totalImages={matchingItems.length}
+          error={matchingError}
         />
       );
     }
     return null;
   };
-    // HeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
-  
+  // HeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
 
   return (
-    <View style={{ backgroundColor: "#fff", flex:1}}>
+    <View style={{ backgroundColor: "#fff", flex: 1 }}>
       {activityType === "bingo" && (
         <Animated.FlatList
           data={bingoItems}
@@ -339,7 +374,7 @@ const AddAuditoryActivity = () => {
               />
             )
           }
-          ListFooterComponent={() => (
+          ListFooterComponent={
             <ListFooter
               activityId={activityId}
               activityType={activityType}
@@ -348,12 +383,13 @@ const AddAuditoryActivity = () => {
               handleAddAudio={handleAddAudio}
               handleAddItem={handleAddItem}
               handleRoute={handleRoute}
+              errors={bingoError}
               matchingAudio={matchingAudio}
               handleAudioUpload={(index, file) =>
                 handleAudioUpload(index, file)
               }
             />
-          )}
+          }
           renderItem={({ item, index }) => renderItem({ item, index })}
           itemLayoutAnimation={LinearTransition}
         />
@@ -374,7 +410,7 @@ const AddAuditoryActivity = () => {
               />
             )
           }
-          ListFooterComponent={() => (
+          ListFooterComponent={
             <ListFooter
               activityId={activityId}
               activityType={activityType}
@@ -383,12 +419,13 @@ const AddAuditoryActivity = () => {
               handleAddAudio={handleAddAudio}
               handleAddItem={handleAddItem}
               handleRoute={handleRoute}
+              errors={matchingError}
               matchingAudio={matchingAudio}
               handleAudioUpload={(index, file) =>
                 handleAudioUpload(index, file)
               }
             />
-          )}
+          }
           renderItem={({ item, index }) => renderItem({ item, index })}
           itemLayoutAnimation={LinearTransition}
         />

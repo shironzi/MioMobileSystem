@@ -29,10 +29,13 @@ const ListFooter = (props: {
   handleAddItem: () => void;
   handleAddAudio: () => void;
   handleRoute: () => void;
+  errors?: {
+    errorMessage: string;
+    error: string;
+  };
 }) => (
-  
-  <View style={[{ marginBottom: 50, flex:1}]}>
-    <View style={[styles.addItems, {marginBottom:-10}]}>
+  <View style={[{ marginBottom: 50, flex: 1 }]}>
+    <View style={[styles.addItems, { marginBottom: -10 }]}>
       <TouchableOpacity
         style={styles.addFileRow}
         onPress={() => props.handleAddItem()}
@@ -75,19 +78,27 @@ const ListFooter = (props: {
         <Text style={styles.addFileText}>Add Audio</Text>
       </TouchableOpacity>
     </View>
+    <View style={{ width: "70%", marginHorizontal: "auto" }}>
+      <Text style={[{ textAlign: "center" }, globalStyles.errorText]}>
+        {props.errors?.errorMessage}
+      </Text>
+    </View>
     <View style={styles.continueContainer}>
       <TouchableOpacity
         style={[globalStyles.inactivityButton, { width: "48%" }]}
-        onPress={() => router.back()}>
-        <Text style={[globalStyles.inactivityButtonText]}>Cancel
+        onPress={() => router.back()}
+      >
+        <Text style={[globalStyles.inactivityButtonText]}>
+          Cancel
           {/* {props.activityId ? "Update" : "Create"} */}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[globalStyles.submitButton, {width:"48%"}]}
+        style={[globalStyles.submitButton, { width: "48%" }]}
         onPress={props.handleRoute}
       >
-        <Text style={[globalStyles.submitButtonText, styles.continueButton]}>Preview
+        <Text style={[globalStyles.submitButtonText, styles.continueButton]}>
+          Preview
           {/* {props.activityId ? "Preview" : "Create"} */}
         </Text>
       </TouchableOpacity>
@@ -113,14 +124,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     columnGap: 10,
     marginHorizontal: 30,
-    marginTop:10,
+    marginTop: 10,
   },
   addFileText: {
     color: "#FFBF18",
     fontSize: 16,
   },
   continueButton: {
-    top:3,
+    top: 3,
   },
   divider: {
     borderTopWidth: 1,

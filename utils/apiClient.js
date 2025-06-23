@@ -6,7 +6,6 @@ const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 export const api = axios.create({
   baseURL: `${IPADDRESS}`,
   headers: { Accept: "application/json" },
-  timeout: 10_000,
 });
 
 api.interceptors.request.use(
