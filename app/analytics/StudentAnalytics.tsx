@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import globalStyles from "@/styles/globalStyles";
-import { PieChart, RadarChart } from "react-native-gifted-charts";
+import { BarChart, PieChart } from "react-native-gifted-charts";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import AnalyticsCard from "@/app/analytics/AnalyticsCard";
 import { fetchStudentAnalytics } from "@/utils/analytics";
 import { useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
-import Radar from "@/app/analytics/Radar";
+import useHeaderConfig from "@/utils/HeaderConfig";
 
 interface TotalPerDifficulty {
   phrase: {
@@ -58,6 +64,8 @@ interface TotalPerDifficulty {
 
 const StudentAnalytics = () => {
   const { studentId } = useLocalSearchParams<{ studentId: string }>();
+  useHeaderConfig("Analytics");
+  console.log(studentId);
   const [loading, setLoading] = useState<boolean>();
   const [data, setData] = useState<{
     sessions: number;
@@ -69,15 +77,16 @@ const StudentAnalytics = () => {
     auditory_completion_rate: number;
     language_completion_rate: number;
     total_score_per_difficulty: TotalPerDifficulty;
-    weekdays_present_count: Record<string, number>;
     failed_quizzes: number;
   }>();
+  const [barchartData, setBarchartData] = useState<any[]>([]);
 
   useEffect(() => {
     setLoading(true);
     const fetchStudentData = async () => {
-      const res = await fetchStudentAnalytics(studentId); // Replace with your API call logic
+      const res = await fetchStudentAnalytics(studentId);
 
+      console.log(res);
       if (res.success) {
         setData({
           sessions: res.sessions,
@@ -89,14 +98,24 @@ const StudentAnalytics = () => {
           auditory_completion_rate: res.auditory_completion_rate ?? 0,
           language_completion_rate: res.language_completion_rate ?? 0,
           total_score_per_difficulty: res.total_score_per_difficulty ?? {},
-          weekdays_present_count: res.weekdays_present_count ?? {},
           failed_quizzes: res.failed_quizzes ?? 0,
         });
+
+        const barData = Object.keys(res.weekdays_present_count).map((day) => {
+          const shortDay = day.charAt(0).toUpperCase();
+          return {
+            label: shortDay,
+            value: res.weekdays_present_count[day],
+            frontColor:
+              res.weekdays_present_count[day] > 0 ? "#344BFD" : "#FFBF18",
+          };
+        });
+
+        setBarchartData(barData);
+        console.log(barData);
       } else {
         console.log("Failed to fetch data");
       }
-
-      console.log(data);
       setLoading(false);
     };
 
@@ -119,7 +138,7 @@ const StudentAnalytics = () => {
   }
 
   return (
-    <ScrollView style={{ paddingHorizontal: 20 }}>
+    <ScrollView style={{ paddingHorizontal: 20, backgroundColor: "#fff" }}>
       <View style={styles.headerContainer}>
         <View style={{ flexDirection: "column", width: "49%", rowGap: 10 }}>
           <View style={[styles.header, { backgroundColor: "#FFBF1926" }]}>
@@ -199,21 +218,360 @@ const StudentAnalytics = () => {
           percentage={data?.language_completion_rate.toString() ?? "0"}
         />
       </View>
-      <View>
+      <View style={{}}>
         <Text>Student Progress in Specialized Trainings</Text>
-        <RadarChart
-          data={[42, 40, 35, 40, 38, 55, 100, 100, 100, 100, 100]}
-          labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
-          labelConfig={{ stroke: "blue", fontWeight: "bold" }}
-          dataLabels={["$42", "$40", "$35", "$40", "$38", "$55", "50"]}
-          dataLabelsConfig={{ stroke: "brown" }}
-          dataLabelsPositionOffset={0}
-          maxValue={70}
-        />
-        {/*{data?.total_score_per_difficulty && (*/}
-        {/*  <Radar Props={data?.total_score_per_difficulty} />*/}
-        {/*)}*/}
       </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginVertical: 10,
+        }}
+      >
+        <View
+          style={{
+            width: "48%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderRadius: 20,
+            height: 200,
+            borderColor: "#00000024",
+          }}
+        >
+          <Text style={globalStyles.text1}>Quizzes Result</Text>
+          <PieChart
+            data={[
+              {
+                value: data?.failed_quizzes ? 100 - data?.failed_quizzes : 100,
+                color: "#344BFD",
+                text: data?.failed_quizzes
+                  ? `${100 - data?.failed_quizzes}%`
+                  : "100",
+              },
+              {
+                value: data?.failed_quizzes ?? 0,
+                color: "#FFBF18",
+                text: data?.failed_quizzes ? `${data?.failed_quizzes}%` : "0",
+              },
+            ]}
+            isAnimated
+            radius={50}
+            innerRadius={0}
+            donut
+            showText
+            textColor="white"
+            textSize={20}
+            fontWeight="bold"
+            textBackgroundRadius={22}
+            showValuesAsLabels
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: -10,
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#344BFD" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Passed
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#FFBF18" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Failed
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            width: "48%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderRadius: 20,
+            height: 200,
+            borderColor: "#00000024",
+          }}
+        >
+          <Text style={globalStyles.text1}>Quizzes Result</Text>
+          <PieChart
+            data={[
+              {
+                value: data?.failed_quizzes ? 100 - data?.failed_quizzes : 100,
+                color: "#344BFD",
+                text: data?.failed_quizzes
+                  ? `${100 - data?.failed_quizzes}%`
+                  : "100",
+              },
+              {
+                value: data?.failed_quizzes ?? 0,
+                color: "#FFBF18",
+                text: data?.failed_quizzes ? `${data?.failed_quizzes}%` : "0",
+              },
+            ]}
+            isAnimated
+            radius={50}
+            innerRadius={0}
+            donut
+            showText
+            textColor="white"
+            textSize={20}
+            fontWeight="bold"
+            textBackgroundRadius={22}
+            showValuesAsLabels
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: -10,
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#344BFD" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Passed
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#FFBF18" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Failed
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginVertical: 10,
+        }}
+      >
+        <View
+          style={{
+            width: "48%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderRadius: 20,
+            height: 200,
+            borderColor: "#00000024",
+          }}
+        >
+          <Text style={globalStyles.text1}>Quizzes Result</Text>
+          <PieChart
+            data={[
+              {
+                value: data?.failed_quizzes ? 100 - data?.failed_quizzes : 100,
+                color: "#344BFD",
+                text: data?.failed_quizzes
+                  ? `${100 - data?.failed_quizzes}%`
+                  : "100",
+              },
+              {
+                value: data?.failed_quizzes ?? 0,
+                color: "#FFBF18",
+                text: data?.failed_quizzes ? `${data?.failed_quizzes}%` : "0",
+              },
+            ]}
+            isAnimated
+            radius={50}
+            innerRadius={40}
+            donut
+            showText
+            textColor="white"
+            textSize={20}
+            fontWeight="bold"
+            textBackgroundRadius={22}
+            showValuesAsLabels
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: -10,
+                }}
+              >
+                <Entypo name="dot-single" size={35} color="#344BFD" />
+                <Text
+                  style={[
+                    globalStyles.label,
+                    { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                  ]}
+                >
+                  Passed
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: -10,
+                }}
+              >
+                <Entypo name="dot-single" size={35} color="#344BFD" />
+                <Text
+                  style={[
+                    globalStyles.label,
+                    { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                  ]}
+                >
+                  Passed
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#FFBF18" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Failed
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            width: "48%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderRadius: 20,
+            height: 200,
+            borderColor: "#00000024",
+          }}
+        >
+          <BarChart
+            barWidth={5}
+            noOfSections={5}
+            barBorderRadius={5}
+            frontColor="lightgray"
+            data={barchartData}
+            yAxisThickness={0}
+            xAxisThickness={0}
+            yAxisTextStyle={{ fontSize: 10 }}
+            xAxisLength={50}
+            height={110}
+            width={110}
+            xAxisLabelTextStyle={{ fontSize: 10 }}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: -10,
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#344BFD" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Passed
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Entypo name="dot-single" size={35} color="#FFBF18" />
+              <Text
+                style={[
+                  globalStyles.label,
+                  { fontSize: 13, marginLeft: -10, fontWeight: 400 },
+                ]}
+              >
+                Failed
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.exportButton}>
+        <FontAwesome6 name="file-export" size={20} color="#439558" />
+        <Text style={[globalStyles.text1, { color: "#439558" }]}>
+          EXPORT CSV
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

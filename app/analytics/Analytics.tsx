@@ -1,3 +1,14 @@
+import AnalyticsCard from "@/app/analytics/AnalyticsCard";
+import LoadingCard from "@/components/loadingCard";
+import globalStyles from "@/styles/globalStyles";
+import { getAnalyticsDashboard, getAnalyticsStudents } from "@/utils/analytics";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import { FontAwesome6 } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Picker } from "@react-native-picker/picker";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -8,23 +19,12 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import useHeaderConfig from "@/utils/HeaderConfig";
-import React, { useEffect, useState } from "react";
-import { getAnalyticsDashboard, getStudents } from "@/utils/analytics";
 import { CurveType, LineChart, PieChart } from "react-native-gifted-charts";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import globalStyles from "@/styles/globalStyles";
-import Entypo from "@expo/vector-icons/Entypo";
-import AnalyticsCard from "@/app/analytics/AnalyticsCard";
-import { FontAwesome6 } from "@expo/vector-icons";
-import LoadingCard from "@/components/loadingCard";
-import { Picker } from "@react-native-picker/picker";
-import { router } from "expo-router";
 
 const Analytics = () => {
   useHeaderConfig("Analytics");
 
-  const [loading, setLoading] = useState<boolean>();
+  const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<{
     active_today: number;
     overall_completion_rate: number;
@@ -49,15 +49,15 @@ const Analytics = () => {
     { name: string; student_id: string }[]
   >([]);
 
-  const [subject, setSubject] = useState<string>("");
-  const [student, setStudent] = useState<string>("");
+  const [subject, setSubject] = useState<{ subject_id: string }>();
+  const [student, setStudent] = useState<{ student_id: string }>();
   const [openModal, setCloseModal] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-
     const fetchData = async () => {
       const res = await getAnalyticsDashboard();
+      console.log(res);
+
       if (res.success) {
         setData({
           active_today: res.active_today,
@@ -93,10 +93,11 @@ const Analytics = () => {
         );
 
         setSubjectList(subjects);
-        setSubject(subjects[0].subjectId);
-
-        setLoading(false);
+        if (subjects.length > 0) {
+          setSubject({ subject_id: subjects[0].subjectId });
+        }
         setLineData(transformedData);
+        setLoading(false);
       }
     };
 
@@ -105,10 +106,16 @@ const Analytics = () => {
 
   useEffect(() => {
     const fetchStudents = async () => {
-      const res = await getStudents(subject);
+      if (subject && subject.subject_id) {
+        const res = await getAnalyticsStudents(subject.subject_id);
+        console.log("fetching students");
 
-      if (res.success) {
-        setStudentList(res.peoples);
+        if (res.success) {
+          setStudentList(res.peoples);
+          if (res.peoples.length > 0) {
+            setStudent({ student_id: res.peoples[0].student_id });
+          }
+        }
       }
     };
 
@@ -135,9 +142,10 @@ const Analytics = () => {
   };
 
   const handleStudentSelect = () => {
+    if (!student) return;
     router.push({
       pathname: "/analytics/StudentAnalytics",
-      params: { studentId: student },
+      params: { studentId: student.student_id },
     });
   };
 
@@ -188,14 +196,16 @@ const Analytics = () => {
                   </Picker>
 
                   <Picker
-                    selectedValue={subject}
-                    onValueChange={(itemValue) => setStudent(itemValue)}
+                    selectedValue={student?.student_id}
+                    onValueChange={(itemValue) =>
+                      setStudent({ student_id: itemValue })
+                    }
                   >
-                    {studentList.map((subject) => (
+                    {studentList.map((student) => (
                       <Picker.Item
-                        label={subject.name}
-                        value={subject.student_id}
-                        key={subject.student_id}
+                        label={student.name}
+                        value={student.student_id}
+                        key={student.student_id}
                       />
                     ))}
                   </Picker>

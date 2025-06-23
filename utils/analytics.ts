@@ -16,9 +16,9 @@ export async function getAnalyticsDashboard() {
   }
 }
 
-export async function getStudents(subjectId: string) {
+export async function getAnalyticsStudents(subjectId: string) {
   try {
-    const { data } = await api.get(`/analytics/${subjectId}`);
+    const { data } = await api.get(`/analytics/students/${subjectId}`);
 
     return data;
   } catch (err: any) {
