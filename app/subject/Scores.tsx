@@ -6,7 +6,6 @@ import { useLocalSearchParams } from "expo-router";
 import { getActivities } from "@/utils/specialized";
 import { FontAwesome6 } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
-import * as Notifications from "expo-notifications";
 import { shareAsync } from "expo-sharing";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
@@ -19,7 +18,6 @@ const Scores = () => {
     role: string;
   }>();
   const [activities, setActivities] = useState<any>({});
-  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const generateScoreBook = async () => {
     const filename = "scorebook.pdf";
@@ -57,6 +55,7 @@ const Scores = () => {
     const fetchActivities = async () => {
       const data = await getActivities(subjectId);
       if (data?.success && data.activities) {
+        console.log(data.activities);
         setActivities(data.activities);
       }
     };

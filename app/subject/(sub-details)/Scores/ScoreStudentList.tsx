@@ -5,7 +5,7 @@ import { getStudents } from "@/utils/query";
 import useHeaderConfig from "@/utils/HeaderConfig";
 
 interface Student {
-  id: string;
+  student_id: string;
   first_name: string;
   last_name: string;
 }
@@ -41,13 +41,14 @@ const ScoreStudentList = () => {
     const fetchStudents = async () => {
       const res = await getStudents(subjectId);
       if (res?.success && res?.peoples) {
-        const studentList = Object.entries(res.peoples).map(
-          ([id, student]: any) => ({
-            id,
-            ...student,
-          }),
-        );
+        // Directly map through peoples since it's already an array of students
+        const studentList = res.peoples.map((student: any) => ({
+          student_id: student.student_id,
+          first_name: student.first_name,
+          last_name: student.last_name,
+        }));
         setStudents(studentList);
+        console.log(studentList);
       }
     };
 
@@ -58,9 +59,9 @@ const ScoreStudentList = () => {
     <ScrollView style={styles.container}>
       {students.map((student) => (
         <TouchableOpacity
-          key={student.id}
+          key={student.student_id}
           style={styles.studentItem}
-          onPress={() => handleViewActivity(student.id)}
+          onPress={() => handleViewActivity(student.student_id)}
         >
           <Text style={styles.studentName}>
             {student.last_name}, {student.first_name}

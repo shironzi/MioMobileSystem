@@ -1,7 +1,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -21,7 +21,12 @@ const AddBingoCards = (props: {
   handleFileRemove: () => void;
   image: FileInfo | null;
   image_path: string | null;
+  bingoError: {
+    errorMessage: string;
+    error: string;
+  };
 }) => {
+  const image_error = props.bingoError.error === "images";
   return (
     <Animated.View
       entering={FadeInUp}
@@ -31,7 +36,7 @@ const AddBingoCards = (props: {
         {
           backgroundColor: "#fff",
           paddingHorizontal: 20,
-          marginHorizontal:5,
+          marginHorizontal: 5,
           marginVertical: 5,
         },
         props.isFirst && {
@@ -41,7 +46,8 @@ const AddBingoCards = (props: {
         },
       ]}
     >
-      <View style={{  
+      <View
+        style={{
           padding: 20,
           backgroundColor: "#fff",
           rowGap: 10,
@@ -50,14 +56,19 @@ const AddBingoCards = (props: {
           borderRadius: 20,
           marginBottom: 5,
           flex: 1,
-           }}>
+        }}
+      >
         {props.isFirst && (
           <View>
-            <Text style={[globalStyles.text1, {marginTop:-5}]}>
+            <Text style={[globalStyles.text1, { marginTop: -5 }]}>
               Piddie Says
             </Text>
-            <View style={[globalStyles.divider, { marginVertical: 10, width: 340, left: -10 }]} />
-
+            <View
+              style={[
+                globalStyles.divider,
+                { marginVertical: 10, width: 340, left: -10 },
+              ]}
+            />
           </View>
         )}
         <ImageUpload
@@ -65,26 +76,13 @@ const AddBingoCards = (props: {
           imageUri={props.image}
           image_path={props.image_path}
           handleImageRemove={() => props.handleFileRemove()}
-          isError={false}
+          isError={image_error}
           showPreview={!!props.image_path}
           index={props.index}
         />
-        
       </View>
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  divider: {
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: -20,
-  },
-  cardRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-});
 
 export default memo(AddBingoCards);

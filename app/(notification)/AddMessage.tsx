@@ -67,7 +67,7 @@ const AddMessage = () => {
       const roleValue = await SecureStore.getItemAsync("role");
       setRole(roleValue ?? "");
 
-      if (roleValue === "student") {
+      if (roleValue === "student" || roleValue === "parent") {
         const res = await getSubjectTeachers();
         if (res.success) {
           setUsers(res.users);
@@ -75,33 +75,14 @@ const AddMessage = () => {
         }
       } else if (roleValue === "teacher") {
         const res = await getMessageSubjects();
-        if (res.success) setSubjects(res.subjects);
+        if (res.success) {
+          setSubjects(res.subjects);
+          setSelectedSubject(subjects[0].subject_id);
+        }
       }
     };
 
     init();
-  }, []);
-
-  useEffect(() => {
-    if (role === "student") {
-      const fetchSubjectTeachers = async () => {
-        const res = await getSubjectTeachers();
-        if (res.success) {
-          setUsers(res.users);
-          setReceiver(res.users[0].user_id);
-          console.log(receiver);
-        }
-      };
-
-      fetchSubjectTeachers();
-    } else if (role === "teacher") {
-      const fetchSubjects = async () => {
-        const res = await getMessageSubjects();
-
-        setSubjects(res.subjects);
-      };
-      fetchSubjects();
-    }
   }, []);
 
   useEffect(() => {

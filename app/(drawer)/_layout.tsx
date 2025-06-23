@@ -16,7 +16,6 @@ import { getAuth } from "@react-native-firebase/auth";
 import { FontAwesome } from "@expo/vector-icons";
 import { getProfile } from "@/utils/query";
 import messaging from "@react-native-firebase/messaging";
-import * as SecureStore from "expo-secure-store";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -33,8 +32,8 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     biography: string;
     name: string;
     photo_url: string;
+    role: string;
   }>();
-  const [role, setRole] = useState("");
 
   useEffect(() => {
     const auth = getAuth();
@@ -51,13 +50,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         name: res.name,
         biography: res.biography,
         photo_url: res.photo_url,
+        role: res.role,
       });
     };
-
-    const getRole = async () => {
-      setRole((await SecureStore.getItemAsync("role")) ?? "");
-    };
-    getRole();
 
     fetchProfile();
 
@@ -162,7 +157,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         )}
         style={styles.drawerItem}
       />
-      {role === "teacher" && (
+      {profile?.role === "teacher" && (
         <DrawerItem
           label="Data Analytics"
           labelStyle={styles.drawerItemLabel}

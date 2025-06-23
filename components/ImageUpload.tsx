@@ -41,6 +41,8 @@ const ImageUpload = (props: {
     }
   }, [file]);
 
+  console.log(props.isError);
+
   return (
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>
@@ -65,14 +67,18 @@ const ImageUpload = (props: {
                     style={styles.fileUpload}
                   >
                     <MaterialIcons name="edit" size={24} color="#FFBF18" />
-                    <Text style={{ color: "#FFBF18",  fontWeight:500 }}>Edit</Text>
+                    <Text style={{ color: "#FFBF18", fontWeight: 500 }}>
+                      Edit
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={props.handleImageRemove}
                     style={styles.fileUpload}
                   >
                     <AntDesign name="close" size={24} color="#db4141" />
-                    <Text style={{ color: "#db4141", fontWeight:500 }}>Delete</Text>
+                    <Text style={{ color: "#db4141", fontWeight: 500 }}>
+                      Delete
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -95,18 +101,29 @@ const ImageUpload = (props: {
             )}
           </View>
         ) : (
-          <TouchableOpacity
-            style={[
-              styles.addFileRow,
-              props.isError
-                ? { borderColor: "#db4141" }
-                : { borderColor: "#ffbf18" },
-            ]}
-            onPress={handleFileUpload}
-          >
-            <FontAwesome name="image" size={24} color="#FFBF18" />
-            <Text style={styles.addFileText}>Browse files to upload image</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              style={[
+                styles.addFileRow,
+                props.isError
+                  ? { borderColor: "#db4141" }
+                  : { borderColor: "#ffbf18" },
+              ]}
+              onPress={handleFileUpload}
+            >
+              <FontAwesome name="image" size={24} color="#FFBF18" />
+              <Text style={styles.addFileText}>
+                Browse files to upload image
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={props.handleImageRemove}
+              style={[styles.fileUpload, { marginHorizontal: "auto" }]}
+            >
+              <AntDesign name="close" size={24} color="#db4141" />
+              <Text style={{ color: "#db4141", fontWeight: 500 }}>Remove</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </View>
@@ -125,7 +142,7 @@ const styles = StyleSheet.create({
   fileRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal:40
+    marginHorizontal: 40,
   },
   fileUpload: {
     padding: 9,
@@ -168,7 +185,7 @@ const styles = StyleSheet.create({
   fileSettings: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignSelf:"center",
+    alignSelf: "center",
     width: "100%",
   },
   imageStyle: { width: 150, height: 150, alignSelf: "center" },

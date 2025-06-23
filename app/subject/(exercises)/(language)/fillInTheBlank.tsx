@@ -169,7 +169,6 @@ const fillInTheBlank = () => {
   const status = useAudioPlayerStatus(player);
 
   const handleAudioPlay = async () => {
-    console.log(0);
     await player.seekTo(0);
     if (!status.playing) {
       player.replace({ uri: activity[currentItem].audio_path });
@@ -184,6 +183,7 @@ const fillInTheBlank = () => {
       const now = getCurrentDateTime();
 
       setAudioLogs((prev) => {
+        console.log(prev);
         const existingIndex = prev.findIndex((log) => log.item_id === itemId);
         if (existingIndex !== -1) {
           const updated = [...prev];
