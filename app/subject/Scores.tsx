@@ -7,6 +7,8 @@ import { getActivities } from "@/utils/specialized";
 import { FontAwesome6 } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
+import QuizzesScores from "@/components/QuizzesScores";
+import LoadingCard from "@/components/loadingCard";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -18,6 +20,14 @@ const Scores = () => {
     role: string;
   }>();
   const [activities, setActivities] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+  const [quizzes, setQuizzes] = useState<{ id: string; title: string }[]>([]);
+  const [assignments, setAssignments] = useState<
+    {
+      id: string;
+      title: string;
+    }[]
+  >([]);
 
   const generateScoreBook = async () => {
     const filename = "scorebook.pdf";
@@ -55,12 +65,29 @@ const Scores = () => {
     const fetchActivities = async () => {
       const data = await getActivities(subjectId);
       if (data?.success && data.activities) {
-        console.log(data.activities);
         setActivities(data.activities);
+        setQuizzes(data.quizzes);
+        setAssignments(data.assignments);
       }
+      setLoading(false);
     };
     fetchActivities();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <View style={{ paddingVertical: 20 }}>
@@ -98,6 +125,22 @@ const Scores = () => {
             role={role}
           />
         )),
+      )}
+      {quizzes.length > 0 && (
+        <QuizzesScores
+          subjectId={subjectId}
+          quizzes={quizzes}
+          role={role}
+          placeholder={"Quizzes"}
+        />
+      )}
+      {assignments.length > 0 && (
+        <QuizzesScores
+          subjectId={subjectId}
+          quizzes={assignments}
+          role={role}
+          placeholder={"Assignments"}
+        />
       )}
     </View>
   );

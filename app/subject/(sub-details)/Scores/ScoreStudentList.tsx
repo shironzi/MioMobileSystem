@@ -24,24 +24,36 @@ const ScoreStudentList = () => {
     }>();
 
   const handleViewActivity = (studentId: string) => {
-    router.push({
-      pathname: "/subject/(sub-details)/Scores/ScoreAttempts",
-      params: {
-        subjectId: subjectId,
-        activityType: activityType,
-        activityId: activityId,
-        userId: studentId,
-        difficulty: difficulty,
-        role: role,
-      },
-    });
+    if (activityType === "assignments" || activityType === "quizzes") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoresAcademic",
+        params: {
+          subjectId: subjectId,
+          activityType: activityType,
+          activityId: activityId,
+          userId: studentId,
+          role: role,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoreAttempts",
+        params: {
+          subjectId: subjectId,
+          activityType: activityType,
+          activityId: activityId,
+          userId: studentId,
+          difficulty: difficulty,
+          role: role,
+        },
+      });
+    }
   };
 
   useEffect(() => {
     const fetchStudents = async () => {
       const res = await getStudents(subjectId);
       if (res?.success && res?.peoples) {
-        // Directly map through peoples since it's already an array of students
         const studentList = res.peoples.map((student: any) => ({
           student_id: student.student_id,
           first_name: student.first_name,

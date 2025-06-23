@@ -55,7 +55,7 @@ const index = () => {
         const data = await getSubjects();
         setSubjects(data.subjects);
         setRole(data.role);
-        await SecureStore.setItemAsync("role", data.role);
+        // await SecureStore.setItemAsync("role", data.role);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching subjects: ", err);
