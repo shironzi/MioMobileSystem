@@ -11,7 +11,6 @@ import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   getStudentAssignmentAttempt,
-  getStudentQuizAttempt,
   submitAssignmentEval,
 } from "@/utils/query";
 import globalStyles from "@/styles/globalStyles";
@@ -170,10 +169,11 @@ const ScoresAcademic = () => {
 
   useEffect(() => {
     const fetchScores = async () => {
-      const res =
-        activityType === "quizzes"
-          ? await getStudentQuizAttempt(subjectId, activityId, studentId)
-          : await getStudentAssignmentAttempt(subjectId, activityId, studentId);
+      const res = await getStudentAssignmentAttempt(
+        subjectId,
+        activityId,
+        studentId,
+      );
 
       if (res.success) {
         setActivityInfo(res.assignment_info);

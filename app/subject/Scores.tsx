@@ -69,6 +69,8 @@ const Scores = () => {
         setQuizzes(data.quizzes);
         setAssignments(data.assignments);
       }
+
+      console.log(data);
       setLoading(false);
     };
     fetchActivities();
@@ -126,7 +128,7 @@ const Scores = () => {
           />
         )),
       )}
-      {quizzes.length > 0 && (
+      {quizzes && (
         <QuizzesScores
           subjectId={subjectId}
           quizzes={quizzes}
