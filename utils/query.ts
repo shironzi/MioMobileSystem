@@ -825,7 +825,7 @@ export async function createQuiz(
 
     const token = await getAuth().currentUser?.getIdToken(true);
 
-    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/quiz`, {
+    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/create/quiz`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -1092,7 +1092,7 @@ export async function finalizeQuiz(
   attemptId: string,
 ) {
   try {
-    const { data } = await api.get(
+    const { data } = await api.post(
       `/subject/${subjectId}/quiz/${quizId}/${attemptId}`,
     );
     return data;

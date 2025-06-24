@@ -24,9 +24,20 @@ const ScoreStudentList = () => {
     }>();
 
   const handleViewActivity = (studentId: string) => {
-    if (activityType === "assignments" || activityType === "quizzes") {
+    if (activityType === "assignments") {
       router.push({
         pathname: "/subject/(sub-details)/Scores/ScoresAcademic",
+        params: {
+          subjectId: subjectId,
+          activityType: activityType,
+          activityId: activityId,
+          studentId: studentId,
+          role: role,
+        },
+      });
+    } else if (activityType === "quizzes") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/QuizScore",
         params: {
           subjectId: subjectId,
           activityType: activityType,
