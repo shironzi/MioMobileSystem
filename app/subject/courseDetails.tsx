@@ -311,7 +311,8 @@ const styles = StyleSheet.create({
 	subContainer: {},
 	speech: {
 		height: 115,
-		width: "100%",
+		width: 355,
+		left: 20,
 	},
 	subCourse: {
 		backgroundColor: "000",

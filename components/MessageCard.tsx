@@ -36,7 +36,16 @@ const MessageCard = (props: {
 						<View style={styles.messageContent}>
 							<View style={styles.nameRow}>
 								<Text style={styles.nameText}>{props.name}</Text>
-								<Text style={{ fontWeight: 300, left: -10 }}>{props.date}</Text>
+								<Text
+									style={{
+										// fontWeight: 500,
+										left: -10,
+										fontSize: 14,
+										color: "#aaa",
+									}}
+								>
+									{props.date}
+								</Text>
 							</View>
 							<Text style={styles.descText}>
 								{props.desc.length > 100
@@ -58,6 +67,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "#ddd",
 		borderRadius: 20,
+		marginBottom: 10,
 	},
 	innerContainer: {
 		backgroundColor: "#fff",
@@ -94,8 +104,8 @@ const styles = StyleSheet.create({
 		fontWeight: 500,
 	},
 	descText: {
-		fontSize: 15,
-		fontWeight: 400,
+		fontSize: 14,
+		fontWeight: 300,
 		marginTop: 5,
 		height: 30,
 		width: 270,
