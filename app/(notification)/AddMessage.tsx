@@ -21,6 +21,8 @@ import {
 } from "@/utils/messages";
 import { router } from "expo-router";
 import FileUpload from "@/components/FileUpload";
+import globalStyles from "@/styles/globalStyles";
+import LoadingCard from "@/components/loadingCard";
 
 interface FileInfo {
   uri: string;
@@ -44,11 +46,20 @@ const AddMessage = () => {
     }[]
   >([]);
   const [selectedSubject, setSelectedSubject] = useState<string>();
+  const [messageError, setMessageError] = useState<boolean>(false);
 
   const [files, setFiles] = useState<FileInfo[]>([]);
+  const [messageSending, setMessageSending] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleSendMessage = async () => {
     if (!receiver) return;
+
+    if (!message.trim()) {
+      setMessageError(true);
+      return;
+    }
+    setMessageSending(true);
 
     const res = await sendMessage(receiver, message, files);
     console.log(res);
@@ -59,7 +70,10 @@ const AddMessage = () => {
         pathname: "/(notification)/messageDetails",
         params: { thread: res.thread, name: res.name, selectedType: "Sent" },
       });
+
+      setMessageError(false);
     }
+    setMessageSending(false);
   };
 
   useEffect(() => {
@@ -80,6 +94,8 @@ const AddMessage = () => {
           setSelectedSubject(subjects[0].subject_id);
         }
       }
+
+      setLoading(false);
     };
 
     init();
@@ -94,6 +110,21 @@ const AddMessage = () => {
     };
     fetchUsers();
   }, [selectedSubject]);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -134,23 +165,36 @@ const AddMessage = () => {
                 style={styles.picker}
                 mode={"dropdown"}
               >
-                {users.map((teacher) => (
-                  <Picker.Item
-                    key={teacher.user_id}
-                    label={teacher.name}
-                    value={teacher.user_id}
-                  />
-                ))}
+                {users ? (
+                  users.map((teacher) => (
+                    <Picker.Item
+                      key={teacher.user_id}
+                      label={teacher.name}
+                      value={teacher.user_id}
+                    />
+                  ))
+                ) : (
+                  <Picker.Item label="Loading..." value={null} />
+                )}
               </Picker>
             </View>
             <Text style={styles.label}>Message</Text>
+            {messageError && (
+              <Text style={globalStyles.errorText}>
+                This field is required!
+              </Text>
+            )}
             <TextInput
               placeholder="Input Message"
               value={message}
               onChangeText={setMessage}
               multiline
               numberOfLines={4}
-              style={[styles.input, { height: 100, textAlignVertical: "top" }]}
+              style={[
+                styles.input,
+                { height: 100, textAlignVertical: "top" },
+                messageError ? { borderColor: "red" } : { borderColor: "#ccc" },
+              ]}
             />
 
             <View
@@ -169,8 +213,11 @@ const AddMessage = () => {
               <TouchableOpacity
                 style={styles.sendButton}
                 onPress={handleSendMessage}
+                disabled={messageSending}
               >
-                <Text style={styles.sendText}>Send</Text>
+                <Text style={styles.sendText}>
+                  {messageSending ? "Sending..." : "Send"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -183,13 +230,15 @@ const AddMessage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f1f3ff",
+    backgroundColor: "#fff",
     padding: 20,
   },
   card: {
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
+    borderWidth: 1,
+    borderColor: "#00000024",
   },
   label: {
     fontWeight: "600",
@@ -207,7 +256,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: Platform.OS === "ios" ? 12 : 8,

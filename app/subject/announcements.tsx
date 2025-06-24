@@ -6,7 +6,6 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAnnouncements, getAnnouncements } from "@/utils/query";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { Ionicons } from "@expo/vector-icons";
-// import MaterialIc from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
