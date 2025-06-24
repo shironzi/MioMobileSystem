@@ -337,7 +337,13 @@ const Index = () => {
                             </TouchableOpacity>
                           </View>
                           {errors.password && (
-                            <Text style={{ color: "red", marginLeft: 25 }}>
+                            <Text
+                              style={{
+                                color: "red",
+                                marginLeft: 25,
+                                marginBottom: 10,
+                              }}
+                            >
                               {errors.password.message}
                             </Text>
                           )}
@@ -423,7 +429,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000000",
     padding: 9,
     paddingLeft: 20,
     columnGap: 5,
