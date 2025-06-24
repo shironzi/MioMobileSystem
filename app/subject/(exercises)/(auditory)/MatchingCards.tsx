@@ -69,6 +69,8 @@ const MatchingCards = () => {
     prevAttemptId: string;
   }>();
 
+  const [isSending, setIsSending] = useState(false);
+
   const [activity, setActivity] = useState<
     { image_id: string; image_url: string }[]
   >([]);
@@ -113,6 +115,8 @@ const MatchingCards = () => {
     try {
       if (!attemptId) return;
 
+      setIsSending(true);
+
       const res = await submitMatchingActivity(
         subjectId,
         difficulty,
@@ -138,6 +142,8 @@ const MatchingCards = () => {
     } catch (err) {
       console.error("Submission failed:", err);
     }
+
+    setIsSending(false);
   };
 
   useEffect(() => {
@@ -359,9 +365,10 @@ const MatchingCards = () => {
           <TouchableOpacity
             style={[globalStyles.submitButton, { width: "100%" }]}
             onPress={handleSubmit}
+            disabled={isSending}
           >
             <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-              Submit
+              {isSending ? "Submitting" : "Submit"}
             </Text>
           </TouchableOpacity>
         </View>

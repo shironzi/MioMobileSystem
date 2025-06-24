@@ -4,294 +4,299 @@ import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import {
-	getAttemptActivity,
-	startActivity,
-	submitAnswer,
+  getAttemptActivity,
+  startActivity,
+  submitAnswer,
 } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
-	Alert,
-	Image,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const Flashcards = () => {
-	const router = useRouter();
+  const router = useRouter();
 
-	HeaderConfigQuiz("Flashcards");
+  HeaderConfigQuiz("Flashcards");
 
-	const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
-		useLocalSearchParams<{
-			activity_type: string;
-			difficulty: string;
-			subjectId: string;
-			activityId: string;
-			prevAttemptId: string;
-		}>();
+  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
+    useLocalSearchParams<{
+      activity_type: string;
+      difficulty: string;
+      subjectId: string;
+      activityId: string;
+      prevAttemptId: string;
+    }>();
 
-	const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
-		[]
-	);
-	const [isRecording, setIsRecording] = useState(false);
-	const [isAnswered, setIsAnswered] = useState(false);
-	const [recordingAudio, setRecordingAudio] = useState<string | null>();
-	const [loading, setLoading] = useState(true);
-	const [attemptId, setAttemptId] = useState<string | undefined>();
-	const [submitting, setSubmitting] = useState<boolean>(false);
-	const [currentCard, setCurrentCard] = useState<number>(0);
+  const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
+    [],
+  );
+  const [isRecording, setIsRecording] = useState(false);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [recordingAudio, setRecordingAudio] = useState<string | null>();
+  const [loading, setLoading] = useState(true);
+  const [attemptId, setAttemptId] = useState<string | undefined>();
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [currentCard, setCurrentCard] = useState<number>(0);
+  const [isSending, setIsSending] = useState<boolean>(false);
 
-	const handleNextCard = async () => {
-		if (!attemptId) return;
-		if (!recordingAudio) return;
+  const handleNextCard = async () => {
+    if (!attemptId) return;
+    if (!recordingAudio) return;
+    setIsSending(true);
 
-		const res = await submitAnswer(
-			subjectId,
-			activity_type,
-			difficulty,
-			activityId,
-			attemptId,
-			cards[currentCard].flashcard_id,
-			recordingAudio
-		);
+    const res = await submitAnswer(
+      subjectId,
+      activity_type,
+      difficulty,
+      activityId,
+      attemptId,
+      cards[currentCard].flashcard_id,
+      recordingAudio,
+    );
 
-		if (currentCard === cards.length - 1) {
-			router.push({
-				pathname: "/subject/(sub-details)/scoreDetails",
-				params: { subjectId, activity_type, difficulty, activityId, attemptId },
-			});
+    if (currentCard === cards.length - 1) {
+      router.push({
+        pathname: "/subject/(sub-details)/scoreDetails",
+        params: { subjectId, activity_type, difficulty, activityId, attemptId },
+      });
 
-			return;
-		}
+      return;
+    }
 
-		if (res.success) {
-			setCurrentCard(currentCard + 1);
-			setIsAnswered(false);
-			setSubmitting(false);
-		}
-	};
+    if (res.success) {
+      setCurrentCard(currentCard + 1);
+      setIsAnswered(false);
+      setSubmitting(false);
+    }
+    setIsSending(false);
+  };
 
-	useEffect(() => {
-		let isMounted = true;
-		const fetchActivity = async () => {
-			try {
-				const res = prevAttemptId
-					? await getAttemptActivity(
-							subjectId,
-							activity_type,
-							activityId,
-							prevAttemptId
-						)
-					: await startActivity(
-							subjectId,
-							activity_type,
-							difficulty,
-							activityId
-						);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchActivity = async () => {
+      try {
+        const res = prevAttemptId
+          ? await getAttemptActivity(
+              subjectId,
+              activity_type,
+              activityId,
+              prevAttemptId,
+            )
+          : await startActivity(
+              subjectId,
+              activity_type,
+              difficulty,
+              activityId,
+            );
 
-				if (res.success) {
-					const fetchedFlashcards = Object.entries(res.flashcards).map(
-						([key, value]: [string, any]) => ({
-							flashcard_id: key,
-							text: value.text,
-						})
-					);
+        if (res.success) {
+          const fetchedFlashcards = Object.entries(res.flashcards).map(
+            ([key, value]: [string, any]) => ({
+              flashcard_id: key,
+              text: value.text,
+            }),
+          );
 
-					setAttemptId(res.attemptId);
-					setCards(fetchedFlashcards);
+          setAttemptId(res.attemptId);
+          setCards(fetchedFlashcards);
 
-					const lastAnsweredIndex = res.last_answered ?? 0;
-					setCurrentCard(
-						lastAnsweredIndex < fetchedFlashcards.length ? lastAnsweredIndex : 0
-					);
-				} else {
-					Alert.alert("Failed to start the activity");
-					router.back();
-				}
+          const lastAnsweredIndex = res.last_answered ?? 0;
+          setCurrentCard(
+            lastAnsweredIndex < fetchedFlashcards.length
+              ? lastAnsweredIndex
+              : 0,
+          );
+        } else {
+          Alert.alert("Failed to start the activity");
+          router.back();
+        }
 
-				if (!isMounted) return;
-			} catch (error) {
-				console.error("Error loading activity:", error);
-				if (isMounted) {
-					Alert.alert(
-						"Error",
-						"Unable to load activity. Please check your connection."
-					);
-				}
-			} finally {
-				if (isMounted) setLoading(false);
-			}
-		};
+        if (!isMounted) return;
+      } catch (error) {
+        console.error("Error loading activity:", error);
+        if (isMounted) {
+          Alert.alert(
+            "Error",
+            "Unable to load activity. Please check your connection.",
+          );
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
 
-		fetchActivity();
+    fetchActivity();
 
-		return () => {
-			isMounted = false;
-		};
-	}, []);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-	if (loading) {
-		return (
-			<View
-				style={{
-					flex: 1,
-					justifyContent: "center",
-					alignItems: "center",
-					backgroundColor: "#fff",
-				}}
-			>
-				<LoadingCard></LoadingCard>
-			</View>
-		);
-	}
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
-	if (!cards) {
-		return (
-			<View style={styles.container}>
-				<Text>No flashcards available.</Text>
-			</View>
-		);
-	}
-	const getInstruction =
-		"Look at the word. Tap and hold the microphone and read the word out loud. Try to pronounce it clearly.";
+  if (!cards) {
+    return (
+      <View style={styles.container}>
+        <Text>No flashcards available.</Text>
+      </View>
+    );
+  }
+  const getInstruction =
+    "Look at the word. Tap and hold the microphone and read the word out loud. Try to pronounce it clearly.";
 
-	return (
-		<GestureHandlerRootView>
-			<ScrollView style={styles.container}>
-				<ActivityProgress
-					difficulty={difficulty}
-					totalItems={cards.length}
-					completedItems={currentCard}
-					// instruction="Guess the picture"
-				/>
-				<View
-					style={{
-						// marginHorizontal: 10,
-						borderColor: "#ddd",
-						borderWidth: 1,
-						borderRadius: 20,
-						paddingHorizontal: 10,
-						marginBottom: 15,
-						marginTop: -10,
-					}}
-				>
-					<Text
-						style={{
-							marginHorizontal: 10,
-							textAlign: "justify",
-							fontWeight: "500",
-							fontSize: 16,
-							color: "#2264dc",
-							marginTop: 10,
-						}}
-					>
-						Piddie Tips!
-					</Text>
-					<Text
-						style={{
-							marginTop: 5,
-							margin: 10,
-							textAlign: "justify",
-							fontWeight: "300",
-						}}
-					>
-						{getInstruction}
-					</Text>
-				</View>
+  return (
+    <GestureHandlerRootView>
+      <ScrollView style={styles.container}>
+        <ActivityProgress
+          difficulty={difficulty}
+          totalItems={cards.length}
+          completedItems={currentCard}
+          // instruction="Guess the picture"
+        />
+        <View
+          style={{
+            // marginHorizontal: 10,
+            borderColor: "#ddd",
+            borderWidth: 1,
+            borderRadius: 20,
+            paddingHorizontal: 10,
+            marginBottom: 15,
+            marginTop: -10,
+          }}
+        >
+          <Text
+            style={{
+              marginHorizontal: 10,
+              textAlign: "justify",
+              fontWeight: "500",
+              fontSize: 16,
+              color: "#2264dc",
+              marginTop: 10,
+            }}
+          >
+            Piddie Tips!
+          </Text>
+          <Text
+            style={{
+              marginTop: 5,
+              margin: 10,
+              textAlign: "justify",
+              fontWeight: "300",
+            }}
+          >
+            {getInstruction}
+          </Text>
+        </View>
 
-				<View style={styles.flashcardContainer}>
-					<Image
-						source={require("@/assets/images/face/echo.png")}
-						style={{ width: 90, height: 50 }}
-						resizeMode="contain"
-					/>
-					<View style={styles.textContainer}>
-						<Text style={styles.flashcardText}>{cards[currentCard].text}</Text>
-					</View>
-				</View>
+        <View style={styles.flashcardContainer}>
+          <Image
+            source={require("@/assets/images/face/echo.png")}
+            style={{ width: 90, height: 50 }}
+            resizeMode="contain"
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.flashcardText}>{cards[currentCard].text}</Text>
+          </View>
+        </View>
 
-				<View style={{ rowGap: 5, marginTop: 15 }}>
-					<FlashcardMicrophone
-						onStop={(uri) => {
-							setIsRecording(false);
-							setIsAnswered(true);
-							setRecordingAudio(uri);
-						}}
-					/>
-					{recordingAudio && (
-						<View style={{ marginTop: 10 }}>
-							<AudioPlayer uri={recordingAudio} />
-						</View>
-					)}
-				</View>
+        <View style={{ rowGap: 5, marginTop: 15 }}>
+          <FlashcardMicrophone
+            onStop={(uri) => {
+              setIsRecording(false);
+              setIsAnswered(true);
+              setRecordingAudio(uri);
+            }}
+          />
+          {recordingAudio && (
+            <View style={{ marginTop: 10 }}>
+              <AudioPlayer uri={recordingAudio} />
+            </View>
+          )}
+        </View>
 
-				<View>
-					<TouchableOpacity
-						style={[
-							styles.continueButton,
-							isAnswered && !isRecording
-								? { backgroundColor: "#FFBF18" }
-								: { backgroundColor: "#ddd" },
-						]}
-						disabled={!isAnswered || isRecording || submitting}
-						onPress={handleNextCard}
-					>
-						<Text style={styles.continueButtonText}>
-							{submitting ? "loading...." : "Next"}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
-		</GestureHandlerRootView>
-	);
+        <View>
+          <TouchableOpacity
+            style={[
+              styles.continueButton,
+              isAnswered && !isRecording
+                ? { backgroundColor: "#FFBF18" }
+                : { backgroundColor: "#ddd" },
+            ]}
+            disabled={!isAnswered || isRecording || isSending}
+            onPress={handleNextCard}
+          >
+            <Text style={styles.continueButtonText}>
+              {isSending ? "Submitting...." : "Next"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </GestureHandlerRootView>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		padding: 30,
-	},
-	flashcardContainer: {
-		backgroundColor: "#fff",
-		padding: 20,
-		height: 230,
-		borderRadius: 20,
-		borderColor: "#ddd",
-		borderWidth: 1,
-	},
-	textContainer: {
-		margin: "auto",
-		textAlign: "center",
-	},
-	flashcardText: {
-		fontSize: 22,
-		flexWrap: "wrap",
-		textAlign: "center",
-		top: -15,
-		fontWeight: 300,
-		lineHeight: 35,
-	},
-	continueButton: {
-		flex: 1,
-		marginHorizontal: 5,
-		left: -5,
-		padding: 17,
-		borderRadius: 15,
-		alignItems: "center",
-		width: "100%",
-		top: 15,
-	},
-	continueButtonText: {
-		color: "#fff",
-		fontSize: 16,
-		fontWeight: "bold",
-	},
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 30,
+  },
+  flashcardContainer: {
+    backgroundColor: "#fff",
+    padding: 20,
+    height: 230,
+    borderRadius: 20,
+    borderColor: "#ddd",
+    borderWidth: 1,
+  },
+  textContainer: {
+    margin: "auto",
+    textAlign: "center",
+  },
+  flashcardText: {
+    fontSize: 22,
+    flexWrap: "wrap",
+    textAlign: "center",
+    top: -15,
+    fontWeight: 300,
+    lineHeight: 35,
+  },
+  continueButton: {
+    flex: 1,
+    marginHorizontal: 5,
+    left: -5,
+    padding: 17,
+    borderRadius: 15,
+    alignItems: "center",
+    width: "100%",
+    top: 15,
+  },
+  continueButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default memo(Flashcards);

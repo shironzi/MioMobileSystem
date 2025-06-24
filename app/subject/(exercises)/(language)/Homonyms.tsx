@@ -134,6 +134,8 @@ const Homonyms = () => {
     });
   };
 
+  const [isSending, setIsSending] = useState(false);
+
   const handleSubmit = async () => {
     const currentAnswers = answers[currentItem]?.answer || [];
     let hasError = false;
@@ -166,6 +168,8 @@ const Homonyms = () => {
     } else {
       if (!attemptId) return;
 
+      setIsSending(true);
+
       const res = await submitHomonymsActivity(
         subjectId,
         difficulty,
@@ -189,6 +193,8 @@ const Homonyms = () => {
       } else {
         console.error("Unable to submit", res);
       }
+
+      setIsSending(false);
     }
   };
 
@@ -298,8 +304,11 @@ const Homonyms = () => {
       <TouchableOpacity
         style={[globalStyles.submitButton, { justifyContent: "flex-end" }]}
         onPress={handleSubmit}
+        disabled={isSending}
       >
-        <Text style={globalStyles.submitButtonText}>Submit</Text>
+        <Text style={globalStyles.submitButtonText}>
+          {isSending ? "Submitting" : "Submit"}
+        </Text>
       </TouchableOpacity>
     </View>
   );

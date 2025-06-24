@@ -51,8 +51,10 @@ const fillInTheBlank = () => {
   const [answerLogs, setAnswerLogs] = useState<
     { item_id: string; answers: string[]; answered_at: string[] }[]
   >([]);
+  const [isSending, setIsSending] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    setIsSending(true);
     const currentAnswer = answers.find(
       (a) => a.item_id === activity[currentItem].item_id,
     );
@@ -101,6 +103,7 @@ const fillInTheBlank = () => {
         console.error("Failed to submit:", err);
       }
     }
+    setIsSending(false);
   };
 
   const handleAnswer = useCallback(
@@ -280,9 +283,14 @@ const fillInTheBlank = () => {
         <TouchableOpacity
           style={globalStyles.submitButton}
           onPress={handleSubmit}
+          disabled={isSending}
         >
           <Text style={globalStyles.submitButtonText}>
-            {currentItem >= activity.length - 1 ? "Submit" : "Next"}
+            {currentItem >= activity.length - 1
+              ? "Submit"
+              : isSending
+                ? "Submitting"
+                : "Next"}
           </Text>
         </TouchableOpacity>
       </View>
