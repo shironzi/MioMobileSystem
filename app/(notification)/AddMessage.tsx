@@ -22,7 +22,6 @@ import {
 import { router } from "expo-router";
 import FileUpload from "@/components/FileUpload";
 import globalStyles from "@/styles/globalStyles";
-import LoadingCard from "@/components/loadingCard";
 
 interface FileInfo {
   uri: string;
@@ -111,20 +110,20 @@ const AddMessage = () => {
     fetchUsers();
   }, [selectedSubject]);
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         backgroundColor: "#fff",
+  //       }}
+  //     >
+  //       <LoadingCard></LoadingCard>
+  //     </View>
+  //   );
+  // }
 
   return (
     <KeyboardAvoidingView
