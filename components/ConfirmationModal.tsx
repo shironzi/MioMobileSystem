@@ -1,4 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -10,6 +11,7 @@ const ConfirmationModal = (props: {
 	handleCancel: () => void;
 	handleApprove: () => void;
 }) => {
+	const router = useRouter();
 	return (
 		<Modal
 			visible={props.isVisible}
@@ -83,9 +85,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0,0,0,0.4)",
 		justifyContent: "center",
 		alignItems: "center",
+		height: "100%",
 	},
 	modalContent: {
-		width: "80%",
+		width: 315,
 		backgroundColor: "#fff",
 		borderRadius: 20,
 		padding: 30,
