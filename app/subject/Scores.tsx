@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import SpeechScores from "@/app/subject/(sub-details)/Scores/SpeechScores";
 import { useLocalSearchParams } from "expo-router";
@@ -64,7 +64,8 @@ const Scores = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       const data = await getActivities(subjectId);
-      if (data?.success && data.activities) {
+      console.log(data);
+      if (data?.success) {
         setActivities(data.activities);
         setQuizzes(data.quizzes);
         setAssignments(data.assignments);
@@ -92,59 +93,66 @@ const Scores = () => {
   }
 
   return (
-    <View style={{ paddingVertical: 20 }}>
-      {role === "teacher" && (
-        <TouchableOpacity
-          onPress={generateScoreBook}
-          style={{
-            borderStyle: "dashed",
-            borderWidth: 2,
-            borderRadius: 20,
-            width: "90%",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginHorizontal: "auto",
-            height: 70,
-            borderColor: "#FFBF18",
-            backgroundColor: "#FFBF1826",
-            columnGap: 10,
-          }}
-        >
-          <FontAwesome6 name="file-csv" size={19} color="#FFBF18" />
-          <Text style={{ color: "#FFBF18" }}>Generate Report</Text>
-        </TouchableOpacity>
-      )}
-      {Object.entries(activities).map(([activityType, difficulties]: any) =>
-        Object.entries(difficulties).map(([difficulty, info]: any) => (
-          <SpeechScores
-            key={`${activityType}-${difficulty}`}
+    <ScrollView
+      style={{
+        paddingVertical: 20,
+        backgroundColor: "#fff",
+      }}
+    >
+      <View style={{ paddingBottom: 50 }}>
+        {role === "teacher" && (
+          <TouchableOpacity
+            onPress={generateScoreBook}
+            style={{
+              borderStyle: "dashed",
+              borderWidth: 2,
+              borderRadius: 20,
+              width: "90%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              marginHorizontal: "auto",
+              height: 70,
+              borderColor: "#FFBF18",
+              backgroundColor: "#FFBF1826",
+              columnGap: 10,
+            }}
+          >
+            <FontAwesome6 name="file-csv" size={19} color="#FFBF18" />
+            <Text style={{ color: "#FFBF18" }}>Generate Report</Text>
+          </TouchableOpacity>
+        )}
+        {Object.entries(activities).map(([activityType, difficulties]: any) =>
+          Object.entries(difficulties).map(([difficulty, info]: any) => (
+            <SpeechScores
+              key={`${activityType}-${difficulty}`}
+              subjectId={subjectId}
+              difficulty={difficulty}
+              placeholder={`${activityType.charAt(0).toUpperCase() + activityType.slice(1)} Flashcards`}
+              activityType={activityType}
+              activityIds={info.activity_ids}
+              role={role}
+            />
+          )),
+        )}
+        {assignments.length > 0 && (
+          <QuizzesScores
             subjectId={subjectId}
-            difficulty={difficulty}
-            placeholder={`${activityType.charAt(0).toUpperCase() + activityType.slice(1)} Flashcards`}
-            activityType={activityType}
-            activityIds={info.activity_ids}
+            quizzes={quizzes}
             role={role}
+            placeholder={"Quizzes"}
           />
-        )),
-      )}
-      {quizzes && (
-        <QuizzesScores
-          subjectId={subjectId}
-          quizzes={quizzes}
-          role={role}
-          placeholder={"Quizzes"}
-        />
-      )}
-      {assignments.length > 0 && (
-        <QuizzesScores
-          subjectId={subjectId}
-          quizzes={assignments}
-          role={role}
-          placeholder={"Assignments"}
-        />
-      )}
-    </View>
+        )}
+        {assignments.length > 0 && (
+          <QuizzesScores
+            subjectId={subjectId}
+            quizzes={assignments}
+            role={role}
+            placeholder={"Assignments"}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 };
 

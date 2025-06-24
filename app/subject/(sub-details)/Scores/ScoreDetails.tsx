@@ -1,10 +1,11 @@
 import globalStyles from "@/styles/globalStyles";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
-import { getAttempt } from "@/utils/query";
+import { getAttempt, getAttemptStudent } from "@/utils/query";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import LoadingCard from "@/components/loadingCard";
 
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
@@ -29,8 +30,9 @@ const AuditoryScores = () => {
 
   const [overallScore, setOverallScore] = useState<number>(0);
   const [feedbacks, setFeedbacks] = useState<
-    { id: string; feedback: string }[]
+    { id: string; parent: string; teacher: string; student: string }[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getTitle = (type: string) => {
     switch (type) {
@@ -53,35 +55,76 @@ const AuditoryScores = () => {
 
   useEffect(() => {
     const fetchAttempt = async () => {
-      const res = await getAttempt(
-        subjectId,
-        activityType,
-        activityId,
-        userId,
-        attemptId,
-      );
+      const res = userId
+        ? await getAttempt(
+            subjectId,
+            activityType,
+            activityId,
+            userId,
+            attemptId,
+          )
+        : await getAttemptStudent(
+            subjectId,
+            activityType,
+            activityId,
+            attemptId,
+          );
 
       if (res?.success) {
         setOverallScore(res.overall_score ?? 0);
         const formatted = Object.entries(res.feedbacks).map(
           ([id, data]: any) => ({
             id,
-            feedback: data.feedback,
+            parent: data.feedback.parent,
+            student: data.feedback.student,
+            teacher: data.feedback.teacher,
+            phoneme: data.feedback.phoneme,
+            ipa: data.feedback.ipa,
           }),
         );
         setFeedbacks(formatted);
-
-        console.log(feedbacks);
+        console.log(formatted);
       }
+
+      setLoading(false);
     };
 
     fetchAttempt();
   }, []);
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}
-    contentContainerStyle={{paddingBottom:50, flex:1}}>
-      <View style={[globalStyles.container, { rowGap: 20, flex:1, margin:20, }]}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingBottom: 50,
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+    >
+      <View
+        style={[
+          globalStyles.container,
+          {
+            rowGap: 20,
+            margin: 20,
+          },
+        ]}
+      >
         <View>
           <Text style={styles.title}>{getTitle(activityType)}</Text>
           <Text style={styles.subtitle}>{difficulty}</Text>
@@ -112,21 +155,51 @@ const AuditoryScores = () => {
           </View>
         )}
 
-        {/*{role === "teacher" && (*/}
-        <View style={globalStyles.cardContainer}>
-          <Text style={styles.sectionTitle}>Teacher Feedback</Text>
-          {feedbacks.length === 0 ? (
-            <Text style={styles.feedbackText}>No feedback provided.</Text>
-          ) : (
-            feedbacks.map((item, index) => (
-              <View key={item.id} style={{ marginBottom: 20 }}>
-                <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
-                <Text style={styles.feedbackText}>{item.feedback}</Text>
-              </View>
-            ))
-          )}
-        </View>
-        {/*)}*/}
+        {role === "teacher" && (
+          <View style={globalStyles.cardContainer}>
+            <Text style={styles.sectionTitle}>Teacher Feedback</Text>
+            {feedbacks.length === 0 ? (
+              <Text style={styles.feedbackText}>No feedback provided.</Text>
+            ) : (
+              feedbacks.map((item, index) => (
+                <View key={item.id} style={{ marginBottom: 20 }}>
+                  <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
+                  <Text style={styles.feedbackText}>{item.teacher}</Text>
+                </View>
+              ))
+            )}
+          </View>
+        )}
+        {role === "parent" && (
+          <View style={globalStyles.cardContainer}>
+            <Text style={styles.sectionTitle}>Teacher Feedback</Text>
+            {feedbacks.length === 0 ? (
+              <Text style={styles.feedbackText}>No feedback provided.</Text>
+            ) : (
+              feedbacks.map((item, index) => (
+                <View key={item.id} style={{ marginBottom: 20 }}>
+                  <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
+                  <Text style={styles.feedbackText}>{item.parent}</Text>
+                </View>
+              ))
+            )}
+          </View>
+        )}
+        {role === "student" && (
+          <View style={globalStyles.cardContainer}>
+            <Text style={styles.sectionTitle}>Teacher Feedback</Text>
+            {feedbacks.length === 0 ? (
+              <Text style={styles.feedbackText}>No feedback provided.</Text>
+            ) : (
+              feedbacks.map((item, index) => (
+                <View key={item.id} style={{ marginBottom: 20 }}>
+                  <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
+                  <Text style={styles.feedbackText}>{item.teacher}</Text>
+                </View>
+              ))
+            )}
+          </View>
+        )}
       </View>
     </ScrollView>
   );
@@ -143,7 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     lineHeight: 28,
-    textTransform:"capitalize"
+    textTransform: "capitalize",
   },
   sectionTitle: {
     fontWeight: "bold",

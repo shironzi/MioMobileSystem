@@ -6,11 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { getScoreActivityAttempt } from "@/utils/query";
+import {
+  getScoreActivityAttempt,
+  getScoreActivityAttemptStudent,
+} from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
 import { formatDayDateTimeWithAmPm } from "@/utils/DateFormat";
+import LoadingCard from "@/components/loadingCard";
 
 const ScoreAttempts = () => {
   useHeaderConfig("Score");
@@ -24,6 +28,8 @@ const ScoreAttempts = () => {
       difficulty: string;
       role: string;
     }>();
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [attempts, setAttempts] = useState<
     {
@@ -42,19 +48,27 @@ const ScoreAttempts = () => {
         activityId: activityId,
         userId: userId,
         attemptId: attemptId,
+        role: role,
       },
     });
   };
 
   useEffect(() => {
     const fetchAttempts = async () => {
-      const res = await getScoreActivityAttempt(
-        subjectId,
-        activityType,
-        activityId,
-        userId,
-      );
+      const res = userId
+        ? await getScoreActivityAttempt(
+            subjectId,
+            activityType,
+            activityId,
+            userId,
+          )
+        : await getScoreActivityAttemptStudent(
+            subjectId,
+            activityType,
+            activityId,
+          );
 
+      console.log(res);
       if (res?.success && res.attempts) {
         const formatted = Object.entries(res.attempts).map(
           ([id, data]: any) => ({
@@ -66,10 +80,27 @@ const ScoreAttempts = () => {
 
         setAttempts(formatted);
       }
+
+      setLoading(false);
     };
 
     fetchAttempts();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <View style={globalStyles.container}>
@@ -104,13 +135,22 @@ const styles = StyleSheet.create({
   attemptCard: {
     padding: 12,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    borderColor: "#00000024",
+    borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#fff",
   },
   id: { fontWeight: "bold", marginBottom: 4 },
   emptyText: { fontStyle: "italic", color: "#888" },
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    borderWidth: 2.5,
+    borderRadius: 100,
+    marginLeft: -15,
+    marginRight: 15,
+    height: 30,
+  },
 });
 
 export default memo(ScoreAttempts);

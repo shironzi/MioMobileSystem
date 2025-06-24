@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  View,
+} from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { getStudents } from "@/utils/query";
 import useHeaderConfig from "@/utils/HeaderConfig";
+import LoadingCard from "@/components/loadingCard";
+import globalStyles from "@/styles/globalStyles";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface Student {
   student_id: string;
@@ -22,6 +31,8 @@ const ScoreStudentList = () => {
       activityType: string;
       role: string;
     }>();
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleViewActivity = (studentId: string) => {
     if (activityType === "assignments") {
@@ -73,24 +84,57 @@ const ScoreStudentList = () => {
         setStudents(studentList);
         console.log(studentList);
       }
+      setLoading(false);
     };
 
     fetchStudents();
   }, [subjectId]);
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
-      {students.map((student) => (
-        <TouchableOpacity
-          key={student.student_id}
-          style={styles.studentItem}
-          onPress={() => handleViewActivity(student.student_id)}
-        >
-          <Text style={styles.studentName}>
-            {student.last_name}, {student.first_name}
-          </Text>
-        </TouchableOpacity>
-      ))}
+      <Text style={[globalStyles.text1, { fontSize: 18, marginBottom: 10 }]}>
+        Students
+      </Text>
+      <View style={{ rowGap: 10 }}>
+        {students.map((student) => (
+          <TouchableOpacity
+            key={student.student_id}
+            style={styles.studentItem}
+            onPress={() => handleViewActivity(student.student_id)}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={styles.yellowBulletin}></View>
+                <Text style={styles.studentName}>
+                  {student.last_name}, {student.first_name}
+                </Text>
+              </View>
+              <FontAwesome name="long-arrow-right" size={20} color="black" />
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -98,14 +142,25 @@ const ScoreStudentList = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#fff",
   },
   studentItem: {
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 1,
+    borderColor: "#00000024",
+    borderRadius: 10,
+    paddingHorizontal: 15,
   },
   studentName: {
     fontSize: 16,
+  },
+  yellowBulletin: {
+    borderColor: "#FFBF18",
+    backgroundColor: "#FFBF18",
+    borderWidth: 2.5,
+    borderRadius: 100,
+    marginRight: 15,
+    height: 30,
   },
 });
 

@@ -576,6 +576,29 @@ export async function getAttempt(
   }
 }
 
+export async function getAttemptStudent(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/student/scores/${activityType}/${activityId}/${attemptId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getAttendance(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/attendance`);
@@ -935,6 +958,28 @@ export async function getQuiz(subjectId: string, quizId: string) {
   }
 }
 
+export async function getScoreActivityAttemptStudent(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/student/scores/${activityType}/${activityId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getScoreActivityAttempt(
   subjectId: string,
   activityType: string,
@@ -943,7 +988,7 @@ export async function getScoreActivityAttempt(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
+      `/subject/${subjectId}/teacher/scores/${activityType}/${activityId}/${userId}`,
     );
 
     console.log(
