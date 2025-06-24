@@ -303,34 +303,35 @@ const styles = StyleSheet.create({
     // left: 10,
   },
 
-  subDesc: {
-    textAlign: "justify",
-    fontWeight: 300,
-    fontSize: 12,
-  },
-  subContainer: {},
-  speech: {
-    height: 115,
-    width: "100%",
-  },
-  subCourse: {
-    backgroundColor: "000",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    marginHorizontal: 20,
-    marginVertical: 10,
-    borderRadius: 20,
-    padding: 10,
-  },
-  courseImg: {
-    height: 40,
-    width: 40,
-    left: -10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 30,
-  },
+	subDesc: {
+		textAlign: "justify",
+		fontWeight: 300,
+		fontSize: 12,
+	},
+	subContainer: {},
+	speech: {
+		height: 115,
+		width: 355,
+		left: 20,
+	},
+	subCourse: {
+		backgroundColor: "000",
+		borderColor: "#ddd",
+		borderWidth: 1,
+		marginHorizontal: 20,
+		marginVertical: 10,
+		borderRadius: 20,
+		padding: 10,
+	},
+	courseImg: {
+		height: 40,
+		width: 40,
+		left: -10,
+	},
+	row: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingHorizontal: 30,
+	},
 });
