@@ -12,7 +12,7 @@ import globalStyles from "@/styles/globalStyles";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { Vibration } from "react-native";
 
-const EarthquakeAlertModal = ({
+const FireAlertModal = ({
   visible,
   onClose,
   title,
@@ -59,7 +59,7 @@ const EarthquakeAlertModal = ({
           </View>
 
           <Image
-            source={require("../../assets/icons/earthquakeIcon.png")}
+            source={require("@/assets/emergency/warning.png")}
             style={styles.icon}
           />
           {/*<Text style={styles.title}>{title}</Text>*/}
@@ -124,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EarthquakeAlertModal;
+export default FireAlertModal;
