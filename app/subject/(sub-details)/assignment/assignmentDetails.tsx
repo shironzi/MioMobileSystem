@@ -4,14 +4,13 @@ import React, { memo, useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { getAssignmentById, submitAssignment } from "@/utils/query";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import FileUploadSingle from "@/components/FileUploadSingle";
 import LoadingCard from "@/components/loadingCard";
@@ -62,9 +61,14 @@ const AssignmentDetails = () => {
         answerFiles,
         submissionType,
       );
+
+      console.log(response);
       if (response.success) {
         Alert.alert("Success", "Your answer has been submitted!");
+        router.back();
+        return;
       } else {
+        console.log(response);
         Alert.alert("Error", "Failed to submit the answer. Please try again.");
       }
     } catch (error) {
@@ -281,40 +285,40 @@ const AssignmentDetails = () => {
         </View>
       )}
 
-      {!isAnswering && (
-        <View
-          style={{
-            borderRadius: 20,
-            backgroundColor: "#fff",
-            borderColor: "#00000024",
-            borderWidth: 1,
-            minHeight: 150,
-            padding: 20,
-            marginVertical: 10,
-          }}
-        >
-          <Text style={globalStyles.text1}>Latest Attempt</Text>
-          <View style={{ width: "40%" }}>
-            <Picker
-              // selectedValue={selectedValue} // Pass selected value
-              // onValueChange={(itemValue) => setSelectedValue(itemValue)} // Update selected value
-              // style={styles.picker}
-              mode={"dropdown"}
-            >
-              <Picker.Item label="Java" value="java" />
-            </Picker>
-          </View>
-          <Text
-            style={{
-              borderRadius: 20,
-              backgroundColor: "#fff",
-              borderColor: "#00000024",
-              borderWidth: 1,
-              minHeight: 125,
-            }}
-          ></Text>
-        </View>
-      )}
+      {/*{!isAnswering && (*/}
+      {/*  <View*/}
+      {/*    style={{*/}
+      {/*      borderRadius: 20,*/}
+      {/*      backgroundColor: "#fff",*/}
+      {/*      borderColor: "#00000024",*/}
+      {/*      borderWidth: 1,*/}
+      {/*      minHeight: 150,*/}
+      {/*      padding: 20,*/}
+      {/*      marginVertical: 10,*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <Text style={globalStyles.text1}>Latest Attempt</Text>*/}
+      {/*    <View style={{ width: "40%" }}>*/}
+      {/*      <Picker*/}
+      {/*        // selectedValue={selectedValue} // Pass selected value*/}
+      {/*        // onValueChange={(itemValue) => setSelectedValue(itemValue)} // Update selected value*/}
+      {/*        // style={styles.picker}*/}
+      {/*        mode={"dropdown"}*/}
+      {/*      >*/}
+      {/*        <Picker.Item label="Java" value="java" />*/}
+      {/*      </Picker>*/}
+      {/*    </View>*/}
+      {/*    <Text*/}
+      {/*      style={{*/}
+      {/*        borderRadius: 20,*/}
+      {/*        backgroundColor: "#fff",*/}
+      {/*        borderColor: "#00000024",*/}
+      {/*        borderWidth: 1,*/}
+      {/*        minHeight: 125,*/}
+      {/*      }}*/}
+      {/*    ></Text>*/}
+      {/*  </View>*/}
+      {/*)}*/}
     </ScrollView>
   );
 };

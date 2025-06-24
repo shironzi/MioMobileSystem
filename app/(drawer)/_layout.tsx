@@ -1,5 +1,4 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
   DrawerContentComponentProps,
@@ -147,35 +146,34 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       {/*  icon={() => <AntDesign name="calendar" size={30} color="#fff" />}*/}
       {/*  style={styles.drawerItem}*/}
       {/*/>*/}
-      <DrawerItem
-        label="Help & Support"
-        labelStyle={styles.drawerItemLabel}
-        onPress={() => {
-          props.navigation.navigate("help");
-          props.navigation.closeDrawer();
-        }}
-        icon={() => (
-          <MaterialCommunityIcons name="help-circle" size={30} color="white" />
-        )}
-        style={styles.drawerItem}
-      />
-      {profile?.role === "teacher" ||
-        (profile?.role === "parent" && (
-          <DrawerItem
-            label="Data Analytics"
-            labelStyle={styles.drawerItemLabel}
-            onPress={() => {
-              profile?.role === "teacher"
-                ? props.navigation.navigate("analytics/Analytics")
-                : props.navigation.navigate("analytics/StudentAnalytics", {
-                    role: profile.role,
-                  });
-              props.navigation.closeDrawer();
-            }}
-            icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
-            style={styles.drawerItem}
-          />
-        ))}
+      {/*<DrawerItem*/}
+      {/*  label="Help & Support"*/}
+      {/*  labelStyle={styles.drawerItemLabel}*/}
+      {/*  onPress={() => {*/}
+      {/*    props.navigation.navigate("help");*/}
+      {/*    props.navigation.closeDrawer();*/}
+      {/*  }}*/}
+      {/*  icon={() => (*/}
+      {/*    <MaterialCommunityIcons name="help-circle" size={30} color="white" />*/}
+      {/*  )}*/}
+      {/*  style={styles.drawerItem}*/}
+      {/*/>*/}
+      {(profile?.role === "teacher" || profile?.role === "parent") && (
+        <DrawerItem
+          label="Data Analytics"
+          labelStyle={styles.drawerItemLabel}
+          onPress={() => {
+            profile?.role === "teacher"
+              ? props.navigation.navigate("analytics/Analytics")
+              : props.navigation.navigate("analytics/StudentAnalytics", {
+                  role: profile.role,
+                });
+            props.navigation.closeDrawer();
+          }}
+          icon={() => <FontAwesome name="pie-chart" size={24} color="#fff" />}
+          style={styles.drawerItem}
+        />
+      )}
       <DrawerItem
         label="Logout"
         labelStyle={styles.drawerItemLabel}

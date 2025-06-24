@@ -12,14 +12,43 @@ interface FileInfo {
 
 const FileUploadSingle = (props: {
   handleFile: (file: FileInfo) => void;
-  fileTypes?: string[];
+  fileTypes: string[];
 }) => {
   const [file, setFile] = useState<FileInfo | null>(null);
   const [fileError, setFileError] = useState<boolean>(false);
 
+  const mapFileTypesToMimes = (fileTypes: string[] | undefined) => {
+    const mimeTypes = props.fileTypes
+      .map((type) => {
+        switch (type) {
+          case "pdf":
+            return "application/pdf";
+          case "docx":
+            return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+          case "pptx":
+            return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+          case "zip":
+            return "application/zip";
+          case "img":
+          case "png":
+          case "jpeg":
+          case "jpg":
+            return "image/*";
+          case "mp4":
+            return "video/mp4";
+          default:
+            return null;
+        }
+      })
+      .filter((mimeType) => mimeType !== null);
+
+    return mimeTypes;
+  };
+
   const handleFileUpload = async () => {
+    const mimeTypes = mapFileTypesToMimes(props.fileTypes);
     const res = await DocumentPicker.getDocumentAsync({
-      type: ["application/*, image/*, video/*"],
+      type: mimeTypes,
       copyToCacheDirectory: true,
     });
 

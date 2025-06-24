@@ -11,6 +11,7 @@ export async function getSubjects() {
     return data;
   } catch (err: any) {
     if (err.response) {
+      console.error(err);
       return err.response.status;
     } else if (err.request) {
       return { error: "No response from server" };
@@ -245,6 +246,43 @@ export async function getAssignments(subjectId: string) {
   }
 }
 
+export async function submitAssignmentEval(
+  studentId: string,
+  assignmentId: string,
+  subjectId: string,
+  comments: string,
+  feedback: string,
+  score: string,
+) {
+  try {
+    const newScore = parseInt(score);
+    console.log({
+      comments: comments,
+      feedback: feedback,
+      score: newScore,
+    });
+
+    const { data } = await api.put(
+      `/subject/${subjectId}/assignment/${assignmentId}/${studentId}`,
+      {
+        comments: comments,
+        feedback: feedback,
+        score: newScore,
+      },
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function deleteAssignment(
   subjectId: string,
   assignmentId: string,
@@ -280,6 +318,7 @@ export async function submitAssignment(
 ) {
   try {
     const formdata = new FormData();
+    console.log(answerFiles);
 
     if (submissionType === SubmissionOptions.Text) {
       formdata.append("answer_text", answer);
