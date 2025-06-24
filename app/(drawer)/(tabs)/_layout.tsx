@@ -47,7 +47,7 @@ export default function Layout() {
             backgroundColor: "#2264DC",
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
-            height: 75,
+            height: 90,
             paddingTop: 10,
           },
           headerLeft: () => <DrawerToggleButton tintColor="#282727" />,
