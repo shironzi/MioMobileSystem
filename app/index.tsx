@@ -291,7 +291,7 @@ const Index = () => {
                               onChangeText={onChange}
                               autoCapitalize="none"
                               autoCorrect={false}
-                              style={{ width: "100%" }}
+                              style={{ width: "100%", color: "#000000" }}
                             />
                           </View>
                           {errors.email && (
@@ -323,7 +323,7 @@ const Index = () => {
                               secureTextEntry={!isPasswordVisible}
                               value={value}
                               onChangeText={onChange}
-                              style={{ width: "77%" }}
+                              style={{ width: "77%", color: "#000000" }}
                             />
                             <TouchableOpacity
                               onPress={togglePasswordVisibility}
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000000",
+    backgroundColor: "#f5f5f5",
     padding: 9,
     paddingLeft: 20,
     columnGap: 5,
