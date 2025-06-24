@@ -33,7 +33,7 @@ interface FileInfo {
 const AddMessage = () => {
   useHeaderConfig("Message");
 
-  const [receiver, setReceiver] = useState();
+  const [receiver, setReceiver] = useState("");
   const [message, setMessage] = useState("");
   const [role, setRole] = useState("");
   const [users, setUsers] = useState<
@@ -55,8 +55,9 @@ const AddMessage = () => {
   const handleSendMessage = async () => {
     if (!receiver) return;
 
-    if (!message.trim()) {
+    if (message.trim().length < 0) {
       setMessageError(true);
+      console.log(message);
       return;
     }
     setMessageSending(true);
@@ -78,6 +79,7 @@ const AddMessage = () => {
 
   useEffect(() => {
     const init = async () => {
+      setLoading(true);
       const roleValue = await SecureStore.getItemAsync("role");
       setRole(roleValue ?? "");
 
@@ -87,15 +89,15 @@ const AddMessage = () => {
           setUsers(res.users);
           setReceiver(res.users[0].user_id);
         }
+        setLoading(false);
       } else if (roleValue === "teacher") {
         const res = await getMessageSubjects();
         if (res.success) {
           setSubjects(res.subjects);
           setSelectedSubject(subjects[0].subject_id);
         }
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     init();
@@ -106,10 +108,13 @@ const AddMessage = () => {
       if (!selectedSubject) return;
 
       const res = await getSubjectStudents(selectedSubject);
+      console.log(res);
       setUsers(res.users);
+      setLoading(false);
     };
     fetchUsers();
-  }, [selectedSubject]);
+    setLoading(false);
+  }, [selectedSubject, subjects]);
 
   if (loading) {
     return (
@@ -145,13 +150,17 @@ const AddMessage = () => {
                     style={styles.picker}
                     mode={"dropdown"}
                   >
-                    {subjects?.map((subject) => (
-                      <Picker.Item
-                        key={subject.subject_id}
-                        label={subject.title}
-                        value={subject.subject_id}
-                      />
-                    ))}
+                    {subjects.length > 1 ? (
+                      subjects.map((subject) => (
+                        <Picker.Item
+                          key={subject.subject_id}
+                          label={subject.title}
+                          value={subject.subject_id}
+                        />
+                      ))
+                    ) : (
+                      <Picker.Item label="Select Subject" value={null} />
+                    )}
                   </Picker>
                 </View>
               </View>
@@ -165,8 +174,8 @@ const AddMessage = () => {
                 style={styles.picker}
                 mode={"dropdown"}
               >
-                {users ? (
-                  users.map((teacher) => (
+                {receiver || users.length ? (
+                  users?.map((teacher) => (
                     <Picker.Item
                       key={teacher.user_id}
                       label={teacher.name}
@@ -174,7 +183,7 @@ const AddMessage = () => {
                     />
                   ))
                 ) : (
-                  <Picker.Item label="Loading..." value={null} />
+                  <Picker.Item label="Select" value={null} />
                 )}
               </Picker>
             </View>

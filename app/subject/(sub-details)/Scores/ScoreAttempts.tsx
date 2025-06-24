@@ -27,7 +27,7 @@ const ScoreAttempts = () => {
 
   const [attempts, setAttempts] = useState<
     {
-      id: string;
+      attemptId: string;
       overall_score: number;
       submitted_at: string;
     }[]
@@ -55,10 +55,12 @@ const ScoreAttempts = () => {
         userId,
       );
 
+      console.log(res);
+
       if (res?.success && res.attempts) {
         const formatted = Object.entries(res.attempts).map(
           ([id, data]: any) => ({
-            id,
+            attemptId: id,
             overall_score: data.overall_score ?? data.score,
             submitted_at: data.submitted_at,
           }),
@@ -80,13 +82,13 @@ const ScoreAttempts = () => {
       ) : (
         <FlatList
           data={attempts}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.attemptId}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.attemptCard}
-              onPress={() => handleViewAttempt(item.id)}
+              onPress={() => handleViewAttempt(item.attemptId)}
             >
-              <Text style={styles.id}>ID: {item.id}</Text>
+              <Text style={styles.id}>ID: {item.attemptId}</Text>
               <Text>Overall Score: {item.overall_score}</Text>
               <Text>
                 Submitted: {formatDayDateTimeWithAmPm(item.submitted_at)}

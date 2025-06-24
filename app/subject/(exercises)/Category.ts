@@ -32,7 +32,7 @@ export default function handleCategory({
           difficulty,
           category,
           activityId,
-          prevAttemptId: attemptId,
+          // prevAttemptId: attemptId,
         },
       });
     }

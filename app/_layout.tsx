@@ -62,6 +62,40 @@ export default function Layout() {
         });
       }
     });
+
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      console.log("Background message received:", remoteMessage);
+
+      const title = remoteMessage.notification?.title ?? "No Title";
+      const body = remoteMessage.notification?.body ?? "No Body";
+      const type = remoteMessage.data?.type ?? "No Type";
+      console.log(type);
+
+      if (type === "earthquake") {
+        setModalTitle(title);
+        setModalBody(body);
+        setShowAlert(true);
+      }
+
+      if (type === "landslide") {
+        setModalTitle(title);
+        setModalBody(body);
+        setShowAlert(true);
+      }
+
+      if (type === "message" || type === "notification") {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title,
+            body,
+            data: remoteMessage.data,
+            sound: true,
+            priority: Notifications.AndroidNotificationPriority.HIGH,
+          },
+          trigger: null, // Show immediately
+        });
+      }
+    });
   }
 
   useEffect(() => {
