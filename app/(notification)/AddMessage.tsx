@@ -189,7 +189,7 @@ const AddMessage = () => {
 							</Text>
 						)}
 						<TextInput
-							placeholder="Input Message"
+							placeholder="Type your message..."
 							value={message}
 							onChangeText={setMessage}
 							multiline={true}
