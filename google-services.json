@@ -1,49 +1,49 @@
 {
-	"project_info": {
-		"project_number": "720846720525",
-		"firebase_url": "https://miolms-default-rtdb.firebaseio.com",
-		"project_id": "miolms",
-		"storage_bucket": "miolms.firebasestorage.app"
-	},
-	"client": [
-		{
-			"client_info": {
-				"mobilesdk_app_id": "1:720846720525:android:354111826af7265deb4f44",
-				"android_client_info": {
-					"package_name": "com.anonymous.MioMobileApp"
-				}
-			},
-			"oauth_client": [],
-			"api_key": [
-				{
-					"current_key": "AIzaSyCpxcZXkFraPDM51ovBnGyW1cOZTXk_11Q"
-				}
-			],
-			"services": {
-				"appinvite_service": {
-					"other_platform_oauth_client": []
-				}
-			}
-		},
-		{
-			"client_info": {
-				"mobilesdk_app_id": "1:720846720525:android:e8fba109a8abe904eb4f44",
-				"android_client_info": {
-					"package_name": "com.lumisteria.MioMobileSystem"
-				}
-			},
-			"oauth_client": [],
-			"api_key": [
-				{
-					"current_key": "AIzaSyCpxcZXkFraPDM51ovBnGyW1cOZTXk_11Q"
-				}
-			],
-			"services": {
-				"appinvite_service": {
-					"other_platform_oauth_client": []
-				}
-			}
-		}
-	],
-	"configuration_version": "1"
+  "project_info": {
+    "project_number": "720846720525",
+    "firebase_url": "https://miolms-default-rtdb.firebaseio.com",
+    "project_id": "miolms",
+    "storage_bucket": "miolms.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720846720525:android:354111826af7265deb4f44",
+        "android_client_info": {
+          "package_name": "com.anonymous.MioMobileApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxcZXkFraPDM51ovBnGyW1cOZTXk_11Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720846720525:android:e8fba109a8abe904eb4f44",
+        "android_client_info": {
+          "package_name": "com.lumisteria.MioMobileSystem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxcZXkFraPDM51ovBnGyW1cOZTXk_11Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }

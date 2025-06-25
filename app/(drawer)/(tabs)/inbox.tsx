@@ -12,7 +12,7 @@ import {
   FlatList,
   Modal,
   Pressable,
-  SafeAreaView,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -79,6 +79,14 @@ const Inbox = () => {
       };
     }, []),
   );
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
 
   if (loading) {
     return (
@@ -96,7 +104,12 @@ const Inbox = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.container]}>
+    <ScrollView
+      style={[styles.container]}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
+    >
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => {
@@ -219,7 +232,7 @@ const Inbox = () => {
 			>
 				<MaterialIcon name="add" size={30} color="#fff" />
 			</TouchableOpacity> */}
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

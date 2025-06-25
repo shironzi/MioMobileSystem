@@ -1,4 +1,4 @@
-import { getAuth } from "@react-native-firebase/auth";
+import { FirebaseAuthTypes, getAuth } from "@react-native-firebase/auth";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { PermissionsAndroid, Text, View } from "react-native";

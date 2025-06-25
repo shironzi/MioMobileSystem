@@ -51,10 +51,6 @@ const Index = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
     resolver: yupResolver(schema),
   });
 

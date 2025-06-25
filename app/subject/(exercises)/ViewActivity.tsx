@@ -5,7 +5,13 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActiveActivity } from "@/utils/specialized";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const ViewActivity = () => {
   useHeaderConfig("Activity");
@@ -103,10 +109,22 @@ const ViewActivity = () => {
     );
   }
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={[globalStyles.container, { backgroundColor: "#fff" }]}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     >
       <View>
         <View

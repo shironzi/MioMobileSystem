@@ -14,6 +14,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from "react-native";
 import { getAuth } from "@react-native-firebase/auth";
 
@@ -96,6 +97,15 @@ const index = () => {
     }
   }, [subjects, selectedValue]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
+
   if (loading) {
     return (
       <View
@@ -115,6 +125,9 @@ const index = () => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={[globalStyles.container]}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.headerName}>
         <View style={{ flexDirection: "row" }}>
