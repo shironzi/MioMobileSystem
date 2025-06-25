@@ -70,37 +70,30 @@ const fillInTheBlank = () => {
     if (currentItem < activity.length - 1) {
       setCurrentItem((prev) => prev + 1);
     } else {
-      try {
-        if (!attemptId) {
-          console.error("Attempt id is empty");
-          return;
-        }
+      if (!attemptId) {
+        return;
+      }
 
-        const res = await submitFillActivity(
-          subjectId,
-          difficulty,
-          activityId,
-          attemptId,
-          answers,
-          audioLogs,
-          answerLogs,
-        );
+      const res = await submitFillActivity(
+        subjectId,
+        difficulty,
+        activityId,
+        attemptId,
+        answers,
+        audioLogs,
+        answerLogs,
+      );
 
-        if (res.success) {
-          router.push({
-            pathname: "/subject/(exercises)/AuditoryScores",
-            params: {
-              score: res.score,
-              totalItems: activity.length,
-              activity: activity_type,
-              difficulty: difficulty,
-            },
-          });
-        } else {
-          console.error("Unable to submit", res);
-        }
-      } catch (err) {
-        console.error("Failed to submit:", err);
+      if (res.success) {
+        router.push({
+          pathname: "/subject/(exercises)/AuditoryScores",
+          params: {
+            score: res.score,
+            totalItems: activity.length,
+            activity: activity_type,
+            difficulty: difficulty,
+          },
+        });
       }
     }
     setIsSending(false);

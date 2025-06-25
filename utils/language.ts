@@ -163,13 +163,7 @@ export async function submitHomonymsActivity(
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -264,13 +258,7 @@ export async function createHomonym(
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -321,13 +309,7 @@ export async function createFill(
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -389,13 +371,7 @@ export async function editHomonyms(
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -464,13 +440,7 @@ export async function editFill(
       },
     );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -499,11 +469,6 @@ export async function getAttemptActivityLanguage(
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Error: " + text);
-    }
 
     return await response.json();
   } catch (err: any) {

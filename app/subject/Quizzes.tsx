@@ -36,13 +36,9 @@ const Quiz = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      try {
-        const res = await getQuizzes(subjectId);
-        setQuizzes(res.quizzes);
-        setLoading(false);
-      } catch (err) {
-        console.error("Fetch Quizzes Error: " + err);
-      }
+      const res = await getQuizzes(subjectId);
+      setQuizzes(res.quizzes);
+      setLoading(false);
     };
 
     fetchQuizzes();

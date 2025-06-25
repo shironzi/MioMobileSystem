@@ -94,22 +94,18 @@ function Announcements() {
   const handleDelete = async () => {
     if (targetAnnouncement === null) return;
 
-    try {
-      const res = await deleteAnnouncements(subjectId, targetAnnouncement);
+    const res = await deleteAnnouncements(subjectId, targetAnnouncement);
 
-      if (res.success) {
-        setAnnouncements((prevAnnouncements) =>
-          prevAnnouncements.filter(
-            (ann) => ann.announcement_id !== targetAnnouncement,
-          ),
-        );
-      }
-
-      setDeleteConfirm(false);
-      setTargetAnnouncement(null);
-    } catch (err) {
-      console.error("Deleting error: " + err);
+    if (res.success) {
+      setAnnouncements((prevAnnouncements) =>
+        prevAnnouncements.filter(
+          (ann) => ann.announcement_id !== targetAnnouncement,
+        ),
+      );
     }
+
+    setDeleteConfirm(false);
+    setTargetAnnouncement(null);
   };
 
   return (

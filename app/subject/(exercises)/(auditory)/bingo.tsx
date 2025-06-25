@@ -70,35 +70,31 @@ const bingo = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      if (!attemptId) return;
+    if (!attemptId) return;
 
-      setIsSending(true);
+    setIsSending(true);
 
-      const res = await submitBingoActivity(
-        subjectId,
-        difficulty,
-        activityId,
-        attemptId,
-        answers,
-        totalPlay,
-      );
+    const res = await submitBingoActivity(
+      subjectId,
+      difficulty,
+      activityId,
+      attemptId,
+      answers,
+      totalPlay,
+    );
 
-      console.log(res);
+    console.log(res);
 
-      if (res.success) {
-        router.push({
-          pathname: "/subject/(exercises)/AuditoryScores",
-          params: {
-            score: res.score,
-            totalItems: activityData.length,
-            activityType: activity_type,
-            difficulty: difficulty,
-          },
-        });
-      }
-    } catch (err) {
-      console.error("failed to submit: ", err);
+    if (res.success) {
+      router.push({
+        pathname: "/subject/(exercises)/AuditoryScores",
+        params: {
+          score: res.score,
+          totalItems: activityData.length,
+          activityType: activity_type,
+          difficulty: difficulty,
+        },
+      });
     }
 
     setIsSending(false);
@@ -149,36 +145,32 @@ const bingo = () => {
     let isMounted = true;
 
     const fetchData = async () => {
-      try {
-        const res = prevAttemptId
-          ? await getAttemptActivityAuditory(
-              subjectId,
-              activity_type,
-              activityId,
-              prevAttemptId,
-            )
-          : await takeAuditoryActivity(
-              subjectId,
-              activity_type,
-              difficulty,
-              activityId,
-            );
+      const res = prevAttemptId
+        ? await getAttemptActivityAuditory(
+            subjectId,
+            activity_type,
+            activityId,
+            prevAttemptId,
+          )
+        : await takeAuditoryActivity(
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+          );
 
-        console.log(res);
-        if (!res.success) {
-          console.log("failed to take activity");
-        }
+      console.log(res);
+      if (!res.success) {
+        console.log("failed to take activity");
+      }
 
-        setAttemptId(res.attemptId);
-        if (isMounted) {
-          setActivityData(res.items);
+      setAttemptId(res.attemptId);
+      if (isMounted) {
+        setActivityData(res.items);
 
-          console.log(res.items);
-          setAudioFiles(res.audio_paths);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error(err);
+        console.log(res.items);
+        setAudioFiles(res.audio_paths);
+        setLoading(false);
       }
     };
 

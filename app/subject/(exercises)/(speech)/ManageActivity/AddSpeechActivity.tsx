@@ -88,53 +88,49 @@ const AddSpeechActivity = () => {
     if (!activityId) return;
 
     const fetchActivity = async () => {
-      try {
-        const res = await getActivityById(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
+      const res = await getActivityById(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+      );
+
+      const flashcards = res.items || res.flashcards || [];
+
+      if (activity_type === "picture") {
+        const formatted: PictureItem[] = Object.values(flashcards).map(
+          (item: any) => ({
+            id: item.flashcard_id,
+            flashcard_id: item.flashcard_id,
+            file: null,
+            image_url: item.image_url,
+            text: item.text,
+          }),
+        );
+        setPictureFlashcards(formatted);
+        setActivityType("picture");
+      } else {
+        const formatted: Flashcard[] = Object.values(flashcards).map(
+          (item: any) => ({
+            id: item.flashcard_id,
+            flashcard_id: item.flashcard_id,
+            text: item.text,
+          }),
         );
 
-        const flashcards = res.items || res.flashcards || [];
-
-        if (activity_type === "picture") {
-          const formatted: PictureItem[] = Object.values(flashcards).map(
-            (item: any) => ({
-              id: item.flashcard_id,
-              flashcard_id: item.flashcard_id,
-              file: null,
-              image_url: item.image_url,
-              text: item.text,
-            }),
-          );
-          setPictureFlashcards(formatted);
-          setActivityType("picture");
-        } else {
-          const formatted: Flashcard[] = Object.values(flashcards).map(
-            (item: any) => ({
-              id: item.flashcard_id,
-              flashcard_id: item.flashcard_id,
-              text: item.text,
-            }),
-          );
-
-          if (activity_type === "question") {
-            setQuestionFlashcard(formatted);
-            setActivityType("question");
-          } else if (activity_type === "phrase") {
-            setPhraseFlashcard(formatted);
-            setActivityType("phrase");
-          }
-          // else if (activity_type === "pronunciation") {
-          //   setPronunciationFlashcard(formatted);
-          //   setActivityType("pronunciation");
-          // }
+        if (activity_type === "question") {
+          setQuestionFlashcard(formatted);
+          setActivityType("question");
+        } else if (activity_type === "phrase") {
+          setPhraseFlashcard(formatted);
+          setActivityType("phrase");
         }
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch activity:", error);
+        // else if (activity_type === "pronunciation") {
+        //   setPronunciationFlashcard(formatted);
+        //   setActivityType("pronunciation");
+        // }
       }
+      setLoading(false);
     };
 
     fetchActivity();

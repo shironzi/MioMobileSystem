@@ -190,8 +190,6 @@ const Homonyms = () => {
             difficulty: difficulty,
           },
         });
-      } else {
-        console.error("Unable to submit", res);
       }
 
       setIsSending(false);

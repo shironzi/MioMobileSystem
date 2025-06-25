@@ -54,7 +54,7 @@ const Scores = () => {
       ).then(async (uri) => {
         await FileSystem.writeAsStringAsync(uri, base64, {
           encoding: FileSystem.EncodingType.Base64,
-        }).catch((e) => console.error(e));
+        });
       });
     } else {
       shareAsync(uri);

@@ -121,7 +121,6 @@ const Flashcards = () => {
 
         if (!isMounted) return;
       } catch (error) {
-        console.error("Error loading activity:", error);
         if (isMounted) {
           Alert.alert(
             "Error",

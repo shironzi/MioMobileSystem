@@ -130,7 +130,6 @@ const PictureFlashcards = () => {
           lastAnsweredIndex < fetchedFlashcards.length ? lastAnsweredIndex : 0,
         );
       } catch (error) {
-        console.error("Error loading activity:", error);
         if (isMounted) {
           Alert.alert(
             "Error",
@@ -285,7 +284,7 @@ const PictureFlashcards = () => {
             onPress={handleNextCard}
           >
             <Text style={styles.continueButtonText}>
-              {isAnswered ? "submitting...." : "Next"}
+              {isSending ? "Submitting...." : "Next"}
             </Text>
           </TouchableOpacity>
         </View>

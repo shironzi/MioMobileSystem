@@ -4,7 +4,7 @@ import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActiveActivity } from "@/utils/specialized";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const ViewActivity = () => {
@@ -80,7 +80,6 @@ const ViewActivity = () => {
           setAttempts(entries);
           setLoading(false);
         } catch (err) {
-          console.error("Error fetching attempts:", err);
           setAttempts([]);
         }
       };

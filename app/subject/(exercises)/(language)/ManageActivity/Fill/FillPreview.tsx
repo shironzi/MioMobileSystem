@@ -39,7 +39,6 @@ const FillPreview = () => {
   const items: FillItem[] = JSON.parse(data);
   const [currentItem, setCurrentItem] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  
 
   const handleNext = async () => {
     if (currentItem >= items.length - 1) {
@@ -74,13 +73,12 @@ const FillPreview = () => {
               },
             },
           ],
-          { cancelable: false }
+          { cancelable: false },
         );
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
@@ -97,95 +95,94 @@ const FillPreview = () => {
     setIsPlaying(true);
     return;
   };
-  
 
-    return (
-      <GestureHandlerRootView style={[globalStyles.container, { flex: 1 }]}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          // contentContainerStyle={{ paddingBottom: 150 }}
+  return (
+    <GestureHandlerRootView style={[globalStyles.container, { flex: 1 }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        // contentContainerStyle={{ paddingBottom: 150 }}
+      >
+        <View
+          style={{
+            borderColor: "#ddd",
+            borderWidth: 1,
+            borderRadius: 20,
+            padding: 10,
+            marginBottom: 20,
+            flexDirection: "row",
+          }}
         >
-          <View
+          <TouchableOpacity
+            style={[
+              {
+                padding: 20,
+                borderRadius: 15,
+                maxWidth: 75,
+              },
+              isPlaying
+                ? { backgroundColor: "#ffbf18" }
+                : { backgroundColor: "#ddd" },
+            ]}
+            onPress={handleAudioPlay}
+            disabled={isPlaying}
+          >
+            <FontAwesome6 name="volume-high" size={25} color="#fff" />
+          </TouchableOpacity>
+          <Text
             style={{
-              borderColor: "#ddd",
-              borderWidth: 1,
-              borderRadius: 20,
-              padding: 10,
-              marginBottom: 20,
-              flexDirection: "row",
+              fontSize: 14,
+              fontWeight: "300",
+              alignSelf: "center",
+              left: 60,
+              lineHeight: 20,
             }}
           >
-            <TouchableOpacity
-              style={[
-                {
-                  padding: 20,
-                  borderRadius: 15,
-                  maxWidth: 75,
-                },
-                isPlaying
-                  ? { backgroundColor: "#ffbf18" }
-                  : { backgroundColor: "#ddd" },
-              ]}
-              onPress={handleAudioPlay}
-              disabled={isPlaying}
-              >
-              <FontAwesome6 name="volume-high" size={25} color="#fff" />
-            </TouchableOpacity>
-            <Text
+            Tap the speaker icon.{"\n"} Listen carefully!
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: -20,
+            marginVertical: -10,
+            marginHorizontal: -20,
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              {
+                width: "30%",
+                backgroundColor: "#fff",
+                opacity: currentItem === 0 ? 0.5 : 1,
+              },
+            ]}
+            onPress={handlePrev}
+            disabled={currentItem === 0}
+          >
+            <View
               style={{
-                fontSize: 14,
-                fontWeight: "300",
-                alignSelf: "center",
-                left: 60,
-                lineHeight: 20,
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 5,
               }}
             >
-              Tap the speaker icon.{"\n"}    Listen carefully!
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: -20,
-              marginVertical: -10,
-              marginHorizontal: -20,
-            }}
-          >
-            <TouchableOpacity
-              style={[
-                globalStyles.submitButton,
-                {
-                  width: "30%",
-                  backgroundColor: "#fff",
-                  opacity: currentItem === 0 ? 0.5 : 1,
-                },
-              ]}
-              onPress={handlePrev}
-              disabled={currentItem === 0}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 5,
-                }}
+              <FontAwesome6
+                name="arrow-left-long"
+                size={16}
+                color={currentItem === 0 ? "#1f1f1f" : "#ffbf18"}
+                style={{ top: 3 }}
+              />
+              <Text
+                style={[
+                  globalStyles.submitButtonText,
+                  { color: currentItem === 0 ? "#1f1f1f" : "#ffbf18" },
+                ]}
               >
-                <FontAwesome6
-                  name="arrow-left-long"
-                  size={16}
-                  color={currentItem === 0 ? "#1f1f1f" : "#ffbf18"}
-                  style={{ top: 3 }}
-                />
-                <Text
-                  style={[
-                    globalStyles.submitButtonText,
-                    { color: currentItem === 0 ? "#1f1f1f" : "#ffbf18" },
-                  ]}
-                >
-                  Prev
-                </Text>
-              </View>
+                Prev
+              </Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -210,7 +207,10 @@ const FillPreview = () => {
               <Text
                 style={[
                   globalStyles.submitButtonText,
-                  { color: currentItem >= items.length - 1 ? "#1f1f1f" : "#ffbf18" },
+                  {
+                    color:
+                      currentItem >= items.length - 1 ? "#1f1f1f" : "#ffbf18",
+                  },
                 ]}
               >
                 Next
@@ -233,10 +233,10 @@ const FillPreview = () => {
           }
           handleAnswers={() => {}}
         />
-        </ScrollView>
-    
-        <View
-          style={{
+      </ScrollView>
+
+      <View
+        style={{
           flexDirection: "row",
           justifyContent: "space-between",
           position: "absolute",
@@ -260,9 +260,8 @@ const FillPreview = () => {
           </Text>
         </TouchableOpacity>
       </View>
-   
-      </GestureHandlerRootView>
-    );
+    </GestureHandlerRootView>
+  );
 };
 
 export default FillPreview;

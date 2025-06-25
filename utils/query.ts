@@ -11,7 +11,6 @@ export async function getSubjects() {
     return data;
   } catch (err: any) {
     if (err.response) {
-      console.error(err);
       return err.response.status;
     } else if (err.request) {
       return { error: "No response from server" };
@@ -175,11 +174,6 @@ export async function editAnnouncement(
         body: formData,
       },
     );
-
-    if (!res.ok) {
-      const text = await res.text();
-      console.error(`Update failed (${res.status}): ${text}`);
-    }
 
     return await res.json();
   } catch (err: any) {

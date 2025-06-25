@@ -463,10 +463,10 @@ export async function getAttemptActivityAuditory(
       },
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Error: " + text);
-    }
+    // if (!response.ok) {
+    //   const text = await response.text();
+    //   console.error("Error: " + text);
+    // }
 
     return await response.json();
   } catch (err: any) {

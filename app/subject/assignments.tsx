@@ -3,7 +3,6 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 import LoadingCard from "@/components/loadingCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAssignment, getAssignments } from "@/utils/query";
-import { useAuthGuard } from "@/utils/useAuthGuard";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
@@ -50,14 +49,9 @@ const assignments = () => {
   useFocusEffect(
     useCallback(() => {
       const fetchAssignments = async () => {
-        try {
-          const response = await getAssignments(subjectId);
-          setAssignments(response.assignments);
-          setLoading(false);
-        } catch (err) {
-          console.error("Fetch assignment error: ", err);
-          useAuthGuard(err);
-        }
+        const response = await getAssignments(subjectId);
+        setAssignments(response.assignments);
+        setLoading(false);
       };
 
       fetchAssignments();
@@ -82,19 +76,15 @@ const assignments = () => {
   const handleDelete = async () => {
     if (targetAssignment === null) return;
 
-    try {
-      const res = await deleteAssignment(subjectId, targetAssignment);
+    const res = await deleteAssignment(subjectId, targetAssignment);
 
-      if (res.success) {
-        setAssignments((prev) =>
-          prev.filter((ass) => ass.assignment_id != targetAssignment),
-        );
-      }
-      setDeleteConfirm(false);
-      setTargetAssignment(null);
-    } catch (err) {
-      console.error("Deleting error: " + err);
+    if (res.success) {
+      setAssignments((prev) =>
+        prev.filter((ass) => ass.assignment_id != targetAssignment),
+      );
     }
+    setDeleteConfirm(false);
+    setTargetAssignment(null);
   };
 
   return (

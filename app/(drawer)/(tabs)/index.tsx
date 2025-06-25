@@ -68,7 +68,6 @@ const index = () => {
         }
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching subjects: ", err);
         useAuthGuard(err);
       }
     }

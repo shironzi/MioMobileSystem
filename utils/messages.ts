@@ -69,13 +69,7 @@ export async function sendMessage(
       body: formData,
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Validation or server error:", data);
-    }
-
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

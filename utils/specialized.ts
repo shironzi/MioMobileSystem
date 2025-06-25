@@ -34,25 +34,17 @@ export async function getSpecializedActivities(
   activity_type: string,
   difficulty: string,
 ) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/specialized/${activity_type}/${difficulty}`,
-    );
+  const { data } = await api.get(
+    `/subject/${subjectId}/specialized/${activity_type}/${difficulty}`,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
-  }
+  return data;
 }
 
 export async function getActivities(subjectId: string) {
-  try {
-    const { data } = await api.get(`/subject/${subjectId}/scores`);
+  const { data } = await api.get(`/subject/${subjectId}/scores`);
 
-    return data;
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
-  }
+  return data;
 }
 
 export async function getActiveActivity(
@@ -60,15 +52,11 @@ export async function getActiveActivity(
   activity_type: string,
   activityId: string,
 ) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
-    );
+  const { data } = await api.get(
+    `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
-  }
+  return data;
 }
 
 export async function getAttemptActivity(
@@ -77,27 +65,18 @@ export async function getAttemptActivity(
   activityId: string,
   attemptId: string,
 ) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
-    const token = await getAuth().currentUser?.getIdToken(true);
+  const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
+  const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Error: " + text);
-    }
-
-    return await response.json();
-  } catch (err) {
-    console.error("Get Activities Fetch Failed: " + err);
-  }
+  return await response.json();
 }
 
 export async function startActivity(
@@ -106,15 +85,11 @@ export async function startActivity(
   difficulty: string,
   activityId: string,
 ) {
-  try {
-    const { data } = await api.post(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
-    );
+  const { data } = await api.post(
+    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("Failed to post take activity" + err);
-  }
+  return data;
 }
 
 export async function submitAnswer(
@@ -126,41 +101,31 @@ export async function submitAnswer(
   flashcardId: string,
   fileUri: string,
 ) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+  const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
-    const filename = fileUri.split("/").pop()!;
-    const mimeType = "audio/mpeg";
+  const filename = fileUri.split("/").pop()!;
+  const mimeType = "audio/mpeg";
 
-    const formData = new FormData();
-    formData.append("audio_file", {
-      uri: fileUri,
-      name: filename,
-      type: mimeType,
-    } as any);
+  const formData = new FormData();
+  formData.append("audio_file", {
+    uri: fileUri,
+    name: filename,
+    type: mimeType,
+  } as any);
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+  const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("Error: " + text);
-      return;
-    }
-
-    return await response.json();
-  } catch (err) {
-    console.error(err);
-  }
+  return await response.json();
 }
 
 export async function finishActivity(
@@ -170,15 +135,11 @@ export async function finishActivity(
   activityId: string,
   attemptId: string,
 ) {
-  try {
-    const { data } = await api.patch(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
-    );
+  const { data } = await api.patch(
+    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("Submit Activity Failed: " + err);
-  }
+  return data;
 }
 
 export async function createPictureSpeechActivity(
@@ -187,43 +148,38 @@ export async function createPictureSpeechActivity(
   activityType: string,
   difficulty: string,
 ) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
+  const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append("activity_type", activityType);
-    formData.append("difficulty", difficulty);
+  formData.append("activity_type", activityType);
+  formData.append("difficulty", difficulty);
 
-    flashcards.forEach((item, index) => {
-      if (item.file && item.text) {
-        const { uri, name, mimeType } = item.file;
+  flashcards.forEach((item, index) => {
+    if (item.file && item.text) {
+      const { uri, name, mimeType } = item.file;
 
-        formData.append(`flashcards[${index}][text]`, item.text);
-        formData.append(`flashcards[${index}][image]`, {
-          uri,
-          name,
-          type: mimeType,
-        } as any);
-      }
-    });
-    const token = await getAuth().currentUser?.getIdToken(true);
+      formData.append(`flashcards[${index}][text]`, item.text);
+      formData.append(`flashcards[${index}][image]`, {
+        uri,
+        name,
+        type: mimeType,
+      } as any);
+    }
+  });
+  const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
 
-    return await response.json();
-  } catch (err) {
-    console.error("Error creating speech picture activity:", err);
-    throw err;
-  }
+  return await response.json();
 }
 
 export async function createSpeechActivity(
@@ -232,23 +188,18 @@ export async function createSpeechActivity(
   difficulty: string,
   flashcards: Flashcard[],
 ) {
-  try {
-    const payload = {
-      activity_type: activityType,
-      difficulty: difficulty,
-      flashcards: flashcards,
-    };
+  const payload = {
+    activity_type: activityType,
+    difficulty: difficulty,
+    flashcards: flashcards,
+  };
 
-    const { data } = await api.post(
-      `/subject/${subjectId}/specialized/speech`,
-      payload,
-    );
+  const { data } = await api.post(
+    `/subject/${subjectId}/specialized/speech`,
+    payload,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("Submit Activity Failed:", err);
-    throw err;
-  }
+  return data;
 }
 
 export async function getActivityById(
@@ -257,15 +208,11 @@ export async function getActivityById(
   difficulty: string,
   activityId: string,
 ) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
-    );
+  const { data } = await api.get(
+    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
+  );
 
-    return data;
-  } catch (err) {
-    console.error("fetch activity by Id failed: ", err);
-  }
+  return data;
 }
 
 export async function updatePictureActivity(
@@ -274,48 +221,40 @@ export async function updatePictureActivity(
   activityId: string,
   flashcards: PictureItem[],
 ) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
+  const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    flashcards.forEach((item, index) => {
-      formData.append(`flashcards[${index}][text]`, item.text ?? "");
+  flashcards.forEach((item, index) => {
+    formData.append(`flashcards[${index}][text]`, item.text ?? "");
 
-      if (item.flashcard_id) {
-        formData.append(
-          `flashcards[${index}][flashcard_id]`,
-          item.flashcard_id,
-        );
-      }
+    if (item.flashcard_id) {
+      formData.append(`flashcards[${index}][flashcard_id]`, item.flashcard_id);
+    }
 
-      if (item.file) {
-        const { uri, name, mimeType } = item.file;
-        formData.append(`flashcards[${index}][image]`, {
-          uri,
-          name,
-          type: mimeType,
-        } as any);
-      }
-    });
+    if (item.file) {
+      const { uri, name, mimeType } = item.file;
+      formData.append(`flashcards[${index}][image]`, {
+        uri,
+        name,
+        type: mimeType,
+      } as any);
+    }
+  });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+  const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
 
-    return await response.json();
-  } catch (err) {
-    console.error("Error updating speech picture activity:", err);
-    throw err;
-  }
+  return await response.json();
 }
 
 export async function updateSpeechActivity(
@@ -325,15 +264,11 @@ export async function updateSpeechActivity(
   activityType: string,
   flashcards: Flashcard[],
 ) {
-  try {
-    console.log(flashcards);
-    const { data } = await api.put(
-      `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
-      { flashcards: flashcards },
-    );
+  console.log(flashcards);
+  const { data } = await api.put(
+    `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
+    { flashcards: flashcards },
+  );
 
-    return data;
-  } catch (err) {
-    console.error(`Error updating speech ${activityType} activity:`, err);
-  }
+  return data;
 }

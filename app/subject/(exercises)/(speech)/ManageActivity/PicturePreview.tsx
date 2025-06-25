@@ -93,7 +93,6 @@ const PictureFlashcards = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
@@ -181,21 +180,24 @@ const PictureFlashcards = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.submitWrapper,{flexDirection:"row", columnGap:10}]}>
-      <TouchableOpacity
+      <View
+        style={[styles.submitWrapper, { flexDirection: "row", columnGap: 10 }]}
+      >
+        <TouchableOpacity
           style={[globalStyles.inactivityButton, { width: "48%" }]}
           onPress={() => router.back()}
-           
         >
-          <Text style={globalStyles.inactivityButtonText}> Cancel
+          <Text style={globalStyles.inactivityButtonText}>
+            {" "}
+            Cancel
             {/* {activityId ? "Update" : "Create"} Activity */}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[globalStyles.submitButton, {width:"48%"}]}
+          style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
         >
-          <Text style={[globalStyles.submitButtonText, {top:3}]}>
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
             {activityId ? "Update" : "Create"}
           </Text>
         </TouchableOpacity>
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
   flashcardContainer: {
     backgroundColor: "#fff",
     borderColor: "#ddd",
-    borderWidth:1,
+    borderWidth: 1,
     padding: 20,
     borderRadius: 20,
     alignItems: "center",
@@ -230,7 +232,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 8,
-    marginTop: 40
+    marginTop: 40,
   },
   flashcardText: {
     fontSize: 20,

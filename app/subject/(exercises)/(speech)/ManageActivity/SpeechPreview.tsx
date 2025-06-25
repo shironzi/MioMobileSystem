@@ -88,7 +88,6 @@ const SpeechPreview = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
@@ -135,7 +134,6 @@ const SpeechPreview = () => {
           source={require("@/assets/images/face/echo.png")}
           style={styles.bannerLogo}
           resizeMode="contain"
-          
         />
         <Animated.View style={[styles.textContainer, animatedStyle]}>
           <Text style={styles.flashcardText}>
@@ -173,21 +171,24 @@ const SpeechPreview = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.submitWrapper,{flexDirection:"row", columnGap:10}]}>
-      <TouchableOpacity
+      <View
+        style={[styles.submitWrapper, { flexDirection: "row", columnGap: 10 }]}
+      >
+        <TouchableOpacity
           style={[globalStyles.inactivityButton, { width: "48%" }]}
           onPress={() => router.back()}
-           
         >
-          <Text style={globalStyles.inactivityButtonText}> Cancel
+          <Text style={globalStyles.inactivityButtonText}>
+            {" "}
+            Cancel
             {/* {activityId ? "Update" : "Create"} Activity */}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[globalStyles.submitButton, {width:"48%"}]}
+          style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
         >
-          <Text style={[globalStyles.submitButtonText, {top:3}]}>
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
             {activityId ? "Update" : "Create"}
           </Text>
         </TouchableOpacity>
@@ -205,11 +206,11 @@ const styles = StyleSheet.create({
   flashcardContainer: {
     backgroundColor: "#fff",
     borderColor: "#ddd",
-    borderWidth:1,
+    borderWidth: 1,
     padding: 20,
     borderRadius: 20,
     alignItems: "center",
-    height:250
+    height: 250,
   },
   bannerLogo: {
     position: "absolute",

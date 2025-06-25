@@ -3,12 +3,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-interface FileInfo {
-  uri: string;
-  name: string;
-  mimeType?: string;
-}
-
 const profile = () => {
   const router = useRouter();
 
@@ -20,7 +14,7 @@ const profile = () => {
 
   HeaderConfig("Profile");
 
-  console.log(photo_url);
+  // console.log(photo_url);
 
   return (
     <View style={styles.container}>

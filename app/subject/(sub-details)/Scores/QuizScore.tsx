@@ -57,8 +57,6 @@ const QuizScore = () => {
         );
 
         setItems(quizItems);
-      } else {
-        console.error("Failed to fetch data");
       }
     };
 

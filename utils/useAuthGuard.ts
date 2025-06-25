@@ -4,20 +4,18 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 
 export function useAuthGuard(error?: unknown) {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!error) return;
+  useEffect(() => {
+    if (!error) return;
 
-        const status = (error as AxiosError)?.response?.status;
+    const status = (error as AxiosError)?.response?.status;
 
-        if (status === 401 || status === 403) {
-            (async () => {
-                await SecureStore.deleteItemAsync("sessionData");
-                router.replace("/");
-            })();
-        } else {
-            console.error(error);
-        }
-    }, [error, router]);
+    if (status === 401 || status === 403) {
+      (async () => {
+        await SecureStore.deleteItemAsync("sessionData");
+        router.replace("/");
+      })();
+    }
+  }, [error, router]);
 }

@@ -13,7 +13,6 @@ import React, { useState, memo } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { getAuth } from "@react-native-firebase/auth";
-import { sendPasswordResetEmail } from "@firebase/auth";
 
 const forgotPass = () => {
   const router = useRouter();
@@ -38,7 +37,6 @@ const forgotPass = () => {
         } else {
           Alert.alert("Error", "Failed to send reset email.");
         }
-        console.error("Reset error:", error);
       });
   };
 
