@@ -109,22 +109,22 @@ const ViewActivity = () => {
     );
   }
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  // const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={[globalStyles.container, { backgroundColor: "#fff" }]}
-      refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      // }
     >
       <View>
         <View
