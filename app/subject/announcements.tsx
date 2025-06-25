@@ -122,9 +122,9 @@ function Announcements() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
       >
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>

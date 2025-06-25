@@ -101,9 +101,9 @@ const assignments = () => {
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
       >
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>

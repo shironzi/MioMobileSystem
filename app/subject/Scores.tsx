@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  RefreshControl,
+  // RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -98,14 +98,14 @@ const Scores = () => {
     );
   }
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
+  // const [isRefreshing, setIsRefreshing] = useState(false);
+  //
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
 
   return (
     <ScrollView
@@ -113,9 +113,9 @@ const Scores = () => {
         paddingVertical: 20,
         backgroundColor: "#fff",
       }}
-      refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      // }
     >
       <View style={{ paddingBottom: 50 }}>
         {role === "teacher" && (

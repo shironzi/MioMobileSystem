@@ -61,22 +61,22 @@ const ModulesScreen = () => {
     );
   }
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  // const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
 
   return (
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
       >
         {moduleList.length > 0 ? (
           moduleList.map((item, index) => (
