@@ -72,12 +72,14 @@ export async function createBingoActivity(
     audio: FileInfo | null;
     audio_path: string | null;
   }[],
+  title: string,
 ) {
   try {
     const formData = new FormData();
 
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
+    formData.append("title", title);
 
     bingoItems.forEach((item, index) => {
       if (item.file) {
@@ -136,12 +138,14 @@ export async function createMatchingActivity(
   activityType: string,
   difficulty: string,
   answers: Answer[],
+  title: string,
 ) {
   try {
     const formData = new FormData();
 
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
+    formData.append("title", title);
 
     answers.forEach((item, index) => {
       formData.append(`activity[${index}][image]`, {
@@ -200,9 +204,12 @@ export async function updateBingoActivity(
     audio_path: string | null;
     audio_id?: string | null;
   }[],
+  title: string,
 ) {
   try {
     const formData = new FormData();
+
+    formData.append("title", title);
 
     bingoItems.forEach((item, index) => {
       if (item.file) {
@@ -394,11 +401,13 @@ export async function updateMatchingActivity(
   difficulty: string,
   activityId: string,
   answers: Answer[],
+  title: string,
 ) {
   try {
     const token = await getAuth().currentUser?.getIdToken(true);
     const formData = new FormData();
 
+    formData.append(`title`, title);
     answers.forEach((answer, index) => {
       formData.append(`activity[${index}][image_id]`, answer.image_id ?? "");
       formData.append(`activity[${index}][audio_id]`, answer.audio_id ?? "");

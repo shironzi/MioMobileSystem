@@ -63,6 +63,8 @@ const AddAuditoryActivity = () => {
   const [activityType, setActivityType] = useState<string>("bingo");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [loading, setLoading] = useState<boolean>(true);
+  const [activityTitle, setActivityTitle] = useState<string>("");
+  const [titleError, setTitleError] = useState<boolean>(false);
 
   const handleFileUpload = (index: number, file: FileInfo) => {
     if (activityType === "bingo") {
@@ -202,6 +204,13 @@ const AddAuditoryActivity = () => {
   }>({ errorMessage: "", error: "" });
 
   const handleRoute = () => {
+    if (!activityTitle.trim()) {
+      setTitleError(true);
+      return;
+    }
+
+    setTitleError(false);
+
     if (activityType === "bingo") {
       if (bingoItems.length !== 9 && bingoItems.length !== 12) {
         setBingoError({
@@ -232,6 +241,7 @@ const AddAuditoryActivity = () => {
           activityId: activityId,
           bingoItems: encodedItems,
           bingoAudio: encodedAudio,
+          title: activityTitle,
         },
       });
     } else if (activityType === "matching") {
@@ -271,6 +281,7 @@ const AddAuditoryActivity = () => {
           matchingItems: encodedItems,
           matchingAudio: encodedAudios,
           matchingAnswers: encodedAnswer,
+          title: activityTitle,
         },
       });
     }
@@ -288,6 +299,7 @@ const AddAuditoryActivity = () => {
           );
           setBingoItems(res.items);
           setBingoAudio(res.audio);
+          setActivityTitle(res.title);
         } else if (activity_type === "matching") {
           const res = await getMatchingActivityById(
             subjectId,
@@ -301,6 +313,7 @@ const AddAuditoryActivity = () => {
           setMatchingAudio(res.audio);
           setMatchingAnswers(res.answers);
           setActivityType("matching");
+          setActivityTitle(res.title);
         }
         setLoading(false);
       };
@@ -360,17 +373,19 @@ const AddAuditoryActivity = () => {
         <Animated.FlatList
           data={bingoItems}
           keyExtractor={(item) => item.image_path ?? item.id}
-          ListHeaderComponent={() =>
-            !activityId && (
-              <ListHeader
-                activityType={activityType}
-                setActivityType={(value: string) => setActivityType(value)}
-                activityDifficulty={activityDifficulty}
-                setActivityDifficulty={(value: string) =>
-                  setActivityDifficulty(value)
-                }
-              />
-            )
+          ListHeaderComponent={
+            <ListHeader
+              activityType={activityType}
+              setActivityType={(value: string) => setActivityType(value)}
+              activityDifficulty={activityDifficulty}
+              setActivityDifficulty={(value: string) =>
+                setActivityDifficulty(value)
+              }
+              setActivityTitle={setActivityTitle}
+              activityTitle={activityTitle}
+              titleError={titleError}
+              activityId={activityId}
+            />
           }
           ListFooterComponent={
             <ListFooter
@@ -396,17 +411,19 @@ const AddAuditoryActivity = () => {
         <Animated.FlatList
           data={matchingItems}
           keyExtractor={(item) => item.image_path ?? item.id}
-          ListHeaderComponent={() =>
-            !activityId && (
-              <ListHeader
-                activityType={activityType}
-                setActivityType={(value: string) => setActivityType(value)}
-                activityDifficulty={activityDifficulty}
-                setActivityDifficulty={(value: string) =>
-                  setActivityDifficulty(value)
-                }
-              />
-            )
+          ListHeaderComponent={
+            <ListHeader
+              activityType={activityType}
+              setActivityType={(value: string) => setActivityType(value)}
+              activityDifficulty={activityDifficulty}
+              setActivityDifficulty={(value: string) =>
+                setActivityDifficulty(value)
+              }
+              setActivityTitle={setActivityTitle}
+              activityTitle={activityTitle}
+              titleError={titleError}
+              activityId={activityId}
+            />
           }
           ListFooterComponent={
             <ListFooter

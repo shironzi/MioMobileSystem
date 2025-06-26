@@ -79,6 +79,7 @@ const MatchingPreview = () => {
     matchingAudio,
     matchingItems,
     matchingAnswers,
+    title,
   } = useLocalSearchParams<{
     subjectId: string;
     activityType: string;
@@ -87,6 +88,7 @@ const MatchingPreview = () => {
     matchingAudio: string;
     matchingItems: string;
     matchingAnswers: string;
+    title: string;
   }>();
 
   const parsedMatchingItems = useMemo<Items[]>(() => {
@@ -144,13 +146,17 @@ const MatchingPreview = () => {
             activityDifficulty,
             activityId,
             answers,
+            title,
           )
         : await createMatchingActivity(
             subjectId,
             activityType,
             activityDifficulty,
             answers,
+            title,
           );
+
+      console.log(res);
 
       if (res.success) {
         Alert.alert(

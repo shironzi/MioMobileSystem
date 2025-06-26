@@ -43,6 +43,7 @@ const BingoPreview = () => {
     activityDifficulty,
     bingoItems,
     bingoAudio,
+    title,
   } = useLocalSearchParams<{
     subjectId: string;
     activityType: string;
@@ -50,6 +51,7 @@ const BingoPreview = () => {
     activityDifficulty: string;
     bingoItems: string;
     bingoAudio: string;
+    title: string;
   }>();
 
   const parsedBingoItems = useMemo<BingoItem[]>(() => {
@@ -126,6 +128,7 @@ const BingoPreview = () => {
             activityId,
             activity,
             parsedBingoAudio,
+            title,
           )
         : await createBingoActivity(
             subjectId,
@@ -133,6 +136,7 @@ const BingoPreview = () => {
             activityDifficulty,
             activity,
             parsedBingoAudio,
+            title,
           );
 
       console.log(res);
