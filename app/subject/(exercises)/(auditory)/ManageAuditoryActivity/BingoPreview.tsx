@@ -156,7 +156,6 @@ const BingoPreview = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };

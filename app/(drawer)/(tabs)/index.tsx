@@ -14,6 +14,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from "react-native";
 import { getAuth } from "@react-native-firebase/auth";
 
@@ -57,21 +58,21 @@ const index = () => {
     f_name = name.split(" ")[0];
   }
 
-  useEffect(() => {
-    async function fetchSubjects() {
-      try {
-        const data = await getSubjects();
-        setSubjects(data.subjects);
-        setRole(data.role);
-        if (data.role) {
-          await SecureStore.setItemAsync("role", data.role);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching subjects: ", err);
-        useAuthGuard(err);
+  const fetchSubjects = async () => {
+    try {
+      const data = await getSubjects();
+      setSubjects(data.subjects);
+      setRole(data.role);
+      if (data.role) {
+        await SecureStore.setItemAsync("role", data.role);
       }
+      setLoading(false);
+    } catch (err) {
+      useAuthGuard(err);
     }
+  };
+
+  useEffect(() => {
     fetchSubjects();
   }, []);
 
@@ -97,6 +98,16 @@ const index = () => {
     }
   }, [subjects, selectedValue]);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    fetchSubjects();
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 3000);
+  };
+
   if (loading) {
     return (
       <View
@@ -116,6 +127,9 @@ const index = () => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={[globalStyles.container]}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.headerName}>
         <View style={{ flexDirection: "row" }}>

@@ -4,7 +4,13 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { getModules } from "@/utils/modules";
 
 type Module = {
@@ -55,9 +61,23 @@ const ModulesScreen = () => {
     );
   }
 
+  // const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
+
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
+      >
         {moduleList.length > 0 ? (
           moduleList.map((item, index) => (
             <ModuleCard

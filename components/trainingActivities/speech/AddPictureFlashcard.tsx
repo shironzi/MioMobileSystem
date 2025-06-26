@@ -63,11 +63,12 @@ const AddPictureFlashcard = ({
                   ),
                 )
               }
-              imageUri={item.file?.uri ?? null}
-              handleImageRemove={function (): void {
-                throw new Error("Function not implemented.");
-              }}
+              imageUri={item.file}
+              handleImageRemove={() => {}}
               isError={false}
+              image_path={null}
+              showPreview={false}
+              index={0}
             />
 
             <Text style={globalStyles.text1}>Word</Text>

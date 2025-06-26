@@ -39,13 +39,14 @@ interface PictureItem {
 const PictureFlashcards = () => {
   useHeaderConfig("Flashcards");
 
-  const { subjectId, activity_type, difficulty, activityId, data } =
+  const { subjectId, activity_type, difficulty, activityId, data, title } =
     useLocalSearchParams<{
       subjectId: string;
       activity_type: string;
       difficulty: string;
       activityId: string;
       data: string;
+      title: string;
     }>();
 
   const parsedBingoItems = useMemo<PictureItem[]>(() => {
@@ -57,21 +58,25 @@ const PictureFlashcards = () => {
   }, [data]);
 
   const [currentCard, setCurrentCard] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     try {
+      setIsSubmitting(true);
       const res = activityId
         ? await updatePictureActivity(
             subjectId,
             difficulty,
             activityId,
             parsedBingoItems,
+            title,
           )
         : await createPictureSpeechActivity(
             subjectId,
             parsedBingoItems,
             activity_type,
             difficulty,
+            title,
           );
 
       if (res.success) {
@@ -93,9 +98,10 @@ const PictureFlashcards = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
+
+    setIsSubmitting(false);
   };
 
   const opacity = useSharedValue(1);
@@ -181,22 +187,32 @@ const PictureFlashcards = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.submitWrapper,{flexDirection:"row", columnGap:10}]}>
-      <TouchableOpacity
+      <View
+        style={[styles.submitWrapper, { flexDirection: "row", columnGap: 10 }]}
+      >
+        <TouchableOpacity
           style={[globalStyles.inactivityButton, { width: "48%" }]}
           onPress={() => router.back()}
-           
         >
-          <Text style={globalStyles.inactivityButtonText}> Cancel
+          <Text style={globalStyles.inactivityButtonText}>
+            {" "}
+            Cancel
             {/* {activityId ? "Update" : "Create"} Activity */}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[globalStyles.submitButton, {width:"48%"}]}
+          style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
+          disabled={isSubmitting}
         >
-          <Text style={[globalStyles.submitButtonText, {top:3}]}>
-            {activityId ? "Update" : "Create"}
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+            {activityId
+              ? isSubmitting
+                ? "Updating"
+                : "Update"
+              : isSubmitting
+                ? "Creating"
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -213,7 +229,7 @@ const styles = StyleSheet.create({
   flashcardContainer: {
     backgroundColor: "#fff",
     borderColor: "#ddd",
-    borderWidth:1,
+    borderWidth: 1,
     padding: 20,
     borderRadius: 20,
     alignItems: "center",
@@ -230,7 +246,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 8,
-    marginTop: 40
+    marginTop: 40,
   },
   flashcardText: {
     fontSize: 20,

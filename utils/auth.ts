@@ -9,6 +9,7 @@ export default async function login(email: string, password: string) {
     const auth = getAuth();
     await auth.signInWithEmailAndPassword(email, password);
     const user = auth.currentUser;
+    console.log(user);
 
     const authStatus = await messaging().requestPermission();
     const enabled =

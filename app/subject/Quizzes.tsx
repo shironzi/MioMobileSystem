@@ -8,6 +8,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
+  // RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -36,13 +37,9 @@ const Quiz = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      try {
-        const res = await getQuizzes(subjectId);
-        setQuizzes(res.quizzes);
-        setLoading(false);
-      } catch (err) {
-        console.error("Fetch Quizzes Error: " + err);
-      }
+      const res = await getQuizzes(subjectId);
+      setQuizzes(res.quizzes);
+      setLoading(false);
     };
 
     fetchQuizzes();
@@ -77,9 +74,21 @@ const Quiz = () => {
     );
   }
 
+  // const [isRefreshing, setIsRefreshing] = useState(false);
+  //
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
+
   return (
     <ScrollView
       style={{ backgroundColor: "#fff", height: "100%", paddingTop: 20 }}
+      // refreshControl={
+      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      // }
     >
       <View>
         {role === "teacher" && (

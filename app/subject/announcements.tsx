@@ -10,6 +10,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -76,6 +77,14 @@ function Announcements() {
     });
   };
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
+
   if (loading) {
     return (
       <View
@@ -94,22 +103,18 @@ function Announcements() {
   const handleDelete = async () => {
     if (targetAnnouncement === null) return;
 
-    try {
-      const res = await deleteAnnouncements(subjectId, targetAnnouncement);
+    const res = await deleteAnnouncements(subjectId, targetAnnouncement);
 
-      if (res.success) {
-        setAnnouncements((prevAnnouncements) =>
-          prevAnnouncements.filter(
-            (ann) => ann.announcement_id !== targetAnnouncement,
-          ),
-        );
-      }
-
-      setDeleteConfirm(false);
-      setTargetAnnouncement(null);
-    } catch (err) {
-      console.error("Deleting error: " + err);
+    if (res.success) {
+      setAnnouncements((prevAnnouncements) =>
+        prevAnnouncements.filter(
+          (ann) => ann.announcement_id !== targetAnnouncement,
+        ),
+      );
     }
+
+    setDeleteConfirm(false);
+    setTargetAnnouncement(null);
   };
 
   return (
@@ -117,6 +122,9 @@ function Announcements() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
       >
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>

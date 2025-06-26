@@ -86,7 +86,6 @@ const Homonyms = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };
@@ -107,27 +106,28 @@ const Homonyms = () => {
         ))}
       </View>
       <View
-            style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom:-10
-          }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: -10,
+        }}
+      >
+        <TouchableOpacity
+          style={[globalStyles.inactivityButton, { width: "48%" }]}
+          onPress={() => router.back()}
         >
-          <TouchableOpacity
-            style={[globalStyles.inactivityButton, { width: "48%" }]}
-            onPress={() => router.back()}
-          >
-            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[globalStyles.submitButton, { width: "48%" }]}
-            onPress={handleCreate}
-          >
-            <Text style={[globalStyles.submitButtonText, { top: 3 }]}>Create
-              {/* {activityId ? "Update" : "Create"} */}
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "48%" }]}
+          onPress={handleCreate}
+        >
+          <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+            Create
+            {/* {activityId ? "Update" : "Create"} */}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

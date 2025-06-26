@@ -1,50 +1,78 @@
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 const SpeechHeader = (props: {
   activityType: string;
   setActivityType: (value: string) => void;
   activityDifficulty: string;
   setActivityDifficulty: (value: string) => void;
+  activityTitle: string;
+  setActivityTitle: (value: string) => void;
+  titleError: boolean;
+  activityId: string;
 }) => (
   <View style={{ padding: 20, paddingBottom: 0 }}>
     <View style={globalStyles.cardContainer}>
-      <Text style={{ fontSize: 16, fontWeight: 500 }}>Type of Exercise</Text>
-      <View style={styles.picker}>
-        <Picker
-          //
-          mode="dropdown"
-          selectedValue={props.activityType}
-          onValueChange={(value) => {
-            props.setActivityType(value);
-          }}
-        >
-          <Picker.Item label="Picture Flashcards" value="picture" />
-          <Picker.Item label="Word Flashcards" value="question" />
-          <Picker.Item label="Reading Flashcards" value="phrase" />
-          {/* <Picker.Item
+      <Text style={{ fontSize: 16, fontWeight: 500 }}>Title</Text>
+      <View style={{ marginVertical: 10 }}>
+        {props.titleError && (
+          <Text style={globalStyles.errorText}>This field is required</Text>
+        )}
+        <TextInput
+          style={[
+            globalStyles.textInputContainer,
+            { paddingVertical: 15 },
+            props.titleError && { borderColor: "red" },
+          ]}
+          placeholder={"Enter Title"}
+          value={props.activityTitle}
+          onChangeText={(value) => props.setActivityTitle(value)}
+        />
+      </View>
+      {!props.activityId && (
+        <View>
+          <Text style={{ fontSize: 16, fontWeight: 500 }}>
+            Type of Exercise
+          </Text>
+          <View style={styles.picker}>
+            <Picker
+              //
+              mode="dropdown"
+              selectedValue={props.activityType}
+              onValueChange={(value) => {
+                props.setActivityType(value);
+              }}
+            >
+              <Picker.Item label="Picture Flashcards" value="picture" />
+              <Picker.Item label="Word Flashcards" value="question" />
+              <Picker.Item label="Reading Flashcards" value="phrase" />
+              {/* <Picker.Item
           label="Readme: Pronunciation Challenge"
           value="pronunciation"
         /> */}
-        </Picker>
-      </View>
+            </Picker>
+          </View>
 
-      <Text style={{ fontSize: 16, fontWeight: 500 }}>Difficulty Level</Text>
-      <View style={styles.picker}>
-        <Picker
-          mode="dropdown"
-          selectedValue={props.activityDifficulty}
-          onValueChange={props.setActivityDifficulty}
-          // style={{borderRadius:20, borderColor:"#000", borderWidth:3, height:100}}
-        >
-          <Picker.Item label="Easy" value="easy" />
-          <Picker.Item label="Average" value="average" />
-          <Picker.Item label="Difficult" value="difficult" />
-          <Picker.Item label="Challenge" value="challenge" />
-        </Picker>
-      </View>
+          <Text style={{ fontSize: 16, fontWeight: 500 }}>
+            Difficulty Level
+          </Text>
+          <View style={styles.picker}>
+            <Picker
+              mode="dropdown"
+              selectedValue={props.activityDifficulty}
+              onValueChange={props.setActivityDifficulty}
+              // style={{borderRadius:20, borderColor:"#000", borderWidth:3, height:100}}
+            >
+              <Picker.Item label="Easy" value="easy" />
+              <Picker.Item label="Average" value="average" />
+              <Picker.Item label="Difficult" value="difficult" />
+              <Picker.Item label="Challenge" value="challenge" />
+            </Picker>
+          </View>
+        </View>
+      )}
     </View>
   </View>
 );

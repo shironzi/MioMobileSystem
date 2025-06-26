@@ -3,11 +3,11 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 import LoadingCard from "@/components/loadingCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { deleteAssignment, getAssignments } from "@/utils/query";
-import { useAuthGuard } from "@/utils/useAuthGuard";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -50,14 +50,9 @@ const assignments = () => {
   useFocusEffect(
     useCallback(() => {
       const fetchAssignments = async () => {
-        try {
-          const response = await getAssignments(subjectId);
-          setAssignments(response.assignments);
-          setLoading(false);
-        } catch (err) {
-          console.error("Fetch assignment error: ", err);
-          useAuthGuard(err);
-        }
+        const response = await getAssignments(subjectId);
+        setAssignments(response.assignments);
+        setLoading(false);
       };
 
       fetchAssignments();
@@ -79,27 +74,37 @@ const assignments = () => {
     );
   }
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
+
   const handleDelete = async () => {
     if (targetAssignment === null) return;
 
-    try {
-      const res = await deleteAssignment(subjectId, targetAssignment);
+    const res = await deleteAssignment(subjectId, targetAssignment);
 
-      if (res.success) {
-        setAssignments((prev) =>
-          prev.filter((ass) => ass.assignment_id != targetAssignment),
-        );
-      }
-      setDeleteConfirm(false);
-      setTargetAssignment(null);
-    } catch (err) {
-      console.error("Deleting error: " + err);
+    if (res.success) {
+      setAssignments((prev) =>
+        prev.filter((ass) => ass.assignment_id != targetAssignment),
+      );
     }
+    setDeleteConfirm(false);
+    setTargetAssignment(null);
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
+      >
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
           // 	<MaterialIcon name="add" size={30} color="#fff" />

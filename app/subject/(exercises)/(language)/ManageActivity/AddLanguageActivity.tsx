@@ -76,13 +76,19 @@ const AddLanguageActivity = () => {
   const [activityType, setActivityType] = useState<string>("fill");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [loading, setLoading] = useState<boolean>(false);
+  const [activityTitle, setActivityTitle] = useState<string>("");
+  const [titleError, setTitleError] = useState<boolean>(false);
 
-  const header = () => (
+  const header = (
     <LanguageHeader
       activityType={activityType}
       setActivityType={(value: string) => setActivityType(value)}
       activityDifficulty={activityDifficulty}
       setActivityDifficulty={(value: string) => setActivityDifficulty(value)}
+      titleError={titleError}
+      activityTitle={activityTitle}
+      setActivityTitle={setActivityTitle}
+      activityId={activityId}
     />
   );
 
@@ -99,6 +105,7 @@ const AddLanguageActivity = () => {
             activityId,
           );
 
+          setActivityTitle(res.title);
           const items: FillItem[] = [];
           Object.entries(res.items).forEach(
             ([key, value]: [string, any], index) => {
@@ -123,6 +130,7 @@ const AddLanguageActivity = () => {
             activityId,
           );
 
+          setActivityTitle(res.title);
           const items: HomonymItem[] = [];
           Object.entries(res.items).forEach(
             ([key, value]: [string, any], index) => {
@@ -179,7 +187,7 @@ const AddLanguageActivity = () => {
       {activityType === "fill" && (
         <FlatList
           data={fillItems}
-          ListHeaderComponent={activityId ? null : header}
+          ListHeaderComponent={header}
           keyExtractor={(item) => item.id}
           keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
@@ -192,6 +200,9 @@ const AddLanguageActivity = () => {
               activityId={activityId}
               activityType={activityType}
               difficulty={difficulty ? difficulty : activityDifficulty}
+              activityTitle={activityTitle}
+              setTitleError={setTitleError}
+              titleError={titleError}
             />
           )}
         />
@@ -200,7 +211,7 @@ const AddLanguageActivity = () => {
       {activityType === "homonyms" && (
         <FlatList
           data={homonymItems}
-          ListHeaderComponent={activityId ? null : header}
+          ListHeaderComponent={header}
           keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
@@ -213,6 +224,9 @@ const AddLanguageActivity = () => {
               activityId={activityId}
               activityType={activityType}
               difficulty={difficulty ? difficulty : activityDifficulty}
+              activityTitle={activityTitle}
+              setTitleError={setTitleError}
+              titleError={titleError}
             />
           )}
         />

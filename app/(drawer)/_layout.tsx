@@ -69,13 +69,9 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    try {
-      await logout();
-      rootNav?.dispatch(StackActions.replace("index"));
-      props.navigation.closeDrawer();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await logout();
+    rootNav?.dispatch(StackActions.replace("index"));
+    props.navigation.closeDrawer();
   }, [props.navigation]);
 
   useFocusEffect(

@@ -28,6 +28,8 @@ interface Props {
   difficulty: string;
   subjectId: string;
   activityId: string;
+  activityTitle: string;
+  titleError: (value: boolean) => void;
 }
 
 const QuestionRenderItem = ({
@@ -43,17 +45,13 @@ const QuestionRenderItem = ({
   difficulty,
   subjectId,
   activityId,
+  activityTitle,
+  titleError,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
   const handleAddPicture = (item: PronunciationItem) => {
     const errors: InputError[] = [];
-
-    items.forEach((item) => {
-      if (!item.text.trim()) {
-        errors.push({ id: item.id, error: "word" });
-      }
-    });
 
     if (errors.length > 0) {
       setInputErrors(errors);
@@ -99,6 +97,13 @@ const QuestionRenderItem = ({
   const handlePreview = () => {
     const errors: InputError[] = [];
 
+    if (!activityTitle.trim()) {
+      errors.push({ id: "", error: "title" });
+      titleError(true);
+
+      console.log(activityTitle);
+    }
+
     items.forEach((item) => {
       if (!item.text.trim()) {
         errors.push({ id: item.id, error: "word" });
@@ -109,6 +114,7 @@ const QuestionRenderItem = ({
       setInputErrors(errors);
       return;
     }
+    titleError(false);
 
     const encodedItems = encodeURIComponent(JSON.stringify(items)) ?? [];
     router.push({
@@ -119,6 +125,7 @@ const QuestionRenderItem = ({
         activity_type: activityType,
         difficulty: difficulty,
         activityId: activityId,
+        title: activityTitle,
       },
     });
   };

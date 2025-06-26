@@ -87,7 +87,6 @@ const AddAuditoryActivity = () => {
         ? bingoItems.length <= 1
         : matchingItems.length <= 1)
     ) {
-      console.error("Cannot remove the last item.");
       return;
     }
 
@@ -167,7 +166,6 @@ const AddAuditoryActivity = () => {
         ? bingoItems.length <= 1
         : matchingItems.length <= 1)
     ) {
-      console.error("Cannot remove the last item.");
       return;
     }
 

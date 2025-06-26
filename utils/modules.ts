@@ -7,7 +7,6 @@ export async function getModules(subjectId: string) {
     return data;
   } catch (err: any) {
     if (err.response) {
-      console.error(err);
       return err.response.status;
     } else if (err.request) {
       return { error: "No response from server" };
@@ -24,7 +23,6 @@ export async function getModuleById(subjectId: string, moduleId: string) {
     return data;
   } catch (err: any) {
     if (err.response) {
-      console.error(err);
       return err.response.status;
     } else if (err.request) {
       return { error: "No response from server" };

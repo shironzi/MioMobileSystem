@@ -1,8 +1,9 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -47,11 +48,23 @@ const newCourseDetails = () => {
 
   HeaderConfig(headerTitle);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 50 }}
       style={{ backgroundColor: "#fff", flex: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.cardContainer}>
         <Image
@@ -303,35 +316,35 @@ const styles = StyleSheet.create({
     // left: 10,
   },
 
-	subDesc: {
-		textAlign: "justify",
-		fontWeight: 300,
-		fontSize: 12,
-	},
-	subContainer: {},
-	speech: {
-		height: 115,
-		width: 355,
-		left: 20,
-	},
-	subCourse: {
-		backgroundColor: "000",
-		borderColor: "#ddd",
-		borderWidth: 1,
-		marginHorizontal: 20,
-		marginVertical: 10,
-		borderRadius: 20,
-		padding: 10,
-	},
-	courseImg: {
-		height: 40,
-		width: 40,
-		left: -10,
-	},
-	row: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 30,
-	},
+  subDesc: {
+    textAlign: "justify",
+    fontWeight: 300,
+    fontSize: 12,
+  },
+  subContainer: {},
+  speech: {
+    height: 115,
+    width: 355,
+    left: 20,
+  },
+  subCourse: {
+    backgroundColor: "000",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    marginHorizontal: 20,
+    marginVertical: 10,
+    borderRadius: 20,
+    padding: 10,
+  },
+  courseImg: {
+    height: 40,
+    width: 40,
+    left: -10,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+  },
 });

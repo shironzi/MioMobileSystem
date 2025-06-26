@@ -56,7 +56,7 @@ const ScoresAcademic = () => {
     }>();
 
   const [scoreError, setScoreError] = useState<string>("");
-  const [errorMessageModal, setErrorMessageModal] = useState(true);
+  const [errorMessageModal, setErrorMessageModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const handleSubmit = async () => {
@@ -122,48 +122,37 @@ const ScoresAcademic = () => {
   const generateScoreBook = async () => {
     const fileUri = FileSystem.documentDirectory + filename;
 
-    try {
-      const url = student_answer.work;
-      if (!url) {
-        console.error("Invalid URL, cannot proceed with download.");
-        return;
-      }
-
-      const result = await FileSystem.downloadAsync(url, fileUri);
-
-      const mimeType = result.headers["Content-Type"] || mimeTypeFromFilename;
-      await saveFile(result.uri, filename, mimeType);
-    } catch (error) {
-      console.error("Error downloading file:", error);
+    const url = student_answer.work;
+    if (!url) {
+      return;
     }
+
+    const result = await FileSystem.downloadAsync(url, fileUri);
+
+    const mimeType = result.headers["Content-Type"] || mimeTypeFromFilename;
+    await saveFile(result.uri, filename, mimeType);
   };
 
   const saveFile = async (uri: string, filename: string, mimeType: string) => {
-    try {
-      const permission =
-        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (permission.granted) {
-        const base64 = await FileSystem.readAsStringAsync(uri, {
+    const permission =
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (permission.granted) {
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      if (mimeType) {
+        const savedUri =
+          await FileSystem.StorageAccessFramework.createFileAsync(
+            permission.directoryUri,
+            filename,
+            mimeType,
+          );
+
+        await FileSystem.writeAsStringAsync(savedUri, base64, {
           encoding: FileSystem.EncodingType.Base64,
         });
-
-        if (mimeType) {
-          const savedUri =
-            await FileSystem.StorageAccessFramework.createFileAsync(
-              permission.directoryUri,
-              filename,
-              mimeType,
-            );
-
-          await FileSystem.writeAsStringAsync(savedUri, base64, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-        } else {
-          console.error("Invalid mimeType received.");
-        }
       }
-    } catch (error) {
-      console.error("Error saving file:", error);
     }
   };
 

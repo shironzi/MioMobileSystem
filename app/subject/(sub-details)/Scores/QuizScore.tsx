@@ -36,6 +36,7 @@ const QuizScore = () => {
     const fetchScores = async () => {
       const res = await getStudentQuizAttempt(subjectId, activityId, studentId);
 
+      console.log(res);
       if (res.success) {
         console.log(res);
         setDescription(res.description);
@@ -57,8 +58,6 @@ const QuizScore = () => {
         );
 
         setItems(quizItems);
-      } else {
-        console.error("Failed to fetch data");
       }
     };
 

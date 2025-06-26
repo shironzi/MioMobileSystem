@@ -112,36 +112,31 @@ const MatchingCards = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      if (!attemptId) return;
+    if (!attemptId) return;
 
-      setIsSending(true);
+    setIsSending(true);
 
-      const res = await submitMatchingActivity(
-        subjectId,
-        difficulty,
-        activityId,
-        attemptId,
-        answerLogs,
-        answers,
-      );
+    const res = await submitMatchingActivity(
+      subjectId,
+      difficulty,
+      activityId,
+      attemptId,
+      answerLogs,
+      answers,
+    );
 
-      if (!res.success) {
-        console.error("failed to submit");
-        return;
-      }
-      router.push({
-        pathname: "/subject/(exercises)/AuditoryScores",
-        params: {
-          score: res.score,
-          totalItems: total,
-          activity_type,
-          difficulty,
-        },
-      });
-    } catch (err) {
-      console.error("Submission failed:", err);
+    if (!res.success) {
+      return;
     }
+    router.push({
+      pathname: "/subject/(exercises)/AuditoryScores",
+      params: {
+        score: res.score,
+        totalItems: total,
+        activity_type,
+        difficulty,
+      },
+    });
 
     setIsSending(false);
   };
@@ -217,32 +212,28 @@ const MatchingCards = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      try {
-        console.log(prevAttemptId);
-        const res = prevAttemptId
-          ? await getAttemptActivityAuditory(
-              subjectId,
-              activity_type,
-              activityId,
-              prevAttemptId,
-            )
-          : await takeAuditoryActivity(
-              subjectId,
-              activity_type,
-              difficulty,
-              activityId,
-            );
+      console.log(prevAttemptId);
+      const res = prevAttemptId
+        ? await getAttemptActivityAuditory(
+            subjectId,
+            activity_type,
+            activityId,
+            prevAttemptId,
+          )
+        : await takeAuditoryActivity(
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+          );
 
-        console.log(res);
+      console.log(res);
 
-        setActivity(res.items);
-        setAudio(res.audio);
-        setAttemptId(res.attemptId);
-        setTotal(res.total);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch activity:", error);
-      }
+      setActivity(res.items);
+      setAudio(res.audio);
+      setAttemptId(res.attemptId);
+      setTotal(res.total);
+      setLoading(false);
     };
 
     fetchActivity();

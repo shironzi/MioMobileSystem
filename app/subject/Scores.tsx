@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  // RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import SpeechScores from "@/app/subject/(sub-details)/Scores/SpeechScores";
 import { useLocalSearchParams } from "expo-router";
@@ -54,7 +60,7 @@ const Scores = () => {
       ).then(async (uri) => {
         await FileSystem.writeAsStringAsync(uri, base64, {
           encoding: FileSystem.EncodingType.Base64,
-        }).catch((e) => console.error(e));
+        });
       });
     } else {
       shareAsync(uri);
@@ -92,12 +98,24 @@ const Scores = () => {
     );
   }
 
+  // const [isRefreshing, setIsRefreshing] = useState(false);
+  //
+  // const onRefresh = () => {
+  //   setIsRefreshing(true);
+  //   setTimeout(() => {
+  //     setIsRefreshing(false);
+  //   }, 2000);
+  // };
+
   return (
     <ScrollView
       style={{
         paddingVertical: 20,
         backgroundColor: "#fff",
       }}
+      // refreshControl={
+      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      // }
     >
       <View style={{ paddingBottom: 50 }}>
         {role === "teacher" && (

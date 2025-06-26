@@ -135,7 +135,6 @@ const MatchingPreview = () => {
   const handleSubmit = async () => {
     console.log(answers);
     if (answers.length !== 5) {
-      console.error("all items must be have connections");
       return;
     }
     try {
@@ -172,7 +171,6 @@ const MatchingPreview = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error("Submission error:", err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
   };

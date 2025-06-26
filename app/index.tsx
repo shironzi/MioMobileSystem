@@ -51,10 +51,6 @@ const Index = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    defaultValues: {
-      email: "maria.santos@example.com",
-      password: "1997-04-10",
-    },
     resolver: yupResolver(schema),
   });
 
@@ -102,7 +98,7 @@ const Index = () => {
         setErrorMessage("Login failed. Please try again.");
       }
     } catch (e: any) {
-      console.error("Login error:", e.message);
+      // console.error("Login error:", e.message);
       setErrorMessage("Failed to log in. Please check your credentials.");
     }
   };

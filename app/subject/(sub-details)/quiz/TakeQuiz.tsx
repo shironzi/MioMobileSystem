@@ -54,25 +54,13 @@ const TakeQuiz = () => {
       const { itemId, answer, file } = currentAnswer;
 
       if (answer !== null || (file && file.length > 0)) {
-        try {
-          await submitAnswer(
-            subjectId,
-            quizId,
-            attemptId,
-            itemId,
-            answer,
-            file,
-          );
+        await submitAnswer(subjectId, quizId, attemptId, itemId, answer, file);
 
-          setAnswers((prev) =>
-            prev.map((a) =>
-              a.itemId === itemId ? { ...a, hasChanged: false } : a,
-            ),
-          );
-        } catch (err) {
-          console.error("Submission error:", err);
-          return;
-        }
+        setAnswers((prev) =>
+          prev.map((a) =>
+            a.itemId === itemId ? { ...a, hasChanged: false } : a,
+          ),
+        );
       }
     }
 

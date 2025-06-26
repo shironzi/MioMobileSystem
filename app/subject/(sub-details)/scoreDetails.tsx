@@ -5,10 +5,9 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Image,
 } from "react-native";
 import { finishActivity } from "@/utils/specialized";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
@@ -48,35 +47,29 @@ const ScoreDetails = () => {
 
     const fetchScores = async () => {
       setLoading(true);
-      try {
-        const res = await finishActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-          attemptId,
-        );
-        if (!res.success) {
-          throw new Error(res.error || "Failed to load scores");
-        }
-
-        const entries: EvalEntry[] = Object.entries(res.scores || {}).map(
-          ([id, data]: [string, any]) => ({
-            id,
-            phones: data.phones ?? [],
-          }),
-        );
-
-        setTotal(100);
-
-        setOverallScore(res.overall_score);
-        setEvaluationsScore(entries);
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message || "Unexpected error");
-      } finally {
-        setLoading(false);
+      const res = await finishActivity(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+        attemptId,
+      );
+      if (!res.success) {
+        throw new Error(res.error || "Failed to load scores");
       }
+
+      const entries: EvalEntry[] = Object.entries(res.scores || {}).map(
+        ([id, data]: [string, any]) => ({
+          id,
+          phones: data.phones ?? [],
+        }),
+      );
+
+      setTotal(100);
+
+      setOverallScore(res.overall_score);
+      setEvaluationsScore(entries);
+      setLoading(false);
     };
 
     fetchScores();

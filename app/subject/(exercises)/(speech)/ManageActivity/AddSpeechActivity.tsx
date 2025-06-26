@@ -44,6 +44,8 @@ const AddSpeechActivity = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
+  const [activityTitle, setActivityTitle] = useState<string>("");
+  const [titleError, setTitleError] = useState<boolean>(false);
 
   const { subjectId, activity_type, difficulty, category, activityId } =
     useLocalSearchParams<{
@@ -75,66 +77,68 @@ const AddSpeechActivity = () => {
   const [questionError, setQuestionError] = useState<InputError[]>([]);
   const [phraseError, setPhraseError] = useState<InputError[]>([]);
 
-  const header = !activityId ? (
+  const header = (
     <SpeechHeader
       activityType={activityType}
       setActivityType={setActivityType}
       activityDifficulty={activityDifficulty}
       setActivityDifficulty={setActivityDifficulty}
+      activityTitle={activityTitle}
+      setActivityTitle={setActivityTitle}
+      titleError={titleError}
+      activityId={activityId}
     />
-  ) : null;
+  );
 
   useEffect(() => {
     if (!activityId) return;
 
     const fetchActivity = async () => {
-      try {
-        const res = await getActivityById(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
+      const res = await getActivityById(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+      );
+
+      const flashcards = res.items || res.flashcards || [];
+
+      if (activity_type === "picture") {
+        const formatted: PictureItem[] = Object.values(flashcards).map(
+          (item: any) => ({
+            id: item.flashcard_id,
+            flashcard_id: item.flashcard_id,
+            file: null,
+            image_url: item.image_url,
+            text: item.text,
+          }),
+        );
+        setPictureFlashcards(formatted);
+        setActivityType("picture");
+      } else {
+        const formatted: Flashcard[] = Object.values(flashcards).map(
+          (item: any) => ({
+            id: item.flashcard_id,
+            flashcard_id: item.flashcard_id,
+            text: item.text,
+          }),
         );
 
-        const flashcards = res.items || res.flashcards || [];
-
-        if (activity_type === "picture") {
-          const formatted: PictureItem[] = Object.values(flashcards).map(
-            (item: any) => ({
-              id: item.flashcard_id,
-              flashcard_id: item.flashcard_id,
-              file: null,
-              image_url: item.image_url,
-              text: item.text,
-            }),
-          );
-          setPictureFlashcards(formatted);
-          setActivityType("picture");
-        } else {
-          const formatted: Flashcard[] = Object.values(flashcards).map(
-            (item: any) => ({
-              id: item.flashcard_id,
-              flashcard_id: item.flashcard_id,
-              text: item.text,
-            }),
-          );
-
-          if (activity_type === "question") {
-            setQuestionFlashcard(formatted);
-            setActivityType("question");
-          } else if (activity_type === "phrase") {
-            setPhraseFlashcard(formatted);
-            setActivityType("phrase");
-          }
-          // else if (activity_type === "pronunciation") {
-          //   setPronunciationFlashcard(formatted);
-          //   setActivityType("pronunciation");
-          // }
+        if (activity_type === "question") {
+          setQuestionFlashcard(formatted);
+          setActivityType("question");
+        } else if (activity_type === "phrase") {
+          setPhraseFlashcard(formatted);
+          setActivityType("phrase");
         }
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch activity:", error);
+        // else if (activity_type === "pronunciation") {
+        //   setPronunciationFlashcard(formatted);
+        //   setActivityType("pronunciation");
+        // }
       }
+
+      setActivityTitle(res.title);
+      setLoading(false);
     };
 
     fetchActivity();
@@ -178,6 +182,8 @@ const AddSpeechActivity = () => {
               lastIndex={pictureFlashcard[pictureFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}
@@ -201,6 +207,8 @@ const AddSpeechActivity = () => {
               lastIndex={questionFlashcard[questionFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}
@@ -224,6 +232,8 @@ const AddSpeechActivity = () => {
               lastIndex={phraseFlashcard[phraseFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}

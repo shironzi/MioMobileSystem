@@ -65,15 +65,11 @@ const MessageDetails = () => {
   };
 
   const fetchConversation = async () => {
-    try {
-      const res = await getConversation(thread);
-      setMessageData(res.conversation);
-      setSenderId(res.sender);
-      setReceiverId(res.receiver);
-      console.log("Conversation fetched for thread:", thread);
-    } catch (err) {
-      console.error("Error fetching conversation:", err);
-    }
+    const res = await getConversation(thread);
+    setMessageData(res.conversation);
+    setSenderId(res.sender);
+    setReceiverId(res.receiver);
+    console.log("Conversation fetched for thread:", thread);
   };
 
   useEffect(() => {
