@@ -316,9 +316,10 @@ const LanguageHomonymActivity = ({
 
     if (!activityTitle.trim()) {
       setTitleError(true);
+      console.log("hello");
     }
 
-    if (hasErrors || titleError) {
+    if (hasErrors || !activityTitle.trim()) {
       setInputError(inputErrors);
       setDistractorErrorInput(distractorErrors);
       setAnswerErrorInput(answerErrors);
@@ -343,6 +344,7 @@ const LanguageHomonymActivity = ({
         difficulty: difficulty,
         subjectId: subjectId,
         activityId: activityId,
+        title: activityTitle,
       },
     });
   };

@@ -216,9 +216,11 @@ export async function createHomonym(
   activity: HomonymItem[],
   difficulty: string,
   subjectId: string,
+  title: string,
 ) {
   const formData = new FormData();
   formData.append("difficulty", difficulty);
+  formData.append("title", title);
 
   activity.forEach((item, i) => {
     item.text.forEach((sentence, j) => {
@@ -328,10 +330,12 @@ export async function editHomonyms(
   difficulty: string,
   subjectId: string,
   activityId: string,
+  title: string,
 ) {
   const formData = new FormData();
 
   formData.append("difficulty", difficulty);
+  formData.append("title", title);
 
   for (let index = 0; index < activity.length; index++) {
     const item = activity[index];

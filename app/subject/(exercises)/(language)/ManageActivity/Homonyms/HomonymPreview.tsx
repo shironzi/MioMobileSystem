@@ -27,12 +27,14 @@ interface HomonymItem {
 const Homonyms = () => {
   HeaderConfig("Homonyms");
 
-  const { data, subjectId, difficulty, activityId } = useLocalSearchParams<{
-    data: string;
-    subjectId: string;
-    difficulty: string;
-    activityId: string;
-  }>();
+  const { data, subjectId, difficulty, activityId, title } =
+    useLocalSearchParams<{
+      data: string;
+      subjectId: string;
+      difficulty: string;
+      activityId: string;
+      title: string;
+    }>();
   const items: HomonymItem[] = JSON.parse(data);
   const [answers, setAnswers] = useState<{ id: string; answer: string[] }[]>(
     [],
@@ -59,11 +61,16 @@ const Homonyms = () => {
     });
   };
 
+  console.log(activityId);
+
   const handleCreate = async () => {
     try {
+      console.log(items);
       const res = activityId
-        ? await editHomonyms(items, difficulty, subjectId, activityId)
-        : await createHomonym(items, difficulty, subjectId);
+        ? await editHomonyms(items, difficulty, subjectId, activityId, title)
+        : await createHomonym(items, difficulty, subjectId, title);
+
+      console.log(res);
 
       if (res.success) {
         Alert.alert(

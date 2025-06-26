@@ -130,7 +130,7 @@ const AddLanguageActivity = () => {
             activityId,
           );
 
-          setActivityTitle(res.title);
+          setActivityTitle(res.title ?? "");
           const items: HomonymItem[] = [];
           Object.entries(res.items).forEach(
             ([key, value]: [string, any], index) => {
