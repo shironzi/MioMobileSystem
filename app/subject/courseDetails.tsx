@@ -62,9 +62,9 @@ const newCourseDetails = () => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 50 }}
       style={{ backgroundColor: "#fff", flex: 1 }}
-      // refreshControl={
-      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      // }
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     >
       <View style={styles.cardContainer}>
         <Image
