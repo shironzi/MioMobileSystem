@@ -5,11 +5,7 @@ import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import {
-  getAttemptActivity,
-  startActivity,
-  submitAnswer,
-} from "@/utils/specialized";
+import { startActivity, submitAnswer } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -32,13 +28,12 @@ const PictureFlashcards = () => {
     image_url: string;
   }
 
-  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
-      prevAttemptId: string;
     }>();
 
   const [cards, setCards] = useState<PictureItem[]>([]);
@@ -94,19 +89,14 @@ const PictureFlashcards = () => {
 
     const fetchActivity = async () => {
       try {
-        const res = prevAttemptId
-          ? await getAttemptActivity(
-              subjectId,
-              activity_type,
-              activityId,
-              prevAttemptId,
-            )
-          : await startActivity(
-              subjectId,
-              activity_type,
-              difficulty,
-              activityId,
-            );
+        const res = await startActivity(
+          subjectId,
+          activity_type,
+          difficulty,
+          activityId,
+        );
+
+        console.log(res);
 
         if (!res.success) {
           Alert.alert("Failed to start the activity");
@@ -125,10 +115,7 @@ const PictureFlashcards = () => {
         setCards(fetchedFlashcards);
         setAttemptId(res.attemptId);
 
-        const lastAnsweredIndex = res.last_answered ?? 0;
-        setCurrentCard(
-          lastAnsweredIndex < fetchedFlashcards.length ? lastAnsweredIndex : 0,
-        );
+        setCurrentCard(res.currentItem);
       } catch (error) {
         if (isMounted) {
           Alert.alert(

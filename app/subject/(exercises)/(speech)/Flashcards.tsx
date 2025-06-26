@@ -3,11 +3,7 @@ import LoadingCard from "@/components/loadingCard";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import {
-  getAttemptActivity,
-  startActivity,
-  submitAnswer,
-} from "@/utils/specialized";
+import { startActivity, submitAnswer } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -26,13 +22,12 @@ const Flashcards = () => {
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
-      prevAttemptId: string;
     }>();
 
   const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
@@ -83,19 +78,12 @@ const Flashcards = () => {
     let isMounted = true;
     const fetchActivity = async () => {
       try {
-        const res = prevAttemptId
-          ? await getAttemptActivity(
-              subjectId,
-              activity_type,
-              activityId,
-              prevAttemptId,
-            )
-          : await startActivity(
-              subjectId,
-              activity_type,
-              difficulty,
-              activityId,
-            );
+        const res = await startActivity(
+          subjectId,
+          activity_type,
+          difficulty,
+          activityId,
+        );
 
         if (res.success) {
           const fetchedFlashcards = Object.entries(res.flashcards).map(
@@ -107,13 +95,7 @@ const Flashcards = () => {
 
           setAttemptId(res.attemptId);
           setCards(fetchedFlashcards);
-
-          const lastAnsweredIndex = res.last_answered ?? 0;
-          setCurrentCard(
-            lastAnsweredIndex < fetchedFlashcards.length
-              ? lastAnsweredIndex
-              : 0,
-          );
+          setCurrentCard(res.currentItem);
         } else {
           Alert.alert("Failed to start the activity");
           router.back();
