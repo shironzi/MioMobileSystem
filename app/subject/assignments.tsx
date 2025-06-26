@@ -7,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
-  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -74,15 +73,6 @@ const assignments = () => {
     );
   }
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
-
   const handleDelete = async () => {
     if (targetAssignment === null) return;
 
@@ -99,12 +89,7 @@ const assignments = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        // refreshControl={
-        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        // }
-      >
+      <ScrollView>
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
           // 	<MaterialIcon name="add" size={30} color="#fff" />

@@ -1137,7 +1137,7 @@ export async function getStudentQuizAttempt(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/scores/quiz/${quizId}/${studentId}`,
+      `/subject/${subjectId}/check/quiz/${quizId}/${studentId}`,
     );
     return data;
   } catch (err: any) {

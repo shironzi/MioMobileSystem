@@ -1,6 +1,5 @@
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
-import { formatToLongDateTime } from "@/utils/DateFormat";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getQuizzes } from "@/utils/query";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -149,9 +148,7 @@ const Quiz = () => {
                 marginHorizontal: -10,
               }}
             >
-              <Text style={[globalStyles.text2]}>
-                {formatToLongDateTime(quiz.deadline_date)}
-              </Text>
+              <Text style={[globalStyles.text2]}>{quiz.deadline_date}</Text>
               <FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
             </View>
           </TouchableOpacity>
