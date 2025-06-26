@@ -58,20 +58,21 @@ const index = () => {
     f_name = name.split(" ")[0];
   }
 
-  useEffect(() => {
-    async function fetchSubjects() {
-      try {
-        const data = await getSubjects();
-        setSubjects(data.subjects);
-        setRole(data.role);
-        if (data.role) {
-          await SecureStore.setItemAsync("role", data.role);
-        }
-        setLoading(false);
-      } catch (err) {
-        useAuthGuard(err);
+  const fetchSubjects = async () => {
+    try {
+      const data = await getSubjects();
+      setSubjects(data.subjects);
+      setRole(data.role);
+      if (data.role) {
+        await SecureStore.setItemAsync("role", data.role);
       }
+      setLoading(false);
+    } catch (err) {
+      useAuthGuard(err);
     }
+  };
+
+  useEffect(() => {
     fetchSubjects();
   }, []);
 
@@ -101,9 +102,10 @@ const index = () => {
 
   const onRefresh = () => {
     setIsRefreshing(true);
+    fetchSubjects();
     setTimeout(() => {
       setIsRefreshing(false);
-    }, 2000);
+    }, 3000);
   };
 
   if (loading) {

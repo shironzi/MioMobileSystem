@@ -130,7 +130,7 @@ export default function Layout() {
       <FireAlertModal
         visible={showFireAlert}
         onClose={() => {
-          setShowAlert(false);
+          setFireAlert(false);
           Vibration.cancel();
         }}
         title={modalTitle}
@@ -140,7 +140,7 @@ export default function Layout() {
       <FloodAlertModal
         visible={showFloodAlert}
         onClose={() => {
-          setShowAlert(false);
+          setFloodAlert(false);
           Vibration.cancel();
         }}
         title={modalTitle}
@@ -150,7 +150,7 @@ export default function Layout() {
       <SchoolThreat
         visible={showSchoolThreat}
         onClose={() => {
-          setShowAlert(false);
+          setSchoolThreat(false);
           Vibration.cancel();
         }}
         title={modalTitle}
@@ -160,7 +160,7 @@ export default function Layout() {
       <PowerOutageModal
         visible={showPowerOutage}
         onClose={() => {
-          setShowAlert(false);
+          setPowerOutage(false);
           Vibration.cancel();
         }}
         title={modalTitle}

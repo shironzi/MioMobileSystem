@@ -136,7 +136,7 @@ export function validateFillItems(items: FillItem[]) {
       }
     });
 
-    if (!item.audio) {
+    if (!item.audio && !item.audio_path) {
       audioErrors.push({
         id: item.id,
         index: null,

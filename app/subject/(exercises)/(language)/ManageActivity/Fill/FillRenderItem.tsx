@@ -35,6 +35,9 @@ interface Props {
   difficulty: string;
   subjectId: string;
   activityId: string;
+  activityTitle: string;
+  setTitleError: (value: boolean) => void;
+  titleError: boolean;
 }
 
 const FillRenderItem = ({
@@ -45,6 +48,9 @@ const FillRenderItem = ({
   difficulty,
   subjectId,
   activityId,
+  activityTitle,
+  setTitleError,
+  titleError,
 }: Props) => {
   const [inputError, setInputError] = useState<InputError[]>([]);
   const [distractorErrorInput, setDistractorErrorInput] = useState<
@@ -246,12 +252,36 @@ const FillRenderItem = ({
     const { inputErrors, audioErrors, distractorErrors } =
       validateFillItems(fillItems);
 
-    if (inputErrors || audioErrors || distractorErrors) {
+    console.log(inputErrors);
+    console.log(audioErrors);
+    console.log(distractorErrors);
+
+    let title = false;
+
+    if (!activityTitle.trim()) {
+      setTitleError(true);
+      title = true;
+    } else {
+      setTitleError(false);
+    }
+
+    if (
+      inputErrors.length ||
+      audioErrors.length ||
+      distractorErrors.length ||
+      title
+    ) {
       setInputError(inputErrors);
       setDistractorErrorInput(distractorErrors);
       setAudioError(audioErrors);
+      console.log(title);
+      console.log(inputErrors);
+      console.log(audioErrors);
+      console.log(distractorErrors);
+      return;
     }
 
+    setTitleError(false);
     setInputError([]);
     setDistractorErrorInput([]);
     setAudioError([]);
@@ -266,6 +296,7 @@ const FillRenderItem = ({
         activityType: activityType,
         difficulty: difficulty,
         activityId: activityId,
+        title: activityTitle,
       },
     });
   };

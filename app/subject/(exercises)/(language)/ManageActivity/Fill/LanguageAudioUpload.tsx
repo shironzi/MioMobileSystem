@@ -47,13 +47,15 @@ const LanguageAudioUpload = (props: {
 
   return (
     <View style={styles.audioRow}>
-      <Text style={[globalStyles.text1, { marginVertical: 10, marginTop:-5 }]}>Audio Type</Text>
+      <Text style={[globalStyles.text1, { marginVertical: 10, marginTop: -5 }]}>
+        Audio Type
+      </Text>
       <View
         style={{
           borderWidth: 1,
           borderRadius: 20,
           paddingHorizontal: 10,
-          borderColor:"#ddd"
+          borderColor: "#ddd",
         }}
       >
         <Picker
@@ -69,7 +71,7 @@ const LanguageAudioUpload = (props: {
       </View>
       <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
         {props.item.audioType === "upload" && (
-          <View>
+          <View style={{ width: "90%", marginLeft: -10 }}>
             {!props.item.audio && !props.item.audio_path ? (
               <AudioUpload
                 handleFiles={(file: FileInfo) =>
@@ -82,20 +84,20 @@ const LanguageAudioUpload = (props: {
                 audio_path={null}
               />
             ) : (
-              <View style={{ flexDirection: "column", rowGap: 5 }}>
-                <View style={styles.itemHeaderRow}>
-                  <Text>{props.item.audio?.name ?? props.item.filename}</Text>
-                  <TouchableOpacity
-                    onPress={() => props.handleRemoveAudio(props.item.id)}
-                  >
-                    <AntDesign name="close" size={20} color="#aaa" />
-                  </TouchableOpacity>
-                </View>
+              <View style={{ flexDirection: "row", rowGap: 5 }}>
                 {(props.item.audio_path || props.item.audio) && (
                   <EditPlayer
                     uri={props.item.audio?.uri ?? props.item.audio_path!}
                   />
                 )}
+                <View style={styles.itemHeaderRow}>
+                  <Text>{props.item.audio?.name ?? props.item.filename}</Text>
+                  <TouchableOpacity
+                    onPress={() => props.handleRemoveAudio(props.item.id)}
+                  >
+                    <AntDesign name="close" size={24} color="#aaa" />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           </View>
@@ -124,7 +126,6 @@ const styles = StyleSheet.create({
   audioRow: {
     flexDirection: "column",
     justifyContent: "space-around",
-  
   },
   itemHeaderRow: {
     flexDirection: "row",

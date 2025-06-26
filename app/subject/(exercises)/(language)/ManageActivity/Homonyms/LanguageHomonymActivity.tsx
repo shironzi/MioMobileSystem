@@ -36,6 +36,9 @@ interface Props {
   difficulty: string;
   subjectId: string;
   activityId: string;
+  activityTitle: string;
+  setTitleError: (value: boolean) => void;
+  titleError: boolean;
 }
 
 const LanguageHomonymActivity = ({
@@ -46,6 +49,9 @@ const LanguageHomonymActivity = ({
   difficulty,
   subjectId,
   activityId,
+  activityTitle,
+  setTitleError,
+  titleError,
 }: Props) => {
   const [inputError, setInputError] = useState<InputError[]>([]);
   const [answerErrorInput, setAnswerErrorInput] = useState<InputError[]>([]);
@@ -308,13 +314,19 @@ const LanguageHomonymActivity = ({
       hasErrors,
     } = validateHomonymItems(homonymItems);
 
-    if (hasErrors) {
+    if (!activityTitle.trim()) {
+      setTitleError(true);
+    }
+
+    if (hasErrors || titleError) {
       setInputError(inputErrors);
       setDistractorErrorInput(distractorErrors);
       setAnswerErrorInput(answerErrors);
       setAudioErrorInput(audioErrors);
       return;
     }
+
+    setTitleError(false);
 
     setInputError([]);
     setDistractorErrorInput([]);

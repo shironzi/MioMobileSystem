@@ -29,12 +29,14 @@ interface FillItem {
 const FillPreview = () => {
   HeaderConfig("Fill in the Blank");
 
-  const { data, subjectId, difficulty, activityId } = useLocalSearchParams<{
-    data: string;
-    subjectId: string;
-    difficulty: string;
-    activityId: string;
-  }>();
+  const { data, subjectId, difficulty, activityId, title } =
+    useLocalSearchParams<{
+      data: string;
+      subjectId: string;
+      difficulty: string;
+      activityId: string;
+      title: string;
+    }>();
 
   const items: FillItem[] = JSON.parse(data);
   const [currentItem, setCurrentItem] = useState<number>(0);
@@ -57,8 +59,10 @@ const FillPreview = () => {
   const handleSubmit = async () => {
     try {
       const res = activityId
-        ? await editFill(items, difficulty, subjectId, activityId)
-        : await createFill(items, difficulty, subjectId);
+        ? await editFill(items, difficulty, subjectId, activityId, title)
+        : await createFill(items, difficulty, subjectId, title);
+
+      console.log(res);
 
       if (res.success) {
         Alert.alert(
