@@ -39,13 +39,14 @@ interface PictureItem {
 const PictureFlashcards = () => {
   useHeaderConfig("Flashcards");
 
-  const { subjectId, activity_type, difficulty, activityId, data } =
+  const { subjectId, activity_type, difficulty, activityId, data, title } =
     useLocalSearchParams<{
       subjectId: string;
       activity_type: string;
       difficulty: string;
       activityId: string;
       data: string;
+      title: string;
     }>();
 
   const parsedBingoItems = useMemo<PictureItem[]>(() => {
@@ -57,21 +58,25 @@ const PictureFlashcards = () => {
   }, [data]);
 
   const [currentCard, setCurrentCard] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     try {
+      setIsSubmitting(true);
       const res = activityId
         ? await updatePictureActivity(
             subjectId,
             difficulty,
             activityId,
             parsedBingoItems,
+            title,
           )
         : await createPictureSpeechActivity(
             subjectId,
             parsedBingoItems,
             activity_type,
             difficulty,
+            title,
           );
 
       if (res.success) {
@@ -95,6 +100,8 @@ const PictureFlashcards = () => {
     } catch (err) {
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
+
+    setIsSubmitting(false);
   };
 
   const opacity = useSharedValue(1);
@@ -196,9 +203,16 @@ const PictureFlashcards = () => {
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
+          disabled={isSubmitting}
         >
           <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-            {activityId ? "Update" : "Create"}
+            {activityId
+              ? isSubmitting
+                ? "Updating"
+                : "Update"
+              : isSubmitting
+                ? "Creating"
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>

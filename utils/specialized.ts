@@ -147,6 +147,7 @@ export async function createPictureSpeechActivity(
   flashcards: PictureItem[],
   activityType: string,
   difficulty: string,
+  title: string,
 ) {
   const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
 
@@ -154,6 +155,7 @@ export async function createPictureSpeechActivity(
 
   formData.append("activity_type", activityType);
   formData.append("difficulty", difficulty);
+  formData.append("title", title);
 
   flashcards.forEach((item, index) => {
     if (item.file && item.text) {
@@ -187,12 +189,16 @@ export async function createSpeechActivity(
   activityType: string,
   difficulty: string,
   flashcards: Flashcard[],
+  title: string,
 ) {
   const payload = {
     activity_type: activityType,
     difficulty: difficulty,
     flashcards: flashcards,
+    title,
   };
+
+  console.log(payload);
 
   const { data } = await api.post(
     `/subject/${subjectId}/specialized/speech`,
@@ -220,10 +226,12 @@ export async function updatePictureActivity(
   difficulty: string,
   activityId: string,
   flashcards: PictureItem[],
+  title: string,
 ) {
   const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
 
   const formData = new FormData();
+  formData.append("title", title);
 
   flashcards.forEach((item, index) => {
     formData.append(`flashcards[${index}][text]`, item.text ?? "");
@@ -241,6 +249,8 @@ export async function updatePictureActivity(
       } as any);
     }
   });
+
+  console.log(formData);
 
   const token = await getAuth().currentUser?.getIdToken(true);
 
@@ -263,12 +273,20 @@ export async function updateSpeechActivity(
   activityId: string,
   activityType: string,
   flashcards: Flashcard[],
+  title: string,
 ) {
-  console.log(flashcards);
-  const { data } = await api.put(
-    `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
-    { flashcards: flashcards },
-  );
+  try {
+    console.log(flashcards);
+    const payload = { flashcards: flashcards, title };
+    console.log(payload);
 
-  return data;
+    const { data } = await api.put(
+      `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
+      payload,
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Error updating speech activity:", error);
+  }
 }

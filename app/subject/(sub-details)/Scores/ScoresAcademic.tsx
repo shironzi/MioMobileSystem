@@ -56,7 +56,7 @@ const ScoresAcademic = () => {
     }>();
 
   const [scoreError, setScoreError] = useState<string>("");
-  const [errorMessageModal, setErrorMessageModal] = useState(true);
+  const [errorMessageModal, setErrorMessageModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const handleSubmit = async () => {

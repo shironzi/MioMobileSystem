@@ -44,6 +44,8 @@ const AddSpeechActivity = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
+  const [activityTitle, setActivityTitle] = useState<string>("");
+  const [titleError, setTitleError] = useState<boolean>(false);
 
   const { subjectId, activity_type, difficulty, category, activityId } =
     useLocalSearchParams<{
@@ -75,14 +77,18 @@ const AddSpeechActivity = () => {
   const [questionError, setQuestionError] = useState<InputError[]>([]);
   const [phraseError, setPhraseError] = useState<InputError[]>([]);
 
-  const header = !activityId ? (
+  const header = (
     <SpeechHeader
       activityType={activityType}
       setActivityType={setActivityType}
       activityDifficulty={activityDifficulty}
       setActivityDifficulty={setActivityDifficulty}
+      activityTitle={activityTitle}
+      setActivityTitle={setActivityTitle}
+      titleError={titleError}
+      activityId={activityId}
     />
-  ) : null;
+  );
 
   useEffect(() => {
     if (!activityId) return;
@@ -130,6 +136,8 @@ const AddSpeechActivity = () => {
         //   setActivityType("pronunciation");
         // }
       }
+
+      setActivityTitle(res.title);
       setLoading(false);
     };
 
@@ -174,6 +182,8 @@ const AddSpeechActivity = () => {
               lastIndex={pictureFlashcard[pictureFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}
@@ -197,6 +207,8 @@ const AddSpeechActivity = () => {
               lastIndex={questionFlashcard[questionFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}
@@ -220,6 +232,8 @@ const AddSpeechActivity = () => {
               lastIndex={phraseFlashcard[phraseFlashcard.length - 1]?.id}
               subjectId={subjectId}
               activityId={activityId}
+              activityTitle={activityTitle}
+              titleError={setTitleError}
             />
           )}
           ListHeaderComponent={header}

@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import PictureItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureItem";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { router } from "expo-router";
-import flashcards from "@/app/subject/(exercises)/(speech)/Flashcards";
 
 interface FileInfo {
   uri: string;
@@ -36,6 +35,8 @@ interface Props {
   difficulty: string;
   subjectId: string;
   activityId: string;
+  activityTitle: string;
+  titleError: (value: boolean) => void;
 }
 
 const AddSpeechActivity = ({
@@ -51,6 +52,8 @@ const AddSpeechActivity = ({
   difficulty,
   subjectId,
   activityId,
+  activityTitle,
+  titleError,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
@@ -130,6 +133,11 @@ const AddSpeechActivity = ({
   const handlePreview = () => {
     const errors: InputError[] = [];
 
+    if (!activityTitle.trim()) {
+      errors.push({ id: "", error: "title" });
+      titleError(true);
+    }
+
     items.forEach((item) => {
       if (!item.text.trim()) {
         errors.push({ id: item.id, error: "word" });
@@ -144,6 +152,8 @@ const AddSpeechActivity = ({
       return;
     }
 
+    titleError(false);
+
     const encodedItems = encodeURIComponent(JSON.stringify(items)) ?? [];
     router.push({
       pathname: "/subject/(exercises)/(speech)/ManageActivity/PicturePreview",
@@ -153,6 +163,7 @@ const AddSpeechActivity = ({
         activity_type: activityType,
         activityId: activityId,
         difficulty: difficulty,
+        title: activityTitle,
       },
     });
   };

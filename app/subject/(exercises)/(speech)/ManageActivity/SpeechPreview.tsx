@@ -31,13 +31,14 @@ interface Flashcard {
 const SpeechPreview = () => {
   useHeaderConfig("Flashcards");
 
-  const { subjectId, activity_type, difficulty, activityId, data } =
+  const { subjectId, activity_type, difficulty, activityId, data, title } =
     useLocalSearchParams<{
       subjectId: string;
       activity_type: string;
       difficulty: string;
       activityId: string;
       data: string;
+      title: string;
     }>();
 
   const parsedBingoItems = useMemo<Flashcard[]>(() => {
@@ -49,9 +50,11 @@ const SpeechPreview = () => {
   }, [data]);
 
   const [currentCard, setCurrentCard] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     try {
+      setIsSubmitting(true);
       const res = activityId
         ? await updateSpeechActivity(
             subjectId,
@@ -59,15 +62,15 @@ const SpeechPreview = () => {
             activityId,
             activity_type,
             parsedBingoItems,
+            title,
           )
         : await createSpeechActivity(
             subjectId,
             activity_type,
             difficulty,
             parsedBingoItems,
+            title,
           );
-
-      console.log(res);
 
       if (res.success) {
         Alert.alert(
@@ -88,8 +91,11 @@ const SpeechPreview = () => {
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     } catch (err) {
+      console.log(err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
+
+    setIsSubmitting(false);
   };
 
   const opacity = useSharedValue(1);
@@ -187,9 +193,16 @@ const SpeechPreview = () => {
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
+          disabled={isSubmitting}
         >
           <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-            {activityId ? "Update" : "Create"}
+            {activityId
+              ? isSubmitting
+                ? "Updating"
+                : "Update"
+              : isSubmitting
+                ? "Creating"
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>

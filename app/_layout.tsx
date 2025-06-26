@@ -1,7 +1,7 @@
-import { FirebaseAuthTypes, getAuth } from "@react-native-firebase/auth";
+import { getAuth } from "@react-native-firebase/auth";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { PermissionsAndroid, Text, View } from "react-native";
+import { PermissionsAndroid, Text, Vibration, View } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import EarthquakeAlertModal from "@/components/modals/EarthquakeAlertModal";
 import * as Notifications from "expo-notifications";
@@ -119,35 +119,50 @@ export default function Layout() {
 
       <EarthquakeAlertModal
         visible={showAlert}
-        onClose={() => setShowAlert(false)}
+        onClose={() => {
+          setShowAlert(false);
+          Vibration.cancel();
+        }}
         title={modalTitle}
         body={modalBody}
       />
 
       <FireAlertModal
         visible={showFireAlert}
-        onClose={() => setFireAlert(false)}
+        onClose={() => {
+          setShowAlert(false);
+          Vibration.cancel();
+        }}
         title={modalTitle}
         body={modalBody}
       />
 
       <FloodAlertModal
         visible={showFloodAlert}
-        onClose={() => setFloodAlert(false)}
+        onClose={() => {
+          setShowAlert(false);
+          Vibration.cancel();
+        }}
         title={modalTitle}
         body={modalBody}
       />
 
       <SchoolThreat
         visible={showSchoolThreat}
-        onClose={() => setSchoolThreat(false)}
+        onClose={() => {
+          setShowAlert(false);
+          Vibration.cancel();
+        }}
         title={modalTitle}
         body={modalBody}
       />
 
       <PowerOutageModal
         visible={showPowerOutage}
-        onClose={() => setPowerOutage(false)}
+        onClose={() => {
+          setShowAlert(false);
+          Vibration.cancel();
+        }}
         title={modalTitle}
         body={modalBody}
       />

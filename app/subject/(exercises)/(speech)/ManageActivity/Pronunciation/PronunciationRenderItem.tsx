@@ -27,6 +27,8 @@ interface Props {
   difficulty: string;
   subjectId: string;
   activityId: string;
+  activityTitle: string;
+  titleError: (value: boolean) => void;
 }
 
 const PronunciationRenderItem = ({
@@ -42,6 +44,8 @@ const PronunciationRenderItem = ({
   difficulty,
   subjectId,
   activityId,
+  activityTitle,
+  titleError,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
@@ -98,6 +102,11 @@ const PronunciationRenderItem = ({
   const handlePreview = () => {
     const errors: InputError[] = [];
 
+    if (!activityTitle.trim()) {
+      errors.push({ id: "", error: "title" });
+      titleError(true);
+    }
+
     items.forEach((item) => {
       if (!item.text.trim()) {
         errors.push({ id: item.id, error: "word" });
@@ -109,6 +118,8 @@ const PronunciationRenderItem = ({
       return;
     }
 
+    titleError(false);
+
     const encodedItems = encodeURIComponent(JSON.stringify(items)) ?? [];
     router.push({
       pathname: "/subject/(exercises)/(speech)/ManageActivity/SpeechPreview",
@@ -118,6 +129,7 @@ const PronunciationRenderItem = ({
         activity_type: activityType,
         difficulty: difficulty,
         activityId: activityId,
+        title: activityTitle,
       },
     });
   };
