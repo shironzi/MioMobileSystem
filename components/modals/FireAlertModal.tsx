@@ -32,15 +32,13 @@ const FireAlertModal = ({
     console.log("hello");
     player.seekTo(0);
     player.play();
-    const vibrationPattern = [0, 200, 100, 200, 100, 200, 100, 200];
-    Vibration.vibrate(vibrationPattern, true);
   }
 
   useEffect(() => {
     if (visible) {
       player.seekTo(0);
       player.play();
-      const vibrationPattern = [0, 200, 100, 200, 100, 200, 100, 200];
+      const vibrationPattern = [1000, 500, 100, 500, 1000, 500, 100, 500, 1000];
       Vibration.vibrate(vibrationPattern, true);
     } else {
       player.pause();

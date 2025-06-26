@@ -38,7 +38,7 @@ const FloodAlertModal = ({
     if (visible) {
       player.seekTo(0);
       player.play();
-      const vibrationPattern = [0, 200, 100, 200, 100, 200, 100, 200];
+      const vibrationPattern = [3000, 1000];
       Vibration.vibrate(vibrationPattern, true);
     } else {
       player.pause();
