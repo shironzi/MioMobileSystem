@@ -1,24 +1,25 @@
 import globalStyles from "@/styles/globalStyles";
 import React, { memo, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import {
-  runOnJS
-} from "react-native-reanimated";
+import { runOnJS } from "react-native-reanimated";
 
 const FillInTheBlanks = (props: {
   sentence: string;
   handleAnswers: (answers: string[]) => void;
   hasError?: boolean;
 }) => {
+  // Split the sentence into words
   const words = props.sentence.split(" ");
 
   const [inputBox, setInputBox] = useState<string[]>([]);
   const [remainingWords, setRemainingWords] = useState(words);
+
+  // Reset input box and remaining words whenever sentence changes
+  useEffect(() => {
+    setInputBox([]); // Clear the input box
+    setRemainingWords(words); // Reset remaining words based on the new sentence
+  }, [props.sentence]); // Re-run the effect when the sentence changes
 
   const handleSelect = (index: number) => {
     const selectedWord = remainingWords[index];
@@ -32,8 +33,9 @@ const FillInTheBlanks = (props: {
   };
 
   useEffect(() => {
+    // Call the handleAnswers function when the inputBox changes
     props.handleAnswers(inputBox);
-  }, [inputBox]);
+  }, [inputBox]); // Trigger handleAnswers when inputBox is updated
 
   return (
     <View style={{ flexDirection: "column" }}>
@@ -48,13 +50,12 @@ const FillInTheBlanks = (props: {
             {
               flexDirection: "row",
               flexWrap: "wrap",
-              paddingVertical:30,
-              // height: 250,
+              paddingVertical: 30,
               width: "100%",
               borderWidth: 1,
               borderRadius: 20,
               padding: 20,
-              marginBottom:5
+              marginBottom: 5,
             },
             props.hasError
               ? { borderColor: "red" }

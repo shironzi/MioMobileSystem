@@ -72,7 +72,8 @@ const fillInTheBlank = () => {
     }
 
     if (currentItem < activity.length - 1) {
-      setCurrentItem((prev) => prev + 1);
+      setCurrentItem(currentItem + 1);
+      console.log(currentItem);
     } else {
       if (!attemptId) {
         return;
@@ -249,51 +250,8 @@ const fillInTheBlank = () => {
   }
 
   return (
-    // <GestureHandlerRootView style={globalStyles.container}>
-
-    //   <View style={{ rowGap: 10 }}>
-    //     <TouchableOpacity
-    //       style={{
-    //         backgroundColor: "#FFBF18",
-    //         padding: 20,
-    //         borderRadius: 15,
-    //         width: 75,
-    //       }}
-    //       onPress={handleAudioPlay}
-    //     >
-    //       <FontAwesome6 name="volume-high" size={25} color="#fff" />
-    //     </TouchableOpacity>
-
-    //     <FillInTheBlanks
-    //       sentence={activity[currentItem].sentence}
-    //       handleAnswers={(answers: string[]) => handleAnswer(answers)}
-    //       hasError={inputErrors.some(
-    //         (err) => err.item_id === activity[currentItem].item_id,
-    //       )}
-    //     />
-    //   </View>
-    //   <View style={globalStyles.submitWrapper}>
-    //     <TouchableOpacity
-    //       style={globalStyles.submitButton}
-    //       onPress={handleSubmit}
-    //       disabled={isSending}
-    //     >
-    //       <Text style={globalStyles.submitButtonText}>
-    //         {currentItem >= activity.length - 1
-    //           ? "Submit"
-    //           : isSending
-    //             ? "Submitting"
-    //             : "Next"}
-    //       </Text>
-    //     </TouchableOpacity>
-    //   </View>
-    // </GestureHandlerRootView>
-
     <GestureHandlerRootView style={[globalStyles.container, { flex: 1 }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        // contentContainerStyle={{ paddingBottom: 150 }}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 10 }}>
           <ActivityProgress
             difficulty={difficulty}
@@ -311,7 +269,6 @@ const fillInTheBlank = () => {
             paddingHorizontal: 10,
             marginBottom: 15,
             marginTop: -15,
-            // left: -5,
           }}
         >
           <Text
@@ -402,15 +359,7 @@ const fillInTheBlank = () => {
         }}
       >
         <TouchableOpacity
-          style={[
-            globalStyles.submitButton,
-            { width: "100%" },
-            // styles.nextButton,
-            // isPlaying && matchedIds.length > 0
-            // 	? { backgroundColor: "#ffbf18" }
-            // 	: { backgroundColor: "#ddd" },
-          ]}
-          // disabled={isPlaying || isSending}
+          style={[globalStyles.submitButton, { width: "100%" }]}
           onPress={handleSubmit}
           disabled={isSending || isPlaying}
         >
