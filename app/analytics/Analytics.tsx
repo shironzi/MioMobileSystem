@@ -34,6 +34,10 @@ const Analytics = () => {
     overall_auditory_completion_rate: number;
     quizzes_overall_completion_rate: number;
     passing_rate: number;
+    assignments_overall_completion_rate: number;
+    missing_submissions: number;
+    onTime_submission: number;
+    late_submissions: number;
   }>();
 
   const [lineData, setLineData] = useState<{ value: number; label: string }[]>(
@@ -70,6 +74,11 @@ const Analytics = () => {
           overall_auditory_completion_rate:
             res.overall_auditory_completion_rate,
           passing_rate: res.passing_rate,
+          assignments_overall_completion_rate:
+            res.assignments_overall_completion_rate,
+          onTime_submission: res.onTime_submission,
+          late_submissions: res.late_submissions,
+          missing_submissions: res.missing_submissions,
         });
 
         const transformedData = Object.entries(res.weekly_engagement).map(
@@ -361,7 +370,9 @@ const Analytics = () => {
         <AnalyticsCard
           data={data?.quizzes_overall_completion_rate ?? 0}
           title={"Assignments"}
-          percentage={data?.quizzes_overall_completion_rate.toString() ?? "0"}
+          percentage={
+            data?.assignments_overall_completion_rate.toString() ?? "0"
+          }
         />
 
         <AnalyticsCard
@@ -390,18 +401,22 @@ const Analytics = () => {
 
       <View style={{ flexDirection: "row", columnGap: 10, marginVertical: 10 }}>
         <View style={styles.activitiesContainer}>
-          <Text style={globalStyles.text1}>Overall Result</Text>
+          <Text style={globalStyles.text1}>Passing Rate</Text>
           <PieChart
             data={[
               {
                 value: data?.passing_rate ?? 0,
                 color: "#2264dc",
-                text: data?.passing_rate ? `${data?.passing_rate}%` : "0",
+                text: data?.passing_rate
+                  ? `${data?.passing_rate?.toFixed(2)}%`
+                  : "0",
               },
               {
                 value: data?.passing_rate ? 100 - data?.passing_rate : 0,
                 color: "#FFBF18",
-                text: data?.passing_rate ? `${100 - data?.passing_rate}%` : "0",
+                text: data?.passing_rate
+                  ? `${(100 - data?.passing_rate).toFixed(2)}%`
+                  : "0",
               },
             ]}
             isAnimated
@@ -463,14 +478,25 @@ const Analytics = () => {
           <PieChart
             data={[
               {
-                value: data?.passing_rate ?? 0,
-                color: "#2264dc",
-                text: data?.passing_rate ? `${data?.passing_rate}%` : "0",
+                value: data?.late_submissions ?? 0,
+                color: "#F68D2B",
+                text: data?.late_submissions
+                  ? `${data?.late_submissions}`
+                  : "0",
               },
               {
-                value: data?.passing_rate ? 100 - data?.passing_rate : 0,
+                value: data?.missing_submissions ?? 0,
                 color: "#FFBF18",
-                text: data?.passing_rate ? `${100 - data?.passing_rate}%` : "0",
+                text: data?.missing_submissions
+                  ? `${data?.missing_submissions}`
+                  : "0",
+              },
+              {
+                value: data?.onTime_submission ?? 0,
+                color: "#344BFD",
+                text: data?.onTime_submission
+                  ? `${data?.onTime_submission}`
+                  : "0",
               },
             ]}
             isAnimated
