@@ -60,13 +60,13 @@ export default function Layout() {
         setFireAlert(true);
       }
 
-      if (type === "school_threat") {
+      if (type === "school threat") {
         setModalTitle(title);
         setModalBody(body);
         setSchoolThreat(true);
       }
 
-      if (type === "power_outage") {
+      if (type === "power outage") {
         setModalTitle(title);
         setModalBody(body);
         setPowerOutage(true);
