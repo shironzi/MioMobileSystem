@@ -1,13 +1,14 @@
 import { downloadAndSaveFile } from "@/app/subject/(sub-details)/Scores/DownloadFile";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { getStudentQuizAttempt } from "@/utils/query";
+import { getStudentQuizAttempt, updateStudentQuiz } from "@/utils/query";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   ScrollView,
   Text,
   TextInput,
@@ -49,6 +50,7 @@ const QuizScore = () => {
   const [description, setDescription] = useState<string>("");
   const [quizItems, setQuizItems] = useState<QuizItem[]>();
   const [total, setTotal] = useState<number>(0);
+  const [student_score, setStudent_score] = useState<number>(0);
   const [studentAnswer, setStudentAnswer] = useState<{
     [key: string]: string | string[];
   }>({});
@@ -63,6 +65,7 @@ const QuizScore = () => {
       if (res.success) {
         setDescription(res.description);
         setTotal(res.total);
+        setStudent_score(res.student_score);
 
         const items: QuizItem[] = Object.entries(res.quiz_data).map(
           ([key, value]: [string, any]) => ({
@@ -92,7 +95,6 @@ const QuizScore = () => {
 
         setStudentAnswer(answers);
 
-        // Initialize scores based on is_correct status from answers
         const initialScores: { [key: string]: number } = {};
         Object.entries(res.answers).forEach(([key, value]: [string, any]) => {
           if (value.is_correct === true) {
@@ -100,9 +102,7 @@ const QuizScore = () => {
           } else if (value.is_correct === false) {
             initialScores[key] = 0;
           }
-          // If is_correct is undefined/null, don't set initial score (leave for manual input)
         });
-        console.log(initialScores);
 
         setStudentScores(initialScores);
       }
@@ -115,14 +115,81 @@ const QuizScore = () => {
     downloadAndSaveFile(work);
   };
 
-  const handleSubmit = () => {
-    studentScores;
+  const handleSubmit = async () => {
+    if (!quizItems) return;
+
+    const validationErrors: string[] = [];
+
+    quizItems.forEach((quizItem, index) => {
+      const score = studentScores[quizItem.quizId];
+
+      if (score === undefined || score === null) {
+        validationErrors.push(`Question ${index + 1}: Score is required`);
+        return;
+      }
+
+      if (score > quizItem.points) {
+        validationErrors.push(
+          `Question ${index + 1}: Score (${score}) cannot exceed maximum points (${quizItem.points})`,
+        );
+      }
+
+      if (score < 0) {
+        validationErrors.push(
+          `Question ${index + 1}: Score cannot be negative`,
+        );
+      }
+    });
+
+    if (validationErrors.length > 0) {
+      return;
+    }
+
+    const transformedData = Object.entries(studentScores).map(
+      ([id, score]) => ({
+        itemId: id,
+        score: score,
+      }),
+    );
+    try {
+      const res = await updateStudentQuiz(
+        subjectId,
+        activityId,
+        studentId,
+        transformedData,
+      );
+
+      if (res.success) {
+        Alert.alert(
+          "Success",
+          activityId
+            ? "Successfully updated the activity"
+            : "Successfully created the activity",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      } else {
+        Alert.alert("Error", "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      Alert.alert("Error", "Submission failed. Please check your inputs.");
+    }
   };
 
   return (
     <ScrollView style={{ backgroundColor: "#fff", padding: 20 }}>
       <View style={{ marginBottom: 60 }}>
-        <Text>Quiz Results</Text>
+        <View>
+          <Text>Score</Text>
+        </View>
 
         <View
           style={{

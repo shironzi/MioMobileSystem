@@ -1171,3 +1171,27 @@ export async function getStudentAssignmentAttempt(
     }
   }
 }
+
+export async function updateStudentQuiz(
+  subjectId: string,
+  quizId: string,
+  studentId: string,
+  transformedData: { itemId: string; score: number }[],
+) {
+  try {
+    console.log(transformedData);
+    const { data } = await api.post(
+      `/subject/${subjectId}/check/quiz/${quizId}/${studentId}`,
+      { items: transformedData },
+    );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
