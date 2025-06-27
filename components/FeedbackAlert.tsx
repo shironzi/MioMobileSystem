@@ -23,7 +23,7 @@ const FeedbackAlert = ({
         duration: 300,
         useNativeDriver: true,
       }).start(() => onHide());
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);

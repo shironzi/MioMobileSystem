@@ -42,7 +42,6 @@ const PictureFlashcards = () => {
   const [recordingAudio, setRecordingAudio] = useState<string | null>("");
   const [loading, setLoading] = useState(true);
   const [attemptId, setAttemptId] = useState<string | undefined>();
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentCard, setCurrentCard] = useState<number>(0);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isSending, setIsSending] = useState<boolean>(false);
@@ -62,70 +61,65 @@ const PictureFlashcards = () => {
       recordingAudio,
     );
 
-    if (res.feedback) {
-      setFeedback(res.feedback);
+    if (res.feedbacks) {
+      setFeedback(res.feedbacks);
     }
+    setTimeout(() => {
+      if (currentCard === cards.length - 1) {
+        router.push({
+          pathname: "/subject/(sub-details)/scoreDetails",
+          params: {
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+            attemptId,
+          },
+        });
 
-    if (currentCard === cards.length - 1) {
-      router.push({
-        pathname: "/subject/(sub-details)/scoreDetails",
-        params: { subjectId, activity_type, difficulty, activityId, attemptId },
-      });
+        return;
+      }
 
-      return;
-    }
+      if (res.success) {
+        setCurrentCard(currentCard + 1);
+        setIsAnswered(false);
+        setRecordingAudio(null);
+      }
 
-    if (res.success) {
-      setCurrentCard(currentCard + 1);
-      setIsAnswered(false);
-      setSubmitting(false);
-      setRecordingAudio(null);
-    }
-    setIsSending(false);
+      setIsSending(false);
+    }, 5000);
   };
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchActivity = async () => {
-      try {
-        const res = await startActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
-        );
+      const res = await startActivity(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+      );
 
-        console.log(res);
-
-        if (!res.success) {
-          Alert.alert("Failed to start the activity");
-          return router.back();
-        }
-
-        const fetchedFlashcards = Object.entries(res.flashcards).map(
-          ([key, value]: [string, any]) => ({
-            flashcard_id: key,
-            text: value.text,
-            image_url: value.image_url,
-          }),
-        );
-
-        if (!isMounted) return;
-        setCards(fetchedFlashcards);
-        setAttemptId(res.attemptId);
-
-        setCurrentCard(res.currentItem);
-      } catch (error) {
-        if (isMounted) {
-          Alert.alert(
-            "Error",
-            "Unable to load activity. Please check your connection.",
-          );
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+      if (!res.success) {
+        Alert.alert("Failed to start the activity");
+        return router.back();
       }
+
+      const fetchedFlashcards = Object.entries(res.flashcards).map(
+        ([key, value]: [string, any]) => ({
+          flashcard_id: key,
+          text: value.text,
+          image_url: value?.image_url,
+        }),
+      );
+
+      if (!isMounted) return;
+      setCards(fetchedFlashcards);
+      setAttemptId(res.attemptId);
+
+      setCurrentCard(res.currentItem ?? 0);
+      setLoading(false);
     };
 
     fetchActivity();
@@ -162,7 +156,7 @@ const PictureFlashcards = () => {
     <GestureHandlerRootView>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 50 }}
+        contentContainerStyle={{ paddingBottom: 50, height: "100%" }}
         style={[styles.container, { flex: 1, backgroundColor: "#fff" }]}
       >
         <ActivityProgress
@@ -232,13 +226,12 @@ const PictureFlashcards = () => {
             )}
 
             <Image
-              source={{ uri: cards[currentCard].image_url }}
+              source={{ uri: cards[currentCard]?.image_url }}
               style={{
                 width: 150,
                 height: 150,
                 borderRadius: 8,
                 margin: "auto",
-                // backgroundColor: "#ddd",
               }}
               resizeMode="contain"
             />

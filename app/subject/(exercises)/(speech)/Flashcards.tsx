@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import FeedbackAlert from "@/components/FeedbackAlert";
 
 const Flashcards = () => {
   const router = useRouter();
@@ -38,9 +39,9 @@ const Flashcards = () => {
   const [recordingAudio, setRecordingAudio] = useState<string | null>();
   const [loading, setLoading] = useState(true);
   const [attemptId, setAttemptId] = useState<string | undefined>();
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentCard, setCurrentCard] = useState<number>(0);
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const handleNextCard = async () => {
     if (!attemptId) return;
@@ -57,21 +58,32 @@ const Flashcards = () => {
       recordingAudio,
     );
 
-    if (currentCard === cards.length - 1) {
-      router.push({
-        pathname: "/subject/(sub-details)/scoreDetails",
-        params: { subjectId, activity_type, difficulty, activityId, attemptId },
-      });
-
-      return;
+    if (res.feedbacks) {
+      setFeedback(res.feedbacks);
     }
 
-    if (res.success) {
-      setCurrentCard(currentCard + 1);
-      setIsAnswered(false);
-      setSubmitting(false);
-    }
-    setIsSending(false);
+    setTimeout(() => {
+      if (currentCard === cards.length - 1) {
+        router.push({
+          pathname: "/subject/(sub-details)/scoreDetails",
+          params: {
+            subjectId,
+            activity_type,
+            difficulty,
+            activityId,
+            attemptId,
+          },
+        });
+
+        return;
+      }
+
+      if (res.success) {
+        setCurrentCard(currentCard + 1);
+        setIsAnswered(false);
+      }
+      setIsSending(false);
+    }, 5000);
   };
 
   useEffect(() => {
@@ -196,6 +208,24 @@ const Flashcards = () => {
             style={{ width: 90, height: 50 }}
             resizeMode="contain"
           />
+
+          {feedback && (
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <FeedbackAlert
+                message={feedback}
+                onHide={() => setFeedback(null)}
+              />
+            </View>
+          )}
+
           <View style={styles.textContainer}>
             <Text style={styles.flashcardText}>{cards[currentCard].text}</Text>
           </View>
@@ -242,6 +272,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 30,
+    height: "100%",
   },
   flashcardContainer: {
     backgroundColor: "#fff",
