@@ -340,6 +340,10 @@ export async function editHomonyms(
   for (let index = 0; index < activity.length; index++) {
     const item = activity[index];
 
+    if (item.item_id !== null) {
+      formData.append(`homonyms[${index}][item_id]`, item.item_id);
+    }
+
     formData.append(`homonyms[${index}][sentences][0]`, item.text[0]);
     formData.append(`homonyms[${index}][sentences][1]`, item.text[1]);
 

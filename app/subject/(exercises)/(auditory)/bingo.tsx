@@ -9,7 +9,7 @@ import {
   takeAuditoryActivity,
 } from "@/utils/auditory";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import {
@@ -56,6 +56,15 @@ const bingo = () => {
   >([]);
 
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
+
+  if (status.playing) {
+    setIsPlaying(true);
+  }
+
+  if (status.didJustFinish) {
+    setIsPlaying(false);
+  }
 
   const handleCardPress = (image_id: string): void => {
     const date = getCurrentDateTime();
@@ -131,14 +140,11 @@ const bingo = () => {
 
     player.play();
 
-    setIsPlaying(false);
     if (currentAudio >= audioFiles.length - 1) {
       setCurrentAudio(0);
     } else {
       setCurrentAudio(currentAudio + 1);
     }
-
-    setIsPlaying(false);
   }, [player, currentAudio, audioFiles]);
 
   useEffect(() => {

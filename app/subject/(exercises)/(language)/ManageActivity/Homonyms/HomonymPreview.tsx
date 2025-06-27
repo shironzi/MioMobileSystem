@@ -61,8 +61,6 @@ const Homonyms = () => {
     });
   };
 
-  console.log(activityId);
-
   const handleCreate = async () => {
     try {
       console.log(items);

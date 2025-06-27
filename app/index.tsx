@@ -273,7 +273,7 @@ const Index = () => {
                             style={[
                               styles.inputContainer,
                               errors.email && { borderColor: "#FF0000" },
-                              { marginBottom: 5 },
+                              { marginBottom: 10 },
                             ]}
                           >
                             <MaterialIcons
@@ -306,7 +306,8 @@ const Index = () => {
                           <View
                             style={[
                               styles.inputContainer,
-                              errors.password && { borderColor: "#FF0000" },
+                              errors.email && { borderColor: "#FF0000" },
+                              { marginBottom: 10 },
                             ]}
                           >
                             <MaterialIcons
@@ -337,7 +338,6 @@ const Index = () => {
                               style={{
                                 color: "red",
                                 marginLeft: 25,
-                                marginBottom: 10,
                               }}
                             >
                               {errors.password.message}

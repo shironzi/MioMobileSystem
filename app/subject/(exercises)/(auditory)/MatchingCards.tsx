@@ -8,7 +8,7 @@ import {
 import getCurrentDateTime from "@/utils/DateFormat";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
@@ -89,8 +89,19 @@ const MatchingCards = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const audioPositions = useRef<{ [key: number]: AudioRef }>({});
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
+
+  if (status.playing) {
+    setIsPlaying(true);
+  }
+
+  if (status.didJustFinish) {
+    setIsPlaying(false);
+  }
+
   const handlePlayAudio = async (index: number) => {
     player.replace({ uri: audio[index].audio_url });
     player.play();
@@ -356,7 +367,7 @@ const MatchingCards = () => {
           <TouchableOpacity
             style={[globalStyles.submitButton, { width: "100%" }]}
             onPress={handleSubmit}
-            disabled={isSending}
+            disabled={isSending || isPlaying}
           >
             <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
               {isSending ? "Submitting" : "Submit"}
