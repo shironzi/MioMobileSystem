@@ -31,6 +31,7 @@ type QuizItem = {
   allowed_types?: string[];
   max_size?: number;
   image?: string;
+  is_correct?: boolean;
 };
 
 const QuizScore = () => {
@@ -51,10 +52,9 @@ const QuizScore = () => {
   const [studentAnswer, setStudentAnswer] = useState<{
     [key: string]: string | string[];
   }>({});
-  const [studentScore, setStudentScore] = useState<{
-    itemId: string;
-    score: number;
-  }>();
+  const [studentScores, setStudentScores] = useState<{
+    [key: string]: number;
+  }>({});
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -76,6 +76,7 @@ const QuizScore = () => {
             max_size: value.max_size || 0,
             image: value.image || "",
             multiple_type: value.multiple_type ?? "",
+            is_correct: res.answers[key]?.is_correct,
           }),
         );
 
@@ -90,6 +91,20 @@ const QuizScore = () => {
           .reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
         setStudentAnswer(answers);
+
+        // Initialize scores based on is_correct status from answers
+        const initialScores: { [key: string]: number } = {};
+        Object.entries(res.answers).forEach(([key, value]: [string, any]) => {
+          if (value.is_correct === true) {
+            initialScores[key] = value.points;
+          } else if (value.is_correct === false) {
+            initialScores[key] = 0;
+          }
+          // If is_correct is undefined/null, don't set initial score (leave for manual input)
+        });
+        console.log(initialScores);
+
+        setStudentScores(initialScores);
       }
     };
 
@@ -101,7 +116,7 @@ const QuizScore = () => {
   };
 
   const handleSubmit = () => {
-    console.log(studentScore);
+    studentScores;
   };
 
   return (
@@ -163,20 +178,48 @@ const QuizScore = () => {
                           width: 50,
                           paddingHorizontal: 10,
                           borderRadius: 10,
+                          backgroundColor:
+                            item.is_correct === true
+                              ? "#e8f5e8"
+                              : item.is_correct === false
+                                ? "#ffe8e8"
+                                : "#fff",
+                          color:
+                            item.is_correct === true
+                              ? "#666"
+                              : item.is_correct === false
+                                ? "#666"
+                                : "#000",
                         },
                       ]}
                       keyboardType="numeric"
+                      editable={
+                        item.is_correct === undefined ||
+                        item.is_correct === null
+                      }
                       value={
-                        studentScore?.itemId === item.quizId
-                          ? String(studentScore.score)
+                        studentScores[item.quizId] !== undefined
+                          ? String(studentScores[item.quizId])
                           : ""
                       }
                       onChangeText={(value: string) => {
+                        if (
+                          item.is_correct === true ||
+                          item.is_correct === false
+                        )
+                          return; // Don't allow editing if graded
+
                         const numericValue = parseFloat(value);
                         if (!isNaN(numericValue)) {
-                          setStudentScore({
-                            itemId: item.quizId,
-                            score: numericValue,
+                          setStudentScores((prev) => ({
+                            ...prev,
+                            [item.quizId]: numericValue,
+                          }));
+                        } else if (value === "") {
+                          setStudentScores((prev) => {
+                            const newScores = { ...prev };
+                            delete newScores[item.quizId];
+                            return newScores;
                           });
                         }
                       }}
@@ -203,9 +246,20 @@ const QuizScore = () => {
                               width: "100%",
                               borderColor: "#00000024",
                             },
-                            studentAnswer[item.quizId] === option && {
-                              backgroundColor: "#82828214",
-                            },
+                            studentAnswer[item.quizId] === option &&
+                            item.answer === option
+                              ? {
+                                  backgroundColor: "#d4edda",
+                                }
+                              : studentAnswer[item.quizId] === option
+                                ? {
+                                    backgroundColor: "#f8d7da",
+                                  }
+                                : item.answer === option
+                                  ? {
+                                      backgroundColor: "#d4edda",
+                                    }
+                                  : { backgroundColor: "#fff" },
                           ]}
                           key={index}
                         >
@@ -230,35 +284,55 @@ const QuizScore = () => {
                   )}
 
                   {item.type === "multiple_multiple" && (
-                    <View style={{ rowGap: 10, marginTop: 20 }}>
-                      {item.options?.map((option, index) => (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            columnGap: 5,
-                          }}
-                          key={index}
-                        >
-                          <Ionicons
-                            name={
-                              (studentAnswer[item.quizId] as string[]).includes(
-                                option,
-                              )
-                                ? "checkbox"
-                                : "checkbox-outline"
-                            }
-                            size={24}
-                            color={
-                              (studentAnswer[item.quizId] as string[]).includes(
-                                option,
-                              )
-                                ? "#ffbf18"
-                                : "#aaa"
-                            }
-                          />
-                          <Text>{option}</Text>
-                        </View>
-                      ))}
+                    <View style={{ marginTop: 20 }}>
+                      {item.options?.map((option, index) => {
+                        const isStudentSelected = (
+                          studentAnswer[item.quizId] as string[]
+                        )?.includes(option);
+                        const isCorrectAnswer = (
+                          item.answer as string[]
+                        )?.includes(option);
+
+                        return (
+                          <View
+                            style={[
+                              {
+                                flexDirection: "row",
+                                columnGap: 5,
+                                padding: 10,
+                                borderRadius: 5,
+                                borderBottomWidth: 1,
+                                borderColor: "#00000024",
+                              },
+                              isStudentSelected && isCorrectAnswer
+                                ? {
+                                    backgroundColor: "#d4edda",
+                                  }
+                                : isStudentSelected && !isCorrectAnswer
+                                  ? {
+                                      backgroundColor: "#f8d7da",
+                                    }
+                                  : !isStudentSelected && isCorrectAnswer
+                                    ? {
+                                        backgroundColor: "#d4edda",
+                                      }
+                                    : { backgroundColor: "#fff" },
+                            ]}
+                            key={index}
+                          >
+                            <Ionicons
+                              name={
+                                isStudentSelected
+                                  ? "checkbox"
+                                  : "checkbox-outline"
+                              }
+                              size={24}
+                              color={isStudentSelected ? "#ffbf18" : "#aaa"}
+                            />
+                            <Text>{option}</Text>
+                          </View>
+                        );
+                      })}
                     </View>
                   )}
 
