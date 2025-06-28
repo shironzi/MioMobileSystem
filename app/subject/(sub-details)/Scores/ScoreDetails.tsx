@@ -71,6 +71,7 @@ const AuditoryScores = () => {
           );
 
       if (res?.success) {
+        console.log(res);
         setOverallScore(res.overall_score ?? 0);
         const formatted = Object.entries(res.feedbacks).map(
           ([id, data]: any) => ({
@@ -194,7 +195,7 @@ const AuditoryScores = () => {
               feedbacks.map((item, index) => (
                 <View key={item.id} style={{ marginBottom: 20 }}>
                   <Text style={styles.wordTitle}>Flashcard {index + 1}</Text>
-                  <Text style={styles.feedbackText}>{item.teacher}</Text>
+                  <Text style={styles.feedbackText}>{item.student}</Text>
                 </View>
               ))
             )}
