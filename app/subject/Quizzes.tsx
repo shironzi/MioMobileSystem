@@ -103,6 +103,8 @@ const Quiz = () => {
               justifyContent: "center",
               backgroundColor: "#FFBF1840",
               borderColor: "#FFBF18",
+              marginHorizontal: 20,
+              marginBottom: 15,
             }}
             onPress={() =>
               router.push({
@@ -123,12 +125,16 @@ const Quiz = () => {
             key={index}
             style={[
               globalStyles.cardContainer1,
-              { flexDirection: "row", alignItems: "center", marginVertical: 5 },
+              {
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 5,
+              },
             ]}
             onPress={() => handleSelectQuiz(quiz.quiz_id, index)}
           >
             <View style={styles.yellowBulletin}></View>
-            <View style={{ width: "40%" }}>
+            <View style={{ width: "50%" }}>
               <Text
                 numberOfLines={2}
                 ellipsizeMode="tail"
@@ -148,8 +154,16 @@ const Quiz = () => {
                 marginHorizontal: -10,
               }}
             >
-              <Text style={[globalStyles.text2]}>{quiz.deadline_date}</Text>
-              <FontAwesome6 name="arrow-right-long" size={20} color="#1f1f1f" />
+              <Text style={[globalStyles.text2, { width: "50%" }]}>
+                {quiz.deadline_date ?? "No Due date"}
+              </Text>
+              <View style={{ justifyContent: "flex-end" }}>
+                <FontAwesome6
+                  name="arrow-right-long"
+                  size={20}
+                  color="#1f1f1f"
+                />
+              </View>
             </View>
           </TouchableOpacity>
         ))}

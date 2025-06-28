@@ -1,5 +1,6 @@
 import QuizFooter from "@/app/subject/(sub-details)/quiz/QuizFooter";
 import QuizHeader from "@/app/subject/(sub-details)/quiz/QuizHeader";
+import FileUpload from "@/components/FileUpload";
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
@@ -18,6 +19,12 @@ import {
   View,
 } from "react-native";
 
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
 interface QuizInfo {
   title: string;
   description: string;
@@ -33,15 +40,16 @@ interface QuizItem {
   id: string;
   item_id?: string;
   question: string;
+  question_image: FileInfo[] | null;
   choices: string[];
   answer: string[];
   questionType:
     | "multiple_choice"
+    | "multiple_multiple"
     | "essay"
     | "file_upload"
     | "fill"
     | "dropdown";
-  multiple_type: "radio" | "checkbox";
   points: number;
 }
 
@@ -74,10 +82,10 @@ const AddQuiz = () => {
     {
       id: Date.now().toString(),
       question: "",
+      question_image: null,
       choices: [""],
       answer: [""],
       questionType: "multiple_choice",
-      multiple_type: "radio",
       points: 1,
     },
   ]);
@@ -173,7 +181,27 @@ const AddQuiz = () => {
     );
   };
 
+  const handleQuestionImage = (itemId: string, file: FileInfo[]) => {
+    setQuizItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              question_image: file,
+            }
+          : item,
+      ),
+    );
+  };
+
   const handleMultipleAnswer = (itemId: string) => {
+    const totalChoices =
+      quizItems.find((item) => item.id === itemId)?.choices.length ?? 0;
+    const totalAnswers =
+      quizItems.find((item) => item.id === itemId)?.answer.length ?? 0;
+    if (totalAnswers > totalChoices) {
+    }
+
     setQuizItems((prev) =>
       prev.map((item) =>
         item.id === itemId ? { ...item, answer: [...item.answer, ""] } : item,
@@ -188,17 +216,6 @@ const AddQuiz = () => {
     setQuizItems((prev) =>
       prev.map((item) =>
         item.id === itemId ? { ...item, questionType: newType } : item,
-      ),
-    );
-  };
-
-  const handleChangeMultipleType = (
-    itemId: string,
-    newType: QuizItem["multiple_type"],
-  ) => {
-    setQuizItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, multiple_type: newType } : item,
       ),
     );
   };
@@ -267,6 +284,7 @@ const AddQuiz = () => {
       {
         id: Date.now().toString(),
         question: "",
+        question_image: null,
         choices: [""],
         answer: [""],
         questionType: "multiple_choice",
@@ -275,8 +293,6 @@ const AddQuiz = () => {
       },
     ]);
   };
-
-  console.log(inputErrors);
 
   const handleCreateQuiz = async () => {
     setInputErrors([]);
@@ -290,37 +306,60 @@ const AddQuiz = () => {
       infoErrors.push({ name: "description", id: "" });
     }
 
-    if (!quizInfo.deadline.trim()) {
-      infoErrors.push({ name: "deadline", id: "" });
-    }
+    if (quizInfo.deadline.trim()) {
+      console.log(quizInfo.deadline);
+      console.log("Tjos ");
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
 
-    if (!quizInfo.availableFrom.trim()) {
-      infoErrors.push({ name: "availableFrom", id: "" });
-    }
+      const deadline = quizInfo.deadline.trim()
+        ? new Date(quizInfo.deadline)
+        : null;
+      const availableFrom = quizInfo.availableFrom.trim()
+        ? new Date(quizInfo.availableFrom)
+        : null;
+      const availableTo = quizInfo.availableTo.trim()
+        ? new Date(quizInfo.availableTo)
+        : null;
 
-    if (!quizInfo.availableTo.trim()) {
-      infoErrors.push({ name: "availableTo", id: "" });
-    }
+      if (deadline && !isNaN(deadline.getTime()) && deadline < now) {
+        infoErrors.push({
+          name: "deadline",
+          id: "",
+        });
+      }
 
-    const now = new Date();
-    const deadline = new Date(quizInfo.deadline);
-    const availableFrom = new Date(quizInfo.availableFrom);
-    const availableTo = new Date(quizInfo.availableTo);
+      if (availableFrom && !isNaN(availableFrom.getTime())) {
+        if (availableTo && availableFrom > availableTo) {
+          infoErrors.push({
+            name: "availableFrom",
+            id: "",
+          });
+        }
+      } else {
+        infoErrors.push({
+          name: "availableFrom",
+          id: "",
+        });
+      }
 
-    if (!isNaN(deadline.getTime()) && deadline < now) {
-      infoErrors.push({ name: "deadline", id: "" });
-    }
-
-    if (
-      !isNaN(availableFrom.getTime()) &&
-      !isNaN(availableTo.getTime()) &&
-      availableFrom > availableTo
-    ) {
-      infoErrors.push({ name: "availableFrom", id: "" });
-      infoErrors.push({ name: "availableTo", id: "" });
+      if (availableTo && !isNaN(availableTo.getTime())) {
+        if (availableFrom && availableTo < availableFrom) {
+          infoErrors.push({
+            name: "availableTo",
+            id: "",
+          });
+        }
+      } else {
+        infoErrors.push({
+          name: "availableTo",
+          id: "",
+        });
+      }
     }
 
     if (infoErrors.length > 0) {
+      console.log(infoErrors);
       setInputErrors((prev) => [...prev, ...infoErrors]);
       return;
     }
@@ -333,8 +372,6 @@ const AddQuiz = () => {
     }
     setInputErrors([]);
 
-    console.log(quizItems);
-    console.log(quizInfo);
     const res = quizId
       ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
       : await createQuiz(subjectId, quizInfo, quizItems);
@@ -502,6 +539,20 @@ const AddQuiz = () => {
                 ]}
                 placeholder={"Enter Question"}
               />
+              <View
+                style={{
+                  marginBottom: -100,
+                  width: "90%",
+                  marginHorizontal: "auto",
+                }}
+              >
+                <FileUpload
+                  handleFiles={(file: FileInfo[]) =>
+                    handleQuestionImage(item.id, file)
+                  }
+                  fileTypes={"image/*"}
+                />
+              </View>
             </View>
             <View>
               <Text style={globalStyles.text1}>Points</Text>
@@ -554,8 +605,12 @@ const AddQuiz = () => {
                   }
                 >
                   <Picker.Item
-                    label="Multiple Choice"
+                    label="Multiple Choice (Radio)"
                     value="multiple_choice"
+                  />
+                  <Picker.Item
+                    label="Multiple Choice (Checkboxes)"
+                    value="multiple_multiple"
                   />
                   <Picker.Item label="Essay" value="essay" />
                   <Picker.Item label="File Upload" value="file_upload" />
@@ -564,29 +619,9 @@ const AddQuiz = () => {
                 </Picker>
               </View>
             </View>
-
-            {item.questionType === "multiple_choice" && (
-              <View>
-                <Text style={globalStyles.text1}>Multiple Type</Text>
-                <View style={globalStyles.textInputContainer}>
-                  <Picker
-                    selectedValue={item.multiple_type}
-                    onValueChange={(value) =>
-                      handleChangeMultipleType(
-                        item.id,
-                        value as QuizItem["multiple_type"],
-                      )
-                    }
-                  >
-                    <Picker.Item label="Radio" value="radio" />
-                    <Picker.Item label="Checkbox" value="checkbox" />
-                  </Picker>
-                </View>
-              </View>
-            )}
-
             {(item.questionType === "multiple_choice" ||
-              item.questionType === "dropdown") && (
+              item.questionType === "dropdown" ||
+              item.questionType === "multiple_multiple") && (
               <View>
                 <Text style={globalStyles.text1}>Choices</Text>
                 {item.choices.map((choice, choiceIndex) => (
@@ -655,7 +690,8 @@ const AddQuiz = () => {
                   <Text style={globalStyles.text1}>Answer</Text>
                 )}
               {(item.questionType === "multiple_choice" ||
-                item.questionType === "dropdown") && (
+                item.questionType === "dropdown" ||
+                item.questionType === "multiple_multiple") && (
                 <View style={{ rowGap: 10 }}>
                   <View
                     style={[globalStyles.textInputContainer, { rowGap: 5 }]}
@@ -686,7 +722,7 @@ const AddQuiz = () => {
                       </Picker>
                     ))}
                   </View>
-                  {item.multiple_type === "checkbox" && (
+                  {item.questionType === "multiple_multiple" && (
                     <TouchableOpacity
                       style={{ flexDirection: "row", alignItems: "center" }}
                       onPress={() => handleMultipleAnswer(item.id)}

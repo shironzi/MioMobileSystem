@@ -774,11 +774,11 @@ interface QuizItem {
   answer: string[];
   questionType:
     | "multiple_choice"
+    | "multiple_multiple"
     | "essay"
     | "file_upload"
     | "fill"
     | "dropdown";
-  multiple_type: "radio" | "checkbox";
   points: number;
 }
 
@@ -809,13 +809,6 @@ export async function createQuiz(
       );
       formdata.append(`questions[${index}][points]`, item.points.toString());
       formdata.append(`questions[${index}][questionType]`, item.questionType);
-
-      if (item.multiple_type) {
-        formdata.append(
-          `questions[${index}][multiple_type]`,
-          item.multiple_type,
-        );
-      }
 
       if (item.choices && item.choices.length > 0) {
         item.choices.forEach((choice, optIdx) => {
@@ -879,13 +872,6 @@ export async function updateQuiz(
 
       if (item.item_id) {
         formdata.append(`questions[${index}][item_id]`, item.item_id);
-      }
-
-      if (item.multiple_type) {
-        formdata.append(
-          `questions[${index}][multiple_type]`,
-          item.multiple_type,
-        );
       }
 
       if (item.choices && item.choices.length > 0) {

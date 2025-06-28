@@ -107,16 +107,28 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
-        <TouchableOpacity
-          onPress={() => setShowDeadlinePicker(true)}
-          style={[globalStyles.inputContainer, { width: "60%" }]}
-        >
-          <Text>
-            {quizInfo.deadline
-              ? new Date(quizInfo.deadline).toDateString()
-              : "Set Deadline"}
-          </Text>
-        </TouchableOpacity>
+        <View style={{ width: "60%" }}>
+          {errors.find((err) => err.name === "deadline") && (
+            <Text style={globalStyles.errorText}>
+              Deadline cannot be in the past
+            </Text>
+          )}
+          <TouchableOpacity
+            onPress={() => setShowDeadlinePicker(true)}
+            style={[
+              globalStyles.inputContainer,
+              errors.find((err) => err.name === "deadline") && {
+                borderColor: "red",
+              },
+            ]}
+          >
+            <Text>
+              {quizInfo.deadline
+                ? new Date(quizInfo.deadline).toDateString()
+                : "Set Deadline"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         {showDeadlinePicker && (
           <DateTimePicker
             value={quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()}
@@ -139,19 +151,31 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
         <Text style={[globalStyles.title, { width: "40%" }]}>
           Available From
         </Text>
-        <TouchableOpacity
-          onPress={() => setShowAvailableFromPicker(true)}
-          style={[globalStyles.inputContainer, { width: "60%" }]}
-        >
-          <Text>
-            {quizInfo.availableFrom
-              ? new Date(quizInfo.availableFrom).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "Set Available To"}
-          </Text>
-        </TouchableOpacity>
+        <View style={{ width: "60%" }}>
+          {errors.find((err) => err.name === "availableFrom") && (
+            <Text style={globalStyles.errorText}>
+              Available From cannot be in the past
+            </Text>
+          )}
+          <TouchableOpacity
+            onPress={() => setShowAvailableFromPicker(true)}
+            style={[
+              globalStyles.inputContainer,
+              errors.find((err) => err.name === "availableFrom") && {
+                borderColor: "red",
+              },
+            ]}
+          >
+            <Text>
+              {quizInfo.availableFrom
+                ? new Date(quizInfo.availableFrom).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Set Available To"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         {showAvailableFromPicker && (
           <DateTimePicker
             value={
@@ -177,9 +201,19 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={[globalStyles.title, { width: "40%" }]}>Available To</Text>
         <View style={{ width: "60%" }}>
+          {errors.find((err) => err.name === "availableTo") && (
+            <Text style={globalStyles.errorText}>
+              Available To cannot be earlier than Available From
+            </Text>
+          )}
           <TouchableOpacity
             onPress={() => setShowAvailableToPicker(true)}
-            style={[globalStyles.inputContainer]}
+            style={[
+              globalStyles.inputContainer,
+              errors.find((err) => err.name === "availableTo") && {
+                borderColor: "red",
+              },
+            ]}
           >
             <Text>
               {quizInfo.availableTo
@@ -229,23 +263,44 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={[globalStyles.title, { width: "40%" }]}>Time Limit</Text>
-        <TextInput
-          value={quizInfo.time_limit}
-          onChangeText={(value: string) => {
-            setQuizInfo((prev) => ({
-              ...prev,
-              time_limit: value,
-            }));
-          }}
-          keyboardType="numeric"
-          placeholder="in minutes"
-          style={[globalStyles.inputContainer, { width: "60%" }]}
-        />
+        <View style={{ width: "60%" }}>
+          <TextInput
+            value={quizInfo.time_limit}
+            onChangeText={(value: string) => {
+              const positiveNumberPattern = /^[+]?\d*\.?\d*$/;
+              if (value === "" || positiveNumberPattern.test(value)) {
+                setQuizInfo((prev) => ({
+                  ...prev,
+                  time_limit: value,
+                }));
+              }
+            }}
+            keyboardType="numeric"
+            placeholder="in minutes"
+            style={[globalStyles.inputContainer]}
+          />
+        </View>
       </View>
 
-      <View>
+      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <TouchableOpacity
-          style={globalStyles.submitButton}
+          style={[
+            globalStyles.submitButton,
+            {
+              width: "45%",
+              borderWidth: 1,
+              borderColor: "#FFBF18",
+              backgroundColor: "#fff",
+            },
+          ]}
+          onPress={() => handleCreateQuiz(quizInfo)}
+        >
+          <Text style={[globalStyles.submitButtonText, { color: "#FFBF18" }]}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[globalStyles.submitButton, { width: "45%" }]}
           onPress={() => handleCreateQuiz(quizInfo)}
         >
           <Text style={globalStyles.submitButtonText}>Create Quiz</Text>

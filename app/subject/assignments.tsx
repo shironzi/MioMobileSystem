@@ -50,7 +50,9 @@ const assignments = () => {
     useCallback(() => {
       const fetchAssignments = async () => {
         const response = await getAssignments(subjectId);
-        setAssignments(response.assignments);
+        if (response.success) {
+          setAssignments(response.assignments);
+        }
         setLoading(false);
       };
 
