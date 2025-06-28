@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Text, TextInput, View, TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import globalStyles from "@/styles/globalStyles";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 interface QuizItemError {
   name: string;
@@ -18,6 +20,7 @@ interface QuizInfo {
   attempts: number;
   access_code: string;
   time_limit: string;
+  show_answer: boolean;
 }
 
 interface QuizItemError {
@@ -31,9 +34,18 @@ interface Props {
   setInfo: (info: QuizInfo) => void;
   info: QuizInfo;
   errors: QuizItemError[];
+  setIsCreating: (value: boolean) => void;
+  isCreating: boolean;
 }
 
-const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
+const QuizHeader = ({
+  handleCreateQuiz,
+  info,
+  errors,
+  setInfo,
+  setIsCreating,
+  isCreating,
+}: Props) => {
   const [showDeadlinePicker, setShowDeadlinePicker] = useState(false);
   const [showAvailableFromPicker, setShowAvailableFromPicker] = useState(false);
   const [showAvailableToPicker, setShowAvailableToPicker] = useState(false);
@@ -295,6 +307,35 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
         </View>
       </View>
 
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={[globalStyles.title]}>Show Answer</Text>
+        <TouchableOpacity
+          onPress={() =>
+            setQuizInfo((prev) => ({ ...prev, show_answer: !prev.show_answer }))
+          }
+        >
+          {info.show_answer ? (
+            <MaterialCommunityIcons
+              name="toggle-switch"
+              size={45}
+              color="#FFBF18"
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="toggle-switch-off"
+              size={45}
+              color="black"
+            />
+          )}
+        </TouchableOpacity>
+      </View>
+
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <TouchableOpacity
           style={[
@@ -306,7 +347,10 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
               backgroundColor: "#fff",
             },
           ]}
-          onPress={() => handleCreateQuiz(quizInfo)}
+          onPress={() => {
+            isCreating ? router.back : null;
+          }}
+          disabled={isCreating}
         >
           <Text style={[globalStyles.submitButtonText, { color: "#FFBF18" }]}>
             Cancel
@@ -314,9 +358,13 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "45%" }]}
-          onPress={() => handleCreateQuiz(quizInfo)}
+          onPress={() => {
+            setIsCreating(true);
+            handleCreateQuiz(quizInfo);
+          }}
+          disabled={isCreating}
         >
-          <Text style={globalStyles.submitButtonText}>Create Quiz</Text>
+          <Text style={globalStyles.submitButtonText}>Create</Text>
         </TouchableOpacity>
       </View>
     </View>

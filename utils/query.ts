@@ -764,6 +764,7 @@ interface QuizInfo {
   attempts: number;
   access_code: string;
   time_limit: string;
+  show_answer: boolean;
 }
 
 interface QuizItem {
@@ -790,15 +791,20 @@ export async function createQuiz(
   try {
     const formdata = new FormData();
 
+    console.log(quizInfo.deadline);
+
     formdata.append("title", quizInfo.title);
     formdata.append("description", quizInfo.description);
     formdata.append("attempts", quizInfo.attempts.toString());
-    formdata.append("deadline_date", getDateAndTime(quizInfo.deadline) || "");
+    formdata.append(
+      "deadline_date",
+      quizInfo.deadline ? getDateAndTime(quizInfo.deadline) : "",
+    );
     formdata.append("start_time", quizInfo.availableFrom);
     formdata.append("end_time", quizInfo.availableTo);
     formdata.append("time_limit", quizInfo.time_limit);
     formdata.append("access_code", quizInfo.access_code || "");
-    formdata.append("show_correct_answers", "false");
+    formdata.append("show_correct_answers", quizInfo.show_answer.toString());
 
     quizItems.forEach((item, index) => {
       console.log(item);
@@ -925,7 +931,7 @@ export async function getQuizzes(subjectId: string) {
 
 export async function getQuiz(subjectId: string, quizId: string) {
   try {
-    const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
+    const { data } = await api.get(`/subject/${subjectId}/get/quiz/${quizId}`);
     return data;
   } catch (err: any) {
     if (err.response) {

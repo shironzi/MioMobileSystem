@@ -9,27 +9,11 @@ interface QuizFooterProps {
 const QuizFooter = ({ onAddItem }: QuizFooterProps) => {
   return (
     <View style={styles.footerContainer}>
-      <TouchableOpacity
-        style={[
-          styles.buttonWrapper,
-          { backgroundColor: "#fff", borderColor: "#FFBF18", borderWidth: 1 },
-        ]}
-        onPress={onAddItem}
-      >
-        <Text
-          style={[
-            globalStyles.text1,
-            { textAlign: "center", color: "#FFBF18" },
-          ]}
-        >
-          Cancel
-        </Text>
-      </TouchableOpacity>
       <TouchableOpacity style={styles.buttonWrapper} onPress={onAddItem}>
         <Text
           style={[globalStyles.text1, { textAlign: "center", color: "#fff" }]}
         >
-          Create
+          Add
         </Text>
       </TouchableOpacity>
     </View>

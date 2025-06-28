@@ -34,6 +34,7 @@ interface QuizInfo {
   attempts: number;
   access_code: string;
   time_limit: string;
+  show_answer: boolean;
 }
 
 interface QuizItem {
@@ -76,6 +77,7 @@ const AddQuiz = () => {
     attempts: 1,
     access_code: "",
     time_limit: "",
+    show_answer: false,
   });
 
   const [quizItems, setQuizItems] = useState<QuizItem[]>([
@@ -89,6 +91,8 @@ const AddQuiz = () => {
       points: 1,
     },
   ]);
+
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const [inputErrors, setInputErrors] = useState<QuizItemError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -372,11 +376,12 @@ const AddQuiz = () => {
     }
     setInputErrors([]);
 
+    setIsCreating(true);
+
     const res = quizId
       ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
       : await createQuiz(subjectId, quizInfo, quizItems);
 
-    console.log(res);
     if (res.success) {
       Alert.alert(
         "Success",
@@ -394,6 +399,8 @@ const AddQuiz = () => {
     } else {
       Alert.alert("Error", "Something went wrong. Please try again.");
     }
+
+    setIsCreating(false);
   };
 
   useEffect(() => {
@@ -423,10 +430,11 @@ const AddQuiz = () => {
         const res = await getQuiz(subjectId, quizId);
 
         if (res.success) {
-          const items = res.items.map((item: any) => ({
+          const items: QuizItem[] = res.items.map((item: any) => ({
             id: item.id,
             item_id: item.id,
             question: item.question,
+            question_image: item.question_image || null,
             choices: item.options || [],
             answer:
               typeof item.answer === "string" ? [item.answer] : item.answer,
@@ -435,15 +443,28 @@ const AddQuiz = () => {
             points: item.points,
           }));
 
+          const quizInfoData = {
+            ...res.quiz_info,
+            deadline: res.quiz_info.deadline
+              ? new Date(res.quiz_info.deadline).toString()
+              : "",
+            availableFrom: res.quiz_info.availableFrom
+              ? new Date(res.quiz_info.availableFrom).toString()
+              : "",
+            availableTo: res.quiz_info.availableTo
+              ? new Date(res.quiz_info.availableTo).toString()
+              : "",
+          };
+
           setQuizItems(items);
-          setQuizInfo(res.quiz_info);
+          setQuizInfo(quizInfoData);
         }
         setLoading(false);
       };
 
       fetchQuiz();
     }
-  }, []);
+  }, [quizId, subjectId]);
 
   if (loading) {
     return (
@@ -472,6 +493,8 @@ const AddQuiz = () => {
           setInfo={(info: QuizInfo) => setQuizInfo(info)}
           info={quizInfo}
           errors={inputErrors}
+          setIsCreating={setIsCreating}
+          isCreating={isCreating}
         />
       }
       renderItem={({ item, index }) => {
