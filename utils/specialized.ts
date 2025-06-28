@@ -34,17 +34,37 @@ export async function getSpecializedActivities(
   activity_type: string,
   difficulty: string,
 ) {
-  const { data } = await api.get(
-    `/subject/${subjectId}/specialized/${activity_type}/${difficulty}`,
-  );
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/specialized/${activity_type}/${difficulty}`,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function getActivities(subjectId: string) {
-  const { data } = await api.get(`/subject/${subjectId}/scores`);
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/scores`);
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function getActiveActivity(
@@ -52,11 +72,21 @@ export async function getActiveActivity(
   activity_type: string,
   activityId: string,
 ) {
-  const { data } = await api.get(
-    `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
-  );
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function getAttemptActivity(
@@ -65,18 +95,28 @@ export async function getAttemptActivity(
   activityId: string,
   attemptId: string,
 ) {
-  const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
-  const token = await getAuth().currentUser?.getIdToken(true);
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
+    const token = await getAuth().currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function startActivity(
@@ -85,11 +125,21 @@ export async function startActivity(
   difficulty: string,
   activityId: string,
 ) {
-  const { data } = await api.post(
-    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
-  );
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function submitAnswer(
@@ -101,31 +151,41 @@ export async function submitAnswer(
   flashcardId: string,
   fileUri: string,
 ) {
-  const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
 
-  const filename = fileUri.split("/").pop()!;
-  const mimeType = "audio/mpeg";
+    const filename = fileUri.split("/").pop()!;
+    const mimeType = "audio/mpeg";
 
-  const formData = new FormData();
-  formData.append("audio_file", {
-    uri: fileUri,
-    name: filename,
-    type: mimeType,
-  } as any);
+    const formData = new FormData();
+    formData.append("audio_file", {
+      uri: fileUri,
+      name: filename,
+      type: mimeType,
+    } as any);
 
-  const token = await getAuth().currentUser?.getIdToken(true);
+    const token = await getAuth().currentUser?.getIdToken(true);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: formData,
-  });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function finishActivity(
@@ -135,11 +195,21 @@ export async function finishActivity(
   activityId: string,
   attemptId: string,
 ) {
-  const { data } = await api.patch(
-    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
-  );
+  try {
+    const { data } = await api.patch(
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function createPictureSpeechActivity(
@@ -149,39 +219,49 @@ export async function createPictureSpeechActivity(
   difficulty: string,
   title: string,
 ) {
-  const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
 
-  const formData = new FormData();
+    const formData = new FormData();
 
-  formData.append("activity_type", activityType);
-  formData.append("difficulty", difficulty);
-  formData.append("title", title);
+    formData.append("activity_type", activityType);
+    formData.append("difficulty", difficulty);
+    formData.append("title", title);
 
-  flashcards.forEach((item, index) => {
-    if (item.file && item.text) {
-      const { uri, name, mimeType } = item.file;
+    flashcards.forEach((item, index) => {
+      if (item.file && item.text) {
+        const { uri, name, mimeType } = item.file;
 
-      formData.append(`flashcards[${index}][text]`, item.text);
-      formData.append(`flashcards[${index}][image]`, {
-        uri,
-        name,
-        type: mimeType,
-      } as any);
+        formData.append(`flashcards[${index}][text]`, item.text);
+        formData.append(`flashcards[${index}][image]`, {
+          uri,
+          name,
+          type: mimeType,
+        } as any);
+      }
+    });
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
     }
-  });
-  const token = await getAuth().currentUser?.getIdToken(true);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: formData,
-  });
-
-  return await response.json();
+  }
 }
 
 export async function createSpeechActivity(
@@ -191,21 +271,31 @@ export async function createSpeechActivity(
   flashcards: Flashcard[],
   title: string,
 ) {
-  const payload = {
-    activity_type: activityType,
-    difficulty: difficulty,
-    flashcards: flashcards,
-    title,
-  };
+  try {
+    const payload = {
+      activity_type: activityType,
+      difficulty: difficulty,
+      flashcards: flashcards,
+      title,
+    };
 
-  console.log(payload);
+    console.log(payload);
 
-  const { data } = await api.post(
-    `/subject/${subjectId}/specialized/speech`,
-    payload,
-  );
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/speech`,
+      payload,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function getActivityById(
@@ -214,11 +304,21 @@ export async function getActivityById(
   difficulty: string,
   activityId: string,
 ) {
-  const { data } = await api.get(
-    `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
-  );
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
+    );
 
-  return data;
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
 }
 
 export async function updatePictureActivity(
@@ -228,43 +328,56 @@ export async function updatePictureActivity(
   flashcards: PictureItem[],
   title: string,
 ) {
-  const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
 
-  const formData = new FormData();
-  formData.append("title", title);
+    const formData = new FormData();
+    formData.append("title", title);
 
-  flashcards.forEach((item, index) => {
-    formData.append(`flashcards[${index}][text]`, item.text ?? "");
+    flashcards.forEach((item, index) => {
+      formData.append(`flashcards[${index}][text]`, item.text ?? "");
 
-    if (item.flashcard_id) {
-      formData.append(`flashcards[${index}][flashcard_id]`, item.flashcard_id);
+      if (item.flashcard_id) {
+        formData.append(
+          `flashcards[${index}][flashcard_id]`,
+          item.flashcard_id,
+        );
+      }
+
+      if (item.file) {
+        const { uri, name, mimeType } = item.file;
+        formData.append(`flashcards[${index}][image]`, {
+          uri,
+          name,
+          type: mimeType,
+        } as any);
+      }
+    });
+
+    console.log(formData);
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
     }
-
-    if (item.file) {
-      const { uri, name, mimeType } = item.file;
-      formData.append(`flashcards[${index}][image]`, {
-        uri,
-        name,
-        type: mimeType,
-      } as any);
-    }
-  });
-
-  console.log(formData);
-
-  const token = await getAuth().currentUser?.getIdToken(true);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: formData,
-  });
-
-  return await response.json();
+  }
 }
 
 export async function updateSpeechActivity(
@@ -286,7 +399,13 @@ export async function updateSpeechActivity(
     );
 
     return data;
-  } catch (error) {
-    console.error("Error updating speech activity:", error);
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

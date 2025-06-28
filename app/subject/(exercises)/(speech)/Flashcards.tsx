@@ -87,50 +87,34 @@ const Flashcards = () => {
   };
 
   useEffect(() => {
-    let isMounted = true;
     const fetchActivity = async () => {
-      try {
-        const res = await startActivity(
-          subjectId,
-          activity_type,
-          difficulty,
-          activityId,
+      const res = await startActivity(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+      );
+
+      if (res.success && res.flashcards) {
+        console.log(res.flashcards);
+        const fetchedFlashcards = Object.entries(res.flashcards).map(
+          ([key, value]: [string, any]) => ({
+            flashcard_id: key,
+            text: value.text,
+          }),
         );
 
-        if (res.success) {
-          const fetchedFlashcards = Object.entries(res.flashcards).map(
-            ([key, value]: [string, any]) => ({
-              flashcard_id: key,
-              text: value.text,
-            }),
-          );
-
-          setAttemptId(res.attemptId);
-          setCards(fetchedFlashcards);
-          setCurrentCard(res.currentItem);
-        } else {
-          Alert.alert("Failed to start the activity");
-          router.back();
-        }
-
-        if (!isMounted) return;
-      } catch (error) {
-        if (isMounted) {
-          Alert.alert(
-            "Error",
-            "Unable to load activity. Please check your connection.",
-          );
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+        setAttemptId(res.attemptId);
+        setCards(fetchedFlashcards);
+        setCurrentCard(res.currentItem);
+      } else {
+        Alert.alert("Failed to start the activity");
+        router.back();
       }
-    };
 
+      setLoading(false);
+    };
     fetchActivity();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   if (loading) {
@@ -227,7 +211,7 @@ const Flashcards = () => {
           )}
 
           <View style={styles.textContainer}>
-            <Text style={styles.flashcardText}>{cards[currentCard].text}</Text>
+            <Text style={styles.flashcardText}>{cards[currentCard]?.text}</Text>
           </View>
         </View>
 

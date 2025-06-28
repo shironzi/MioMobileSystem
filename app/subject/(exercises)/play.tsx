@@ -4,7 +4,7 @@ import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getSpecializedActivities } from "@/utils/specialized";
 import { FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { Alert, FlatList, Image, StyleSheet, Text, View } from "react-native";
 
@@ -25,17 +25,26 @@ const Play = () => {
 
   useEffect(() => {
     const fetchActivities = async () => {
-      try {
-        const res = await getSpecializedActivities(
-          subjectId,
-          activity_type,
-          difficulty,
-        );
+      const res = await getSpecializedActivities(
+        subjectId,
+        activity_type,
+        difficulty,
+      );
 
-        setActivities(res.activities);
-        setLoading(false);
-      } catch (err) {
-        Alert.alert("Error", "Failed to load activities.");
+      setActivities(res.activities);
+      setLoading(false);
+
+      if (res === 403) {
+        Alert.alert(
+          "Access Denied",
+          "You must complete the previous difficulty before proceeding to the next.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.back(),
+            },
+          ],
+        );
       }
     };
 
