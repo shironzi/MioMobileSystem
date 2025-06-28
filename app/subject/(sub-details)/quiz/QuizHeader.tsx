@@ -106,6 +106,19 @@ const QuizHeader = ({ handleCreateQuiz, info, errors, setInfo }: Props) => {
       ></View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={[globalStyles.title, { width: "40%" }]}>Access Code</Text>
+        <View style={{ width: "60%" }}>
+          <TextInput
+            value={quizInfo.access_code}
+            onChangeText={(value) =>
+              setQuizInfo((prev) => ({ ...prev, access_code: value }))
+            }
+            style={[globalStyles.inputContainer]}
+          />
+        </View>
+      </View>
+
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
         <View style={{ width: "60%" }}>
           {errors.find((err) => err.name === "deadline") && (
