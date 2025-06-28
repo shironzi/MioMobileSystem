@@ -58,13 +58,13 @@ const bingo = () => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
-  if (status.playing) {
-    setIsPlaying(true);
-  }
-
-  if (status.didJustFinish) {
-    setIsPlaying(false);
-  }
+  useEffect(() => {
+    if (status.playing) {
+      setIsPlaying(true);
+    } else if (status.didJustFinish) {
+      setIsPlaying(false);
+    }
+  }, [status.playing, status.didJustFinish]);
 
   const handleCardPress = (image_id: string): void => {
     const date = getCurrentDateTime();

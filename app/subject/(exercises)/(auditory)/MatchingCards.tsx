@@ -94,13 +94,13 @@ const MatchingCards = () => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
-  if (status.playing) {
-    setIsPlaying(true);
-  }
-
-  if (status.didJustFinish) {
-    setIsPlaying(false);
-  }
+  useEffect(() => {
+    if (status.playing) {
+      setIsPlaying(true);
+    } else if (status.didJustFinish) {
+      setIsPlaying(false);
+    }
+  }, [status.playing, status.didJustFinish]);
 
   const handlePlayAudio = async (index: number) => {
     player.replace({ uri: audio[index].audio_url });
