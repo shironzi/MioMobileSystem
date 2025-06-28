@@ -3,7 +3,7 @@ import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import { getAnalyticsDashboard, getAnalyticsStudents } from "@/utils/analytics";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
@@ -579,7 +579,7 @@ const Analytics = () => {
         </View>
       </View>
 
-      <View style={styles.lineChartContainer}>
+      <View style={[styles.lineChartContainer, { marginBottom: 70 }]}>
         <LineChart
           initialSpacing={0}
           data={lineData}
@@ -604,12 +604,12 @@ const Analytics = () => {
           xAxisLabelTextStyle={styles.lineChart}
         />
       </View>
-      <TouchableOpacity style={styles.exportButton}>
-        <FontAwesome6 name="file-export" size={20} color="#439558" />
-        <Text style={[globalStyles.text1, { color: "#439558" }]}>
-          Export CSV
-        </Text>
-      </TouchableOpacity>
+      {/*<TouchableOpacity style={styles.exportButton}>*/}
+      {/*  <FontAwesome6 name="file-export" size={20} color="#439558" />*/}
+      {/*  <Text style={[globalStyles.text1, { color: "#439558" }]}>*/}
+      {/*    Export CSV*/}
+      {/*  </Text>*/}
+      {/*</TouchableOpacity>*/}
     </ScrollView>
   );
 };

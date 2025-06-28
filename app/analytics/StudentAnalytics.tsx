@@ -8,6 +8,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 import LineGraph from "@/app/analytics/LineGraph";
 import { Picker } from "@react-native-picker/picker";
@@ -19,6 +20,8 @@ import {
   View,
 } from "react-native";
 import { BarChart, PieChart } from "react-native-gifted-charts";
+import * as FileSystem from "expo-file-system";
+import { shareAsync } from "expo-sharing";
 
 interface TotalPerDifficulty {
   phrase: {
@@ -71,7 +74,6 @@ const StudentAnalytics = () => {
     role: string;
   }>();
   useHeaderConfig("Analytics");
-  console.log(studentId);
   const [loading, setLoading] = useState<boolean>();
   const [data, setData] = useState<{
     sessions: number;
@@ -96,6 +98,38 @@ const StudentAnalytics = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     "easy" | "average" | "difficulty" | "challenge"
   >("easy");
+
+  const generateScoreBook = async () => {
+    const filename = "Analytics.pdf";
+    const result = await FileSystem.downloadAsync(
+      `${IPADDRESS}/analytics/generate/${studentId}`,
+      FileSystem.documentDirectory + filename,
+    );
+
+    saveFile(result.uri, filename, result.headers["Content-Type"]);
+    console.log(filename);
+  };
+
+  const saveFile = async (uri: string, filename: string, mimeType: string) => {
+    const permission =
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (permission.granted) {
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await FileSystem.StorageAccessFramework.createFileAsync(
+        permission.directoryUri,
+        filename,
+        mimeType,
+      ).then(async (uri) => {
+        await FileSystem.writeAsStringAsync(uri, base64, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+      });
+    } else {
+      shareAsync(uri);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -687,10 +721,10 @@ const StudentAnalytics = () => {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.exportButton}>
+      <TouchableOpacity style={styles.exportButton} onPress={generateScoreBook}>
         <FontAwesome6 name="file-export" size={20} color="#439558" />
         <Text style={[globalStyles.text1, { color: "#439558" }]}>
-          Export CSV
+          Generate PDF
         </Text>
       </TouchableOpacity>
     </ScrollView>
