@@ -10,7 +10,7 @@ import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -21,6 +21,7 @@ import {
   View,
 } from "react-native";
 import Svg, { Line } from "react-native-svg";
+import { VolumeManager } from "react-native-volume-manager";
 
 const { width, height } = Dimensions.get("window");
 
@@ -249,6 +250,22 @@ const MatchingCards = () => {
 
     fetchActivity();
   }, []);
+
+  const setVolume = useCallback(async () => {
+    let volume = 0.8;
+
+    if (difficulty === "average") {
+      volume = 0.9;
+    } else if (difficulty === "difficulty") {
+      volume = 0.8;
+    } else if (difficulty === "challenge") {
+      volume = 0.7;
+    }
+
+    await VolumeManager.setVolume(volume);
+  }, [difficulty]);
+
+  setVolume();
 
   if (loading) {
     return (
