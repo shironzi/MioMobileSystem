@@ -1,4 +1,5 @@
 import AnalyticsCard from "@/app/analytics/AnalyticsCard";
+import LineGraph from "@/app/analytics/LineGraph";
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import { fetchStudentAnalytics, getChildAnalytics } from "@/utils/analytics";
@@ -6,12 +7,12 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
-import LineGraph from "@/app/analytics/LineGraph";
 import { Picker } from "@react-native-picker/picker";
+import * as FileSystem from "expo-file-system";
+import { useLocalSearchParams } from "expo-router";
+import * as Sharing from "expo-sharing";
+import { shareAsync } from "expo-sharing";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -20,8 +21,7 @@ import {
   View,
 } from "react-native";
 import { BarChart, PieChart } from "react-native-gifted-charts";
-import * as FileSystem from "expo-file-system";
-import { shareAsync } from "expo-sharing";
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 interface TotalPerDifficulty {
   phrase: {
@@ -99,37 +99,27 @@ const StudentAnalytics = () => {
     "easy" | "average" | "difficulty" | "challenge"
   >("easy");
 
-  const generateScoreBook = async () => {
-    const filename = "Analytics.pdf";
-    const result = await FileSystem.downloadAsync(
-      `${IPADDRESS}/analytics/generate/${studentId}`,
-      FileSystem.documentDirectory + filename,
-    );
+  async function downloadFile(url: string) {
+    try {
+      const fileName = url.split("/").pop(); // Extract the file name from the URL
+      if (!FileSystem.documentDirectory) {
+        return;
+      }
+      const localUri = FileSystem.documentDirectory + fileName;
 
-    saveFile(result.uri, filename, result.headers["Content-Type"]);
-    console.log(filename);
-  };
+      const { uri } = await FileSystem.downloadAsync(url, localUri);
+      console.log("Download completed to", uri);
 
-  const saveFile = async (uri: string, filename: string, mimeType: string) => {
-    const permission =
-      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-    if (permission.granted) {
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      await FileSystem.StorageAccessFramework.createFileAsync(
-        permission.directoryUri,
-        filename,
-        mimeType,
-      ).then(async (uri) => {
-        await FileSystem.writeAsStringAsync(uri, base64, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-      });
-    } else {
-      shareAsync(uri);
+      // Share the file using expo-sharing
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        console.log("Sharing is not available on this platform");
+      }
+    } catch (error) {
+      console.error("Error downloading or sharing file", error);
     }
-  };
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -264,7 +254,7 @@ const StudentAnalytics = () => {
       </View>
       <View>
         <AnalyticsCard
-          data={data?.average_score_quizzes ?? 0}
+          data={data?.total_students_in_assignments ?? 0}
           title={"Assignments"}
           percentage={data?.total_students_in_assignments.toString() ?? "0"}
         />
@@ -721,12 +711,17 @@ const StudentAnalytics = () => {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.exportButton} onPress={generateScoreBook}>
-        <FontAwesome6 name="file-export" size={20} color="#439558" />
-        <Text style={[globalStyles.text1, { color: "#439558" }]}>
-          Generate PDF
-        </Text>
-      </TouchableOpacity>
+      {/*<TouchableOpacity*/}
+      {/*  style={styles.exportButton}*/}
+      {/*  onPress={() =>*/}
+      {/*    downloadFile(`${IPADDRESS}/analytics/generate/${studentId}`)*/}
+      {/*  }*/}
+      {/*>*/}
+      {/*  <FontAwesome6 name="file-export" size={20} color="#439558" />*/}
+      {/*  <Text style={[globalStyles.text1, { color: "#439558" }]}>*/}
+      {/*    Generate PDF*/}
+      {/*  </Text>*/}
+      {/*</TouchableOpacity>*/}
     </ScrollView>
   );
 };

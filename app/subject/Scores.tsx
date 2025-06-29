@@ -15,6 +15,7 @@ import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
 import QuizzesScores from "@/components/QuizzesScores";
 import LoadingCard from "@/components/loadingCard";
+import * as Sharing from "expo-sharing";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -35,37 +36,29 @@ const Scores = () => {
     }[]
   >([]);
 
-  const generateScoreBook = async () => {
-    const filename = "scorebook.pdf";
-    const result = await FileSystem.downloadAsync(
-      `${IPADDRESS}/subjects/${subjectId}/scorebook`,
-      FileSystem.documentDirectory + filename,
-    );
+  async function downloadFile() {
+    try {
+      const url = `${IPADDRESS}/subjects/${subjectId}/scorebook`;
 
-    saveFile(result.uri, filename, result.headers["Content-Type"]);
-    console.log(filename);
-  };
+      const fileName = url.split("/").pop();
+      if (!FileSystem.documentDirectory) {
+        return;
+      }
+      const localUri = FileSystem.documentDirectory + fileName;
 
-  const saveFile = async (uri: string, filename: string, mimeType: string) => {
-    const permission =
-      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-    if (permission.granted) {
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      await FileSystem.StorageAccessFramework.createFileAsync(
-        permission.directoryUri,
-        filename,
-        mimeType,
-      ).then(async (uri) => {
-        await FileSystem.writeAsStringAsync(uri, base64, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-      });
-    } else {
-      shareAsync(uri);
+      const { uri } = await FileSystem.downloadAsync(url, localUri);
+      console.log("Download completed to", uri);
+
+      // Share the file using expo-sharing
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        console.log("Sharing is not available on this platform");
+      }
+    } catch (error) {
+      console.error("Error downloading or sharing file", error);
     }
-  };
+  }
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -118,28 +111,28 @@ const Scores = () => {
       // }
     >
       <View style={{ paddingBottom: 50 }}>
-        {role === "teacher" && (
-          <TouchableOpacity
-            onPress={generateScoreBook}
-            style={{
-              borderStyle: "dashed",
-              borderWidth: 2,
-              borderRadius: 20,
-              width: "90%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              marginHorizontal: "auto",
-              height: 70,
-              borderColor: "#FFBF18",
-              backgroundColor: "#FFBF1826",
-              columnGap: 10,
-            }}
-          >
-            <FontAwesome6 name="file-csv" size={19} color="#FFBF18" />
-            <Text style={{ color: "#FFBF18" }}>Generate Report</Text>
-          </TouchableOpacity>
-        )}
+        {/*{role === "teacher" && (*/}
+        {/*  <TouchableOpacity*/}
+        {/*    onPress={downloadFile}*/}
+        {/*    style={{*/}
+        {/*      borderStyle: "dashed",*/}
+        {/*      borderWidth: 2,*/}
+        {/*      borderRadius: 20,*/}
+        {/*      width: "90%",*/}
+        {/*      flexDirection: "row",*/}
+        {/*      alignItems: "center",*/}
+        {/*      justifyContent: "center",*/}
+        {/*      marginHorizontal: "auto",*/}
+        {/*      height: 70,*/}
+        {/*      borderColor: "#FFBF18",*/}
+        {/*      backgroundColor: "#FFBF1826",*/}
+        {/*      columnGap: 10,*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <FontAwesome6 name="file-csv" size={19} color="#FFBF18" />*/}
+        {/*    <Text style={{ color: "#FFBF18" }}>Generate Report</Text>*/}
+        {/*  </TouchableOpacity>*/}
+        {/*)}*/}
         {Object.entries(activities).map(([activityType, difficulties]: any) =>
           Object.entries(difficulties).map(([difficulty, info]: any) => (
             <SpeechScores
