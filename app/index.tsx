@@ -2,7 +2,9 @@ import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getAuth } from "@react-native-firebase/auth";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { memo, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -18,7 +20,6 @@ import {
   View,
 } from "react-native";
 import * as yup from "yup";
-import { getAuth } from "@react-native-firebase/auth";
 
 type FormData = {
   email: string;
@@ -49,6 +50,7 @@ const Index = () => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -92,13 +94,17 @@ const Index = () => {
     setErrorMessage("");
     try {
       const res = await login(data.email, data.password);
+      console.log(res);
       if (res.status === "success") {
-        router.replace("/(drawer)/(tabs)");
+        if (rememberMe) {
+          await SecureStore.setItemAsync(`emailAddress`, data.email);
+          await SecureStore.setItemAsync(`password`, data.password);
+        }
+        router.push("/(login)/LoginOtp");
       } else {
         setErrorMessage("Login failed. Please try again.");
       }
     } catch (e: any) {
-      // console.error("Login error:", e.message);
       setErrorMessage("Failed to log in. Please check your credentials.");
     }
   };
@@ -108,6 +114,17 @@ const Index = () => {
   };
 
   useEffect(() => {
+    const checkStoredCredentials = async () => {
+      const storedEmail = await SecureStore.getItemAsync("emailAddress");
+      const storedPassword = await SecureStore.getItemAsync("password");
+
+      if (storedEmail && storedPassword) {
+        setValue("email", storedEmail);
+        setValue("password", storedPassword);
+      }
+    };
+
+    checkStoredCredentials();
     const user = getAuth().currentUser;
 
     if (user) {
@@ -257,13 +274,7 @@ const Index = () => {
                       {errorMessage}
                     </Text>
                   )}
-                  {/* <View>
-										<Image
-											source={require("@/assets/onboard/default_profile.png")}
-											style={styles.logo}
-										/>
-									</View> */}
-                  <View style={{ rowGap: 0, marginTop: -80 }}>
+                  <View style={{ marginTop: -80 }}>
                     <Controller
                       control={control}
                       name="email"
@@ -273,7 +284,7 @@ const Index = () => {
                             style={[
                               styles.inputContainer,
                               errors.email && { borderColor: "#FF0000" },
-                              { marginBottom: 10 },
+                              { marginBottom: 0 },
                             ]}
                           >
                             <MaterialIcons
@@ -306,8 +317,8 @@ const Index = () => {
                           <View
                             style={[
                               styles.inputContainer,
-                              errors.email && { borderColor: "#FF0000" },
-                              { marginBottom: 10 },
+                              errors.password && { borderColor: "#FF0000" },
+                              { marginTop: 25 },
                             ]}
                           >
                             <MaterialIcons
@@ -338,6 +349,7 @@ const Index = () => {
                               style={{
                                 color: "red",
                                 marginLeft: 25,
+                                marginTop: -15,
                               }}
                             >
                               {errors.password.message}

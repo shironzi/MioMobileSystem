@@ -6,18 +6,43 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
 } from "react-native";
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { getAuth } from "@react-native-firebase/auth";
+import { requestVerificationCode, VerifyOtpCode } from "@/utils/auth";
 
-const forgotPass = () => {
+const LoginOtp = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const [emailAddress, setEmailAddress] = useState("");
+  const [otp_code, setOtp_code] = useState<string>("");
+  const [otpStatus, setOtpStatus] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const handleVerification = async () => {
+    setIsSubmitting(true);
+    const res = await VerifyOtpCode(parseInt(otp_code));
+
+    console.log(res);
+    if (res.status) {
+      router.replace("/(drawer)/(tabs)");
+    } else if (res.status === false) {
+    }
+    setIsSubmitting(false);
+  };
+
+  useEffect(() => {
+    const requestOTP = async () => {
+      const res = await requestVerificationCode();
+
+      if (res.success) {
+        setOtpStatus(true);
+      }
+      console.log(res);
+    };
+
+    requestOTP();
+  }, []);
 
   useFocusEffect(() => {
     navigation.setOptions({
@@ -25,56 +50,87 @@ const forgotPass = () => {
     });
   });
 
-  const handleForgotRequest = () => {
-    setIsSubmitting(true);
-    getAuth()
-      .sendPasswordResetEmail(emailAddress)
-      .then(() => {
-        Alert.alert("Success", "Password reset email sent!");
-      })
-      .catch((error) => {
-        if (error.code === "auth/user-not-found") {
-          Alert.alert("Error", "No user found with that email.");
-        } else {
-          Alert.alert("Error", "Failed to send reset email.");
-        }
-      });
-    setIsSubmitting(false);
-  };
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.upper}>
         <View style={styles.first}>
           <View style={styles.second}>
             <View style={styles.container}>
-              <View style={{ marginTop: 120 }}>
+              <View>
                 <Text style={styles.header}>Welcome Back!</Text>
                 <Text style={styles.sub}>Log in to your account</Text>
               </View>
               <View style={styles.row}>
-                <TouchableOpacity onPress={() => router.back()}>
-                  <MaterialIcons name="arrow-back" size={20} />
+                <TouchableOpacity
+                  onPress={() => router.back()}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    columnGap: 10,
+                  }}
+                >
+                  <MaterialIcons name="arrow-back" size={20} color={"#00"} />
+                  <Text style={{ color: "#00" }}>Go back</Text>
                 </TouchableOpacity>
-                <Text style={{ left: 20, color: "#666" }}>Go back</Text>
               </View>
-              <Text style={{ left: 20, fontSize: 14 }}>
-                Enter your Email Address
-              </Text>
-
+              {otpStatus ? (
+                <View>
+                  <Text
+                    style={{
+                      left: 20,
+                      fontSize: 14,
+                      width: "90%",
+                      backgroundColor: "#eee",
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      borderColor: "#aaa",
+                    }}
+                  >
+                    Your 6-digit OTP code has been successfully sent to your
+                    email address.
+                  </Text>
+                </View>
+              ) : (
+                <View>
+                  <Text
+                    style={{
+                      left: 20,
+                      fontSize: 14,
+                      width: "90%",
+                      backgroundColor: "#eee",
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      borderColor: "#aaa",
+                    }}
+                  >
+                    Your 6-digit OTP code failed to send. Please try again
+                    later.
+                  </Text>
+                </View>
+              )}
               <View style={{ rowGap: 14 }}>
                 <View style={styles.inputContainer}>
                   <MaterialIcons name="email" size={24} color="#808080" />
                   <TextInput
-                    placeholder="Email Address"
-                    value={emailAddress}
-                    onChangeText={setEmailAddress}
+                    placeholder="Enter 6 digits OTP code"
+                    value={otp_code}
+                    onChangeText={(text) => {
+                      if (/^[0-9]*$/.test(text) && text.length <= 6) {
+                        setOtp_code(text);
+                      }
+                    }}
+                    keyboardType="numeric"
+                    maxLength={6}
                     style={{ width: "100%" }}
                   />
                 </View>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={handleForgotRequest}
+                  onPress={handleVerification}
                   disabled={isSubmitting}
                 >
                   <Text
@@ -85,7 +141,7 @@ const forgotPass = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {isSubmitting ? "Sending....." : "Send Verification"}
+                    {isSubmitting ? "Verifying..." : "Verify"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -174,4 +230,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(forgotPass);
+export default memo(LoginOtp);

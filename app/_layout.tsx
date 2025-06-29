@@ -1,7 +1,13 @@
 import { getAuth } from "@react-native-firebase/auth";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { PermissionsAndroid, Text, Vibration, View } from "react-native";
+import {
+  PermissionsAndroid,
+  SafeAreaView,
+  Text,
+  Vibration,
+  View,
+} from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import EarthquakeAlertModal from "@/components/modals/EarthquakeAlertModal";
 import * as Notifications from "expo-notifications";
@@ -112,7 +118,7 @@ export default function Layout() {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: true }}>
         <Stack.Screen name="index" />
       </Stack>
@@ -166,6 +172,6 @@ export default function Layout() {
         title={modalTitle}
         body={modalBody}
       />
-    </>
+    </SafeAreaView>
   );
 }
