@@ -10,7 +10,7 @@ import {
 import React, { useState, memo, useEffect } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { requestVerificationCode, VerifyOtpCode } from "@/utils/auth";
+import { VerifyOtpCode } from "@/utils/auth";
 
 const LoginOtp = () => {
   const router = useRouter();
@@ -32,16 +32,17 @@ const LoginOtp = () => {
   };
 
   useEffect(() => {
-    const requestOTP = async () => {
-      const res = await requestVerificationCode();
-
-      if (res.success) {
-        setOtpStatus(true);
-      }
-      console.log(res);
-    };
-
-    requestOTP();
+    // const requestOTP = async () => {
+    //   const res = await requestVerificationCode();
+    //
+    //   if (res.success) {
+    //     setOtpStatus(true);
+    //   }
+    //   console.log(res);
+    // };
+    //
+    // requestOTP();
+    router.replace("/(drawer)/(tabs)");
   }, []);
 
   useFocusEffect(() => {
@@ -56,7 +57,7 @@ const LoginOtp = () => {
         <View style={styles.first}>
           <View style={styles.second}>
             <View style={styles.container}>
-              <View>
+              <View style={{ marginTop: 125 }}>
                 <Text style={styles.header}>Welcome Back!</Text>
                 <Text style={styles.sub}>Log in to your account</Text>
               </View>

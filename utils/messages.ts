@@ -85,17 +85,35 @@ export async function replyMessage(
   receiver_id: string,
   subject: string,
   body: string,
+  files: FileInfo[] | null,
 ) {
   try {
-    const { data } = await api.post(`/message/reply/${receiver_id}`, {
-      subject: subject,
-      body: body,
+    const formData = new FormData();
+    formData.append("body", body);
+
+    files?.forEach((file, index) => {
+      formData.append(`files[${index}]`, {
+        uri: file.uri,
+        name: file.name,
+        type: file.mimeType,
+      } as any);
+    });
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const res = await fetch(`${IPADDRESS}/message/reply/${receiver_id}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
     });
 
     console.log(subject);
     console.log(body);
 
-    return data;
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -139,9 +157,9 @@ export async function getSubjectTeachers() {
   }
 }
 
-export async function getSubjectStudents(subjectId: string) {
+export async function getMessagePeoples(subjectId: string) {
   try {
-    const { data } = await api.get(`/message/${subjectId}`);
+    const { data } = await api.get(`/message/${subjectId}/peoples`);
 
     return data;
   } catch (err: any) {
