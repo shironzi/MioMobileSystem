@@ -121,6 +121,7 @@ const Index = () => {
       if (storedEmail && storedPassword) {
         setValue("email", storedEmail);
         setValue("password", storedPassword);
+        setRememberMe(true);
       }
     };
 

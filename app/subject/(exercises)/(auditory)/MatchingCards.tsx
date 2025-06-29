@@ -95,6 +95,9 @@ const MatchingCards = () => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
+  const getInstruction =
+    "Click a speaker to hear a word. Then, drag a line to the image that matches what you heard. Listen and make the correct match.\n";
+
   useEffect(() => {
     if (status.playing) {
       setIsPlaying(true);
@@ -283,7 +286,7 @@ const MatchingCards = () => {
   }
 
   return (
-    <ScrollView style={[globalStyles.container, { flex: 1 }]}>
+    <ScrollView style={[globalStyles.container, { flex: 1, paddingTop: 10 }]}>
       {/* <Text style={styles.difficulty}>{difficulty}</Text> */}
       <View style={{ flex: 1 }}>
         <Svg height={height} width={width} style={[styles.connectionLines, {}]}>
@@ -299,6 +302,45 @@ const MatchingCards = () => {
             />
           ))}
         </Svg>
+        <View>
+          {/* <Text style={styles.difficulty}>{difficulty}</Text> */}
+          <View
+            style={{
+              marginHorizontal: 10,
+              borderColor: "#ddd",
+              borderWidth: 1,
+              borderRadius: 20,
+              paddingHorizontal: 10,
+              marginBottom: 15,
+              marginTop: 20,
+              left: -5,
+            }}
+          >
+            <Text
+              style={{
+                marginHorizontal: 10,
+                textAlign: "justify",
+                fontWeight: "500",
+                fontSize: 16,
+                color: "#2264dc",
+                marginTop: 10,
+              }}
+            >
+              Piddie Tips!
+            </Text>
+
+            <Text
+              style={{
+                marginTop: 5,
+                margin: 10,
+                textAlign: "justify",
+                fontWeight: "300",
+              }}
+            >
+              {getInstruction}
+            </Text>
+          </View>
+        </View>
         <View style={styles.cardContainer}>
           <View style={{ flexDirection: "column", rowGap: 10 }}>
             {activity.map((value, index) => (
@@ -372,7 +414,7 @@ const MatchingCards = () => {
             flexDirection: "row",
             justifyContent: "space-between",
             marginHorizontal: 10,
-            marginTop: 90,
+            marginTop: 20,
           }}
         >
           {/* <TouchableOpacity

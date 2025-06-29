@@ -57,7 +57,7 @@ const CourseCard = (props: {
         }}
       >
         <View>
-          {props.courseImage.trim() ? (
+          {props.courseImage?.trim() ? (
             <Image
               source={{ uri: props.courseImage }}
               resizeMode="cover"
