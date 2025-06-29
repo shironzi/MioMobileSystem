@@ -38,7 +38,7 @@ const EarthquakeAlertModal = ({
     if (visible) {
       player.seekTo(0);
       player.play();
-      const vibrationPattern = [500, 100, 500, 100, 500, 100, 500];
+      const vibrationPattern = [200, 200, 200, 200, 200, 200, 200, 200];
       Vibration.vibrate(vibrationPattern, true);
     } else {
       player.pause();

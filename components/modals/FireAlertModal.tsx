@@ -38,7 +38,9 @@ const FireAlertModal = ({
     if (visible) {
       player.seekTo(0);
       player.play();
-      const vibrationPattern = [1000, 500, 100, 500, 1000, 500, 100, 500, 1000];
+      const vibrationPattern = [
+        1000, 100, 1000, 100, 1000, 100, 1000, 100, 1000,
+      ];
       Vibration.vibrate(vibrationPattern, true);
     } else {
       player.pause();
