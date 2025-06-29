@@ -211,7 +211,7 @@ const bingo = () => {
     );
   }
 
-  const setVolume = useCallback(async () => {
+  const setVolume = async () => {
     let volume = 1;
 
     if (difficulty === "average") {
@@ -223,7 +223,7 @@ const bingo = () => {
     }
 
     await VolumeManager.setVolume(volume);
-  }, [difficulty]);
+  };
 
   setVolume();
 

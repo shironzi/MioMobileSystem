@@ -10,7 +10,7 @@ import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -251,8 +251,8 @@ const MatchingCards = () => {
     fetchActivity();
   }, []);
 
-  const setVolume = useCallback(async () => {
-    let volume = 0.8;
+  const setVolume = async () => {
+    let volume = 1;
 
     if (difficulty === "average") {
       volume = 0.9;
@@ -263,7 +263,7 @@ const MatchingCards = () => {
     }
 
     await VolumeManager.setVolume(volume);
-  }, [difficulty]);
+  };
 
   setVolume();
 

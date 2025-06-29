@@ -59,11 +59,15 @@ const moduleDetails = () => {
       const res = await getModuleById(subjectId, id);
 
       setModule(res.module);
+
+      console.log(res);
     };
     fetchModule();
   }, []);
 
   const handleOnPress = () => {
+    console.log(module);
+
     return (
       <View>
         {module?.files.map((file) => (
