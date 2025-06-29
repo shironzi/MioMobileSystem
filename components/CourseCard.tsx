@@ -16,7 +16,16 @@ const CourseCard = (props: {
 }) => {
   const router = useRouter();
 
-  console.log(props.courseImage);
+  const getCourseCode = (title: string) => {
+    const words = title.split(" ");
+    if (words.length === 1) {
+      return title.slice(0, 2).toUpperCase(); // First 2 letters of a single word
+    } else {
+      return words.map((word) => word.charAt(0).toUpperCase()).join(""); // First letter of each word
+    }
+  };
+
+  const courseCode = getCourseCode(props.courseTitle);
 
   return (
     <TouchableOpacity
@@ -68,16 +77,26 @@ const CourseCard = (props: {
             />
           ) : (
             <View
-              style={{
-                width: "100%",
-                height: "95%",
-                marginBottom: -40,
-                borderRadius: 10,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-              }}
+              style={[
+                {
+                  width: "100%",
+                  height: "95%",
+                  marginBottom: -40,
+                  borderEndStartRadius: 10,
+                  borderEndEndRadius: 10,
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
+                  backgroundColor: "#DEDFE2",
+                  alignItems: "center",
+                },
+                // props.background_color && {
+                //   backgroundColor: props.background_color,
+                // },
+              ]}
             >
-              <Text style={{ margin: "auto", fontSize: 100 }}>AS</Text>
+              <Text style={{ margin: "auto", fontSize: 100 }}>
+                {courseCode}
+              </Text>
             </View>
           )}
         </View>
