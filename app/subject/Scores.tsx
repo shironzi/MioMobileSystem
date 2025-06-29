@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  // RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import SpeechScores from "@/app/subject/(sub-details)/Scores/SpeechScores";
 import { useLocalSearchParams } from "expo-router";
 import { getActivities } from "@/utils/specialized";
-import { FontAwesome6 } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
-import { shareAsync } from "expo-sharing";
 import QuizzesScores from "@/components/QuizzesScores";
 import LoadingCard from "@/components/loadingCard";
-import * as Sharing from "expo-sharing";
-
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 const Scores = () => {
   useHeaderConfig("Scores");
@@ -36,29 +24,29 @@ const Scores = () => {
     }[]
   >([]);
 
-  async function downloadFile() {
-    try {
-      const url = `${IPADDRESS}/subjects/${subjectId}/scorebook`;
-
-      const fileName = url.split("/").pop();
-      if (!FileSystem.documentDirectory) {
-        return;
-      }
-      const localUri = FileSystem.documentDirectory + fileName;
-
-      const { uri } = await FileSystem.downloadAsync(url, localUri);
-      console.log("Download completed to", uri);
-
-      // Share the file using expo-sharing
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri);
-      } else {
-        console.log("Sharing is not available on this platform");
-      }
-    } catch (error) {
-      console.error("Error downloading or sharing file", error);
-    }
-  }
+  // async function downloadFile() {
+  //   try {
+  //     const url = `${IPADDRESS}/subjects/${subjectId}/scorebook`;
+  //
+  //     const fileName = url.split("/").pop();
+  //     if (!FileSystem.documentDirectory) {
+  //       return;
+  //     }
+  //     const localUri = FileSystem.documentDirectory + fileName;
+  //
+  //     const { uri } = await FileSystem.downloadAsync(url, localUri);
+  //     console.log("Download completed to", uri);
+  //
+  //     // Share the file using expo-sharing
+  //     if (await Sharing.isAvailableAsync()) {
+  //       await Sharing.shareAsync(uri);
+  //     } else {
+  //       console.log("Sharing is not available on this platform");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error downloading or sharing file", error);
+  //   }
+  // }
 
   useEffect(() => {
     const fetchActivities = async () => {

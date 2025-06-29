@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { VolumeManager } from "react-native-volume-manager";
 
 const bingo = () => {
   HeaderConfigQuiz("Piddie Says");
@@ -209,6 +210,22 @@ const bingo = () => {
       </View>
     );
   }
+
+  const setVolume = useCallback(async () => {
+    let volume = 1;
+
+    if (difficulty === "average") {
+      volume = 0.9;
+    } else if (difficulty === "difficulty") {
+      volume = 0.8;
+    } else if (difficulty === "challenge") {
+      volume = 0.7;
+    }
+
+    await VolumeManager.setVolume(volume);
+  }, [difficulty]);
+
+  setVolume();
 
   return (
     <FlatList

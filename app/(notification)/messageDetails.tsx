@@ -11,17 +11,27 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import * as DocumentPicker from "expo-document-picker";
 
 type Message = {
+  files: string[];
   message: string;
   receiver_id: string;
   sender_id: string;
   timestamp: number;
 };
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
 
 const MessageDetails = () => {
   const { thread, name, selectedType } = useLocalSearchParams<{
@@ -37,21 +47,47 @@ const MessageDetails = () => {
   const [mount, setMount] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [file, setFile] = useState<FileInfo[] | null>(null);
+
+  const handleFileUpload = async () => {
+    try {
+      const mimeTypes = ["image/*, application/*"];
+      const res = await DocumentPicker.getDocumentAsync({
+        type: mimeTypes,
+        copyToCacheDirectory: true,
+      });
+
+      if (!res.canceled && res.assets && res.assets.length > 0) {
+        const { uri, name, mimeType } = res.assets[0];
+        const newFile = { uri, name, mimeType };
+
+        setFile([newFile]);
+      }
+    } catch (error) {
+      console.error("Error picking file:", error);
+    }
+  };
 
   useHeaderConfig(name ?? "");
 
   const handleSent = async () => {
-    if (!messageInput.trim()) return;
+    if (!messageInput.trim() && !file) {
+      console.log("hello");
+    }
     setIsSending(true);
+    console.log("hello senign");
     const res =
       selectedType.toUpperCase() === "sent"
-        ? await sendMessage(senderId, messageInput, null)
-        : await replyMessage(receiverId, messageInput, messageInput);
+        ? await sendMessage(senderId, messageInput, file)
+        : await replyMessage(receiverId, messageInput, messageInput, file);
+
+    console.log(res);
 
     if (res.success) {
       setMessageData((prev) => [
         ...prev,
         {
+          files: file ? file.map((f) => f.uri) : [],
           message: messageInput,
           receiver_id: receiverId,
           sender_id: senderId,
@@ -59,6 +95,7 @@ const MessageDetails = () => {
         },
       ]);
       setMessageInput("");
+      setFile(null);
     }
 
     setIsSending(false);
@@ -69,7 +106,6 @@ const MessageDetails = () => {
     setMessageData(res.conversation);
     setSenderId(res.sender);
     setReceiverId(res.receiver);
-    console.log("Conversation fetched for thread:", thread);
   };
 
   useEffect(() => {
@@ -143,9 +179,9 @@ const MessageDetails = () => {
               }}
             >
               {msg.sender_id === senderId ? (
-                <MessageSenderCard message={msg.message} />
+                <MessageSenderCard message={msg.message} files={msg.files} />
               ) : (
-                <MessageReceiverCard message={msg.message} />
+                <MessageReceiverCard message={msg.message} files={msg.files} />
               )}
             </View>
           ))}
@@ -166,19 +202,29 @@ const MessageDetails = () => {
             !keyboardVisible && { marginBottom: 45 },
           ]}
         >
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "#ddd",
-              borderRadius: 10,
-              padding: 10,
-              backgroundColor: "#fff",
-              width: "90%",
-            }}
-            value={messageInput}
-            onChangeText={(value: string) => setMessageInput(value)}
-            placeholder="Type a message..."
-          />
+          {file ? (
+            <View style={{ width: "80%", flexDirection: "row", columnGap: 20 }}>
+              <Text style={{ flexWrap: "wrap" }}>{file[0]?.name}</Text>
+              <AntDesign name="close" size={24} color="black" />
+            </View>
+          ) : (
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                padding: 10,
+                backgroundColor: "#fff",
+                width: "80%",
+              }}
+              value={messageInput}
+              onChangeText={(value: string) => setMessageInput(value)}
+              placeholder="Type a message..."
+            />
+          )}
+          <TouchableOpacity onPress={handleFileUpload}>
+            <AntDesign name="addfile" size={24} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleSent} disabled={isSending}>
             <MaterialIcons name="send" size={24} color="#FFBF18" />
           </TouchableOpacity>

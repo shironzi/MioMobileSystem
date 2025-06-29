@@ -9,7 +9,6 @@ export default async function login(email: string, password: string) {
     const auth = getAuth();
     await auth.signInWithEmailAndPassword(email, password);
     const user = auth.currentUser;
-    console.log(user);
 
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -44,5 +43,37 @@ export async function logout() {
     delete api.defaults.headers.common.Authorization;
   } catch (error: any) {
     throw new Error(`Logout failed: ${error.message}`);
+  }
+}
+
+export async function requestVerificationCode() {
+  try {
+    const { data } = await api.post(`/sent-verification`);
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function VerifyOtpCode(OTPCode: number) {
+  try {
+    const { data } = await api.post(`/verify/otp`, {
+      otp_code: OTPCode,
+    });
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

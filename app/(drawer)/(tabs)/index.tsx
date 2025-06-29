@@ -32,6 +32,8 @@ type Subject = {
   description: string;
   subjectType: string;
   specialized_type: string | null;
+  image: string;
+  background_color: string;
 };
 
 const index = () => {
@@ -75,6 +77,8 @@ const index = () => {
   useEffect(() => {
     fetchSubjects();
   }, []);
+
+  console.log(subjects);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {
     if (!subjects) return [];
@@ -234,8 +238,9 @@ const index = () => {
                     description={subject.description}
                     subjectType={subject.subjectType}
                     specializedType={subject.specialized_type}
-                    courseImage={require("@/assets/images/dashImage/language.png")}
+                    courseImage={subject.image}
                     role={role}
+                    background_color={subject.background_color}
                   />
                   <Text>{courseCardView}</Text>
                 </View>
@@ -253,8 +258,9 @@ const index = () => {
                   description={subject.description}
                   subjectType={subject.subjectType}
                   specializedType={subject.specialized_type}
-                  courseImage={require("@/assets/images/dashImage/language.png")}
+                  courseImage={subject.image}
                   role={role}
+                  background_color={subject.background_color}
                 />
                 <Text>{courseCardView}</Text>
               </View>
