@@ -18,15 +18,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -268,350 +264,346 @@ const addAssignment = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+    // <KeyboardAvoidingView
+    //   style={{ flex: 1 }}
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+    // >
+    //   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <ScrollView
+      style={globalStyles.container}
+      contentContainerStyle={{ paddingBottom: 100 }}
+      showsVerticalScrollIndicator={false}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          style={globalStyles.container}
-          contentContainerStyle={{ paddingBottom: 10 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={[globalStyles.cardContainer, { rowGap: 15 }]}>
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Publish Date</Text>
-              <DatePickerField
-                date={publishDate}
-                onChange={setPublishDate}
-                error={error.some((err) => err.error === "publishDate")}
-                style={styles.dropdown}
-              />
-            </View>
+      <View style={[globalStyles.cardContainer, { rowGap: 15 }]}>
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Publish Date</Text>
+          <DatePickerField
+            date={publishDate}
+            onChange={setPublishDate}
+            error={error.some((err) => err.error === "publishDate")}
+            style={styles.dropdown}
+          />
+        </View>
 
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Deadline</Text>
-              <DatePickerField
-                date={deadline}
-                onChange={setDeadline}
-                error={error.some((err) => err.error === "deadline")}
-                style={styles.dropdown}
-              />
-            </View>
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Deadline</Text>
+          <DatePickerField
+            date={deadline}
+            onChange={setDeadline}
+            error={error.some((err) => err.error === "deadline")}
+            style={styles.dropdown}
+          />
+        </View>
 
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Availability From</Text>
-              <DatePickerField
-                date={availabilityFrom}
-                onChange={(value) => handleAvailabilityFrom(value)}
-                error={error.some((err) => err.error === "availabilityFrom")}
-                style={styles.dropdown}
-                mode={"time"}
-              />
-            </View>
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Availability From</Text>
+          <DatePickerField
+            date={availabilityFrom}
+            onChange={(value) => handleAvailabilityFrom(value)}
+            error={error.some((err) => err.error === "availabilityFrom")}
+            style={styles.dropdown}
+            mode={"time"}
+          />
+        </View>
 
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Availability To</Text>
-              <DatePickerField
-                date={availabilityTo}
-                onChange={(value) => handleAvailabilityTo(value)}
-                error={error.some((err) => err.error === "availabilityTo")}
-                style={styles.dropdown}
-                mode={"time"}
-              />
-            </View>
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Availability To</Text>
+          <DatePickerField
+            date={availabilityTo}
+            onChange={(value) => handleAvailabilityTo(value)}
+            error={error.some((err) => err.error === "availabilityTo")}
+            style={styles.dropdown}
+            mode={"time"}
+          />
+        </View>
 
-            <View style={styles.attemptContainer}>
-              <Text style={globalStyles.textLabel}>Attempts</Text>
-              <View
-                style={[
-                  styles.attemptInputContainer,
-                  error.some((err) => err.error === "attempts")
-                    ? { borderColor: "#db4141", borderWidth: 1 }
-                    : { borderColor: "#ddd" },
-                ]}
-              >
-                <TextInput
-                  style={styles.attemptInput}
-                  value={attempt.toString()}
-                  onChangeText={(text) => {
-                    const sanitized = sanitizeAttemptInput(text);
-                    setAttempt(sanitized ? parseInt(sanitized, 10) : 0);
-                  }}
-                  keyboardType={"numeric"}
-                />
-                <View style={styles.arrowContainer}>
-                  <TouchableOpacity onPress={handleAddAttempt}>
-                    <MaterialIcons
-                      name="arrow-drop-up"
-                      size={25}
-                      color="#ffbf18"
-                      style={styles.arrowIcon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleMinusAttempt}>
-                    <MaterialIcons
-                      name="arrow-drop-down"
-                      size={25}
-                      color="#ffbf18"
-                      style={styles.arrowIcon}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Points</Text>
-              <TextInput
-                style={[
-                  styles.dropdown,
-                  error.some((err) => err.error === "points")
-                    ? { borderColor: "#db4141", borderWidth: 1 }
-                    : { borderColor: "#ddd" },
-                ]}
-                placeholder="Points"
-                placeholderTextColor="#aaa"
-                value={points.toString()}
-                onChangeText={(text) => {
-                  const sanitized = sanitizeAttemptInput(text);
-                  setPoints(sanitized ? parseInt(sanitized, 10) : 0);
-                }}
-              />
-              <MaterialCommunityIcons
-                name="numeric"
-                size={25}
-                color="#ffbf18"
-                style={styles.iconInsideInput}
-              />
-            </View>
-
-            <View style={styles.row}>
-              <Text style={globalStyles.textLabel}>Submission Type</Text>
-              <TouchableOpacity
-                style={[
-                  styles.dropdownButton,
-                  error.some((err) => err.error === "submissionType")
-                    ? { borderColor: "db4141", borderWidth: 1 }
-                    : null,
-                ]}
-                onPress={() => setDropdownVisible(!dropdownVisible)}
-              >
-                <View style={styles.inputRow}>
-                  <Text style={{ color: submissionType ? "#000" : "#aaa" }}>
-                    {submissionType}
-                  </Text>
-                  <MaterialIcons
-                    name={dropdownVisible ? "arrow-drop-up" : "arrow-drop-down"}
-                    size={25}
-                    color="#ffbf18"
-                  />
-                </View>
-              </TouchableOpacity>
-              {dropdownVisible && (
-                <View style={styles.dropdownList}>
-                  {optionValues.map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      style={styles.dropdownItem}
-                      onPress={() => {
-                        setSubmissionType(option);
-                        setDropdownVisible(false);
-                      }}
-                    >
-                      <Text style={{ color: "#333" }}>{option}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
-
-            {submissionType !== "Text" && (
-              <View>
-                <View>
-                  <Text style={[globalStyles.textLabel, { marginBottom: 10 }]}>
-                    File Type
-                  </Text>
-                </View>
-                <View>
-                  {[
-                    "PDF",
-                    "DOCX",
-                    "PPTX",
-                    "MP3",
-                    "MP4",
-                    "JPG",
-                    "PNG",
-                    "XLSX",
-                    "TXT",
-                    "ZIP",
-                  ].map((fileType) => (
-                    <TouchableOpacity
-                      key={fileType}
-                      onPress={() => handleFileTypes(fileType.toLowerCase())}
-                      style={{ flexDirection: "row", marginVertical: 3 }}
-                    >
-                      {!fileTypes.includes(fileType.toLowerCase()) ? (
-                        <Ionicons
-                          name="square-outline"
-                          size={20}
-                          color="#aaa"
-                          style={{ marginRight: 5 }}
-                        />
-                      ) : (
-                        <Ionicons
-                          name="checkbox"
-                          size={20}
-                          color="#ffbf18"
-                          style={{ marginRight: 5 }}
-                        />
-                      )}
-                      <Text>{fileType}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                <View>
-                  <Text
-                    style={[globalStyles.textLabel, { marginVertical: 15 }]}
-                  >
-                    File Size
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontStyle: "italic",
-                      fontWeight: 300,
-                      marginTop: -10,
-                      marginBottom: 15,
-                    }}
-                  >
-                    (max of 60mb per attachment)
-                  </Text>
-                </View>
-
-                <TextInput
-                  style={[
-                    styles.dropdown,
-                    error.some((err) => err.error === "fileSize")
-                      ? { borderColor: "#db4141", borderWidth: 1 }
-                      : { borderColor: "#ddd" },
-                    { width: 300, left: 0 },
-                  ]}
-                  placeholder="60"
-                  placeholderTextColor="#aaa"
-                  multiline={true}
-                  keyboardType="numeric"
-                  value={fileSize.toString()}
-                  onChangeText={(value: string) => {
-                    const sanitized = sanitizeAttemptInput(value);
-                    setFileSize(sanitized ? parseInt(sanitized, 10) : 5120);
-                  }}
-                  // onChangeText={(value: string) =>
-                  // 	setFileSize(parseInt(sanitizeAttemptInput(value)))
-                  // }
-
-                  // onChangeText={(value: string) =>
-                  //   // setFileSize(parseInt(sanitizeAttemptInput(value)))
-                  //   setFileSize(sanitized ? parseInt(sanitized, 10) : 0);
-                />
-              </View>
-            )}
-
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <View>
-                <Text style={globalStyles.textLabel}>Visibility</Text>
-              </View>
-              <View>
-                <TouchableOpacity onPress={() => setVisibility(!visibility)}>
-                  {visibility ? (
-                    <FontAwesome5 name="toggle-on" size={30} color="#ffbf18" />
-                  ) : (
-                    <FontAwesome5 name="toggle-off" size={30} color="#ddd" />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.separator}></View>
-
-            <Text style={globalStyles.textLabel}>Title</Text>
-            <View>
-              <TextInput
-                style={[
-                  styles.dropdown,
-                  error.some((err) => err.error === "title")
-                    ? { borderColor: "#db4141", borderWidth: 1 }
-                    : { borderColor: "#ddd" },
-                  { width: 300 },
-                ]}
-                placeholder="Enter title"
-                placeholderTextColor="#aaa"
-                multiline={true}
-                value={title}
-                onChangeText={setTitle}
-              />
-              <FontAwesome
-                name="pencil-square-o"
-                size={20}
-                color="#ffbf18"
-                style={styles.iconInsideInput}
-              />
-            </View>
-            <View style={{ rowGap: 5 }}>
-              <Text style={globalStyles.textLabel}>Description</Text>
-              <TextInput
-                style={[
-                  {
-                    borderWidth: 1,
-                    borderColor: "#ddd",
-                    borderRadius: 10,
-                    padding: 10,
-                    marginTop: 10,
-                    height: 150,
-                  },
-                  error.some((err) => err.error === "description")
-                    ? { borderColor: "#db4141", borderWidth: 1 }
-                    : { borderColor: "#ddd" },
-                ]}
-                textAlignVertical="top"
-                placeholder="Enter description..."
-                placeholderTextColor="#aaa"
-                multiline={true}
-                value={description}
-                onChangeText={setDescription}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                bottom: 0,
-                marginTop: 40,
+        <View style={styles.attemptContainer}>
+          <Text style={globalStyles.textLabel}>Attempts</Text>
+          <View
+            style={[
+              styles.attemptInputContainer,
+              error.some((err) => err.error === "attempts")
+                ? { borderColor: "#db4141", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
+          >
+            <TextInput
+              style={styles.attemptInput}
+              value={attempt.toString()}
+              onChangeText={(text) => {
+                const sanitized = sanitizeAttemptInput(text);
+                setAttempt(sanitized ? parseInt(sanitized, 10) : 0);
               }}
-            >
-              <TouchableOpacity
-                style={[globalStyles.inactivityButton, { width: "48%" }]}
-                onPress={() => router.back()}
-              >
-                <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+              keyboardType={"numeric"}
+            />
+            <View style={styles.arrowContainer}>
+              <TouchableOpacity onPress={handleAddAttempt}>
+                <MaterialIcons
+                  name="arrow-drop-up"
+                  size={25}
+                  color="#ffbf18"
+                  style={styles.arrowIcon}
+                />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[globalStyles.submitButton, { width: "48%" }]}
-                onPress={handlePreviewAssignment}
-              >
-                <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-                  {assignmentId ? "Update" : "Create"}
-                </Text>
+              <TouchableOpacity onPress={handleMinusAttempt}>
+                <MaterialIcons
+                  name="arrow-drop-down"
+                  size={25}
+                  color="#ffbf18"
+                  style={styles.arrowIcon}
+                />
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Points</Text>
+          <TextInput
+            style={[
+              styles.dropdown,
+              error.some((err) => err.error === "points")
+                ? { borderColor: "#db4141", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
+            placeholder="Points"
+            placeholderTextColor="#aaa"
+            value={points.toString()}
+            onChangeText={(text) => {
+              const sanitized = sanitizeAttemptInput(text);
+              setPoints(sanitized ? parseInt(sanitized, 10) : 0);
+            }}
+          />
+          <MaterialCommunityIcons
+            name="numeric"
+            size={25}
+            color="#ffbf18"
+            style={styles.iconInsideInput}
+          />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={globalStyles.textLabel}>Submission Type</Text>
+          <TouchableOpacity
+            style={[
+              styles.dropdownButton,
+              error.some((err) => err.error === "submissionType")
+                ? { borderColor: "db4141", borderWidth: 1 }
+                : null,
+            ]}
+            onPress={() => setDropdownVisible(!dropdownVisible)}
+          >
+            <View style={styles.inputRow}>
+              <Text style={{ color: submissionType ? "#000" : "#aaa" }}>
+                {submissionType}
+              </Text>
+              <MaterialIcons
+                name={dropdownVisible ? "arrow-drop-up" : "arrow-drop-down"}
+                size={25}
+                color="#ffbf18"
+              />
+            </View>
+          </TouchableOpacity>
+          {dropdownVisible && (
+            <View style={styles.dropdownList}>
+              {optionValues.map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    setSubmissionType(option);
+                    setDropdownVisible(false);
+                  }}
+                >
+                  <Text style={{ color: "#333" }}>{option}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {submissionType !== "Text" && (
+          <View>
+            <View>
+              <Text style={[globalStyles.textLabel, { marginBottom: 10 }]}>
+                File Type
+              </Text>
+            </View>
+            <View>
+              {[
+                "PDF",
+                "DOCX",
+                "PPTX",
+                "MP3",
+                "MP4",
+                "JPG",
+                "PNG",
+                "XLSX",
+                "TXT",
+                "ZIP",
+              ].map((fileType) => (
+                <TouchableOpacity
+                  key={fileType}
+                  onPress={() => handleFileTypes(fileType.toLowerCase())}
+                  style={{ flexDirection: "row", marginVertical: 3 }}
+                >
+                  {!fileTypes.includes(fileType.toLowerCase()) ? (
+                    <Ionicons
+                      name="square-outline"
+                      size={20}
+                      color="#aaa"
+                      style={{ marginRight: 5 }}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="checkbox"
+                      size={20}
+                      color="#ffbf18"
+                      style={{ marginRight: 5 }}
+                    />
+                  )}
+                  <Text>{fileType}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View>
+              <Text style={[globalStyles.textLabel, { marginVertical: 15 }]}>
+                File Size
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontStyle: "italic",
+                  fontWeight: 300,
+                  marginTop: -10,
+                  marginBottom: 15,
+                }}
+              >
+                (max of 60mb per attachment)
+              </Text>
+            </View>
+
+            <TextInput
+              style={[
+                styles.dropdown,
+                error.some((err) => err.error === "fileSize")
+                  ? { borderColor: "#db4141", borderWidth: 1 }
+                  : { borderColor: "#ddd" },
+                { width: 300, left: 0 },
+              ]}
+              placeholder="60"
+              placeholderTextColor="#aaa"
+              multiline={true}
+              keyboardType="numeric"
+              value={fileSize.toString()}
+              onChangeText={(value: string) => {
+                const sanitized = sanitizeAttemptInput(value);
+                setFileSize(sanitized ? parseInt(sanitized, 10) : 5120);
+              }}
+              // onChangeText={(value: string) =>
+              // 	setFileSize(parseInt(sanitizeAttemptInput(value)))
+              // }
+
+              // onChangeText={(value: string) =>
+              //   // setFileSize(parseInt(sanitizeAttemptInput(value)))
+              //   setFileSize(sanitized ? parseInt(sanitized, 10) : 0);
+            />
+          </View>
+        )}
+
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View>
+            <Text style={globalStyles.textLabel}>Visibility</Text>
+          </View>
+          <View>
+            <TouchableOpacity onPress={() => setVisibility(!visibility)}>
+              {visibility ? (
+                <FontAwesome5 name="toggle-on" size={30} color="#ffbf18" />
+              ) : (
+                <FontAwesome5 name="toggle-off" size={30} color="#ddd" />
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.separator}></View>
+
+        <Text style={globalStyles.textLabel}>Title</Text>
+        <View>
+          <TextInput
+            style={[
+              styles.dropdown,
+              error.some((err) => err.error === "title")
+                ? { borderColor: "#db4141", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+              { width: 300 },
+            ]}
+            placeholder="Enter title"
+            placeholderTextColor="#aaa"
+            multiline={true}
+            value={title}
+            onChangeText={setTitle}
+          />
+          <FontAwesome
+            name="pencil-square-o"
+            size={20}
+            color="#ffbf18"
+            style={styles.iconInsideInput}
+          />
+        </View>
+        <View style={{ rowGap: 5 }}>
+          <Text style={globalStyles.textLabel}>Description</Text>
+          <TextInput
+            style={[
+              {
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                padding: 10,
+                marginTop: 10,
+                height: 150,
+              },
+              error.some((err) => err.error === "description")
+                ? { borderColor: "#db4141", borderWidth: 1 }
+                : { borderColor: "#ddd" },
+            ]}
+            textAlignVertical="top"
+            placeholder="Enter description..."
+            placeholderTextColor="#aaa"
+            multiline={true}
+            value={description}
+            onChangeText={setDescription}
+          />
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            bottom: 0,
+            marginTop: 40,
+          }}
+        >
+          <TouchableOpacity
+            style={[globalStyles.inactivityButton, { width: "48%" }]}
+            onPress={() => router.back()}
+          >
+            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[globalStyles.submitButton, { width: "48%" }]}
+            onPress={handlePreviewAssignment}
+          >
+            <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
+              {assignmentId ? "Update" : "Create"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+    //   </TouchableWithoutFeedback>
+    // </KeyboardAvoidingView>
   );
 };
 

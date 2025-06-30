@@ -245,6 +245,8 @@ const Homonyms = () => {
           )
         : await startHomonymsActivity(subjectId, difficulty, activityId);
 
+      console.log(res);
+
       Object.entries(res.activity).map(([key, value]: [string, any]) => {
         setItems((prev) => [
           ...prev,

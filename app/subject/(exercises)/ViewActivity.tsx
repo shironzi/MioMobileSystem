@@ -5,36 +5,10 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActiveActivity } from "@/utils/specialized";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const ViewActivity = () => {
   useHeaderConfig("Activity");
-
-  const getInstruction = () => {
-    const speechActivities = ["picture", "pronunciation", "phrase", "question"];
-    const auditoryActivities = ["bingo", "matching"];
-    const languageActivities = ["fill", "homonyms"];
-
-    if (speechActivities.includes(activity_type)) {
-      return "Look at the prompt. Tap the microphone and say it out loud. Try to pronounce it as clearly as you can.";
-    }
-
-    if (auditoryActivities.includes(activity_type)) {
-      return "Listen carefully to the sound. Then tap the correct answer that matches what you heard.";
-    }
-
-    if (languageActivities.includes(activity_type)) {
-      return "Read the sentence carefully. Choose or drag the correct word that best completes the meaning.";
-    }
-
-    return "Follow the instructions for this activity.";
-  };
 
   const { activity_type, difficulty, category, subjectId, activityId, role } =
     useLocalSearchParams<{
@@ -46,12 +20,32 @@ const ViewActivity = () => {
       difficulty: string;
     }>();
 
+  const getInstruction = useCallback(() => {
+    const speechActivities = ["picture", "pronunciation", "phrase", "question"];
+    const auditoryActivities = ["bingo", "matching"];
+    const languageActivities = ["fill", "homonyms"];
+
+    if (speechActivities.includes(activity_type)) {
+      return "Look at the prompt. Tap the microphone and say it out loud. Try to pronounce it as clearly as you can.";
+    }
+
+    if (auditoryActivities.includes(activity_type)) {
+      return "Listen carefully to the sound. Then tap the correct image that matches what you heard.";
+    }
+
+    if (languageActivities.includes(activity_type)) {
+      return "Read the sentence carefully. Choose the correct word that best completes the meaning.";
+    }
+
+    return "Follow the instructions for this activity.";
+  }, [activity_type]);
+
   const [attempts, setAttempts] = useState<
     { attemptId: string; score: string | null; submitted_at: string | null }[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleOnStart = () => {
+  const handleOnStart = useCallback(() => {
     const inProgressAttempt = attempts.find(
       (attempt) => attempt.submitted_at === null,
     );
@@ -65,7 +59,15 @@ const ViewActivity = () => {
       difficulty,
       attemptId: inProgressAttempt?.attemptId || "",
     });
-  };
+  }, [
+    attempts,
+    category,
+    activity_type,
+    role,
+    subjectId,
+    activityId,
+    difficulty,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -109,23 +111,8 @@ const ViewActivity = () => {
     );
   }
 
-  // const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // const onRefresh = () => {
-  //   setIsRefreshing(true);
-  //   setTimeout(() => {
-  //     setIsRefreshing(false);
-  //   }, 2000);
-  // };
-
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={[globalStyles.container, { backgroundColor: "#fff" }]}
-      // refreshControl={
-      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      // }
-    >
+    <ScrollView style={[globalStyles.container, { backgroundColor: "#fff" }]}>
       <View>
         <View
           style={{
@@ -185,7 +172,7 @@ const ViewActivity = () => {
             <Text style={{ flex: 1, fontWeight: 500 }}>Score</Text>
             <Text style={{ flex: 2, fontWeight: 500 }}>Submitted At</Text>
           </View>
-          {attempts.map((attempt, index) => (
+          {attempts?.map((attempt, index) => (
             <View
               key={index}
               style={{

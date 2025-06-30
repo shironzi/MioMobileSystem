@@ -78,6 +78,7 @@ const MatchingCards = () => {
   const [audio, setAudio] = useState<{ audio_id: string; audio_url: string }[]>(
     [],
   );
+
   const [total, setTotal] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>();
   const [answers, setAnswers] = useState<
@@ -130,6 +131,7 @@ const MatchingCards = () => {
     if (!attemptId) return;
 
     setIsSending(true);
+    console.log(answers);
 
     const res = await submitMatchingActivity(
       subjectId,
@@ -227,7 +229,6 @@ const MatchingCards = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      console.log(prevAttemptId);
       const res = prevAttemptId
         ? await getAttemptActivityAuditory(
             subjectId,
@@ -242,10 +243,8 @@ const MatchingCards = () => {
             activityId,
           );
 
-      console.log(res);
-
       setActivity(res.items);
-      setAudio(res.audio);
+      setAudio(res.audio_paths);
       setAttemptId(res.attemptId);
       setTotal(res.total);
       setLoading(false);
@@ -361,7 +360,7 @@ const MatchingCards = () => {
                   const { x, y, height } = e.nativeEvent.layout;
                   audioPositions.current[index] = {
                     x: x + 100,
-                    y: y + height / 2,
+                    y: y + 200,
                   };
                 }}
               >
@@ -389,7 +388,7 @@ const MatchingCards = () => {
                   const { x, y, height } = e.nativeEvent.layout;
                   imagePositions.current[index] = {
                     x: x + 300,
-                    y: y + height / 2,
+                    y: y + 200,
                   };
                 }}
               >

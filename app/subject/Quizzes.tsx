@@ -120,7 +120,7 @@ const Quiz = () => {
           </TouchableOpacity>
         )}
 
-        {quizzes.map((quiz, index) => (
+        {quizzes?.map((quiz, index) => (
           <TouchableOpacity
             key={index}
             style={[

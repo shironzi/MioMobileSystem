@@ -67,7 +67,7 @@ const LanguageTrainingExercise = () => {
           resizeMode="contain"
         />
         <Text style={[styles.practice]}>PRACTICE WITH</Text>
-        <Text style={[styles.actName]}>Fill in the Blanks</Text>
+        <Text style={[styles.actName]}>Fill in the Box</Text>
         <View style={styles.choose}>
           <Text
             style={{

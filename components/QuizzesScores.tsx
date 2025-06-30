@@ -84,7 +84,8 @@ const QuizzesScores = ({
                   >
                     <View style={styles.yellowBulletin}></View>
                     <Text style={[styles.item, globalStyles.text1]}>
-                      Level {index + 1}
+                      {placeholder === "Quizzes" ? "Quiz" : "Assignment"}{" "}
+                      {index + 1}
                     </Text>
                   </View>
                   <FontAwesome

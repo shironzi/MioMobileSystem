@@ -95,26 +95,89 @@ const Homonyms = () => {
     }
   };
 
+  const [currentCard, setCurrentCard] = useState(0);
+
+  const handleNext = () => {
+    if (currentCard >= items.length - 1) return;
+
+    setCurrentCard(currentCard + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentCard <= 0) return;
+
+    setCurrentCard(currentCard - 1);
+  };
+
+  console.log(items[currentCard]);
+
   return (
     <View style={globalStyles.container}>
-      <View style={[styles.questionsContainer, { height: "90%" }]}>
-        {items.map((item, index) => (
-          <HomonymPreviewCard
-            key={index}
-            activity={item}
-            emptyInput={false}
-            handleAnswer={(answer, index) =>
-              handleAnswer(answer, index, item.id)
-            }
-            answers={answers}
-          />
-        ))}
+      <View style={[styles.questionsContainer, { height: "85%" }]}>
+        <HomonymPreviewCard
+          activity={items[currentCard]}
+          emptyInput={false}
+          handleAnswer={(answer, index) =>
+            handleAnswer(answer, index, items[currentCard].id)
+          }
+          answers={answers}
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+            marginTop: 150,
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              currentCard === 0 && {
+                backgroundColor: "#fff",
+                borderWidth: 1,
+                borderColor: "#FFBF18",
+              },
+            ]}
+            disabled={currentCard === 0}
+            onPress={handlePrev}
+          >
+            <Text
+              style={[
+                globalStyles.submitButtonText,
+                currentCard === 0 && { color: "#FFBF18" },
+              ]}
+            >
+              Prev
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              globalStyles.submitButton,
+              currentCard >= items.length - 1 && {
+                backgroundColor: "#fff",
+                borderWidth: 1,
+                borderColor: "#FFBF18",
+              },
+            ]}
+            onPress={handleNext}
+            disabled={currentCard >= items.length - 1}
+          >
+            <Text
+              style={[
+                globalStyles.submitButtonText,
+                currentCard >= items.length - 1 && { color: "#FFBF18" },
+              ]}
+            >
+              Next
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginBottom: -10,
         }}
       >
         <TouchableOpacity
@@ -144,8 +207,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   questionsContainer: {
-    height: "70%",
-    justifyContent: "space-between",
     flexDirection: "column",
     alignItems: "center",
   },

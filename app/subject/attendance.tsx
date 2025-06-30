@@ -7,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
-  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -69,23 +68,10 @@ const attendanceDetails = () => {
     );
   }
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
-
   return (
-    <View style={[globalStyles.container, { flex: 1 }]}>
+    <View style={[{ flex: 1 }]}>
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 50 }}
-        // refreshControl={
-        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        // }
+        contentContainerStyle={[globalStyles.container, { paddingBottom: 50 }]}
       >
         <View style={styles.content}>
           {role === "teacher" && (

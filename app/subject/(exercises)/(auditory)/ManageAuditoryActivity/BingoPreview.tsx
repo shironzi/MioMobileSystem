@@ -34,7 +34,7 @@ interface AudioItem {
 }
 
 const BingoPreview = () => {
-  useHeaderConfig("Bingo Cards");
+  useHeaderConfig("Piddie Says");
 
   const {
     subjectId,

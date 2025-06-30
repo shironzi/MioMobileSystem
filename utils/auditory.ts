@@ -358,6 +358,8 @@ export async function submitMatchingActivity(
       answerLogs,
     };
 
+    console.log(JSON.stringify(payload));
+
     const response = await fetch(
       `${IPADDRESS}/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
       {
