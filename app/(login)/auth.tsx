@@ -7,13 +7,8 @@ import {
   Image,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useState, memo, useCallback } from "react";
-import {
-  useFocusEffect,
-  useNavigation,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import React, { useState, memo } from "react";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const email = "202210920@fit.edu.ph";
@@ -22,7 +17,6 @@ const auth = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const [newCode, setNewCode] = useState("");
-  const { from: source } = useLocalSearchParams();
 
   useFocusEffect(() => {
     navigation.setOptions({
