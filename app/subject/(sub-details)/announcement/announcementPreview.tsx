@@ -51,8 +51,10 @@ const AnnouncementPreview = () => {
     ? JSON.parse(imageUrl)
     : [];
   const [localUris, setLocalUris] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleCreateAnnouncement = async () => {
+    setIsSubmitting(true);
     const res = announcementId
       ? await editAnnouncement(
           title,
@@ -72,6 +74,8 @@ const AnnouncementPreview = () => {
           subjectId,
           formattedDate,
         );
+
+    setIsSubmitting(false);
 
     if (res.success) {
       Alert.alert(
@@ -211,9 +215,16 @@ const AnnouncementPreview = () => {
             <TouchableOpacity
               style={[globalStyles.submitButton, { width: "48%" }]}
               onPress={handleCreateAnnouncement}
+              disabled={isSubmitting}
             >
               <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-                {announcementId ? "Update" : "Create"}
+                {announcementId
+                  ? isSubmitting
+                    ? "Updating..."
+                    : "Update"
+                  : isSubmitting
+                    ? "Creating..."
+                    : "Create"}
               </Text>
             </TouchableOpacity>
           </View>

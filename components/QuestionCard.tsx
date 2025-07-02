@@ -1,18 +1,24 @@
 import FileUpload from "@/components/FileUpload";
 import globalStyles from "@/styles/globalStyles";
-import { Ionicons } from "@expo/vector-icons";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Picker } from "@react-native-picker/picker";
 import React, { useEffect, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface Props {
   item_no: number;
   question: string;
-  type: "multiple_choice" | "essay" | "file_upload" | "fill" | "dropdown";
+  type:
+    | "multiple_choice"
+    | "essay"
+    | "file_upload"
+    | "fill"
+    | "dropdown"
+    | "multiple_multiple";
   multiple_type?: "radio" | "checkbox";
   answer?: Answer;
-  choices: { id: string; label: string }[];
+  options: { id: string; label: string }[];
   onAnswerChange: (answer: string | string[], file?: FileInfo[]) => void;
 }
 
@@ -32,27 +38,21 @@ const QuestionCard = ({
   item_no,
   question,
   type,
-  multiple_type = "radio",
-  choices,
+  options,
   onAnswerChange,
   answer,
 }: Props) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+  const [selectedAnswers, setSelectedAnswers] = useState<string>("");
+  const [multipleAnswers, setMultipleAnswers] = useState<string[]>([]);
   const [essayAnswer, setEssayAnswer] = useState("");
   const [fillAnswer, setFillAnswer] = useState("");
   const [dropdownAnswer, setDropdownAnswer] = useState<string | null>(null);
   const [fileAnswer, setFileAnswer] = useState<FileInfo[]>([]);
 
-  console.log(choices);
-
   useEffect(() => {
     if (type === "multiple_choice") {
-      if (multiple_type === "checkbox") {
-        onAnswerChange(selectedAnswers ?? []);
-      } else {
-        onAnswerChange(selectedAnswer ?? "");
-      }
+      onAnswerChange(selectedAnswers);
     } else if (type === "essay") {
       onAnswerChange(essayAnswer);
     } else if (type === "fill") {
@@ -61,6 +61,8 @@ const QuestionCard = ({
       onAnswerChange(dropdownAnswer ?? "");
     } else if (type === "file_upload") {
       onAnswerChange("", fileAnswer);
+    } else if (type === "multiple_multiple") {
+      onAnswerChange(multipleAnswers);
     }
   }, [
     selectedAnswer,
@@ -76,18 +78,16 @@ const QuestionCard = ({
 
     const ans = answer.answer;
 
-    if (type === "multiple_choice") {
-      if (multiple_type === "checkbox" && Array.isArray(ans)) {
-        setSelectedAnswers(ans);
-      } else if (typeof ans === "string") {
-        setSelectedAnswer(ans);
-      }
+    if (type === "multiple_choice" && typeof ans === "string") {
+      setSelectedAnswers(ans);
     } else if (type === "essay" && typeof ans === "string") {
       setEssayAnswer(ans);
     } else if (type === "fill" && typeof ans === "string") {
       setFillAnswer(ans);
     } else if (type === "dropdown" && typeof ans === "string") {
       setDropdownAnswer(ans);
+    } else if (type === "multiple_multiple" && Array.isArray(ans)) {
+      setMultipleAnswers(ans);
     }
 
     if (answer.file) {
@@ -128,7 +128,7 @@ const QuestionCard = ({
         <View style={{ paddingHorizontal: 10 }}>
           {type === "multiple_choice" && (
             <View style={{ rowGap: 10 }}>
-              {choices.map((choice) => (
+              {options.map((choice) => (
                 <TouchableOpacity
                   key={choice.id}
                   style={{
@@ -137,45 +137,58 @@ const QuestionCard = ({
                     gap: 5,
                   }}
                   onPress={() => {
-                    if (multiple_type === "checkbox") {
-                      setSelectedAnswers((prev) =>
-                        prev.includes(choice.label)
-                          ? prev.filter((id) => id !== choice.label)
-                          : [...prev, choice.label],
-                      );
-                    } else {
-                      setSelectedAnswer(choice.label);
-                    }
+                    setSelectedAnswer(choice.label);
                   }}
                 >
-                  {multiple_type === "checkbox" ? (
-                    <Ionicons
-                      name={
-                        selectedAnswers.includes(choice.label)
-                          ? "checkbox"
-                          : "checkbox-outline"
+                  <Fontisto
+                    name={
+                      selectedAnswer === choice.label
+                        ? "radio-btn-active"
+                        : "radio-btn-passive"
+                    }
+                    size={15}
+                    color={selectedAnswer === choice.label ? "#ffbf18" : "#aaa"}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text>{choice.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {type === "multiple_multiple" && (
+            <View style={{ rowGap: 10 }}>
+              {options.map((choice) => (
+                <TouchableOpacity
+                  key={choice.id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                  onPress={() => {
+                    setMultipleAnswers((prev) => {
+                      if (prev.includes(choice.label)) {
+                        return prev.filter((answer) => answer !== choice.label);
+                      } else {
+                        return [...prev, choice.label];
                       }
-                      size={15}
-                      color={
-                        selectedAnswers.includes(choice.label)
-                          ? "ffbf18"
-                          : "#aaa"
-                      }
-                    />
-                  ) : (
-                    <Fontisto
-                      name={
-                        selectedAnswer === choice.label
-                          ? "radio-btn-active"
-                          : "radio-btn-passive"
-                      }
-                      size={15}
-                      color={
-                        selectedAnswer === choice.label ? "#ffbf18" : "#aaa"
-                      }
-                      style={{ marginRight: 10 }}
-                    />
-                  )}
+                    });
+                  }}
+                >
+                  <Ionicons
+                    name={
+                      multipleAnswers.includes(choice.label)
+                        ? "checkbox"
+                        : "checkbox-outline"
+                    }
+                    size={15}
+                    color={
+                      multipleAnswers.includes(choice.label)
+                        ? "#ffbf18"
+                        : "#aaa"
+                    }
+                  />
                   <Text>{choice.label}</Text>
                 </TouchableOpacity>
               ))}
@@ -237,7 +250,7 @@ const QuestionCard = ({
                 onValueChange={(itemValue) => setDropdownAnswer(itemValue)}
               >
                 <Picker.Item label="Select an option..." value={null} />
-                {choices.map((choice, index) => (
+                {options?.map((choice, index) => (
                   <Picker.Item
                     key={index}
                     label={choice.label}

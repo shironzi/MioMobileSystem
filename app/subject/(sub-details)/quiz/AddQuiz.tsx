@@ -382,6 +382,8 @@ const AddQuiz = () => {
       ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
       : await createQuiz(subjectId, quizInfo, quizItems);
 
+    console.log(res);
+
     if (res.success) {
       Alert.alert(
         "Success",
@@ -495,6 +497,7 @@ const AddQuiz = () => {
           errors={inputErrors}
           setIsCreating={setIsCreating}
           isCreating={isCreating}
+          quizId={quizId}
         />
       }
       renderItem={({ item, index }) => {

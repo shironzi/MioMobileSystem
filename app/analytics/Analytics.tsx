@@ -188,18 +188,14 @@ const Analytics = () => {
                     width: "80%",
                     backgroundColor: "#fff",
                     borderRadius: 20,
-                    padding: 20,
                   }}
                 >
                   <View
                     style={{
                       backgroundColor: "#2264dc",
                       height: 60,
-                      width: 315,
                       borderTopLeftRadius: 20,
                       borderTopRightRadius: 20,
-                      top: -20,
-                      left: -20,
                     }}
                   >
                     <View
@@ -239,6 +235,8 @@ const Analytics = () => {
                       borderWidth: 1,
                       borderRadius: 20,
                       marginBottom: 10,
+                      marginHorizontal: 20,
+                      marginTop: 20,
                     }}
                   >
                     <Picker
@@ -260,6 +258,7 @@ const Analytics = () => {
                       borderWidth: 1,
                       borderRadius: 20,
                       marginBottom: 10,
+                      marginHorizontal: 20,
                     }}
                   >
                     <Picker
@@ -725,6 +724,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
   },
   cancelButton: {
     borderColor: "#ffbf18",

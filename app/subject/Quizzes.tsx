@@ -1,20 +1,15 @@
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { getQuizzes } from "@/utils/query";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { deleteQuiz, getQuizzes } from "@/utils/query";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import {
-  // RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import NoQuizzes from "@/components/noData/NoQuizzes";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import QuizCard from "@/components/QuizCard";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 interface Quiz {
   quiz_id: string;
@@ -58,6 +53,8 @@ const Quiz = () => {
       });
     }
   };
+  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
+  const [targetQuiz, setTargetQuiz] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -74,111 +71,93 @@ const Quiz = () => {
     );
   }
 
+  const handleDelete = async () => {
+    if (!targetQuiz) return;
+
+    const res = await deleteQuiz(subjectId, targetQuiz);
+
+    if (res.success) {
+      setQuizzes((prev) => prev.filter((quiz) => quiz.quiz_id != targetQuiz));
+    }
+    setDeleteConfirm(false);
+    setTargetQuiz(null);
+  };
+
   return (
-    <ScrollView
-      style={{ backgroundColor: "#fff", height: "100%", paddingTop: 20 }}
-    >
-      <View>
-        {role === "teacher" && (
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              columnGap: 6,
-              borderStyle: "dashed",
-              borderWidth: 2,
-              borderRadius: 20,
-              paddingVertical: 20,
-              justifyContent: "center",
-              backgroundColor: "#FFBF1840",
-              borderColor: "#FFBF18",
-              marginHorizontal: 20,
-              marginBottom: 15,
-            }}
-            onPress={() =>
-              router.push({
-                pathname: "/subject/(sub-details)/quiz/AddQuiz",
-                params: { subjectId: subjectId },
-              })
-            }
-          >
-            <Ionicons name="add-circle-sharp" size={24} color="#FFB200" />
-            <Text style={[globalStyles.title, { color: "#FFB200" }]}>
-              Add Quiz
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {quizzes ? (
-          quizzes?.map((quiz, index) => (
+    <View>
+      <ScrollView
+        style={{ backgroundColor: "#fff", height: "100%", paddingTop: 20 }}
+      >
+        <View>
+          {role === "teacher" && (
             <TouchableOpacity
-              key={index}
-              style={[
-                globalStyles.cardContainer1,
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginVertical: 5,
-                },
-              ]}
-              onPress={() => handleSelectQuiz(quiz.quiz_id, index)}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                columnGap: 6,
+                borderStyle: "dashed",
+                borderWidth: 2,
+                borderRadius: 20,
+                paddingVertical: 20,
+                justifyContent: "center",
+                backgroundColor: "#FFBF1840",
+                borderColor: "#FFBF18",
+                marginHorizontal: 20,
+                marginBottom: 15,
+              }}
+              onPress={() =>
+                router.push({
+                  pathname: "/subject/(sub-details)/quiz/AddQuiz",
+                  params: { subjectId: subjectId },
+                })
+              }
             >
-              <View style={styles.yellowBulletin}></View>
-              <View style={{ width: "50%" }}>
-                <Text
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                  style={[globalStyles.textLabel, { fontWeight: 500 }]}
-                >
-                  Quiz {index + 1}
-                </Text>
-                <Text style={globalStyles.text2}>{quiz.total_points} Pts</Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  columnGap: 15,
-                  width: "60%",
-                  alignItems: "center",
-                  marginHorizontal: -10,
-                }}
-              >
-                <Text style={[globalStyles.text2, { width: "50%" }]}>
-                  {quiz.deadline_date ?? "No Due date"}
-                </Text>
-                <View style={{ justifyContent: "flex-end" }}>
-                  <FontAwesome6
-                    name="arrow-right-long"
-                    size={20}
-                    color="#1f1f1f"
-                  />
-                </View>
-              </View>
+              <Ionicons name="add-circle-sharp" size={24} color="#FFB200" />
+              <Text style={[globalStyles.title, { color: "#FFB200" }]}>
+                Add Quiz
+              </Text>
             </TouchableOpacity>
-          ))
-        ) : (
-          <View
-            style={[
-              { marginVertical: "auto", height: "100%" },
-              role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
-            ]}
-          >
-            <NoQuizzes />
-          </View>
-        )}
-      </View>
-    </ScrollView>
+          )}
+
+          {quizzes ? (
+            quizzes?.map((quiz, index) => (
+              <GestureHandlerRootView style={{ flex: 1 }} key={index}>
+                <QuizCard
+                  quiz_id={quiz.quiz_id}
+                  subjectId={subjectId}
+                  title={quiz.title}
+                  total_points={quiz.total_points}
+                  role={role}
+                  handleDelete={() => {
+                    setDeleteConfirm(true);
+                    setTargetQuiz(quiz.quiz_id);
+                  }}
+                />
+              </GestureHandlerRootView>
+            ))
+          ) : (
+            <View
+              style={[
+                { marginVertical: "auto", height: "100%" },
+                role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
+              ]}
+            >
+              <NoQuizzes />
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <ConfirmationModal
+        isVisible={deleteConfirm}
+        description={"Are you sure you want to delete this Quiz?"}
+        cancelDisplay={"Cancel"}
+        approveDisplay={"Delete"}
+        handleCancel={() => setDeleteConfirm(false)}
+        handleApprove={() => handleDelete()}
+      />
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  yellowBulletin: {
-    backgroundColor: "#FFBF18",
-    height: 45,
-    width: "1.5%",
-    borderRadius: 100,
-  },
-});
 
 export default memo(Quiz);

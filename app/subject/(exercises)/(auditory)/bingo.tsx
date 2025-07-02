@@ -328,14 +328,20 @@ const bingo = () => {
             onPress={handleSubmit}
             style={[
               styles.nextButton,
-              !isPlaying && matchedIds.length > 0
+              !isPlaying && matchedIds.length >= audioFiles.length
                 ? { backgroundColor: "#FFBF18" }
                 : { backgroundColor: "#ddd" },
             ]}
-            disabled={isPlaying || isSending}
+            disabled={
+              isPlaying || isSending || matchedIds.length < audioFiles.length
+            }
           >
             <Text style={styles.nextText}>
-              {isSending ? "Sending" : "Submit"}
+              {isSending
+                ? "Submitting...."
+                : isPlaying
+                  ? "Playing..."
+                  : "Submit"}
             </Text>
           </TouchableOpacity>
         </View>

@@ -36,6 +36,7 @@ interface Props {
   errors: QuizItemError[];
   setIsCreating: (value: boolean) => void;
   isCreating: boolean;
+  quizId: string;
 }
 
 const QuizHeader = ({
@@ -45,6 +46,7 @@ const QuizHeader = ({
   setInfo,
   setIsCreating,
   isCreating,
+  quizId,
 }: Props) => {
   const [showDeadlinePicker, setShowDeadlinePicker] = useState(false);
   const [showAvailableFromPicker, setShowAvailableFromPicker] = useState(false);
@@ -364,7 +366,15 @@ const QuizHeader = ({
           }}
           disabled={isCreating}
         >
-          <Text style={globalStyles.submitButtonText}>Create</Text>
+          <Text style={globalStyles.submitButtonText}>
+            {quizId
+              ? isCreating
+                ? "Updating"
+                : "Update"
+              : isCreating
+                ? "Creating"
+                : "Create"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

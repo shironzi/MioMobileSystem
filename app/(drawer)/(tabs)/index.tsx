@@ -16,7 +16,6 @@ import {
   View,
   RefreshControl,
 } from "react-native";
-import { getAuth } from "@react-native-firebase/auth";
 
 const data = [
   { label: "All", value: "all" },
@@ -45,6 +44,7 @@ const index = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("All");
   const dropdownRef = React.useRef<View | null>(null);
+  const [name, setName] = useState<string>("");
 
   const [dropdownPosition, setDropdownPosition] = useState({
     x: 0,
@@ -53,21 +53,17 @@ const index = () => {
     height: 0,
   });
 
-  const name = getAuth().currentUser?.displayName;
-
-  let f_name;
-  if (name) {
-    f_name = name.split(" ")[0];
-  }
-
   const fetchSubjects = async () => {
     try {
       const data = await getSubjects();
       setSubjects(data.subjects);
       setRole(data.role);
+      setName(data.name);
       if (data.role) {
         await SecureStore.setItemAsync("role", data.role);
       }
+
+      console.log(data);
 
       if (data === 401) {
       }
@@ -141,7 +137,7 @@ const index = () => {
       <View style={styles.headerName}>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.yellow}></View>
-          <Text style={styles.greet}>Welcome back, {f_name}!</Text>
+          <Text style={styles.greet}>Welcome back, {name}!</Text>
         </View>
         <Text style={styles.banner}>
           Helping deaf children develop communication skills and confidence for

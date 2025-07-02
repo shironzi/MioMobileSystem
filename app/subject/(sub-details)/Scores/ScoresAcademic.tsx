@@ -58,6 +58,7 @@ const ScoresAcademic = () => {
   const [scoreError, setScoreError] = useState<string>("");
   const [errorMessageModal, setErrorMessageModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [noAttempt, setNoAttempt] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     if (!student_answer?.score || student_answer?.score.trim() === "") {
@@ -116,8 +117,13 @@ const ScoresAcademic = () => {
     return (extension && mimeTypes[extension]) || "application/octet-stream";
   };
 
-  const filename = "download";
-  const mimeTypeFromFilename = getMimeTypeFromFilename(student_answer.work);
+  let filename = "";
+  let mimeTypeFromFilename = "";
+
+  if (!noAttempt) {
+    filename = "download";
+    mimeTypeFromFilename = getMimeTypeFromFilename(student_answer.work);
+  }
 
   const generateScoreBook = async () => {
     const fileUri = FileSystem.documentDirectory + filename;
@@ -164,11 +170,13 @@ const ScoresAcademic = () => {
         studentId,
       );
 
+      console.log(res);
+
       if (res.success) {
         setActivityInfo(res.assignment_info);
         setStudent_answer(res.student_answer);
       } else {
-        console.error("Failed to fetch data");
+        setNoAttempt(true);
       }
 
       setLoading(false);
@@ -196,217 +204,228 @@ const ScoresAcademic = () => {
     <ScrollView
       style={{ padding: 20, backgroundColor: "#fff", height: "100%" }}
     >
-      <View
-        style={{
-          marginVertical: 10,
-          borderRadius: 20,
-          backgroundColor: "#fff",
-          borderColor: "#00000024",
-          borderWidth: 1,
-          minHeight: 150,
-          rowGap: 20,
-        }}
-      >
+      {noAttempt ? (
+        <View>
+          <Text>No Available Assignment Attempt</Text>
+        </View>
+      ) : (
         <View>
           <View
-            style={[
-              globalStyles.sectionHeader,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              },
-            ]}
+            style={{
+              marginVertical: 10,
+              borderRadius: 20,
+              backgroundColor: "#fff",
+              borderColor: "#00000024",
+              borderWidth: 1,
+              minHeight: 150,
+              rowGap: 20,
+            }}
           >
-            <Text
-              style={[globalStyles.text1, { lineHeight: 20, width: "70%" }]}
-            >
-              {activityInfo?.submission_type === "text" ? "Text" : "File"} Entry
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-              }}
-            >
-              <TextInput
+            <View>
+              <View
                 style={[
-                  globalStyles.text1,
+                  globalStyles.sectionHeader,
                   {
-                    lineHeight: 16,
-                    borderWidth: 1,
-                    width: 50,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    borderColor: scoreError ? "#DA4848" : "#00000024",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   },
                 ]}
-                value={student_answer?.score}
-                keyboardType="numeric"
-                onChangeText={(value) => {
-                  const numericValue = value.replace(/[^0-9]/g, "");
-                  setScoreError("");
-                  setStudent_answer((prev) => ({
-                    ...prev,
-                    score: numericValue,
-                  }));
-                }}
-              />
-              <Text style={[globalStyles.text1, { lineHeight: 20 }]}>
-                /{activityInfo?.total}
-              </Text>
+              >
+                <Text
+                  style={[globalStyles.text1, { lineHeight: 20, width: "70%" }]}
+                >
+                  {activityInfo?.submission_type === "text" ? "Text" : "File"}{" "}
+                  Entry
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    columnGap: 5,
+                  }}
+                >
+                  <TextInput
+                    style={[
+                      globalStyles.text1,
+                      {
+                        lineHeight: 16,
+                        borderWidth: 1,
+                        width: 50,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                        borderColor: scoreError ? "#DA4848" : "#00000024",
+                      },
+                    ]}
+                    value={student_answer?.score}
+                    keyboardType="numeric"
+                    onChangeText={(value) => {
+                      const numericValue = value.replace(/[^0-9]/g, "");
+                      setScoreError("");
+                      setStudent_answer((prev) => ({
+                        ...prev,
+                        score: numericValue,
+                      }));
+                    }}
+                  />
+                  <Text style={[globalStyles.text1, { lineHeight: 20 }]}>
+                    /{activityInfo?.total}
+                  </Text>
+                </View>
+              </View>
+              <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
+                <Text>{activityInfo?.description}</Text>
+              </View>
             </View>
-          </View>
-          <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-            <Text>{activityInfo?.description}</Text>
-          </View>
-        </View>
-        <View>
-          {activityInfo?.submission_type.toLowerCase() === "text" ? (
             <View>
-              <View>
-                <Text
-                  style={[
-                    globalStyles.text1,
-                    { marginHorizontal: 20, marginBottom: -10 },
-                  ]}
-                >
-                  Answer
-                </Text>
-                <TextInput
-                  style={{
-                    minHeight: 250,
-                    padding: 15,
-                    borderColor: "#00000024",
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    margin: 15,
-                  }}
-                  placeholder={"Write your answer here...."}
-                  value={student_answer?.work}
-                  textAlignVertical="top"
-                  multiline={true}
-                  editable={false}
-                  selectTextOnFocus={false}
-                />
-              </View>
-
-              <View>
-                <Text
-                  style={[
-                    globalStyles.text1,
-                    { marginHorizontal: 20, marginBottom: -10 },
-                  ]}
-                >
-                  Feedback
-                </Text>
-                <TextInput
-                  style={{
-                    minHeight: 100,
-                    padding: 15,
-                    borderColor: "#00000024",
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    margin: 15,
-                  }}
-                  placeholder={"Write your Feedback here...."}
-                  value={student_answer?.feedback}
-                  onChangeText={(value) => {
-                    setStudent_answer((prev) => ({
-                      ...prev,
-                      feedback: value,
-                    }));
-                  }}
-                  textAlignVertical="top"
-                  multiline={true}
-                />
-              </View>
-              <View>
-                <Text
-                  style={[
-                    globalStyles.text1,
-                    { marginHorizontal: 20, marginBottom: -10 },
-                  ]}
-                >
-                  Comments
-                </Text>
-                <TextInput
-                  style={{
-                    minHeight: 100,
-                    padding: 15,
-                    borderColor: "#00000024",
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    margin: 15,
-                  }}
-                  placeholder={"Write your comments here...."}
-                  value={student_answer?.comments}
-                  textAlignVertical="top"
-                  multiline={true}
-                  onChangeText={(value) => {
-                    setStudent_answer((prev) => ({
-                      ...prev,
-                      comments: value,
-                    }));
-                  }}
-                />
-              </View>
-            </View>
-          ) : (
-            <View style={{ width: "80%", marginHorizontal: "auto" }}>
-              {activityInfo?.submission_type === "JPG" ||
-              activityInfo?.submission_type === "PNG" ? (
+              {activityInfo?.submission_type.toLowerCase() === "text" ? (
                 <View>
-                  <Image />
+                  <View>
+                    <Text
+                      style={[
+                        globalStyles.text1,
+                        { marginHorizontal: 20, marginBottom: -10 },
+                      ]}
+                    >
+                      Answer
+                    </Text>
+                    <TextInput
+                      style={{
+                        minHeight: 250,
+                        padding: 15,
+                        borderColor: "#00000024",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        margin: 15,
+                      }}
+                      placeholder={"Write your answer here...."}
+                      value={student_answer?.work}
+                      textAlignVertical="top"
+                      multiline={true}
+                      editable={false}
+                      selectTextOnFocus={false}
+                    />
+                  </View>
+
+                  <View>
+                    <Text
+                      style={[
+                        globalStyles.text1,
+                        { marginHorizontal: 20, marginBottom: -10 },
+                      ]}
+                    >
+                      Feedback
+                    </Text>
+                    <TextInput
+                      style={{
+                        minHeight: 100,
+                        padding: 15,
+                        borderColor: "#00000024",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        margin: 15,
+                      }}
+                      placeholder={"Write your Feedback here...."}
+                      value={student_answer?.feedback}
+                      onChangeText={(value) => {
+                        setStudent_answer((prev) => ({
+                          ...prev,
+                          feedback: value,
+                        }));
+                      }}
+                      textAlignVertical="top"
+                      multiline={true}
+                    />
+                  </View>
+                  <View>
+                    <Text
+                      style={[
+                        globalStyles.text1,
+                        { marginHorizontal: 20, marginBottom: -10 },
+                      ]}
+                    >
+                      Comments
+                    </Text>
+                    <TextInput
+                      style={{
+                        minHeight: 100,
+                        padding: 15,
+                        borderColor: "#00000024",
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        margin: 15,
+                      }}
+                      placeholder={"Write your comments here...."}
+                      value={student_answer?.comments}
+                      textAlignVertical="top"
+                      multiline={true}
+                      onChangeText={(value) => {
+                        setStudent_answer((prev) => ({
+                          ...prev,
+                          comments: value,
+                        }));
+                      }}
+                    />
+                  </View>
                 </View>
               ) : (
-                <View style={{ marginBottom: 20 }}>
-                  <TouchableOpacity onPress={generateScoreBook}>
-                    <Text>Download Student Answer</Text>
-                  </TouchableOpacity>
+                <View style={{ width: "80%", marginHorizontal: "auto" }}>
+                  {activityInfo?.submission_type === "JPG" ||
+                  activityInfo?.submission_type === "PNG" ? (
+                    <View>
+                      <Image />
+                    </View>
+                  ) : (
+                    <View style={{ marginBottom: 20 }}>
+                      <TouchableOpacity onPress={generateScoreBook}>
+                        <Text>Download Student Answer</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               )}
             </View>
-          )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: 10,
+              marginBottom: 50,
+            }}
+          >
+            <TouchableOpacity
+              style={[
+                {
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  borderColor: "#FFBF189E",
+                  width: 165,
+                  marginBottom: 10,
+                  paddingVertical: 15,
+                },
+              ]}
+            >
+              <Text
+                style={[globalStyles.submitButtonText, { color: "#FFBF18" }]}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={globalStyles.submitButton}
+              onPress={handleSubmit}
+            >
+              <Text style={globalStyles.submitButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+          <ErrorModal
+            errorMessageModal={errorMessageModal}
+            scoreError={scoreError}
+            setErrorMessageModal={() => setErrorMessageModal(false)}
+          />
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          marginTop: 10,
-          marginBottom: 50,
-        }}
-      >
-        <TouchableOpacity
-          style={[
-            {
-              borderWidth: 1,
-              borderRadius: 15,
-              borderColor: "#FFBF189E",
-              width: 165,
-              marginBottom: 10,
-              paddingVertical: 15,
-            },
-          ]}
-        >
-          <Text style={[globalStyles.submitButtonText, { color: "#FFBF18" }]}>
-            Cancel
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={globalStyles.submitButton}
-          onPress={handleSubmit}
-        >
-          <Text style={globalStyles.submitButtonText}>Save</Text>
-        </TouchableOpacity>
-      </View>
-      <ErrorModal
-        errorMessageModal={errorMessageModal}
-        scoreError={scoreError}
-        setErrorMessageModal={() => setErrorMessageModal(false)}
-      />
+      )}
     </ScrollView>
   );
 };

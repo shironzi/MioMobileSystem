@@ -3,9 +3,9 @@ import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { getQuizById } from "@/utils/query";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 const QuizDetails = () => {
   useHeaderConfig("Quiz");
@@ -15,7 +15,7 @@ const QuizDetails = () => {
     quizId: string;
   }>();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>();
   const [deadline, setDeadline] = useState<string>();
   const [points, setPoints] = useState<number>();
@@ -26,6 +26,38 @@ const QuizDetails = () => {
     useState<
       { question: string; options: string[]; answer: string; type: string }[]
     >();
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      const res = await getQuizById(subjectId, quizId);
+      const data = res.quiz_info;
+      setTitle(data.title);
+      setDeadline(data.deadline);
+      setPoints(data.total);
+      setAttempts(data.attempts);
+      setDescription(data.description);
+
+      // setQuestions(
+      //   data.questions.map(
+      //     (item: {
+      //       question: string;
+      //       options: string[];
+      //       answer: string;
+      //       type: string;
+      //     }) => ({
+      //       question: item.question,
+      //       options: item.options,
+      //       answer: item.answer,
+      //       type: item.type,
+      //     }),
+      //   ),
+      // );
+
+      setLoading(false);
+    };
+
+    fetchQuiz();
+  }, []);
 
   if (loading) {
     return (
@@ -42,43 +74,13 @@ const QuizDetails = () => {
     );
   }
 
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      const res = await getQuizById(subjectId, quizId);
-      const data = res.quiz;
-      setTitle(data.title);
-      setDeadline(data.deadline);
-      setPoints(data.total);
-      setAttempts(data.attempts);
-      setDescription(data.description);
-
-      setQuestions(
-        data.questions.map(
-          (item: {
-            question: string;
-            options: string[];
-            answer: string;
-            type: string;
-          }) => ({
-            question: item.question,
-            options: item.options,
-            answer: item.answer,
-            type: item.type,
-          }),
-        ),
-      );
-    };
-
-    fetchQuiz();
-  });
-
   return (
     <ScrollView style={globalStyles.container}>
       <View style={{ rowGap: 15 }}>
         <View style={globalStyles.cardContainer}>
-          <Text>title {title}</Text>
+          <Text style={globalStyles.text1}>{title}</Text>
           <View>
-            <Text>Deadline {deadline}</Text>
+            <Text>Deadline {deadline ?? ""}</Text>
             <Text>Points {points}</Text>
           </View>
           <Text>Availability {availability}</Text>

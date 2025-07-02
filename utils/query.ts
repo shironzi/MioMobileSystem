@@ -261,6 +261,24 @@ export async function submitAssignmentEval(
   }
 }
 
+export async function deleteQuiz(subjectId: string, assignmentId: string) {
+  try {
+    const { data } = await api.delete(
+      `/subject/${subjectId}/quiz/${assignmentId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function deleteAssignment(
   subjectId: string,
   assignmentId: string,
@@ -915,7 +933,7 @@ export async function updateQuiz(
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}`,
+      `${IPADDRESS}/subject/${subjectId}/update/quiz/${quizId}`,
       {
         method: "POST",
         headers: {

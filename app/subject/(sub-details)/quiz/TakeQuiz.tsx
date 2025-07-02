@@ -11,11 +11,16 @@ export interface QuizItem {
   id: string;
   answer: string;
   answered_at: string;
-  type: "multiple_choice" | "essay" | "file_upload" | "fill" | "dropdown";
+  type:
+    | "multiple_choice"
+    | "essay"
+    | "file_upload"
+    | "fill"
+    | "dropdown"
+    | "multiple_multiple";
   question: string;
-  choices: { id: string; label: string }[];
+  options: { id: string; label: string }[];
   points: number;
-  multiple_type?: "radio" | "checkbox";
 }
 
 interface FileInfo {
@@ -46,6 +51,7 @@ const TakeQuiz = () => {
   >([]);
   const [currentItem, setCurrentItem] = useState<number>(0);
   const [attemptId, setAttemptId] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleNext = async () => {
     const currentAnswer = answers[currentItem];
@@ -54,6 +60,7 @@ const TakeQuiz = () => {
       const { itemId, answer, file } = currentAnswer;
 
       if (answer !== null || (file && file.length > 0)) {
+        setIsSubmitting(true);
         await submitAnswer(subjectId, quizId, attemptId, itemId, answer, file);
 
         setAnswers((prev) =>
@@ -76,8 +83,25 @@ const TakeQuiz = () => {
     }
   };
 
-  const handlePrev = () => {
+  const handlePrev = async () => {
     if (currentItem < 1) return;
+
+    const currentAnswer = answers[currentItem];
+
+    if (currentAnswer && currentAnswer.hasChanged) {
+      const { itemId, answer, file } = currentAnswer;
+
+      if (answer !== null || (file && file.length > 0)) {
+        setIsSubmitting(true);
+        await submitAnswer(subjectId, quizId, attemptId, itemId, answer, file);
+
+        setAnswers((prev) =>
+          prev.map((a) =>
+            a.itemId === itemId ? { ...a, hasChanged: false } : a,
+          ),
+        );
+      }
+    }
 
     setCurrentItem(currentItem - 1);
   };
@@ -88,14 +112,12 @@ const TakeQuiz = () => {
         ? await continueQuiz(subjectId, quizId, prevAttemptId)
         : await takeQuiz(subjectId, quizId);
 
-      console.log(res);
-
       const itemsArray: QuizItem[] = Object.entries(res.items).map(
         ([id, item]: [string, any]) => ({
           id,
           ...item,
-          choices: item.choices
-            ? Object.entries(item.choices).map(([key, value]) => ({
+          options: item.options
+            ? Object.entries(item.options).map(([key, value]) => ({
                 id: key,
                 label: value,
               }))
@@ -182,8 +204,11 @@ const TakeQuiz = () => {
         item_no={currentItem + 1}
         question={quizItems[currentItem].question}
         type={quizItems[currentItem].type}
-        multiple_type={quizItems[currentItem].multiple_type}
-        choices={quizItems[currentItem].choices ?? []}
+        options={
+          Array.isArray(quizItems[currentItem].options)
+            ? quizItems[currentItem].options
+            : []
+        }
         answer={answers.find(
           (answer) => answer.itemId === quizItems[currentItem].id,
         )}

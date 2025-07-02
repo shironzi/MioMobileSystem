@@ -166,8 +166,6 @@ const addAssignment = () => {
           fileTypes,
         );
 
-    console.log(res);
-
     if (res.success) {
       Alert.alert(
         "Success",
@@ -176,7 +174,6 @@ const addAssignment = () => {
           {
             text: "OK",
             onPress: () => {
-              router.back();
               router.back();
             },
           },
@@ -534,10 +531,18 @@ const addAssignment = () => {
         <View style={styles.separator}></View>
 
         <Text style={globalStyles.textLabel}>Title</Text>
-        <View>
+        <View
+          style={[
+            {
+              alignItems: "center",
+              borderWidth: 1,
+              borderRadius: 10,
+              borderColor: "#82828257",
+            },
+          ]}
+        >
           <TextInput
             style={[
-              styles.dropdown,
               error.some((err) => err.error === "title")
                 ? { borderColor: "#db4141", borderWidth: 1 }
                 : { borderColor: "#ddd" },

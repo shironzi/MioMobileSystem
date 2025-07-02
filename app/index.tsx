@@ -30,10 +30,12 @@ const schema = yup
   .object({
     email: yup
       .string()
+      .trim()
       .email("Invalid email address")
       .required("Email is required"),
     password: yup
       .string()
+      .trim()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
   })
@@ -93,12 +95,15 @@ const Index = () => {
   const onSubmit = async (data: FormData) => {
     setErrorMessage("");
     try {
-      const res = await login(data.email, data.password);
+      const emailAdress = data.email.trim();
+      const userPassword = data.password.trim();
+
+      const res = await login(emailAdress, userPassword);
       console.log(res);
       if (res.status === "success") {
         if (rememberMe) {
-          await SecureStore.setItemAsync(`emailAddress`, data.email);
-          await SecureStore.setItemAsync(`password`, data.password);
+          await SecureStore.setItemAsync(`emailAddress`, emailAdress);
+          await SecureStore.setItemAsync(`password`, userPassword);
         }
         router.push("/(login)/LoginOtp");
       } else {

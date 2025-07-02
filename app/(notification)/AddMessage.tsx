@@ -40,7 +40,9 @@ const AddMessage = () => {
   const [parents, setParents] = useState<{ user_id: string; name: string }[]>(
     [],
   );
-  const [selectedUser, setSelectedUser] = useState<"student" | "parent">();
+  const [selectedUser, setSelectedUser] = useState<"student" | "parent">(
+    "student",
+  );
   const [subjects, setSubjects] = useState<
     {
       subject_id: string;
@@ -49,7 +51,6 @@ const AddMessage = () => {
   >([]);
   const [selectedSubject, setSelectedSubject] = useState<string>();
   const [messageError, setMessageError] = useState<boolean>(false);
-
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [messageSending, setMessageSending] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -81,10 +82,17 @@ const AddMessage = () => {
   useEffect(() => {
     const init = async () => {
       const roleValue = await SecureStore.getItemAsync("role");
+      if (role === "student") {
+        setSelectedUser("student");
+      } else if (role === "parent") {
+        setSelectedUser("parent");
+      }
       setRole(roleValue ?? "");
 
       if (roleValue === "student" || roleValue === "parent") {
         const res = await getSubjectTeachers();
+        console.log(res);
+
         if (res.success) {
           setUsers(res.users);
           setReceiver(res.users[0].user_id);
@@ -164,7 +172,7 @@ const AddMessage = () => {
                     mode={"dropdown"}
                   >
                     <Picker.Item key="1" label="Select" value="" />
-                    {subjects?.map((subject) => (
+                    {subjects.map((subject) => (
                       <Picker.Item
                         key={subject.subject_id}
                         label={subject.title}
@@ -192,28 +200,41 @@ const AddMessage = () => {
                 </Picker>
               </View>
             )}
-            <View style={[styles.pickerWrapper, { marginTop: 15 }]}>
+            <View
+              style={[
+                styles.pickerWrapper,
+                role === "teacher" && { marginTop: 15 },
+              ]}
+            >
               <Picker
                 selectedValue={receiver}
                 onValueChange={(value) => setReceiver(value)}
                 style={styles.picker}
                 mode={"dropdown"}
               >
-                {selectedUser === "student"
-                  ? users?.map((user) => (
+                {selectedUser === "student" ? (
+                  users ? (
+                    users?.map((user) => (
                       <Picker.Item
                         key={user.user_id}
                         label={user.name}
                         value={user.user_id}
                       />
                     ))
-                  : parents?.map((user) => (
-                      <Picker.Item
-                        key={user.user_id}
-                        label={user.name}
-                        value={user.user_id}
-                      />
-                    ))}
+                  ) : (
+                    <Picker.Item label={"Select"} value={""} />
+                  )
+                ) : parents ? (
+                  parents?.map((user) => (
+                    <Picker.Item
+                      key={user.user_id}
+                      label={user.name}
+                      value={user.user_id}
+                    />
+                  ))
+                ) : (
+                  <Picker.Item label={"Select"} value={""} />
+                )}
               </Picker>
             </View>
             <Text style={[globalStyles.textLabel, { marginVertical: 15 }]}>
@@ -260,13 +281,13 @@ const AddMessage = () => {
               <TouchableOpacity
                 style={[globalStyles.submitButton, { width: "48%" }]}
                 onPress={handleSendMessage}
+                disabled={messageSending}
               >
                 <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
                   {messageSending ? "Sending..." : "Send"}
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* </View> */}
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
