@@ -61,6 +61,7 @@ const addAssignment = () => {
   const [fileSize, setFileSize] = useState<number>(0);
 
   const [fileTypes, setFileTypes] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileTypes = (value: string) => {
     if (fileTypes.includes(value)) {
@@ -130,6 +131,7 @@ const addAssignment = () => {
       console.log(errorList);
       return;
     }
+    setIsSubmitting(true);
 
     const res = assignmentId
       ? await editAssignment(
@@ -169,7 +171,7 @@ const addAssignment = () => {
     if (res.success) {
       Alert.alert(
         "Success",
-        "Successfully created the activity",
+        res.message,
         [
           {
             text: "OK",
@@ -184,6 +186,8 @@ const addAssignment = () => {
     } else {
       Alert.alert("Error", "Something went wrong. Please try again.");
     }
+
+    setIsSubmitting(false);
   };
 
   const optionValues = Object.values(SubmissionOptions) as SubmissionOption[];
@@ -594,9 +598,16 @@ const addAssignment = () => {
           <TouchableOpacity
             style={[globalStyles.submitButton, { width: "48%" }]}
             onPress={handlePreviewAssignment}
+            disabled={isSubmitting}
           >
             <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-              {assignmentId ? "Update" : "Create"}
+              {assignmentId
+                ? isSubmitting
+                  ? "Updating..."
+                  : "Update"
+                : isSubmitting
+                  ? "Creating...."
+                  : "Create"}
             </Text>
           </TouchableOpacity>
         </View>

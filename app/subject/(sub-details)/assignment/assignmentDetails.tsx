@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { getAssignmentById, submitAssignment } from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
-import { Picker } from "@react-native-picker/picker";
 import FileUploadSingle from "@/components/FileUploadSingle";
 import LoadingCard from "@/components/loadingCard";
 
@@ -50,10 +49,11 @@ const AssignmentDetails = () => {
   const [answer, setAnswer] = useState<any>();
   const [answerFiles, setAnswerFiles] = useState<FileInfo>();
   const [isAnswering, setIsAnswering] = useState<boolean>(false);
-  const [selected_attempt, setSelected_attempt] = useState<any>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitAnswer = async () => {
     try {
+      setIsSubmitting(true);
       const response = await submitAssignment(
         subjectId,
         assignmentId,
@@ -278,9 +278,12 @@ const AssignmentDetails = () => {
               globalStyles.submitButton,
               { marginHorizontal: "auto", marginTop: 10 },
             ]}
+            disabled={isSubmitting}
             onPress={handleSubmitAnswer}
           >
-            <Text style={globalStyles.submitButtonText}>Submit</Text>
+            <Text style={globalStyles.submitButtonText}>
+              {isSubmitting ? "Submitting.... " : "Submit"}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

@@ -300,6 +300,7 @@ const Index = () => {
                               autoCapitalize="none"
                               autoCorrect={false}
                               style={{ width: "100%", color: "#000000" }}
+                              placeholderTextColor="#000000"
                             />
                           </View>
                           {errors.email && (
@@ -333,6 +334,7 @@ const Index = () => {
                               value={value}
                               onChangeText={onChange}
                               style={{ width: "77%", color: "#000000" }}
+                              placeholderTextColor="#000000"
                             />
                             <TouchableOpacity
                               onPress={togglePasswordVisibility}

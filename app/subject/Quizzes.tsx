@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import NoQuizzes from "@/components/noData/NoQuizzes";
 
 interface Quiz {
   quiz_id: string;
@@ -73,21 +74,9 @@ const Quiz = () => {
     );
   }
 
-  // const [isRefreshing, setIsRefreshing] = useState(false);
-  //
-  // const onRefresh = () => {
-  //   setIsRefreshing(true);
-  //   setTimeout(() => {
-  //     setIsRefreshing(false);
-  //   }, 2000);
-  // };
-
   return (
     <ScrollView
       style={{ backgroundColor: "#fff", height: "100%", paddingTop: 20 }}
-      // refreshControl={
-      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      // }
     >
       <View>
         {role === "teacher" && (
@@ -120,53 +109,64 @@ const Quiz = () => {
           </TouchableOpacity>
         )}
 
-        {quizzes?.map((quiz, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              globalStyles.cardContainer1,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                marginVertical: 5,
-              },
-            ]}
-            onPress={() => handleSelectQuiz(quiz.quiz_id, index)}
-          >
-            <View style={styles.yellowBulletin}></View>
-            <View style={{ width: "50%" }}>
-              <Text
-                numberOfLines={2}
-                ellipsizeMode="tail"
-                style={[globalStyles.textLabel, { fontWeight: 500 }]}
-              >
-                Quiz {index + 1}
-              </Text>
-              <Text style={globalStyles.text2}>{quiz.total_points} Pts</Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                columnGap: 15,
-                width: "60%",
-                alignItems: "center",
-                marginHorizontal: -10,
-              }}
+        {quizzes ? (
+          quizzes?.map((quiz, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                globalStyles.cardContainer1,
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginVertical: 5,
+                },
+              ]}
+              onPress={() => handleSelectQuiz(quiz.quiz_id, index)}
             >
-              <Text style={[globalStyles.text2, { width: "50%" }]}>
-                {quiz.deadline_date ?? "No Due date"}
-              </Text>
-              <View style={{ justifyContent: "flex-end" }}>
-                <FontAwesome6
-                  name="arrow-right-long"
-                  size={20}
-                  color="#1f1f1f"
-                />
+              <View style={styles.yellowBulletin}></View>
+              <View style={{ width: "50%" }}>
+                <Text
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                  style={[globalStyles.textLabel, { fontWeight: 500 }]}
+                >
+                  Quiz {index + 1}
+                </Text>
+                <Text style={globalStyles.text2}>{quiz.total_points} Pts</Text>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  columnGap: 15,
+                  width: "60%",
+                  alignItems: "center",
+                  marginHorizontal: -10,
+                }}
+              >
+                <Text style={[globalStyles.text2, { width: "50%" }]}>
+                  {quiz.deadline_date ?? "No Due date"}
+                </Text>
+                <View style={{ justifyContent: "flex-end" }}>
+                  <FontAwesome6
+                    name="arrow-right-long"
+                    size={20}
+                    color="#1f1f1f"
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <View
+            style={[
+              { marginVertical: "auto", height: "100%" },
+              role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
+            ]}
+          >
+            <NoQuizzes />
+          </View>
+        )}
       </View>
     </ScrollView>
   );

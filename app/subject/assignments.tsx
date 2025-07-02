@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import NoAssignments from "@/components/noData/NoAssignments";
 
 interface Availability {
   start: string;
@@ -142,8 +143,13 @@ const assignments = () => {
               ))}
             </View>
           ) : (
-            <View>
-              <Text>This subject has no assignments yet.</Text>
+            <View
+              style={[
+                { marginVertical: "auto", height: "100%" },
+                role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
+              ]}
+            >
+              <NoAssignments />
             </View>
           )}
         </View>

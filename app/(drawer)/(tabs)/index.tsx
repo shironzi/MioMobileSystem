@@ -68,6 +68,9 @@ const index = () => {
       if (data.role) {
         await SecureStore.setItemAsync("role", data.role);
       }
+
+      if (data === 401) {
+      }
       setLoading(false);
     } catch (err) {
       useAuthGuard(err);

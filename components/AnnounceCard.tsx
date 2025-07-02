@@ -98,9 +98,7 @@ const announceCard = (props: {
                 </Text>
               </View>
               <View style={styles.rightSection}>
-                <Text style={styles.date}>
-                  {newDate} {props.time}
-                </Text>
+                <Text style={styles.date}>{newDate}</Text>
                 <FontAwesome6
                   name="arrow-right-long"
                   size={15}

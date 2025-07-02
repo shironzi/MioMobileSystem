@@ -99,35 +99,20 @@ const Scores = () => {
       // }
     >
       <View style={{ paddingBottom: 50 }}>
-        {/*{role === "teacher" && (*/}
-        {/*  <TouchableOpacity*/}
-        {/*    onPress={downloadFile}*/}
-        {/*    style={{*/}
-        {/*      borderStyle: "dashed",*/}
-        {/*      borderWidth: 2,*/}
-        {/*      borderRadius: 20,*/}
-        {/*      width: "90%",*/}
-        {/*      flexDirection: "row",*/}
-        {/*      alignItems: "center",*/}
-        {/*      justifyContent: "center",*/}
-        {/*      marginHorizontal: "auto",*/}
-        {/*      height: 70,*/}
-        {/*      borderColor: "#FFBF18",*/}
-        {/*      backgroundColor: "#FFBF1826",*/}
-        {/*      columnGap: 10,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <FontAwesome6 name="file-csv" size={19} color="#FFBF18" />*/}
-        {/*    <Text style={{ color: "#FFBF18" }}>Generate Report</Text>*/}
-        {/*  </TouchableOpacity>*/}
-        {/*)}*/}
         {Object.entries(activities).map(([activityType, difficulties]: any) =>
           Object.entries(difficulties).map(([difficulty, info]: any) => (
             <SpeechScores
               key={`${activityType}-${difficulty}`}
               subjectId={subjectId}
               difficulty={difficulty}
-              placeholder={`${activityType.charAt(0).toUpperCase() + activityType.slice(1)} Flashcards`}
+              placeholder={`${
+                activityType === "phrase"
+                  ? "Reading"
+                  : activityType === "question"
+                    ? "Word"
+                    : activityType.charAt(0).toUpperCase() +
+                      activityType.slice(1)
+              } Flashcards`}
               activityType={activityType}
               activityIds={info.activity_ids}
               role={role}

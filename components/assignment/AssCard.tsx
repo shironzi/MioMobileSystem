@@ -94,11 +94,7 @@ const assCard = (props: {
               <Text style={styles.score}> / {props.totalPoints}</Text>
             </View>
             <View style={styles.rightSection}>
-              <View style={styles.deadline}>
-                <Text style={{ color: "#db4141" }}>
-                  {props.role === "teacher" ? "" : "Not Yet Submitted"}
-                </Text>
-              </View>
+              <View style={styles.deadline}></View>
               <FontAwesome6 name="arrow-right-long" size={15} color="#1f1f1f" />
             </View>
           </TouchableOpacity>

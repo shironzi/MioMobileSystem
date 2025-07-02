@@ -6,9 +6,9 @@ import React, { memo, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import PhraseScoreDetailsDropdown from "@/app/subject/(sub-details)/Scores/PhraseScoreDetailsDropdown";
 
-const AuditoryScores = () => {
+const ScoreDetailsPhrase = () => {
   headerConfigScoreDetails("Score Details");
 
   const { subjectId, activityType, activityId, userId, attemptId, role } =
@@ -27,13 +27,16 @@ const AuditoryScores = () => {
       id: string;
       feedback: string;
       audio: string;
-      phonemes: {
-        phone: string;
-        quality_score: number;
-        sound_most_like: string;
+      words: {
+        word: string;
+        score: number;
+        phonemes: {
+          phone: string;
+          quality_score: number;
+          sound_most_like: string;
+        }[];
       }[];
-      word: string;
-      score: number;
+      text: string;
     }[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,8 +62,9 @@ const AuditoryScores = () => {
         console.log(res);
         setOverallScore(res.overall_score ?? 0);
         setFeedbacks(res.feedbacks);
-        console.log(res.feedbacks);
       }
+
+      console.log(res);
 
       setLoading(false);
     };
@@ -125,8 +129,8 @@ const AuditoryScores = () => {
           {feedbacks.length === 0 ? (
             <Text style={styles.feedbackText}>No feedback provided.</Text>
           ) : (
-            feedbacks.map((item, index) => (
-              <SpeechDetailedDropdown
+            feedbacks?.map((item, index) => (
+              <PhraseScoreDetailsDropdown
                 items={item}
                 placeholder={index}
                 key={item.id}
@@ -181,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(AuditoryScores);
+export default memo(ScoreDetailsPhrase);

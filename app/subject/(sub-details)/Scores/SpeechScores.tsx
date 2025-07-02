@@ -101,7 +101,7 @@ const SpeechScores = ({
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View style={styles.yellowBulletin}></View>
                     <Text style={[styles.item, globalStyles.text1]}>
-                      Level {index + 1}
+                      Exercise {index + 1}
                     </Text>
                   </View>
                   <FontAwesome

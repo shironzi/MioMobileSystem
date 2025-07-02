@@ -7,16 +7,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState, memo, useEffect } from "react";
+import React, { useState, memo } from "react";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { requestVerificationCode, VerifyOtpCode } from "@/utils/auth";
+import { VerifyOtpCode } from "@/utils/auth";
 
 const LoginOtp = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const [otp_code, setOtp_code] = useState<string>("");
-  const [otpStatus, setOtpStatus] = useState<boolean>(false);
+  const [otpStatus, setOtpStatus] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleVerification = async () => {
@@ -24,25 +24,15 @@ const LoginOtp = () => {
     const res = await VerifyOtpCode(parseInt(otp_code));
 
     console.log(res);
+
+    console.log(res);
     if (res.status) {
       router.replace("/(drawer)/(tabs)");
-    } else if (res.status === false) {
+    } else {
+      setOtpStatus(false);
     }
     setIsSubmitting(false);
   };
-
-  useEffect(() => {
-    const requestOTP = async () => {
-      const res = await requestVerificationCode();
-
-      if (res.success) {
-        setOtpStatus(true);
-      }
-      console.log(res);
-    };
-
-    requestOTP();
-  }, []);
 
   useFocusEffect(() => {
     navigation.setOptions({

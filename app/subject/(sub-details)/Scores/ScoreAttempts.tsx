@@ -40,17 +40,31 @@ const ScoreAttempts = () => {
   >([]);
 
   const handleViewAttempt = (attemptId: string) => {
-    router.push({
-      pathname: "/subject/(sub-details)/Scores/ScoreDetails",
-      params: {
-        subjectId: subjectId,
-        activityType: activityType,
-        activityId: activityId,
-        userId: userId,
-        attemptId: attemptId,
-        role: role,
-      },
-    });
+    if (activityType === "phrase") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoreDetailsPhrase",
+        params: {
+          subjectId: subjectId,
+          activityType: activityType,
+          activityId: activityId,
+          userId: userId,
+          attemptId: attemptId,
+          role: role,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoreDetails",
+        params: {
+          subjectId: subjectId,
+          activityType: activityType,
+          activityId: activityId,
+          userId: userId,
+          attemptId: attemptId,
+          role: role,
+        },
+      });
+    }
   };
 
   useEffect(() => {

@@ -84,6 +84,8 @@ const ScoreStudentList = () => {
         setStudents(studentList);
         console.log(studentList);
       }
+
+      console.log(res);
       setLoading(false);
     };
 

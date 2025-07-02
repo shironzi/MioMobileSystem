@@ -377,6 +377,31 @@ function formatDateToDateOnly(dateString: Date) {
   return `${year}-${month}-${day}`;
 }
 
+const convertTo24HourFormat = (time: string): string => {
+  // Regular expression to match the time and AM/PM
+  const regex = /(\d{1,2}):(\d{2})\s?(AM|PM)/i;
+
+  // Check if the time is in AM/PM format
+  const match = time.match(regex);
+
+  if (match) {
+    let hour = parseInt(match[1], 10);
+    const minutes = match[2];
+    const period = match[3].toUpperCase(); // AM or PM
+
+    if (period === "PM" && hour !== 12) {
+      hour += 12; // Convert PM hour to 24-hour format, except 12 PM
+    } else if (period === "AM" && hour === 12) {
+      hour = 0; // Convert 12 AM to 00 hours
+    }
+
+    // Return the time in 24-hour format
+    return `${hour}:${minutes}`;
+  }
+
+  return time; // Return the original time if no AM/PM format
+};
+
 export async function createAssignment(
   subjectId: string,
   availabilityTo: string,
@@ -393,8 +418,8 @@ export async function createAssignment(
   fileTypes: string[],
 ) {
   try {
-    const availableTo = availabilityTo.replace(/\s?(AM|PM)/i, "").trim();
-    const availableFrom = availabilityFrom.replace(/\s?(AM|PM)/i, "").trim();
+    const availableTo = convertTo24HourFormat(availabilityTo);
+    const availableFrom = convertTo24HourFormat(availabilityFrom);
 
     const payload = JSON.stringify({
       availabilityFrom: availableFrom,
@@ -453,8 +478,8 @@ export async function editAssignment(
   fileTypes: string[],
 ) {
   try {
-    const availableTo = availabilityTo.replace(/\s?(AM|PM)/i, "").trim();
-    const availableFrom = availabilityFrom.replace(/\s?(AM|PM)/i, "").trim();
+    const availableTo = convertTo24HourFormat(availabilityTo);
+    const availableFrom = convertTo24HourFormat(availabilityFrom);
 
     const payload = JSON.stringify({
       availability: {
