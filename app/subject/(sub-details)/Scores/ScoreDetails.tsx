@@ -37,6 +37,7 @@ const AuditoryScores = () => {
     }[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [feedback, setFeedback] = useState<string>("");
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -59,6 +60,7 @@ const AuditoryScores = () => {
         console.log(res);
         setOverallScore(res.overall_score ?? 0);
         setFeedbacks(res.feedbacks);
+        setFeedback(res.feedback);
         console.log(res.feedbacks);
       }
 
@@ -123,7 +125,7 @@ const AuditoryScores = () => {
         <View style={globalStyles.cardContainer}>
           <Text style={styles.sectionTitle}>Mio Feedbacks</Text>
           {feedbacks.length === 0 ? (
-            <Text style={styles.feedbackText}>No feedback provided.</Text>
+            <Text style={styles.feedbackText}>{feedback}</Text>
           ) : (
             feedbacks.map((item, index) => (
               <SpeechDetailedDropdown
