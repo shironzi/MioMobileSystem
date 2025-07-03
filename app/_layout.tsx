@@ -48,6 +48,8 @@ export default function Layout() {
       const body = remoteMessage.notification?.body ?? "No Body";
       const type = remoteMessage.data?.type ?? "No Type";
 
+      console.log(type);
+
       if (type === "earthquake") {
         setModalTitle(title);
         setModalBody(body);
@@ -88,6 +90,7 @@ export default function Layout() {
           trigger: null,
         });
       } else if (type === "notification") {
+        console.log("notification");
         await Notifications.scheduleNotificationAsync({
           content: {
             title,

@@ -17,8 +17,8 @@ const FileUploadSingle = (props: {
   const [file, setFile] = useState<FileInfo | null>(null);
   const [fileError, setFileError] = useState<boolean>(false);
 
-  const mapFileTypesToMimes = (fileTypes: string[] | undefined) => {
-    const mimeTypes = props.fileTypes
+  const mapFileTypesToMimes = () => {
+    return props.fileTypes
       .map((type) => {
         switch (type) {
           case "pdf":
@@ -36,17 +36,17 @@ const FileUploadSingle = (props: {
             return "image/*";
           case "mp4":
             return "video/mp4";
+          case "mp3":
+            return "audio/mpeg";
           default:
             return null;
         }
       })
       .filter((mimeType) => mimeType !== null);
-
-    return mimeTypes;
   };
 
   const handleFileUpload = async () => {
-    const mimeTypes = mapFileTypesToMimes(props.fileTypes);
+    const mimeTypes = mapFileTypesToMimes();
     const res = await DocumentPicker.getDocumentAsync({
       type: mimeTypes,
       copyToCacheDirectory: true,

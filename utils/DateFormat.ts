@@ -52,6 +52,21 @@ export function parseFormattedDateString(dateStr: string): Date {
   return new Date(year, month - 1, day, hour, minute, second);
 }
 
+export function formatDayDate(): string {
+  const newDate = new Date();
+
+  // Use Intl.DateTimeFormat to format date in Asia/Manila timezone
+  const formattedDate = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Manila",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(newDate);
+
+  // Return the formatted date in 'YYYY-MM-DD' format
+  return formattedDate.split("/").reverse().join("-");
+}
+
 export function formatDayDateTimeWithAmPm(date: string): string {
   const newDate = parseFormattedDateString(date);
 

@@ -119,7 +119,7 @@ const Scores = () => {
             />
           )),
         )}
-        {assignments.length > 0 && (
+        {quizzes.length > 0 && (
           <QuizzesScores
             subjectId={subjectId}
             quizzes={quizzes}

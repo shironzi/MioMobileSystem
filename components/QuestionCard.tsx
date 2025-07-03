@@ -13,7 +13,7 @@ interface Props {
     | "multiple_choice"
     | "essay"
     | "file_upload"
-    | "fill"
+    | "fill_blank"
     | "dropdown"
     | "multiple_multiple";
   multiple_type?: "radio" | "checkbox";
@@ -42,9 +42,10 @@ const QuestionCard = ({
   onAnswerChange,
   answer,
 }: Props) => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<string>("");
   const [multipleAnswers, setMultipleAnswers] = useState<string[]>([]);
+
+  console.log(multipleAnswers);
   const [essayAnswer, setEssayAnswer] = useState("");
   const [fillAnswer, setFillAnswer] = useState("");
   const [dropdownAnswer, setDropdownAnswer] = useState<string | null>(null);
@@ -55,7 +56,7 @@ const QuestionCard = ({
       onAnswerChange(selectedAnswers);
     } else if (type === "essay") {
       onAnswerChange(essayAnswer);
-    } else if (type === "fill") {
+    } else if (type === "fill_blank") {
       onAnswerChange(fillAnswer);
     } else if (type === "dropdown") {
       onAnswerChange(dropdownAnswer ?? "");
@@ -65,12 +66,12 @@ const QuestionCard = ({
       onAnswerChange(multipleAnswers);
     }
   }, [
-    selectedAnswer,
     selectedAnswers,
     essayAnswer,
     fillAnswer,
     dropdownAnswer,
     fileAnswer,
+    multipleAnswers,
   ]);
 
   useEffect(() => {
@@ -82,13 +83,15 @@ const QuestionCard = ({
       setSelectedAnswers(ans);
     } else if (type === "essay" && typeof ans === "string") {
       setEssayAnswer(ans);
-    } else if (type === "fill" && typeof ans === "string") {
+    } else if (type === "fill_blank" && typeof ans === "string") {
       setFillAnswer(ans);
     } else if (type === "dropdown" && typeof ans === "string") {
       setDropdownAnswer(ans);
     } else if (type === "multiple_multiple" && Array.isArray(ans)) {
       setMultipleAnswers(ans);
     }
+
+    console.log(options);
 
     if (answer.file) {
       setFileAnswer(answer.file);
@@ -137,17 +140,19 @@ const QuestionCard = ({
                     gap: 5,
                   }}
                   onPress={() => {
-                    setSelectedAnswer(choice.label);
+                    setSelectedAnswers(choice.label);
                   }}
                 >
                   <Fontisto
                     name={
-                      selectedAnswer === choice.label
+                      selectedAnswers === choice.label
                         ? "radio-btn-active"
                         : "radio-btn-passive"
                     }
                     size={15}
-                    color={selectedAnswer === choice.label ? "#ffbf18" : "#aaa"}
+                    color={
+                      selectedAnswers === choice.label ? "#ffbf18" : "#aaa"
+                    }
                     style={{ marginRight: 10 }}
                   />
                   <Text>{choice.label}</Text>
@@ -213,7 +218,7 @@ const QuestionCard = ({
             />
           )}
 
-          {type === "fill" && (
+          {type === "fill_blank" && (
             <TextInput
               placeholder="Enter your answer..."
               value={fillAnswer}

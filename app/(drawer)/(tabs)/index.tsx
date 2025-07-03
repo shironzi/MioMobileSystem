@@ -16,6 +16,7 @@ import {
   View,
   RefreshControl,
 } from "react-native";
+import NoSubjects from "@/components/noData/NoSubjects";
 
 const data = [
   { label: "All", value: "all" },
@@ -39,6 +40,7 @@ const index = () => {
   const [selectedValue, setSelectedValue] = useState("all");
   const { courseCardView } = useContext(CourseCardViewContext);
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
+  const [archive, setArchive] = useState<Subject[] | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -57,6 +59,7 @@ const index = () => {
     try {
       const data = await getSubjects();
       setSubjects(data.subjects);
+      setArchive(data.archiveSubjects);
       setRole(data.role);
       setName(data.name);
       if (data.role) {
@@ -93,13 +96,13 @@ const index = () => {
         );
 
       case "previous":
-        return null;
+        return archive;
 
       case "all":
       default:
         return subjects;
     }
-  }, [subjects, selectedValue]);
+  }, [subjects, selectedValue, archive]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -222,7 +225,7 @@ const index = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[courseCardView ? styles.gridContainer : null]}
       >
-        {filteredSubjects ? (
+        {filteredSubjects?.length ? (
           filteredSubjects.map((subject: Subject) => {
             if (subject.subjectType === selectedValue) {
               return (
@@ -266,10 +269,8 @@ const index = () => {
             );
           })
         ) : (
-          <View style={{ flex: 1 }}>
-            <Text style={{ marginVertical: 20, left: 10 }}>
-              No {selectedValue} subjects available.
-            </Text>
+          <View style={{ marginTop: 100, marginHorizontal: "auto" }}>
+            <NoSubjects />
           </View>
         )}
       </ScrollView>

@@ -5,7 +5,7 @@ import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { continueQuiz, submitAnswer, takeQuiz } from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export interface QuizItem {
   id: string;
@@ -15,7 +15,7 @@ export interface QuizItem {
     | "multiple_choice"
     | "essay"
     | "file_upload"
-    | "fill"
+    | "fill_blank"
     | "dropdown"
     | "multiple_multiple";
   question: string;
@@ -61,7 +61,16 @@ const TakeQuiz = () => {
 
       if (answer !== null || (file && file.length > 0)) {
         setIsSubmitting(true);
-        await submitAnswer(subjectId, quizId, attemptId, itemId, answer, file);
+        const res = await submitAnswer(
+          subjectId,
+          quizId,
+          attemptId,
+          itemId,
+          answer,
+          file,
+        );
+
+        console.log(res);
 
         setAnswers((prev) =>
           prev.map((a) =>
@@ -108,35 +117,58 @@ const TakeQuiz = () => {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      const res = prevAttemptId.length
-        ? await continueQuiz(subjectId, quizId, prevAttemptId)
-        : await takeQuiz(subjectId, quizId);
+      try {
+        const res = prevAttemptId.length
+          ? await continueQuiz(subjectId, quizId, prevAttemptId)
+          : await takeQuiz(subjectId, quizId);
 
-      const itemsArray: QuizItem[] = Object.entries(res.items).map(
-        ([id, item]: [string, any]) => ({
-          id,
-          ...item,
-          options: item.options
-            ? Object.entries(item.options).map(([key, value]) => ({
-                id: key,
-                label: value,
-              }))
-            : [],
-        }),
-      );
-      if (Array.isArray(res.answers) && res.answers.length > 0) {
-        setAnswers(
-          res.answers.map((a: any) => ({
-            ...a,
-            hasChanged: false,
-          })),
-        );
-      } else {
-        setAnswers([]);
+        if (res.success) {
+          const itemsArray: QuizItem[] = Object.entries(res.items).map(
+            ([id, item]: [string, any]) => ({
+              id,
+              ...item,
+              options: item.options
+                ? Object.entries(item.options).map(([key, value]) => ({
+                    id: key,
+                    label: value,
+                  }))
+                : [],
+            }),
+          );
+          if (Array.isArray(res.answers) && res.answers.length > 0) {
+            setAnswers(
+              res.answers.map((a: any) => ({
+                ...a,
+                hasChanged: false,
+              })),
+            );
+          } else {
+            setAnswers([]);
+          }
+
+          setAttemptId(res.attemptId);
+          setQuizItems(itemsArray);
+        } else {
+          Alert.alert(
+            "Failed",
+            res.message,
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  router.back();
+                },
+              },
+            ],
+            { cancelable: false },
+          );
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching quiz: ", error);
+        Alert.alert("Error", "Something went wrong while loading the quiz.");
       }
 
-      setAttemptId(res.attemptId);
-      setQuizItems(itemsArray);
       setLoading(false);
     };
 
@@ -148,6 +180,8 @@ const TakeQuiz = () => {
     answer: string | string[],
     file: FileInfo[] | null,
   ) => {
+    console.log(answer);
+
     setAnswers((prev) => {
       const index = prev.findIndex((a) => a.itemId === itemId);
       const existing = index > -1 ? prev[index] : null;
@@ -199,23 +233,25 @@ const TakeQuiz = () => {
 
   return (
     <ScrollView style={{ paddingTop: 20, backgroundColor: "#fff" }}>
-      <QuestionCard
-        key={quizItems[currentItem].id}
-        item_no={currentItem + 1}
-        question={quizItems[currentItem].question}
-        type={quizItems[currentItem].type}
-        options={
-          Array.isArray(quizItems[currentItem].options)
-            ? quizItems[currentItem].options
-            : []
-        }
-        answer={answers.find(
-          (answer) => answer.itemId === quizItems[currentItem].id,
-        )}
-        onAnswerChange={(answer, file) =>
-          handleAnswer(quizItems[currentItem].id, answer, file ?? null)
-        }
-      />
+      {quizItems.length && (
+        <QuestionCard
+          key={quizItems[currentItem].id}
+          item_no={currentItem + 1}
+          question={quizItems[currentItem].question}
+          type={quizItems[currentItem].type}
+          options={
+            Array.isArray(quizItems[currentItem].options)
+              ? quizItems[currentItem].options
+              : []
+          }
+          answer={answers.find(
+            (answer) => answer.itemId === quizItems[currentItem].id,
+          )}
+          onAnswerChange={(answer, file) =>
+            handleAnswer(quizItems[currentItem].id, answer, file ?? null)
+          }
+        />
+      )}
 
       <View
         style={{

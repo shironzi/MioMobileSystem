@@ -4,13 +4,7 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { getModules } from "@/utils/modules";
 
 type Module = {

@@ -301,10 +301,11 @@ const QuizScore = () => {
                             item.is_correct === true ||
                             item.is_correct === false
                           )
-                            return; // Don't allow editing if graded
+                            return;
 
                           const numericValue = parseFloat(value);
-                          if (!isNaN(numericValue)) {
+
+                          if (!isNaN(numericValue) && value.trim() !== "") {
                             setStudentScores((prev) => ({
                               ...prev,
                               [item.quizId]: numericValue,
@@ -329,51 +330,50 @@ const QuizScore = () => {
 
                     {item.type === "multiple_choice" && (
                       <View>
-                        {item.options?.map((option, index) => (
-                          <View
-                            style={[
-                              {
-                                flexDirection: "row",
-                                padding: 15,
-                                alignItems: "center",
-                                borderBottomWidth: 1,
-                                width: "100%",
-                                borderColor: "#00000024",
-                              },
-                              studentAnswer[item.quizId] === option &&
-                              item.answer === option
-                                ? {
-                                    backgroundColor: "#d4edda",
-                                  }
-                                : studentAnswer[item.quizId] === option
-                                  ? {
-                                      backgroundColor: "#f8d7da",
-                                    }
-                                  : item.answer === option
-                                    ? {
-                                        backgroundColor: "#d4edda",
-                                      }
-                                    : { backgroundColor: "#fff" },
-                            ]}
-                            key={index}
-                          >
-                            <Fontisto
-                              name={
-                                studentAnswer[item.quizId] === option
-                                  ? "radio-btn-active"
-                                  : "radio-btn-passive"
-                              }
-                              size={15}
-                              color={
-                                studentAnswer[item.quizId] === option
-                                  ? "#ffbf18"
-                                  : "#aaa"
-                              }
-                              style={{ marginRight: 10 }}
-                            />
-                            <Text>{option}</Text>
-                          </View>
-                        ))}
+                        {Array.isArray(item.options) &&
+                        item.options.length > 0 ? (
+                          item.options.map((option, index) => (
+                            <View
+                              style={[
+                                {
+                                  flexDirection: "row",
+                                  padding: 15,
+                                  alignItems: "center",
+                                  borderBottomWidth: 1,
+                                  width: "100%",
+                                  borderColor: "#00000024",
+                                },
+                                studentAnswer[item.quizId] === option &&
+                                item.answer === option
+                                  ? { backgroundColor: "#d4edda" }
+                                  : studentAnswer[item.quizId] === option
+                                    ? { backgroundColor: "#f8d7da" }
+                                    : item.answer === option
+                                      ? { backgroundColor: "#d4edda" }
+                                      : { backgroundColor: "#fff" },
+                              ]}
+                              key={index}
+                            >
+                              <Fontisto
+                                name={
+                                  studentAnswer[item.quizId] === option
+                                    ? "radio-btn-active"
+                                    : "radio-btn-passive"
+                                }
+                                size={15}
+                                color={
+                                  studentAnswer[item.quizId] === option
+                                    ? "#ffbf18"
+                                    : "#aaa"
+                                }
+                                style={{ marginRight: 10 }}
+                              />
+                              <Text>{option}</Text>
+                            </View>
+                          ))
+                        ) : (
+                          <Text></Text>
+                        )}
                       </View>
                     )}
 

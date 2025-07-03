@@ -1,60 +1,40 @@
 import globalStyles from "@/styles/globalStyles";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
-import { finalizeQuiz, getQuizScore } from "@/utils/query";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { getStudentAssignmentScore } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
 
-const QuizScore = () => {
-  headerConfigScoreDetails("Score");
+const AcademicScore = () => {
+  headerConfigScoreDetails("Score Detail");
 
-  const { subjectId, quizId, attemptId } = useLocalSearchParams<{
+  const { activityType, activityId, subjectId } = useLocalSearchParams<{
+    activityType: string;
+    activityId: string;
     subjectId: string;
-    quizId: string;
-    attemptId: string;
   }>();
 
-  console.log(subjectId);
-  console.log(quizId);
-  console.log(attemptId);
-
-  const [score, setScore] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [feedback, setFeedback] = useState<string>("");
+  const [comments, setComments] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const submitAnswers = async () => {
-      const res = attemptId
-        ? await finalizeQuiz(subjectId, quizId, attemptId)
-        : await getQuizScore(subjectId, quizId);
+    const fetchScore = async () => {
+      const res = await getStudentAssignmentScore(subjectId, activityId);
 
-      if (res.success) {
-        setScore(res.score);
-        setTotal(res.total_quiz_points);
-
-        console.log(res);
-      } else {
-        Alert.alert(
-          "Failed",
-          res.message,
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                router.back();
-              },
-            },
-          ],
-          { cancelable: false },
-        );
-      }
+      setTotal(res.total);
+      setScore(res.score);
+      setFeedback(res.feedback);
+      setComments(res.comments);
 
       setLoading(false);
     };
 
-    submitAnswers();
+    fetchScore();
   }, []);
 
   if (loading) {
@@ -74,50 +54,19 @@ const QuizScore = () => {
 
   return (
     <ScrollView
+      style={{ flex: 1, height: "100%", backgroundColor: "#fff" }}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flex: 1 }}
     >
-      <View style={[globalStyles.container, { flex: 1 }]}>
-        <Text
-          style={[
-            { margin: 10, fontSize: 16, marginTop: 0, fontWeight: "bold" },
-          ]}
-        >
-          Latest Attempt
-        </Text>
-        <View
-          style={[
-            globalStyles.cardContainer,
-            {
-              paddingVertical: 25,
-              borderColor: "#ddd",
-              borderWidth: 1,
-              borderRadius: 20,
-              margin: 10,
-            },
-          ]}
-        >
-          {/* <Text
-						style={[
-							{
-								top: -10,
-								fontSize: 16,
-								marginTop: 0,
-								marginVertical: 10,
-								fontWeight: 500,
-								left: -10,
-							},
-						]}
-					>
-						Score Details
-					</Text> */}
+      <View style={[globalStyles.container, { rowGap: 20, flex: 1 }]}>
+        <View style={[globalStyles.cardContainer, {}]}>
+          <Text style={styles.sectionTitle}>Score</Text>
           <View style={styles.scoreRow}>
             <AnimatedCircularProgress
               size={150}
-              width={10}
-              fill={(score / total) * 100 || 0}
+              width={5}
+              fill={(score / total) * 100}
               tintColor="#2264DC"
-              backgroundColor="#e7eaea"
+              backgroundColor="#fff"
               rotation={0}
               lineCap="round"
             >
@@ -128,9 +77,29 @@ const QuizScore = () => {
                 </>
               )}
             </AnimatedCircularProgress>
-            <Text style={{ left: 10 }}>Out of {total} points</Text>
+            <Text>Out of {total} points</Text>
           </View>
         </View>
+      </View>
+
+      <View
+        style={[
+          globalStyles.cardContainer,
+          { margin: 20, marginTop: 0, minHeight: 150 },
+        ]}
+      >
+        <Text style={globalStyles.text1}>Feedback</Text>
+        <Text>{feedback.trim() ? feedback : "No Feedback"}</Text>
+      </View>
+
+      <View
+        style={[
+          globalStyles.cardContainer,
+          { margin: 20, marginTop: 0, minHeight: 150 },
+        ]}
+      >
+        <Text style={globalStyles.text1}>Comments</Text>
+        <Text>{comments.trim() ? comments : "No Comments"}</Text>
       </View>
     </ScrollView>
   );
@@ -138,25 +107,27 @@ const QuizScore = () => {
 
 const styles = StyleSheet.create({
   title: {
-    color: "#1F1F1F",
     lineHeight: 28,
     fontWeight: "500" as const,
     fontSize: 18,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: "500" as const,
+    fontSize: 15,
+    fontWeight: 300 as const,
     lineHeight: 28,
+    textTransform: "capitalize",
   },
   sectionTitle: {
-    fontWeight: "bold" as const,
+    fontWeight: 500 as const,
     fontSize: 18,
+    marginVertical: 10,
+    marginBottom: 20,
   },
   scoreRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
   scoreText: {
     fontSize: 24,
@@ -178,7 +149,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     padding: 16,
     backgroundColor: "#fff",
-    borderRadius: 8,
+    borderRadius: 20,
+    borderColor: "#ddd",
+    borderWidth: 1,
   },
   wordTitle: {
     fontSize: 18,
@@ -211,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(QuizScore);
+export default memo(AcademicScore);

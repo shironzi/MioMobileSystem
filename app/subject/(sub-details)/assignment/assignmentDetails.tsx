@@ -37,6 +37,7 @@ const AssignmentDetails = () => {
     SubmissionOptions.Text,
   );
   const [deadline, setDeadline] = useState<any>();
+  const [newDeadline, setNewDeadline] = useState<Date>();
   const [publishDate, setPublishDate] = useState<any>();
   const [availabilityFrom, setAvailabilityFrom] = useState<string>("");
   const [availabilityTo, setAvailabilityTo] = useState<string>("");
@@ -68,12 +69,13 @@ const AssignmentDetails = () => {
         router.back();
         return;
       } else {
-        console.log(response);
-        Alert.alert("Error", "Failed to submit the answer. Please try again.");
+        Alert.alert("Failed", response.message);
       }
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again.");
     }
+
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -92,7 +94,7 @@ const AssignmentDetails = () => {
             setDescription(assignment.description);
             setAttempt(assignment.attempts);
             setPoints(assignment.total);
-            setFileTypes(assignment.file_types_types || []);
+            setFileTypes(assignment.allowed_file_types || []);
             setPublishDate(assignment.published_at);
             setDeadline(assignment.deadline);
             setAvailabilityFrom(assignment.availability.start);
@@ -101,6 +103,9 @@ const AssignmentDetails = () => {
               assignment.submission_type === "file"
                 ? SubmissionOptions.File
                 : SubmissionOptions.Text,
+            );
+            setNewDeadline(
+              new Date(assignment.deadline + " " + assignment.availability.end),
             );
 
             setLoading(false);

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -7,7 +8,7 @@ import {
   View,
 } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   getStudentAssignmentAttempt,
@@ -45,6 +46,8 @@ const ScoresAcademic = () => {
     work: "",
     score: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { subjectId, activityType, activityId, studentId, role } =
     useLocalSearchParams<{
@@ -84,6 +87,8 @@ const ScoresAcademic = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     const res = await submitAssignmentEval(
       studentId,
       activityId,
@@ -93,7 +98,25 @@ const ScoresAcademic = () => {
       student_answer.score,
     );
 
-    console.log(res);
+    if (res.success) {
+      Alert.alert(
+        "Success",
+        res.message,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.back();
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
+
+    setIsSubmitting(false);
   };
 
   const getMimeTypeFromFilename = (filename: string): string => {
@@ -257,7 +280,7 @@ const ScoresAcademic = () => {
                         borderColor: scoreError ? "#DA4848" : "#00000024",
                       },
                     ]}
-                    value={student_answer?.score}
+                    value={student_answer?.score?.toString()}
                     keyboardType="numeric"
                     onChangeText={(value) => {
                       const numericValue = value.replace(/[^0-9]/g, "");
@@ -415,8 +438,11 @@ const ScoresAcademic = () => {
             <TouchableOpacity
               style={globalStyles.submitButton}
               onPress={handleSubmit}
+              disabled={isSubmitting}
             >
-              <Text style={globalStyles.submitButtonText}>Save</Text>
+              <Text style={globalStyles.submitButtonText}>
+                {isSubmitting ? "Submitting" : "Submit"}
+              </Text>
             </TouchableOpacity>
           </View>
           <ErrorModal

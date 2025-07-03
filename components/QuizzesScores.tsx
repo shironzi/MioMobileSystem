@@ -24,15 +24,39 @@ const QuizzesScores = ({
   const toggleDropdown = () => setIsVisible(!isVisible);
 
   const handleViewStudents = (quizId: string) => {
-    router.push({
-      pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
-      params: {
-        subjectId,
-        activityId: quizId,
-        role: role,
-        activityType: placeholder.toLowerCase(),
-      },
-    });
+    if (role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
+        params: {
+          subjectId,
+          activityId: quizId,
+          role: role,
+          activityType: placeholder.toLowerCase(),
+        },
+      });
+    } else {
+      if (placeholder.toLowerCase() === "assignments") {
+        router.push({
+          pathname: "/subject/(sub-details)/Scores/AcademicScore",
+          params: {
+            subjectId,
+            activityId: quizId,
+            role: role,
+            activityType: placeholder.toLowerCase(),
+          },
+        });
+      } else {
+        router.push({
+          pathname: "/subject/(sub-details)/quiz/QuizScore",
+          params: {
+            subjectId,
+            quizId: quizId,
+            role: role,
+            activityType: placeholder.toLowerCase(),
+          },
+        });
+      }
+    }
   };
 
   return (

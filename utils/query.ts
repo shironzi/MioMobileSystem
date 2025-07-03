@@ -1060,8 +1060,6 @@ export async function takeQuiz(subjectId: string, quizId: string) {
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
     } else {
       return { error: err.message };
     }
@@ -1165,6 +1163,23 @@ export async function finalizeQuiz(
   }
 }
 
+export async function getQuizScore(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/quiz/score/student/${quizId}`,
+    );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getStudentQuizAttempt(
   subjectId: string,
   quizId: string,
@@ -1219,6 +1234,27 @@ export async function updateStudentQuiz(
       `/subject/${subjectId}/check/quiz/${quizId}/${studentId}`,
       { items: transformedData },
     );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getStudentAssignmentScore(
+  subjectId: string,
+  assignmentId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/score/assignments/${assignmentId}`,
+    );
+
     return data;
   } catch (err: any) {
     if (err.response) {
