@@ -252,7 +252,16 @@ const PictureFlashcards = () => {
             )}
           </View>
         </View>
-        <View style={globalStyles.submitWrapper}>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 100,
+            left: 20,
+            right: 20,
+            width: "100%",
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity
             style={[
               styles.continueButton,
