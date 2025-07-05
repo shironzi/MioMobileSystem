@@ -89,36 +89,6 @@ export async function getActiveActivity(
   }
 }
 
-export async function getAttemptActivity(
-  subjectId: string,
-  activity_type: string,
-  activityId: string,
-  attemptId: string,
-) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/speech/${activity_type}/${activityId}/${attemptId}`;
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-
-    return await response.json();
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
 export async function startActivity(
   subjectId: string,
   activityType: string,

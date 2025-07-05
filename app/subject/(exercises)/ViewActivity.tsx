@@ -43,7 +43,10 @@ const ViewActivity = () => {
   const [attempts, setAttempts] = useState<
     { attemptId: string; score: string | null; submitted_at: string | null }[]
   >([]);
+  const [activeAttempt, setActiveAttempt] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [totalAttempts, setTotalAttempts] = useState<number>(0);
+  const [isPassed, setIsPassed] = useState<boolean>(false);
 
   const handleOnStart = useCallback(() => {
     const inProgressAttempt = attempts.find(
@@ -78,18 +81,19 @@ const ViewActivity = () => {
             activity_type,
             activityId,
           );
-          const entries = Object.entries(res.attempts ?? {}).map(
-            ([key, value]: [string, any]) => ({
-              attemptId: key,
-              submitted_at: value.submitted_at,
-              score: value.score,
-            }),
-          );
-          setAttempts(entries);
-          setLoading(false);
+
+          // console.log(res);
+
+          if (res.success) {
+            setAttempts(Object.values(res.attempts));
+            setActiveAttempt(res.has_active_attempt);
+            setTotalAttempts(res.total_attempt);
+            setIsPassed(res.is_passed);
+          }
         } catch (err) {
           setAttempts([]);
         }
+        setLoading(false);
       };
 
       fetchAttempts();
@@ -189,15 +193,31 @@ const ViewActivity = () => {
               </Text>
             </View>
           ))}
-          <TouchableOpacity
-            style={[
-              globalStyles.submitButton,
-              { marginTop: 20, alignSelf: "center" },
-            ]}
-            onPress={handleOnStart}
-          >
-            <Text style={globalStyles.submitButtonText}>Start Activity</Text>
-          </TouchableOpacity>
+          {totalAttempts >= 10 ? (
+            <TouchableOpacity
+              style={[
+                globalStyles.submitButton,
+                { marginTop: 20, alignSelf: "center", width: 200 },
+              ]}
+              onPress={handleOnStart}
+            >
+              <Text style={[globalStyles.submitButtonText]}>
+                {isPassed ? "" : "Try with Teacher’s Help"}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[
+                globalStyles.submitButton,
+                { marginTop: 20, alignSelf: "center" },
+              ]}
+              onPress={handleOnStart}
+            >
+              <Text style={globalStyles.submitButtonText}>
+                {activeAttempt ? "Continue Exercise" : "Start Exercise"}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScrollView>
