@@ -3,7 +3,6 @@ import FeedbackAlert from "@/components/FeedbackAlert";
 import LoadingCard from "@/components/loadingCard";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
-import globalStyles from "@/styles/globalStyles";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { startActivity, submitAnswer } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -80,11 +79,13 @@ const PictureFlashcards = () => {
         return;
       }
 
-      if (res.success) {
-        setCurrentCard(currentCard + 1);
-        setIsAnswered(false);
-        setRecordingAudio(null);
+      if (res.lowest_phoneme_score < 75) {
+        return;
       }
+
+      setCurrentCard(currentCard + 1);
+      setIsAnswered(false);
+      setRecordingAudio(null);
 
       setIsSending(false);
     }, 5000);
@@ -163,7 +164,6 @@ const PictureFlashcards = () => {
           difficulty={difficulty}
           totalItems={cards.length}
           completedItems={currentCard}
-          // instruction="Guess the picture"
         />
         <View
           style={{
