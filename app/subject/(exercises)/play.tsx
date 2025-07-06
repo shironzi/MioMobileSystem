@@ -4,8 +4,8 @@ import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { getSpecializedActivities } from "@/utils/specialized";
 import { FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { memo, useCallback, useState } from "react";
 import { Alert, FlatList, Image, StyleSheet, Text, View } from "react-native";
 
 const Play = () => {
@@ -20,36 +20,47 @@ const Play = () => {
       role: string;
     }>();
 
-  const [activities, setActivities] = useState<string[]>();
+  const [activities, setActivities] = useState<
+    {
+      activity_id: string;
+      is_taken: boolean;
+    }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      const res = await getSpecializedActivities(
-        subjectId,
-        activity_type,
-        difficulty,
-      );
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-      setActivities(res.activities);
-      setLoading(false);
+      const fetchActivities = async () => {
+        const res = await getSpecializedActivities(
+          subjectId,
+          activity_type,
+          difficulty,
+        );
 
-      if (res === 403) {
-        Alert.alert(
-          "Access Denied",
-          "You must complete the previous difficulty before proceeding to the next.",
-          [
+        if (!isActive) return;
+
+        setActivities(Object.values(res.activities));
+        setLoading(false);
+
+        if (!res.success) {
+          Alert.alert("Access Denied", res.message, [
             {
               text: "OK",
               onPress: () => router.back(),
             },
-          ],
-        );
-      }
-    };
+          ]);
+        }
+      };
 
-    fetchActivities();
-  }, []);
+      fetchActivities();
+
+      return () => {
+        isActive = false;
+      };
+    }, [subjectId, activity_type, difficulty]),
+  );
 
   if (loading) {
     return (
@@ -177,16 +188,23 @@ const Play = () => {
     }
   };
 
-  const renderItem = (item: { item: string; index: number }) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: { activity_id: string; is_taken: boolean };
+    index: number;
+  }) => (
     <PlayCard
-      id={item.index}
+      id={index}
       label="Play"
       activity_type={activity_type}
       difficulty={difficulty}
       category={category}
       subjectId={subjectId}
-      activityId={item.item}
+      activityId={item.activity_id}
       role={role}
+      isTaken={item.is_taken}
     />
   );
 
@@ -200,7 +218,7 @@ const Play = () => {
       <FlatList
         data={activities}
         renderItem={renderItem}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.activity_id}
         ListHeaderComponent={renderHeaderCard}
         contentContainerStyle={styles.listContainer}
         style={{ paddingHorizontal: 5 }}

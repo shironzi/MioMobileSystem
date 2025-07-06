@@ -103,8 +103,12 @@ const PictureFlashcards = () => {
       );
 
       if (!res.success) {
-        Alert.alert("Failed to start the activity");
-        return router.back();
+        Alert.alert("Access Denied", res.message, [
+          {
+            text: "OK",
+            onPress: () => router.back(),
+          },
+        ]);
       }
 
       const fetchedFlashcards = Object.entries(res.flashcards).map(

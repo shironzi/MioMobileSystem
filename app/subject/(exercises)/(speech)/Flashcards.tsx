@@ -108,8 +108,12 @@ const Flashcards = () => {
         setCards(fetchedFlashcards);
         setCurrentCard(res.currentItem);
       } else {
-        Alert.alert("Failed to start the activity");
-        router.back();
+        Alert.alert("Access Denied", res.message, [
+          {
+            text: "OK",
+            onPress: () => router.back(),
+          },
+        ]);
       }
 
       setLoading(false);
