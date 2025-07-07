@@ -39,6 +39,7 @@ const SpeechPreview = () => {
     data,
     title,
     isRemedial,
+    selectedActivityId,
   } = useLocalSearchParams<{
     subjectId: string;
     activity_type: string;
@@ -47,6 +48,7 @@ const SpeechPreview = () => {
     data: string;
     title: string;
     isRemedial: string;
+    selectedActivityId: string;
   }>();
 
   console.log(difficulty);
@@ -82,7 +84,11 @@ const SpeechPreview = () => {
             parsedBingoItems,
             title,
             isRemedial,
+            selectedActivityId,
           );
+
+      console.log(selectedActivityId);
+      console.log(res);
 
       if (res.success) {
         Alert.alert(

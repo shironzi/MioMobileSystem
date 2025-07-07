@@ -4,7 +4,7 @@ import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivit
 import SpeechHeader from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechHeader";
 import LoadingCard from "@/components/loadingCard";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { getActivityById, getActivityList } from "@/utils/specialized";
+import { getActivityById } from "@/utils/specialized";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
@@ -34,10 +34,18 @@ interface Flashcard {
   text: string;
 }
 
-interface Activity {
-  activity_id: string;
-  activity_title: string;
-}
+// interface Activity {
+//   activity_id: string;
+//   activity_title: string;
+// }
+
+type Parameters = {
+  subjectId: string;
+  activity_type: string;
+  difficulty: string;
+  category: string;
+  activityId: string;
+};
 
 const data = {
   id: "0",
@@ -45,44 +53,43 @@ const data = {
   text: "",
 };
 
+const picture = {
+  id: "0",
+  flashcard_id: null,
+  file: null,
+  text: "",
+  image_url: "",
+};
+
 const AddSpeechActivity = () => {
+  const { subjectId, activity_type, difficulty, category, activityId } =
+    useLocalSearchParams<Parameters>();
   const [loading, setLoading] = useState<boolean>(true);
+
+  // headers
   const [activityType, setActivityType] = useState<string>("picture");
-  const [isRemedial, setIsRemedial] = useState<boolean>(false);
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [activityTitle, setActivityTitle] = useState<string>("");
   const [titleError, setTitleError] = useState<boolean>(false);
-
-  const { subjectId, activity_type, difficulty, category, activityId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      category: string;
-      activityId: string;
-    }>();
-
+  // const [isRemedial, setIsRemedial] = useState<boolean>(false);
+  // const [selectedActivityId, setSelectedActivityId] = useState<string>("");
+  //
+  // // activities
+  // const [pictureActivities, setPictureActivities] = useState<Activity[]>([]);
+  // const [phraseActivities, setPhraseActivities] = useState<Activity[]>([]);
+  // const [questionActivities, setQuestionActivities] = useState<Activity[]>([]);
   const [phraseFlashcard, setPhraseFlashcard] = useState<Flashcard[]>([data]);
   const [questionFlashcard, setQuestionFlashcard] = useState<Flashcard[]>([
     data,
   ]);
   const [pictureFlashcard, setPictureFlashcards] = useState<PictureItem[]>([
-    {
-      id: "0",
-      flashcard_id: null,
-      file: null,
-      text: "",
-      image_url: "",
-    },
+    picture,
   ]);
 
+  // error handling
   const [pictureError, setPictureError] = useState<InputError[]>([]);
   const [questionError, setQuestionError] = useState<InputError[]>([]);
   const [phraseError, setPhraseError] = useState<InputError[]>([]);
-
-  const [pictureActivities, setPictureActivities] = useState<Activity[]>([]);
-  const [phraseActivities, setPhraseActivities] = useState<Activity[]>([]);
-  const [questionActivities, setQuestionActivities] = useState<Activity[]>([]);
 
   const header = (
     <SpeechHeader
@@ -94,31 +101,33 @@ const AddSpeechActivity = () => {
       setActivityTitle={setActivityTitle}
       titleError={titleError}
       activityId={activityId}
-      isRemedial={isRemedial}
-      setIsRemedial={setIsRemedial}
-      pictureActivities={pictureActivities}
-      phraseActivities={phraseActivities}
-      questionActivities={questionActivities}
+      // isRemedial={isRemedial}
+      // setIsRemedial={setIsRemedial}
+      // pictureActivities={pictureActivities}
+      // phraseActivities={phraseActivities}
+      // questionActivities={questionActivities}
+      // selectedActivityId={selectedActivityId}
+      // setSelectedActivityId={setSelectedActivityId}
     />
   );
 
   useEffect(() => {
     if (!activityId) {
-      const fetchActivityList = async () => {
-        const res = await getActivityList(subjectId);
-
-        console.log(res);
-
-        if (res.success) {
-          setPictureActivities(res.picture_activities);
-          setPhraseActivities(res.phrase_activities);
-          setQuestionActivities(res.question_activities);
-        }
-
-        setLoading(false);
-      };
-
-      fetchActivityList();
+      // const fetchActivityList = async () => {
+      //   const res = await getActivityList(subjectId);
+      //
+      //   console.log(res);
+      //
+      //   if (res.success) {
+      //     setPictureActivities(res.picture_activities);
+      //     setPhraseActivities(res.phrase_activities);
+      //     setQuestionActivities(res.question_activities);
+      //   }
+      //
+      //   setLoading(false);
+      // };
+      //
+      // fetchActivityList();
 
       return;
     }
@@ -211,7 +220,8 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              isRemedial={isRemedial}
+              // isRemedial={isRemedial}
+              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}
@@ -237,7 +247,8 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              isRemedial={isRemedial}
+              // isRemedial={isRemedial}
+              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}
@@ -263,7 +274,8 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              isRemedial={isRemedial}
+              // isRemedial={isRemedial}
+              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}

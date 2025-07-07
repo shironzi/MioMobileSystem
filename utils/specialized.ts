@@ -189,6 +189,7 @@ export async function createPictureSpeechActivity(
   difficulty: string,
   title: string,
   isRemedial: string,
+  selectedActivityId: string,
 ) {
   try {
     const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
@@ -199,6 +200,7 @@ export async function createPictureSpeechActivity(
     formData.append("difficulty", difficulty);
     formData.append("title", title);
     formData.append("is_remedial", isRemedial);
+    formData.append("activity_id", selectedActivityId);
 
     flashcards.forEach((item, index) => {
       if (item.file && item.text) {
@@ -243,6 +245,7 @@ export async function createSpeechActivity(
   flashcards: Flashcard[],
   title: string,
   isRemedial: string,
+  selectedActivityId: string,
 ) {
   try {
     const payload = {
@@ -251,6 +254,7 @@ export async function createSpeechActivity(
       flashcards: flashcards,
       title,
       is_remedial: isRemedial,
+      activity_id: selectedActivityId,
     };
 
     console.log(payload);

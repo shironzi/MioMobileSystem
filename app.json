@@ -4,7 +4,7 @@
     "slug": "MioMobileApp",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/apk.png",
+    "icon": "./assets/logo-1.png",
     "scheme": "miomobileapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/apk.png",
+        "foregroundImage": "./assets/logo-1.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,

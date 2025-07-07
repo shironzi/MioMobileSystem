@@ -37,7 +37,8 @@ interface Props {
   activityId: string;
   activityTitle: string;
   titleError: (value: boolean) => void;
-  isRemedial: boolean;
+  // isRemedial: boolean;
+  // selectedActivityId: string;
 }
 
 const AddSpeechActivity = ({
@@ -55,7 +56,8 @@ const AddSpeechActivity = ({
   activityId,
   activityTitle,
   titleError,
-  isRemedial,
+  // isRemedial,
+  // selectedActivityId,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
@@ -166,7 +168,8 @@ const AddSpeechActivity = ({
         activityId: activityId,
         difficulty: difficulty,
         title: activityTitle,
-        isRemedial: isRemedial.toString(),
+        // isRemedial: isRemedial.toString(),
+        // selectedActivityId: selectedActivityId,
       },
     });
   };

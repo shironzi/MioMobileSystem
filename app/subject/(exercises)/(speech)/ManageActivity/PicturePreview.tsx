@@ -47,6 +47,7 @@ const PictureFlashcards = () => {
     data,
     title,
     isRemedial,
+    selectedActivityId,
   } = useLocalSearchParams<{
     subjectId: string;
     activity_type: string;
@@ -55,9 +56,8 @@ const PictureFlashcards = () => {
     data: string;
     title: string;
     isRemedial: string;
+    selectedActivityId: string;
   }>();
-
-  console.log(difficulty);
 
   const parsedBingoItems = useMemo<PictureItem[]>(() => {
     try {
@@ -89,6 +89,7 @@ const PictureFlashcards = () => {
             difficulty,
             title,
             isRemedial,
+            selectedActivityId,
           );
 
       if (res.success) {
