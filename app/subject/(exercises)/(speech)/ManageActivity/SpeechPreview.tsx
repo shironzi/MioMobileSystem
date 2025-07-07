@@ -31,15 +31,25 @@ interface Flashcard {
 const SpeechPreview = () => {
   useHeaderConfig("Flashcards");
 
-  const { subjectId, activity_type, difficulty, activityId, data, title } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      activityId: string;
-      data: string;
-      title: string;
-    }>();
+  const {
+    subjectId,
+    activity_type,
+    difficulty,
+    activityId,
+    data,
+    title,
+    isRemedial,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activity_type: string;
+    difficulty: string;
+    activityId: string;
+    data: string;
+    title: string;
+    isRemedial: string;
+  }>();
+
+  console.log(difficulty);
 
   const parsedBingoItems = useMemo<Flashcard[]>(() => {
     try {
@@ -63,6 +73,7 @@ const SpeechPreview = () => {
             activity_type,
             parsedBingoItems,
             title,
+            isRemedial,
           )
         : await createSpeechActivity(
             subjectId,
@@ -70,6 +81,7 @@ const SpeechPreview = () => {
             difficulty,
             parsedBingoItems,
             title,
+            isRemedial,
           );
 
       if (res.success) {

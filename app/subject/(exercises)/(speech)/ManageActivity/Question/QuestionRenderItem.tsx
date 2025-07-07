@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import PronunciationItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Pronunciation/PronunciationItem";
 import QuestionItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionItem";
 import { router } from "expo-router";
 
@@ -30,6 +29,7 @@ interface Props {
   activityId: string;
   activityTitle: string;
   titleError: (value: boolean) => void;
+  isRemedial: boolean;
 }
 
 const QuestionRenderItem = ({
@@ -47,6 +47,7 @@ const QuestionRenderItem = ({
   activityId,
   activityTitle,
   titleError,
+  isRemedial,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
@@ -126,6 +127,7 @@ const QuestionRenderItem = ({
         difficulty: difficulty,
         activityId: activityId,
         title: activityTitle,
+        isRemedial: isRemedial.toString(),
       },
     });
   };

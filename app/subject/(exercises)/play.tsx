@@ -7,6 +7,7 @@ import { FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import { Alert, FlatList, Image, StyleSheet, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Play = () => {
   HeaderConfig("Play");
@@ -107,6 +108,25 @@ const Play = () => {
 
   const renderHeaderCard = () => {
     switch (difficulty?.toLowerCase()) {
+      case "remedial":
+        return (
+          <View style={[styles.subLevel, difficultyStyles.easy]}>
+            <MaterialIcons
+              name="hexagon"
+              size={40}
+              color="#439558"
+              style={styles.shape1}
+            />
+            <Text style={styles.name}>Remedial</Text>
+            <MaterialIcons
+              name="hexagon"
+              size={70}
+              color="#439558"
+              style={styles.shape2}
+            />
+          </View>
+        );
+
       case "easy":
         return (
           <View style={[styles.subLevel, difficultyStyles.easy]}>
@@ -205,6 +225,7 @@ const Play = () => {
       activityId={item.activity_id}
       role={role}
       isTaken={item.is_taken}
+      isRemedial={difficulty?.toLowerCase() === "remedial"}
     />
   );
 

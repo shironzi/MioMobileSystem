@@ -13,6 +13,7 @@ const PlayCard = (props: {
   activityId: string;
   role: string;
   isTaken: boolean;
+  isRemedial: boolean;
 }) => {
   const router = useRouter();
 
@@ -73,6 +74,7 @@ const PlayCard = (props: {
     }
   };
   const difficultyColors: Record<string, string> = {
+    remedial: "#439558",
     easy: "#439558",
     average: "#ffbf18",
     difficult: "#FF7A00",
@@ -98,7 +100,9 @@ const PlayCard = (props: {
           color={props.isTaken ? difficultyColor : "#aaa"}
           style={styles.icon}
         />
-        <Text style={styles.cardNumber}>Exercise {props.id + 1}</Text>
+        <Text style={styles.cardNumber}>
+          {props.isRemedial ? "Remedial" : "Exercise"} {props.id + 1}
+        </Text>
       </View>
       <View style={[styles.play, { backgroundColor: difficultyColor }]}>
         <Text

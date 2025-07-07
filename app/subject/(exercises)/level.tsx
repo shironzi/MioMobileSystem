@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const CARD_DATA: Record<
   string,
@@ -71,49 +72,13 @@ const level = () => {
 
   HeaderConfig("Levels");
 
-  const handleEasyRoute = () =>
+  const handleRoute = (difficulty: string) =>
     router.push({
       pathname: "/subject/(exercises)/play",
       params: {
         subjectId: subjectId,
         activity_type: activity_type,
-        difficulty: "easy",
-        category: category,
-        role: role,
-      },
-    });
-
-  const handleAverageRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "average",
-        category: category,
-        role: role,
-      },
-    });
-
-  const handleDifficultRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "difficult",
-        category: category,
-        role: role,
-      },
-    });
-
-  const handleChallengeRoute = () =>
-    router.push({
-      pathname: "/subject/(exercises)/play",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        difficulty: "challenge",
+        difficulty: difficulty,
         category: category,
         role: role,
       },
@@ -135,93 +100,132 @@ const level = () => {
       showsVerticalScrollIndicator={false}
       style={{ backgroundColor: "#fff", flex: 1 }}
     >
-      <View style={styles.header_act}>
-        <FontAwesome
-          name="circle"
-          size={40}
-          color="#FFCEA1"
-          style={styles.circle}
-        />
-        <FontAwesome
-          name="circle"
-          size={40}
-          color="#ffe9ae"
-          style={styles.circle2}
-        />
-        <Image source={card.img} resizeMode={"contain"} style={styles.img} />
-        <View>
-          <Text style={[styles.practice]}>PRACTICE WITH</Text>
-          <Text style={[styles.actName]}>{card.actName}</Text>
+      <View style={{ paddingBottom: 50 }}>
+        <View style={styles.header_act}>
+          <FontAwesome
+            name="circle"
+            size={40}
+            color="#FFCEA1"
+            style={styles.circle}
+          />
+          <FontAwesome
+            name="circle"
+            size={40}
+            color="#ffe9ae"
+            style={styles.circle2}
+          />
+          <Image source={card.img} resizeMode={"contain"} style={styles.img} />
+          <View>
+            <Text style={[styles.practice]}>PRACTICE WITH</Text>
+            <Text style={[styles.actName]}>{card.actName}</Text>
+          </View>
+          <Text style={styles.actDesc}>{card.actDesc}</Text>
         </View>
-        <Text style={styles.actDesc}>{card.actDesc}</Text>
+        <TouchableOpacity
+          style={[styles.subLevel, difficultyStyles.easy]}
+          onPress={() => handleRoute("remedial")}
+        >
+          <MaterialIcons
+            name="hexagon"
+            size={40}
+            color="#439558"
+            style={styles.shape1}
+          />
+          <Text style={styles.name}>Remedial</Text>
+          <MaterialIcons
+            name="hexagon"
+            size={70}
+            color="#439558"
+            style={styles.shape2}
+          />
+        </TouchableOpacity>
+
+        <Text style={styles.headerText}>Choose Difficulty Mode</Text>
+        <TouchableOpacity
+          style={[styles.subLevel, difficultyStyles.easy]}
+          onPress={() => handleRoute("easy")}
+        >
+          <Fontisto
+            name="star"
+            size={40}
+            color="#439558"
+            style={styles.shape1}
+          />
+          <Text style={styles.try}>TRY THE</Text>
+          <Text style={styles.name}>Easy Mode</Text>
+          <Fontisto
+            name="star"
+            size={70}
+            color="#439558"
+            style={styles.shape2}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.subLevel, difficultyStyles.average, { marginTop: -5 }]}
+          onPress={() => handleRoute("average")}
+        >
+          <Ionicons
+            name="square"
+            size={40}
+            color="#ffbf18"
+            style={styles.shape1}
+          />
+          <Text style={styles.try}>TRY THE</Text>
+          <Text style={styles.name}>Average Mode</Text>
+          <Ionicons
+            name="square"
+            size={70}
+            color="#ffbf18"
+            style={styles.shape2}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.subLevel,
+            difficultyStyles.difficult,
+            { marginTop: -5 },
+          ]}
+          onPress={() => handleRoute("difficult")}
+        >
+          <Ionicons
+            name="triangle"
+            size={40}
+            color="#FF7A00"
+            style={styles.shape1}
+          />
+          <Text style={styles.try}>TRY THE</Text>
+          <Text style={styles.name}>Difficult Mode</Text>
+          <Ionicons
+            name="triangle"
+            size={70}
+            color="#FF7A00"
+            style={styles.shape2}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.subLevel,
+            difficultyStyles.challenge,
+            { marginTop: -5 },
+          ]}
+          onPress={() => handleRoute("challenge")}
+        >
+          <FontAwesome
+            name="circle"
+            size={40}
+            color="#DB4141"
+            style={styles.shape1}
+          />
+          <Text style={styles.try}>TRY THE</Text>
+          <Text style={styles.name}>Challenge Mode</Text>
+          <FontAwesome
+            name="circle"
+            size={70}
+            color="#DB4141"
+            style={styles.shape2}
+          />
+        </TouchableOpacity>
       </View>
-      <Text style={styles.headerText}>Choose Difficulty Mode</Text>
-      <TouchableOpacity
-        style={[styles.subLevel, difficultyStyles.easy]}
-        onPress={handleEasyRoute}
-      >
-        <Fontisto name="star" size={40} color="#439558" style={styles.shape1} />
-        <Text style={styles.try}>TRY THE</Text>
-        <Text style={styles.name}>Easy Mode</Text>
-        <Fontisto name="star" size={70} color="#439558" style={styles.shape2} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.subLevel, difficultyStyles.average, { marginTop: -5 }]}
-        onPress={handleAverageRoute}
-      >
-        <Ionicons
-          name="square"
-          size={40}
-          color="#ffbf18"
-          style={styles.shape1}
-        />
-        <Text style={styles.try}>TRY THE</Text>
-        <Text style={styles.name}>Average Mode</Text>
-        <Ionicons
-          name="square"
-          size={70}
-          color="#ffbf18"
-          style={styles.shape2}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.subLevel, difficultyStyles.difficult, { marginTop: -5 }]}
-        onPress={handleDifficultRoute}
-      >
-        <Ionicons
-          name="triangle"
-          size={40}
-          color="#FF7A00"
-          style={styles.shape1}
-        />
-        <Text style={styles.try}>TRY THE</Text>
-        <Text style={styles.name}>Difficult Mode</Text>
-        <Ionicons
-          name="triangle"
-          size={70}
-          color="#FF7A00"
-          style={styles.shape2}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.subLevel, difficultyStyles.challenge, { marginTop: -5 }]}
-        onPress={handleChallengeRoute}
-      >
-        <FontAwesome
-          name="circle"
-          size={40}
-          color="#DB4141"
-          style={styles.shape1}
-        />
-        <Text style={styles.try}>TRY THE</Text>
-        <Text style={styles.name}>Challenge Mode</Text>
-        <FontAwesome
-          name="circle"
-          size={70}
-          color="#DB4141"
-          style={styles.shape2}
-        />
-      </TouchableOpacity>
     </ScrollView>
   );
 };

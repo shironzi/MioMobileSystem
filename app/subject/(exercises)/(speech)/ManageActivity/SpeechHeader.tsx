@@ -1,7 +1,19 @@
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+interface Activity {
+  activity_id: string;
+  activity_title: string;
+}
 
 const SpeechHeader = (props: {
   activityType: string;
@@ -12,6 +24,11 @@ const SpeechHeader = (props: {
   setActivityTitle: (value: string) => void;
   titleError: boolean;
   activityId: string;
+  isRemedial: boolean;
+  setIsRemedial: (value: boolean) => void;
+  pictureActivities: Activity[];
+  phraseActivities: Activity[];
+  questionActivities: Activity[];
 }) => (
   <View style={{ padding: 20, paddingBottom: 0 }}>
     <View style={globalStyles.cardContainer}>
@@ -38,7 +55,6 @@ const SpeechHeader = (props: {
           </Text>
           <View style={styles.picker}>
             <Picker
-              //
               mode="dropdown"
               selectedValue={props.activityType}
               onValueChange={(value) => {
@@ -48,29 +64,86 @@ const SpeechHeader = (props: {
               <Picker.Item label="Picture Flashcards" value="picture" />
               <Picker.Item label="Word Flashcards" value="question" />
               <Picker.Item label="Reading Flashcards" value="phrase" />
-              {/* <Picker.Item
-          label="Readme: Pronunciation Challenge"
-          value="pronunciation"
-        /> */}
             </Picker>
           </View>
 
-          <Text style={{ fontSize: 16, fontWeight: 500 }}>
-            Difficulty Level
-          </Text>
-          <View style={styles.picker}>
-            <Picker
-              mode="dropdown"
-              selectedValue={props.activityDifficulty}
-              onValueChange={props.setActivityDifficulty}
-              // style={{borderRadius:20, borderColor:"#000", borderWidth:3, height:100}}
-            >
-              <Picker.Item label="Easy" value="easy" />
-              <Picker.Item label="Average" value="average" />
-              <Picker.Item label="Difficult" value="difficult" />
-              <Picker.Item label="Challenge" value="challenge" />
-            </Picker>
-          </View>
+          <TouchableOpacity
+            style={{
+              marginBottom: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 5,
+            }}
+            onPress={() => props.setIsRemedial(!props.isRemedial)}
+          >
+            {props.isRemedial ? (
+              <Ionicons name="checkbox" size={24} color="#FFBF18" />
+            ) : (
+              <Ionicons name="checkbox-outline" size={24} color="black" />
+            )}
+
+            <Text style={{ fontStyle: "italic" }}>Remedial activity?</Text>
+          </TouchableOpacity>
+
+          {!props.isRemedial ? (
+            <View>
+              <Text style={{ fontSize: 16, fontWeight: 500 }}>
+                Difficulty Level
+              </Text>
+              <View style={styles.picker}>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.activityDifficulty}
+                  onValueChange={props.setActivityDifficulty}
+                >
+                  <Picker.Item label="Easy" value="easy" />
+                  <Picker.Item label="Average" value="average" />
+                  <Picker.Item label="Difficult" value="difficult" />
+                  <Picker.Item label="Challenge" value="challenge" />
+                </Picker>
+              </View>
+            </View>
+          ) : (
+            <View>
+              <Text style={{ fontSize: 16, fontWeight: 500 }}>
+                Select Activity
+              </Text>
+              <View style={styles.picker}>
+                <Picker
+                  mode="dropdown"
+                  selectedValue={props.activityDifficulty}
+                  onValueChange={props.setActivityDifficulty}
+                >
+                  {props.activityType === "picture" &&
+                    props.pictureActivities?.map((item) => (
+                      <Picker.Item
+                        label={item.activity_title}
+                        value={item.activity_title}
+                        key={item.activity_id}
+                      />
+                    ))}
+
+                  {props.activityType === "phrase" &&
+                    props.phraseActivities?.map((item) => (
+                      <Picker.Item
+                        label={item.activity_title}
+                        value={item.activity_title}
+                        key={item.activity_id}
+                      />
+                    ))}
+
+                  {props.activityType === "question" &&
+                    props.questionActivities?.map((item) => (
+                      <Picker.Item
+                        label={item.activity_title}
+                        value={item.activity_title}
+                        key={item.activity_id}
+                      />
+                    ))}
+                </Picker>
+              </View>
+            </View>
+          )}
         </View>
       )}
     </View>

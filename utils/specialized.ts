@@ -188,6 +188,7 @@ export async function createPictureSpeechActivity(
   activityType: string,
   difficulty: string,
   title: string,
+  isRemedial: string,
 ) {
   try {
     const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
@@ -197,6 +198,7 @@ export async function createPictureSpeechActivity(
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
     formData.append("title", title);
+    formData.append("is_remedial", isRemedial);
 
     flashcards.forEach((item, index) => {
       if (item.file && item.text) {
@@ -240,6 +242,7 @@ export async function createSpeechActivity(
   difficulty: string,
   flashcards: Flashcard[],
   title: string,
+  isRemedial: string,
 ) {
   try {
     const payload = {
@@ -247,6 +250,7 @@ export async function createSpeechActivity(
       difficulty: difficulty,
       flashcards: flashcards,
       title,
+      is_remedial: isRemedial,
     };
 
     console.log(payload);
@@ -291,18 +295,36 @@ export async function getActivityById(
   }
 }
 
+export async function getActivityList(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/specialized/speech`);
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function updatePictureActivity(
   subjectId: string,
   difficulty: string,
   activityId: string,
   flashcards: PictureItem[],
   title: string,
+  isRemedial: string,
 ) {
   try {
     const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
 
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("is_remedial", isRemedial);
 
     flashcards.forEach((item, index) => {
       formData.append(`flashcards[${index}][text]`, item.text ?? "");
@@ -357,10 +379,11 @@ export async function updateSpeechActivity(
   activityType: string,
   flashcards: Flashcard[],
   title: string,
+  isRemedial: string,
 ) {
   try {
     console.log(flashcards);
-    const payload = { flashcards: flashcards, title };
+    const payload = { flashcards: flashcards, title, is_remedial: isRemedial };
     console.log(payload);
 
     const { data } = await api.put(

@@ -39,15 +39,25 @@ interface PictureItem {
 const PictureFlashcards = () => {
   useHeaderConfig("Flashcards");
 
-  const { subjectId, activity_type, difficulty, activityId, data, title } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      activityId: string;
-      data: string;
-      title: string;
-    }>();
+  const {
+    subjectId,
+    activity_type,
+    difficulty,
+    activityId,
+    data,
+    title,
+    isRemedial,
+  } = useLocalSearchParams<{
+    subjectId: string;
+    activity_type: string;
+    difficulty: string;
+    activityId: string;
+    data: string;
+    title: string;
+    isRemedial: string;
+  }>();
+
+  console.log(difficulty);
 
   const parsedBingoItems = useMemo<PictureItem[]>(() => {
     try {
@@ -70,6 +80,7 @@ const PictureFlashcards = () => {
             activityId,
             parsedBingoItems,
             title,
+            isRemedial,
           )
         : await createPictureSpeechActivity(
             subjectId,
@@ -77,6 +88,7 @@ const PictureFlashcards = () => {
             activity_type,
             difficulty,
             title,
+            isRemedial,
           );
 
       if (res.success) {
