@@ -65,12 +65,11 @@ const RemedialFlashcards = () => {
     setTimeout(() => {
       if (currentCard === cards.length - 1) {
         router.push({
-          pathname: "/subject/(sub-details)/scoreDetails",
+          pathname: "/subject/(exercises)/(speech)/RemedialScoreDetails",
           params: {
             subjectId,
             activity_type,
-            difficulty: "Remedial",
-            activityId: "",
+            remedialId,
             attemptId,
           },
         });
@@ -78,10 +77,11 @@ const RemedialFlashcards = () => {
         return;
       }
 
-      if (res.success) {
+      if ((res.success && res.is_passed) || res.total_tries >= 5) {
         setCurrentCard(currentCard + 1);
-        setIsAnswered(false);
       }
+
+      setIsAnswered(false);
       setIsSending(false);
     }, 5000);
   };
