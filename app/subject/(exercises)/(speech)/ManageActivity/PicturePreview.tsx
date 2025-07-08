@@ -92,6 +92,8 @@ const PictureFlashcards = () => {
             selectedActivityId,
           );
 
+      console.log(res);
+
       if (res.success) {
         Alert.alert(
           "Success",
@@ -108,7 +110,7 @@ const PictureFlashcards = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", res.message);
       }
     } catch (err) {
       Alert.alert("Error", "Submission failed. Please check your inputs.");

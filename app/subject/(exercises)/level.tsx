@@ -2,7 +2,7 @@ import HeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome, Fontisto } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -12,6 +12,8 @@ import {
   View,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { checkAvailableRemedial } from "@/utils/specialized";
+import LoadingCard from "@/components/loadingCard";
 
 const CARD_DATA: Record<
   string,
@@ -62,6 +64,7 @@ const CARD_DATA: Record<
 };
 
 const level = () => {
+  HeaderConfig("Levels");
   const router = useRouter();
   const { activity_type, category, subjectId, role } = useLocalSearchParams<{
     activity_type: string;
@@ -70,7 +73,9 @@ const level = () => {
     role: string;
   }>();
 
-  HeaderConfig("Levels");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [remedialPhoneme, setRemedialPhoneme] = useState<string[]>([]);
+  const [remedialId, setRemedialId] = useState<string>("");
 
   const handleRoute = (difficulty: string) =>
     router.push({
@@ -84,6 +89,20 @@ const level = () => {
       },
     });
 
+  const handleRemedial = () => {
+    const phonemeParam = JSON.stringify(remedialPhoneme);
+
+    router.push({
+      pathname: "/subject/SpeechRemedial",
+      params: {
+        subjectId: subjectId,
+        activity_type: activity_type,
+        remedialPhoneme: phonemeParam,
+        remedialId: remedialId,
+      },
+    });
+  };
+
   const difficultyStyles: Record<
     string,
     { backgroundColor: string; borderColor: string }
@@ -94,6 +113,36 @@ const level = () => {
     challenge: { backgroundColor: "#FFB1B1", borderColor: "#DB4141" },
   };
   const card = CARD_DATA[activity_type] ?? CARD_DATA.picture;
+
+  useEffect(() => {
+    const checkForRemedial = async () => {
+      const res = await checkAvailableRemedial(subjectId, activity_type);
+
+      if (res.success) {
+        setRemedialPhoneme(res.phonemes);
+        setRemedialId(res.remedial_id);
+      }
+
+      setLoading(false);
+    };
+
+    checkForRemedial();
+  }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -121,110 +170,118 @@ const level = () => {
           </View>
           <Text style={styles.actDesc}>{card.actDesc}</Text>
         </View>
-        <TouchableOpacity
-          style={[styles.subLevel, difficultyStyles.easy]}
-          onPress={() => handleRoute("remedial")}
-        >
-          <MaterialIcons
-            name="hexagon"
-            size={40}
-            color="#439558"
-            style={styles.shape1}
-          />
-          <Text style={styles.name}>Remedial</Text>
-          <MaterialIcons
-            name="hexagon"
-            size={70}
-            color="#439558"
-            style={styles.shape2}
-          />
-        </TouchableOpacity>
-
-        <Text style={styles.headerText}>Choose Difficulty Mode</Text>
-        <TouchableOpacity
-          style={[styles.subLevel, difficultyStyles.easy]}
-          onPress={() => handleRoute("easy")}
-        >
-          <Fontisto
-            name="star"
-            size={40}
-            color="#439558"
-            style={styles.shape1}
-          />
-          <Text style={styles.try}>TRY THE</Text>
-          <Text style={styles.name}>Easy Mode</Text>
-          <Fontisto
-            name="star"
-            size={70}
-            color="#439558"
-            style={styles.shape2}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.subLevel, difficultyStyles.average, { marginTop: -5 }]}
-          onPress={() => handleRoute("average")}
-        >
-          <Ionicons
-            name="square"
-            size={40}
-            color="#ffbf18"
-            style={styles.shape1}
-          />
-          <Text style={styles.try}>TRY THE</Text>
-          <Text style={styles.name}>Average Mode</Text>
-          <Ionicons
-            name="square"
-            size={70}
-            color="#ffbf18"
-            style={styles.shape2}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.subLevel,
-            difficultyStyles.difficult,
-            { marginTop: -5 },
-          ]}
-          onPress={() => handleRoute("difficult")}
-        >
-          <Ionicons
-            name="triangle"
-            size={40}
-            color="#FF7A00"
-            style={styles.shape1}
-          />
-          <Text style={styles.try}>TRY THE</Text>
-          <Text style={styles.name}>Difficult Mode</Text>
-          <Ionicons
-            name="triangle"
-            size={70}
-            color="#FF7A00"
-            style={styles.shape2}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.subLevel,
-            difficultyStyles.challenge,
-            { marginTop: -5 },
-          ]}
-          onPress={() => handleRoute("challenge")}
-        >
-          <FontAwesome
-            name="circle"
-            size={40}
-            color="#DB4141"
-            style={styles.shape1}
-          />
-          <Text style={styles.try}>TRY THE</Text>
-          <Text style={styles.name}>Challenge Mode</Text>
-          <FontAwesome
-            name="circle"
-            size={70}
-            color="#DB4141"
-            style={styles.shape2}
-          />
-        </TouchableOpacity>
+        {role === "student" && remedialPhoneme.length > 0 ? (
+          <TouchableOpacity
+            style={[styles.subLevel, difficultyStyles.easy]}
+            onPress={handleRemedial}
+          >
+            <MaterialIcons
+              name="hexagon"
+              size={40}
+              color="#439558"
+              style={styles.shape1}
+            />
+            <Text style={styles.name}>Remedial</Text>
+            <MaterialIcons
+              name="hexagon"
+              size={70}
+              color="#439558"
+              style={styles.shape2}
+            />
+          </TouchableOpacity>
+        ) : (
+          <View>
+            <Text style={styles.headerText}>Choose Difficulty Mode</Text>
+            <TouchableOpacity
+              style={[styles.subLevel, difficultyStyles.easy]}
+              onPress={() => handleRoute("easy")}
+            >
+              <Fontisto
+                name="star"
+                size={40}
+                color="#439558"
+                style={styles.shape1}
+              />
+              <Text style={styles.try}>TRY THE</Text>
+              <Text style={styles.name}>Easy Mode</Text>
+              <Fontisto
+                name="star"
+                size={70}
+                color="#439558"
+                style={styles.shape2}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.subLevel,
+                difficultyStyles.average,
+                { marginTop: -5 },
+              ]}
+              onPress={() => handleRoute("average")}
+            >
+              <Ionicons
+                name="square"
+                size={40}
+                color="#ffbf18"
+                style={styles.shape1}
+              />
+              <Text style={styles.try}>TRY THE</Text>
+              <Text style={styles.name}>Average Mode</Text>
+              <Ionicons
+                name="square"
+                size={70}
+                color="#ffbf18"
+                style={styles.shape2}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.subLevel,
+                difficultyStyles.difficult,
+                { marginTop: -5 },
+              ]}
+              onPress={() => handleRoute("difficult")}
+            >
+              <Ionicons
+                name="triangle"
+                size={40}
+                color="#FF7A00"
+                style={styles.shape1}
+              />
+              <Text style={styles.try}>TRY THE</Text>
+              <Text style={styles.name}>Difficult Mode</Text>
+              <Ionicons
+                name="triangle"
+                size={70}
+                color="#FF7A00"
+                style={styles.shape2}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.subLevel,
+                difficultyStyles.challenge,
+                { marginTop: -5 },
+              ]}
+              onPress={() => handleRoute("challenge")}
+            >
+              <FontAwesome
+                name="circle"
+                size={40}
+                color="#DB4141"
+                style={styles.shape1}
+              />
+              <Text style={styles.try}>TRY THE</Text>
+              <Text style={styles.name}>Challenge Mode</Text>
+              <FontAwesome
+                name="circle"
+                size={70}
+                color="#DB4141"
+                style={styles.shape2}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </ScrollView>
   );

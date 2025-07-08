@@ -3,7 +3,7 @@ import LoadingCard from "@/components/loadingCard";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 import FlashcardMicrophone from "@/components/trainingActivities/speech/FlashcardMicrophone";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import { startActivity, submitAnswer } from "@/utils/specialized";
+import { startRemedial, submitRemedialAnswer } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
@@ -18,17 +18,17 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FeedbackAlert from "@/components/FeedbackAlert";
 
-const Flashcards = () => {
+const RemedialFlashcards = () => {
   const router = useRouter();
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activity_type, activityId } =
+  const { subjectId, activity_type, remedialId, phoneme } =
     useLocalSearchParams<{
       activity_type: string;
-      difficulty: string;
       subjectId: string;
-      activityId: string;
+      remedialId: string;
+      phoneme: string;
     }>();
 
   const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
@@ -48,12 +48,12 @@ const Flashcards = () => {
     if (!recordingAudio) return;
     setIsSending(true);
 
-    const res = await submitAnswer(
+    const res = await submitRemedialAnswer(
       subjectId,
       activity_type,
-      difficulty,
-      activityId,
       attemptId,
+      remedialId,
+      phoneme,
       cards[currentCard].flashcard_id,
       recordingAudio,
     );
@@ -69,8 +69,8 @@ const Flashcards = () => {
           params: {
             subjectId,
             activity_type,
-            difficulty,
-            activityId,
+            difficulty: "Remedial",
+            activityId: "",
             attemptId,
           },
         });
@@ -88,14 +88,14 @@ const Flashcards = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      const res = await startActivity(
+      const res = await startRemedial(
         subjectId,
         activity_type,
-        difficulty,
-        activityId,
+        remedialId,
+        phoneme,
       );
 
-      if (res.success && res.flashcards) {
+      if (res.success) {
         const fetchedFlashcards = Object.entries(res.flashcards).map(
           ([key, value]: [string, any]) => ({
             flashcard_id: key,
@@ -149,7 +149,7 @@ const Flashcards = () => {
     <GestureHandlerRootView>
       <ScrollView style={styles.container}>
         <ActivityProgress
-          difficulty={difficulty}
+          difficulty={"Remedial"}
           totalItems={cards.length}
           completedItems={currentCard}
           // instruction="Guess the picture"
@@ -298,4 +298,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Flashcards);
+export default memo(RemedialFlashcards);

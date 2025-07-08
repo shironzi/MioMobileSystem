@@ -106,7 +106,7 @@ const SpeechPreview = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", res.message);
       }
     } catch (err) {
       console.log(err);

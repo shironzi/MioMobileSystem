@@ -112,6 +112,29 @@ export async function startActivity(
   }
 }
 
+export async function startRemedial(
+  subjectId: string,
+  activityType: string,
+  remedial_id: string,
+  phoneme: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/speech/remedial/${activityType}/${remedial_id}/${phoneme}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function submitAnswer(
   subjectId: string,
   activityType: string,
@@ -158,6 +181,52 @@ export async function submitAnswer(
   }
 }
 
+export async function submitRemedialAnswer(
+  subjectId: string,
+  activityType: string,
+  attemptId: string,
+  remedial_id: string,
+  phoneme: string,
+  itemId: string,
+  fileUri: string,
+) {
+  try {
+    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/remedial/${activityType}/${remedial_id}/${phoneme}/${attemptId}/${itemId}`;
+
+    const filename = fileUri.split("/").pop()!;
+    const mimeType = "audio/mpeg";
+
+    const formData = new FormData();
+    formData.append("audio_file", {
+      uri: fileUri,
+      name: filename,
+      type: mimeType,
+    } as any);
+
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function finishActivity(
   subjectId: string,
   activityType: string,
@@ -168,6 +237,29 @@ export async function finishActivity(
   try {
     const { data } = await api.patch(
       `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function finishRemedialActivity(
+  subjectId: string,
+  activityType: string,
+  remedial_id: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.patch(
+      `/subject/${subjectId}/specialized/speech/remedial/finalize/${activityType}/${remedial_id}/${attemptId}`,
     );
 
     return data;
@@ -393,6 +485,27 @@ export async function updateSpeechActivity(
     const { data } = await api.put(
       `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,
       payload,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function checkAvailableRemedial(
+  subjectId: string,
+  activityType: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/specialized/speech/remedial/${activityType}`,
     );
 
     return data;
