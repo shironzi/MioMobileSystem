@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import SpeechScores from "@/app/subject/(sub-details)/Scores/SpeechScores";
 import { useLocalSearchParams } from "expo-router";
 import { getActivities } from "@/utils/specialized";
 import QuizzesScores from "@/components/QuizzesScores";
 import LoadingCard from "@/components/loadingCard";
+import globalStyles from "@/styles/globalStyles";
 
 const Scores = () => {
   useHeaderConfig("Scores");
@@ -79,26 +80,17 @@ const Scores = () => {
     );
   }
 
-  // const [isRefreshing, setIsRefreshing] = useState(false);
-  //
-  // const onRefresh = () => {
-  //   setIsRefreshing(true);
-  //   setTimeout(() => {
-  //     setIsRefreshing(false);
-  //   }, 2000);
-  // };
-
   return (
     <ScrollView
       style={{
         paddingVertical: 20,
         backgroundColor: "#fff",
       }}
-      // refreshControl={
-      //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-      // }
     >
       <View style={{ paddingBottom: 50 }}>
+        <View style={[globalStyles.cardContainer, { marginHorizontal: 20 }]}>
+          <Text>Remedials</Text>
+        </View>
         {Object.entries(activities).map(([activityType, difficulties]: any) =>
           Object.entries(difficulties).map(([difficulty, info]: any) => (
             <SpeechScores

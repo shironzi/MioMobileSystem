@@ -63,6 +63,8 @@ const PictureFlashcards = () => {
     if (res.feedbacks) {
       setFeedback(res.feedbacks);
     }
+
+    setRecordingAudio(null);
     setTimeout(() => {
       if (currentCard === cards.length - 1) {
         router.push({
@@ -85,7 +87,6 @@ const PictureFlashcards = () => {
 
       setCurrentCard(currentCard + 1);
       setIsAnswered(false);
-      setRecordingAudio(null);
 
       setIsSending(false);
     }, 5000);
@@ -102,7 +103,22 @@ const PictureFlashcards = () => {
         activityId,
       );
 
-      if (!res.success) {
+      if (res.success) {
+        const fetchedFlashcards = Object.entries(res.flashcards).map(
+          ([key, value]: [string, any]) => ({
+            flashcard_id: key,
+            text: value.text,
+            image_url: value?.image_url,
+          }),
+        );
+
+        if (!isMounted) return;
+        setCards(fetchedFlashcards);
+        setAttemptId(res.attemptId);
+
+        setCurrentCard(res.currentItem ?? 0);
+        setLoading(false);
+      } else {
         Alert.alert("Access Denied", res.message, [
           {
             text: "OK",
@@ -110,21 +126,6 @@ const PictureFlashcards = () => {
           },
         ]);
       }
-
-      const fetchedFlashcards = Object.entries(res.flashcards).map(
-        ([key, value]: [string, any]) => ({
-          flashcard_id: key,
-          text: value.text,
-          image_url: value?.image_url,
-        }),
-      );
-
-      if (!isMounted) return;
-      setCards(fetchedFlashcards);
-      setAttemptId(res.attemptId);
-
-      setCurrentCard(res.currentItem ?? 0);
-      setLoading(false);
     };
 
     fetchActivity();

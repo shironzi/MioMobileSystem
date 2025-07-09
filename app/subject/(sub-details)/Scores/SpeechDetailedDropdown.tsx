@@ -9,6 +9,7 @@ import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
 const SpeechDetailedDropdown = ({
   items,
   placeholder,
+  role,
 }: {
   items: {
     id: string;
@@ -23,6 +24,7 @@ const SpeechDetailedDropdown = ({
     score: number;
   };
   placeholder: number;
+  role: string;
 }) => {
   useHeaderConfig("Scores");
 
@@ -35,18 +37,14 @@ const SpeechDetailedDropdown = ({
   const restOfWord = word.slice(1).toLowerCase();
 
   return (
-    <View>
-      <TouchableOpacity onPress={toggleDropdown} style={styles.dropdownButton}>
-        <View
-          style={{
-            flexDirection: "row",
-            borderWidth: 1,
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            paddingVertical: 15,
-            borderColor: "#00000024",
-          }}
-        >
+    <View
+      style={[isVisible && styles.borderStyle, { flexDirection: "column" }]}
+    >
+      <TouchableOpacity
+        onPress={toggleDropdown}
+        style={[!isVisible ? styles.borderStyle : {}]}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={styles.yellowBulletin}></View>
           <View
             style={{
@@ -72,6 +70,9 @@ const SpeechDetailedDropdown = ({
 
       {isVisible && (
         <View style={{ width: "100%" }}>
+          <View
+            style={[globalStyles.divider, { marginTop: -10, marginBottom: 10 }]}
+          ></View>
           {items ? (
             <View>
               <View style={{ rowGap: 10 }}>
@@ -87,26 +88,28 @@ const SpeechDetailedDropdown = ({
                   <Text>{items.score}%</Text>
                 </View>
                 <View style={{ flexDirection: "column" }}>
-                  <Text style={globalStyles.text1}>Feedback: </Text>
+                  <Text style={globalStyles.text1}>Mio Feedback: </Text>
                   <Text style={{ maxWidth: 300 }}>{items.feedback}</Text>
                 </View>
                 <AudioPlayer uri={items.audio} />
               </View>
-              <View style={styles.table}>
-                <View style={styles.headerRow}>
-                  <Text style={styles.headerCell}>Phone</Text>
-                  <Text style={styles.headerCell}>Sound Most Like</Text>
-                  <Text style={styles.headerCell}>Score</Text>
-                </View>
-
-                {items.phonemes.map((phone, index) => (
-                  <View key={index} style={styles.row}>
-                    <Text style={styles.cell}>{phone.phone}</Text>
-                    <Text style={styles.cell}>{phone.sound_most_like}</Text>
-                    <Text style={styles.cell}>{phone.quality_score}</Text>
+              {role !== "student" && (
+                <View style={styles.table}>
+                  <View style={styles.headerRow}>
+                    <Text style={styles.headerCell}>Phone</Text>
+                    <Text style={styles.headerCell}>Sound Most Like</Text>
+                    <Text style={styles.headerCell}>Score</Text>
                   </View>
-                ))}
-              </View>
+
+                  {items.phonemes.map((phone, index) => (
+                    <View key={index} style={styles.row}>
+                      <Text style={styles.cell}>{phone.phone}</Text>
+                      <Text style={styles.cell}>{phone.sound_most_like}</Text>
+                      <Text style={styles.cell}>{phone.quality_score}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           ) : (
             <View style={styles.dropdownContent}>
@@ -115,7 +118,6 @@ const SpeechDetailedDropdown = ({
           )}
         </View>
       )}
-      <View style={[globalStyles.divider, { marginTop: 20 }]}></View>
     </View>
   );
 };
@@ -127,6 +129,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  borderStyle: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderColor: "#00000024",
   },
   buttonText: {
     fontSize: 16,

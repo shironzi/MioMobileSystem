@@ -557,22 +557,6 @@ export async function getQuizById(subjectId: string, quizId: string) {
   }
 }
 
-export async function getScores(subjectId: string | string[]) {
-  try {
-    const { data } = await api.get(`/subject/${subjectId}/scores`);
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
 export async function getStudents(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/peoples`);
@@ -617,11 +601,36 @@ export async function getAttemptStudent(
   subjectId: string,
   activityType: string,
   activityId: string,
-  attemptId: string,
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/student/scores/${activityType}/${activityId}/${attemptId}`,
+      `/subject/${subjectId}/student/scores/${activityType}/${activityId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function addComment(
+  subjectId: string,
+  activityType: string,
+  activityId: string,
+  studentId: string,
+  attemptId: string,
+  comment: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/teacher/scores/${activityType}/${activityId}/${studentId}/${attemptId}`,
+      { comment: comment },
     );
 
     return data;

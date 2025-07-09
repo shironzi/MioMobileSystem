@@ -31,7 +31,7 @@ const SpeechScores = ({
     console.log(role);
     if (role === "student" || role === "parent") {
       router.push({
-        pathname: "/subject/(sub-details)/Scores/ScoreAttempts",
+        pathname: "/subject/(sub-details)/Scores/ScoreDetails",
         params: {
           subjectId,
           activityId: activity,

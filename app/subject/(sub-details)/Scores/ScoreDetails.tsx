@@ -1,12 +1,33 @@
 import globalStyles from "@/styles/globalStyles";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
-import { getAttempt, getAttemptStudent } from "@/utils/query";
-import { useLocalSearchParams } from "expo-router";
+import { addComment, getAttempt, getAttemptStudent } from "@/utils/query";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import LoadingCard from "@/components/loadingCard";
 import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+
+interface Feedback {
+  id: string;
+  feedback: string;
+  audio: string;
+  phonemes: {
+    phone: string;
+    quality_score: number;
+    sound_most_like: string;
+  }[];
+  word: string;
+  score: number;
+}
 
 const AuditoryScores = () => {
   headerConfigScoreDetails("Score Details");
@@ -22,22 +43,56 @@ const AuditoryScores = () => {
     }>();
 
   const [overallScore, setOverallScore] = useState<number>(0);
-  const [feedbacks, setFeedbacks] = useState<
-    {
-      id: string;
-      feedback: string;
-      audio: string;
-      phonemes: {
-        phone: string;
-        quality_score: number;
-        sound_most_like: string;
-      }[];
-      word: string;
-      score: number;
-    }[]
-  >([]);
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [feedback, setFeedback] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+  const [commentError, setCommentError] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const handleComment = (comment: string) => {
+    if (comment.length > 300) {
+      setCommentError(true);
+      return;
+    }
+
+    setCommentError(false);
+    setComment(comment);
+  };
+
+  const handleAddComment = async () => {
+    if (comment.trim().length < 1) return;
+
+    setIsSubmitting(true);
+    const res = await addComment(
+      subjectId,
+      activityType,
+      activityId,
+      userId,
+      attemptId,
+      comment,
+    );
+
+    if (res.success) {
+      Alert.alert(
+        "Success",
+        res.message,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.back();
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      Alert.alert("Error", res.message);
+    }
+
+    setIsSubmitting(false);
+  };
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -49,18 +104,13 @@ const AuditoryScores = () => {
             userId,
             attemptId,
           )
-        : await getAttemptStudent(
-            subjectId,
-            activityType,
-            activityId,
-            attemptId,
-          );
+        : await getAttemptStudent(subjectId, activityType, activityId);
 
-      if (res?.success) {
-        console.log(res);
+      if (res.success) {
         setOverallScore(res.overall_score ?? 0);
         setFeedbacks(res.feedbacks);
         setFeedback(res.feedback);
+        setComment(res.comment);
         console.log(res.feedbacks);
       }
 
@@ -84,8 +134,6 @@ const AuditoryScores = () => {
       </View>
     );
   }
-
-  console.log(feedbacks);
 
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
@@ -122,8 +170,52 @@ const AuditoryScores = () => {
             </View>
           </View>
         )}
+
         <View style={globalStyles.cardContainer}>
-          <Text style={styles.sectionTitle}>Mio Feedbacks</Text>
+          <Text style={styles.sectionTitle}>Comments</Text>
+          {role === "teacher" ? (
+            <View>
+              {commentError && (
+                <Text style={globalStyles.errorText}>
+                  Comment must not exceed 300 characters.
+                </Text>
+              )}
+              <TextInput
+                style={[
+                  globalStyles.textInputContainer,
+                  {
+                    paddingVertical: 15,
+                    minHeight: 125,
+                    textAlignVertical: "top",
+                  },
+                  commentError && { borderColor: "red" },
+                ]}
+                placeholder={"Add Comment"}
+                value={comment}
+                onChangeText={(value: string) => handleComment(value)}
+                multiline={true}
+              />
+
+              <TouchableOpacity
+                style={[
+                  globalStyles.submitButton,
+                  { marginHorizontal: "auto", marginTop: 10 },
+                ]}
+                disabled={isSubmitting}
+                onPress={handleAddComment}
+              >
+                <Text style={globalStyles.submitButtonText}>
+                  {isSubmitting ? "Adding comment..." : "Add Comment"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={globalStyles.cardContainer}>
+              <Text>{comment ?? "No comment"}</Text>
+            </View>
+          )}
+        </View>
+        <View style={{ rowGap: 20 }}>
           {feedbacks.length === 0 ? (
             <Text style={styles.feedbackText}>{feedback}</Text>
           ) : (
@@ -132,6 +224,7 @@ const AuditoryScores = () => {
                 items={item}
                 placeholder={index}
                 key={item.id}
+                role={role}
               />
             ))
           )}

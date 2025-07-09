@@ -31,15 +31,13 @@ const RemedialFlashcards = () => {
       phoneme: string;
     }>();
 
-  const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
-    [],
-  );
+  const [cards, setCards] = useState<{ item_id: string; text: string }[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [recordingAudio, setRecordingAudio] = useState<string | null>();
   const [loading, setLoading] = useState(true);
   const [attemptId, setAttemptId] = useState<string | undefined>();
-  const [currentCard, setCurrentCard] = useState<number>(0);
+  const [currentCard, setCurrentCard] = useState<any>(0);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
@@ -54,9 +52,11 @@ const RemedialFlashcards = () => {
       attemptId,
       remedialId,
       phoneme,
-      cards[currentCard].flashcard_id,
+      cards[currentCard].item_id,
       recordingAudio,
     );
+
+    console.log(res);
 
     if (res.feedbacks) {
       setFeedback(res.feedbacks);
@@ -96,16 +96,11 @@ const RemedialFlashcards = () => {
       );
 
       if (res.success) {
-        const fetchedFlashcards = Object.entries(res.flashcards).map(
-          ([key, value]: [string, any]) => ({
-            flashcard_id: key,
-            text: value.text,
-          }),
-        );
-
         setAttemptId(res.attemptId);
-        setCards(fetchedFlashcards);
-        setCurrentCard(res.currentItem);
+        setCards(Object.values(res.flashcards));
+        setCurrentCard(res.currentItem ?? 0);
+
+        console.log(cards);
       } else {
         Alert.alert("Access Denied", res.message, [
           {
@@ -120,7 +115,7 @@ const RemedialFlashcards = () => {
     fetchActivity();
   }, []);
 
-  if (loading) {
+  if (loading && (!cards || cards.length === 0)) {
     return (
       <View
         style={{
@@ -135,13 +130,6 @@ const RemedialFlashcards = () => {
     );
   }
 
-  if (!cards) {
-    return (
-      <View style={styles.container}>
-        <Text>No flashcards available.</Text>
-      </View>
-    );
-  }
   const getInstruction =
     "Look at the word. Tap and hold the microphone and read the word out loud. Try to pronounce it clearly.";
 

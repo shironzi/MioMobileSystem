@@ -7,6 +7,12 @@ import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
+interface Attempt {
+  attemptId: string;
+  score: string | null;
+  submitted_at: string | null;
+}
+
 const ViewActivity = () => {
   useHeaderConfig("Activity");
 
@@ -40,9 +46,7 @@ const ViewActivity = () => {
     return "Follow the instructions for this activity.";
   }, [activity_type]);
 
-  const [attempts, setAttempts] = useState<
-    { attemptId: string; score: string | null; submitted_at: string | null }[]
-  >([]);
+  const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [activeAttempt, setActiveAttempt] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
   const [totalAttempts, setTotalAttempts] = useState<number>(0);
@@ -82,10 +86,21 @@ const ViewActivity = () => {
             activityId,
           );
 
-          // console.log(res);
-
           if (res.success) {
-            setAttempts(Object.values(res.attempts));
+            const sortedAttempts: Attempt[] = [
+              ...(Object.values(res.attempts) as Attempt[]),
+            ].sort((a: any, b: any) => {
+              const aDate = a.submitted_at ?? "";
+              const bDate = b.submitted_at ?? "";
+
+              if (!aDate && bDate) return -1;
+              if (!bDate && aDate) return 1;
+              if (!aDate && !bDate) return 0;
+
+              return aDate > bDate ? -1 : 1;
+            });
+
+            setAttempts(sortedAttempts);
             setActiveAttempt(res.has_active_attempt);
             setTotalAttempts(res.total_attempt);
             setIsPassed(res.is_passed);
@@ -186,10 +201,10 @@ const ViewActivity = () => {
                 borderColor: "#aaa",
               }}
             >
-              <Text style={{ flex: 1 }}>{index + 1}</Text>
+              <Text style={{ flex: 1 }}>{totalAttempts - index}</Text>
               <Text style={{ flex: 1 }}>{attempt.score ?? "N/A"}</Text>
               <Text style={{ flex: 2 }}>
-                {attempt.submitted_at ?? "Not submitted"}
+                {attempt.submitted_at ?? "In-progress"}
               </Text>
             </View>
           ))}
