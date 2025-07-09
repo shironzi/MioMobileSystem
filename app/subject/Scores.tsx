@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import SpeechScores from "@/app/subject/(sub-details)/Scores/SpeechScores";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { getActivities } from "@/utils/specialized";
 import QuizzesScores from "@/components/QuizzesScores";
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Scores = () => {
   useHeaderConfig("Scores");
@@ -49,10 +50,16 @@ const Scores = () => {
   //   }
   // }
 
+  const handleRemedialRoute = () => {
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
+      params: { subjectId: subjectId },
+    });
+  };
+
   useEffect(() => {
     const fetchActivities = async () => {
       const data = await getActivities(subjectId);
-      console.log(data);
       if (data?.success) {
         setActivities(data.activities);
         setQuizzes(data.quizzes);
@@ -88,9 +95,20 @@ const Scores = () => {
       }}
     >
       <View style={{ paddingBottom: 50 }}>
-        <View style={[globalStyles.cardContainer, { marginHorizontal: 20 }]}>
-          <Text>Remedials</Text>
-        </View>
+        <TouchableOpacity
+          style={[
+            globalStyles.cardContainer,
+            {
+              marginHorizontal: 20,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            },
+          ]}
+          onPress={handleRemedialRoute}
+        >
+          <Text style={globalStyles.text1}>View Remedials</Text>
+          <FontAwesome name="long-arrow-right" size={24} color="black" />
+        </TouchableOpacity>
         {Object.entries(activities).map(([activityType, difficulties]: any) =>
           Object.entries(difficulties).map(([difficulty, info]: any) => (
             <SpeechScores

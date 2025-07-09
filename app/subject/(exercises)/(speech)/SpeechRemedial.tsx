@@ -41,7 +41,6 @@ const SpeechRemedial = () => {
     <ScrollView style={{ backgroundColor: "#fff", height: "100%" }}>
       <View style={styles.subLevel}>
         <Fontisto name="star" size={40} color="#439558" style={styles.shape1} />
-        {/*<Text style={styles.try}>TRY THE</Text>*/}
         <Text style={styles.name}>Remedial</Text>
         <Fontisto name="star" size={70} color="#439558" style={styles.shape2} />
       </View>
@@ -55,9 +54,7 @@ const SpeechRemedial = () => {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-around",
               top: 25,
-              left: -30,
             }}
           >
             <FontAwesome
@@ -67,8 +64,8 @@ const SpeechRemedial = () => {
               color={"#439558"}
               style={styles.icon}
             />
-            <Text style={styles.cardNumber}>
-              Practice your {"/" + item + "/"} sounds
+            <Text style={[styles.cardNumber, { maxWidth: 225 }]}>
+              /{item}/ - Assessment #{index + 1}
             </Text>
           </View>
           <View style={[styles.play, { backgroundColor: "#439558" }]}>
@@ -130,11 +127,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 20,
     marginVertical: 10,
-    top: -10,
-    height: 70,
   },
   icon: {
     alignSelf: "center",
+    marginHorizontal: 20,
+    width: 50,
   },
   play: {
     height: 30,
@@ -147,8 +144,9 @@ const styles = StyleSheet.create({
   cardNumber: {
     fontSize: 14,
     color: "#000",
-    left: -80,
     fontWeight: "400",
+    flexWrap: "wrap",
+    left: -50,
   },
 });
 
