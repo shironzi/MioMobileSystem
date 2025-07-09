@@ -105,7 +105,38 @@ const Index = () => {
           await SecureStore.setItemAsync(`emailAddress`, emailAdress);
           await SecureStore.setItemAsync(`password`, userPassword);
         }
-        router.push("/(login)/LoginOtp");
+
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *  uncomment this
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * */
+        // router.push("/(login)/LoginOtp");
+        router.push("/(drawer)/(tabs)");
       } else {
         setErrorMessage("Login failed. Please try again.");
       }

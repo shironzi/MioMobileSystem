@@ -24,18 +24,20 @@ export default async function login(email: string, password: string) {
       }
     }
 
-    try {
-      const { data } = await api.post(`/sent-verification`);
-      return { status: "success" };
-    } catch (err: any) {
-      if (err.response) {
-        return err.response.status;
-      } else if (err.request) {
-        return { error: "No response from server" };
-      } else {
-        return { error: err.message };
-      }
-    }
+    return { status: "success" };
+
+    // try {
+    //   // const { data } = await api.post(`/sent-verification`);
+    //   return { status: "success" };
+    // } catch (err: any) {
+    //   if (err.response) {
+    //     return err.response.status;
+    //   } else if (err.request) {
+    //     return { error: "No response from server" };
+    //   } else {
+    //     return { error: err.message };
+    //   }
+    // }
   } catch (error: any) {
     throw new Error(`Login failed: ${error.message}`);
   }
