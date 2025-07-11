@@ -20,43 +20,20 @@ export default function handleCategory({
   attemptId = "",
 }: Params) {
   if (category === "speech") {
-    if (activity_type === "picture") {
-      router.push({
-        pathname:
-          role === "teacher"
-            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-            : "/subject/(exercises)/(speech)/PictureFlashcards",
-        params: {
-          subjectId,
-          activity_type,
-          difficulty,
-          category,
-          activityId,
-          prevAttemptId: attemptId,
-        },
-      });
-    }
-
-    if (
-      activity_type === "phrase" ||
-      activity_type === "question" ||
-      activity_type === "pronunciation"
-    ) {
-      router.push({
-        pathname:
-          role === "teacher"
-            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-            : "/subject/(exercises)/(speech)/Flashcards",
-        params: {
-          subjectId,
-          activity_type,
-          difficulty,
-          category,
-          activityId,
-          prevAttemptId: attemptId,
-        },
-      });
-    }
+    router.push({
+      pathname:
+        role === "teacher"
+          ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+          : ("/subject/(exercises)/(speech)/MicrophoneTest" as any),
+      params: {
+        subjectId: subjectId,
+        activity_type: activity_type,
+        difficulty: difficulty,
+        category: category,
+        activityId: activityId,
+        prevAttemptId: attemptId,
+      },
+    });
   }
 
   if (category === "auditory") {
