@@ -3,35 +3,67 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
-interface Remedial {
-  activity_title: string;
-  remedialId: string;
-  activityType: string;
-}
+import globalStyles from "@/styles/globalStyles";
+import { router } from "expo-router";
 
 const RemedialItem = ({
   subjectId,
   remedial,
+  remedialId,
+  activityType,
+  activity_title,
+  role,
+  studentId,
 }: {
   subjectId: string;
-  remedial: Remedial;
+  remedial: string[];
+  remedialId: string;
+  activityType: string;
+  activity_title: string;
+  role: string;
+  studentId: string;
 }) => {
   useHeaderConfig("Scores");
 
   const [isVisible, setIsVisible] = useState(false);
   const toggleDropdown = () => setIsVisible(!isVisible);
 
-  let activityType;
-  if (remedial.activityType === "question") {
-    activityType = "Word";
-  } else if (remedial.activityType === "phrase") {
-    activityType = "Reading";
+  let activityTypeText;
+  if (activityType === "question") {
+    activityTypeText = "Word";
+  } else if (activityType === "phrase") {
+    activityTypeText = "Reading";
   } else {
-    activityType =
-      remedial.activityType.charAt(0).toUpperCase() +
-      remedial.activityType.slice(1).toLowerCase();
+    activityTypeText = "Picture";
   }
+
+  const handleRoute = (phoneme: string) => {
+    if (role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/Remedial/RemedialAttempts",
+        params: {
+          subjectId: subjectId,
+          remedialId: remedialId,
+          phoneme: phoneme,
+          activityType: activityType,
+          role: role,
+          studentId: studentId,
+        },
+      });
+      return;
+    }
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/Remedial/RemedialResult",
+      params: {
+        subjectId: subjectId,
+        remedialId: remedialId,
+        phoneme: phoneme,
+        activityType: activityType,
+        role: role,
+        studentId: studentId,
+      },
+    });
+  };
 
   return (
     <View>
@@ -41,11 +73,10 @@ const RemedialItem = ({
             flexDirection: "row",
             justifyContent: "space-between",
             width: "100%",
-            paddingHorizontal: 10,
           }}
         >
           <Text style={styles.buttonText}>
-            {activityType + " - " + remedial.activity_title}
+            {activityTypeText + " - " + activity_title}
           </Text>
           <AntDesign
             name={isVisible ? "up" : "down"}
@@ -60,14 +91,26 @@ const RemedialItem = ({
         />
       </TouchableOpacity>
 
-      {isVisible && <View></View>}
+      {isVisible && (
+        <View style={{ rowGap: 10 }}>
+          {remedial.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[globalStyles.cardContainer]}
+              onPress={() => handleRoute(item)}
+            >
+              <Text>/{item}/ Practice</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   dropdownButton: {
-    padding: 16,
+    paddingVertical: 16,
     borderRadius: 8,
     marginBottom: 4,
     flexDirection: "row",

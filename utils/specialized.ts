@@ -83,6 +83,97 @@ export async function getRemedialList(subjectId: string) {
   }
 }
 
+export async function getRemedialListByStudent(
+  subjectId: string,
+  studentId: string,
+) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/scores/remedialList`);
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getRemedialAttempts(
+  subjectId: string,
+  studentId: string,
+  activityType: string,
+  remedialId: string,
+  phoneme: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}/${phoneme}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getRemedialResult(
+  subjectId: string,
+  activityType: string,
+  remedialId: string,
+  phoneme: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${activityType}/${remedialId}/${phoneme}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getRemedialResultByStudent(
+  subjectId: string,
+  activityType: string,
+  remedialId: string,
+  phoneme: string,
+  studentId: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}/${phoneme}/${attemptId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getActiveActivity(
   subjectId: string,
   activity_type: string,
@@ -275,7 +366,7 @@ export async function finishRemedialActivity(
 ) {
   try {
     const { data } = await api.patch(
-      `/subject/${subjectId}/specialized/speech/remedial/finalize/${activityType}/${remedial_id}/${attemptId}`,
+      `/subject/${subjectId}/specialized/speech/remedial/${activityType}/${remedial_id}/${attemptId}`,
     );
 
     return data;

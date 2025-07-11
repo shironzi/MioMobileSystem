@@ -10,10 +10,12 @@ import React, { memo, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
+import { ToastAndroid } from "react-native";
 
 const FlashcardMicrophone = (props: {
   onStop: (file: string | null) => void;
   inputError?: boolean;
+  words?: string;
 }) => {
   RecordingPresets.LOW_QUALITY = {
     extension: ".mp3",
@@ -40,6 +42,8 @@ const FlashcardMicrophone = (props: {
 
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const [isRecording, setIsRecording] = useState(false);
+  const wordCount = props.words?.split(/\s+/).length ?? 0;
+  const maxDuration = Math.max(4, Math.min(16, Math.ceil(wordCount * 0.6)));
 
   const stopRecording = async () => {
     await audioRecorder.stop();
@@ -58,12 +62,9 @@ const FlashcardMicrophone = (props: {
 
     setTimeout(() => {
       stopRecording();
-    }, 15000);
+      ToastAndroid.show("Oops!, Try Again", ToastAndroid.SHORT);
+    }, maxDuration * 1000);
   };
-
-  // if (audioRecorder.currentTime > 15 && audioRecorder.isRecording) {
-  //   stopRecording();
-  // }
 
   useEffect(() => {
     (async () => {

@@ -51,9 +51,16 @@ const Scores = () => {
   // }
 
   const handleRemedialRoute = () => {
+    if (role === "teacher") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
+        params: { subjectId: subjectId, role: role, activityType: "remedial" },
+      });
+      return;
+    }
     router.push({
       pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
-      params: { subjectId: subjectId },
+      params: { subjectId: subjectId, role: role },
     });
   };
 

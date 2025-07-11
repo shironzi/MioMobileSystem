@@ -10,7 +10,6 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
   Image,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -77,14 +76,6 @@ function Announcements() {
     });
   };
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 2000);
-  };
-
   if (loading) {
     return (
       <View
@@ -122,9 +113,6 @@ function Announcements() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
-        // refreshControl={
-        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        // }
       >
         {role === "teacher" && (
           // <TouchableOpacity style={styles.addButton} onPress={handleAdd}>

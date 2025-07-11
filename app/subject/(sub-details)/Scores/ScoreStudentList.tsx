@@ -57,6 +57,15 @@ const ScoreStudentList = () => {
           role: role,
         },
       });
+    } else if (activityType === "remedial") {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
+        params: {
+          subjectId: subjectId,
+          role: role,
+          studentId: studentId,
+        },
+      });
     } else {
       router.push({
         pathname: "/subject/(sub-details)/Scores/ScoreAttempts",
