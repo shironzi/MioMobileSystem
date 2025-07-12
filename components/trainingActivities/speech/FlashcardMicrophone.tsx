@@ -43,7 +43,7 @@ const FlashcardMicrophone = (props: {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const [isRecording, setIsRecording] = useState(false);
   const wordCount = props.words?.split(/\s+/).length ?? 0;
-  const maxDuration = Math.max(4, Math.min(16, Math.ceil(wordCount * 0.6)));
+  const maxDuration = Math.min(12, Math.max(8, Math.ceil(wordCount * 0.6)));
 
   const stopRecording = async () => {
     await audioRecorder.stop();

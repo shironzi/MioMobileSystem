@@ -8,28 +8,34 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useState, memo } from "react";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { VerifyOtpCode } from "@/utils/auth";
 
 const LoginOtp = () => {
+  const { message } = useLocalSearchParams<{ message: string }>();
+
   const router = useRouter();
   const navigation = useNavigation();
   const [otp_code, setOtp_code] = useState<string>("");
   const [otpStatus, setOtpStatus] = useState<boolean>(true);
+  const [otpMessage, setOtpMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleVerification = async () => {
     setIsSubmitting(true);
     const res = await VerifyOtpCode(parseInt(otp_code));
 
-    console.log(res);
-
-    console.log(res);
     if (res.status) {
       router.replace("/(drawer)/(tabs)");
     } else {
       setOtpStatus(false);
+      setOtpMessage(res.message);
     }
     setIsSubmitting(false);
   };
@@ -78,8 +84,8 @@ const LoginOtp = () => {
                       borderColor: "#aaa",
                     }}
                   >
-                    Your 6-digit OTP code has been successfully sent to your
-                    email address.
+                    {message ??
+                      "Your 6-digit OTP code has been successfully sent to your email address."}
                   </Text>
                 </View>
               ) : (
@@ -97,8 +103,7 @@ const LoginOtp = () => {
                       borderColor: "#aaa",
                     }}
                   >
-                    Your 6-digit OTP code failed to send. Please try again
-                    later.
+                    {otpMessage ?? "Invalid OTP code. Please try again."}
                   </Text>
                 </View>
               )}
