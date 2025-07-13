@@ -3,8 +3,10 @@ import React, { useCallback } from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 
-const HeaderConfigScoreDetails = (title: string) => {
+const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
   const navigation = useNavigation();
+
+  console.log(activity_type);
 
   useFocusEffect(
     useCallback(() => {
@@ -24,6 +26,13 @@ const HeaderConfigScoreDetails = (title: string) => {
             onPress={() => {
               navigation.goBack();
               navigation.goBack();
+              if (
+                activity_type === "picture" ||
+                activity_type === "phrase" ||
+                activity_type === "question"
+              ) {
+                navigation.goBack();
+              }
             }}
           >
             <FontAwesome6 name="arrow-left-long" size={24} color="#282727" />
@@ -40,7 +49,7 @@ const HeaderConfigScoreDetails = (title: string) => {
 
         headerBackTitleVisible: false,
       });
-    }, [navigation, title]),
+    }, [navigation, title, activity_type]),
   );
 };
 

@@ -10,7 +10,6 @@ import React, { memo, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import { ToastAndroid } from "react-native";
 
 const FlashcardMicrophone = (props: {
   onStop: (file: string | null) => void;
@@ -62,7 +61,6 @@ const FlashcardMicrophone = (props: {
 
     setTimeout(() => {
       stopRecording();
-      ToastAndroid.show("Oops!, Try Again", ToastAndroid.SHORT);
     }, maxDuration * 1000);
   };
 

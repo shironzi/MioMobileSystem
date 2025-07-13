@@ -10,28 +10,23 @@ import React from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import HeaderConfig from "@/utils/HeaderConfig";
 
-const SpeechRemedial = () => {
+const AuditoryRemedial = () => {
   HeaderConfig("Remedial");
 
-  const { subjectId, activity_type, remedialPhoneme, remedialId } =
+  const { subjectId, activity_type, activity_title, remedialId } =
     useLocalSearchParams<{
       subjectId: string;
       activity_type: string;
-      remedialPhoneme: string;
+      activity_title: string;
       remedialId: string;
     }>();
 
-  const parsedPhoneme: string[] = remedialPhoneme
-    ? JSON.parse(remedialPhoneme as string)
-    : [];
-
-  const handleRoute = (phoneme: string) => {
+  const handleRoute = () => {
     router.push({
       pathname: "/subject/(exercises)/(speech)/RemedialActivity",
       params: {
         subjectId: subjectId,
         activity_type: activity_type,
-        phoneme: phoneme,
         remedialId: remedialId,
       },
     });
@@ -45,44 +40,38 @@ const SpeechRemedial = () => {
         <Fontisto name="star" size={70} color="#439558" style={styles.shape2} />
       </View>
 
-      {parsedPhoneme?.map((item, index) => (
-        <TouchableOpacity
-          style={styles.card}
-          key={index}
-          onPress={() => handleRoute(item)}
+      <TouchableOpacity style={styles.card} onPress={handleRoute}>
+        <View
+          style={{
+            flexDirection: "row",
+            top: 25,
+          }}
         >
-          <View
+          <FontAwesome
+            name="circle"
+            size={13}
+            // color={props.isTaken ?  : "#aaa"}
+            color={"#439558"}
+            style={styles.icon}
+          />
+          <Text style={[styles.cardNumber, { maxWidth: 225 }]}>
+            {activity_title} - Assessment #1
+          </Text>
+        </View>
+        <View style={[styles.play, { backgroundColor: "#439558" }]}>
+          <Text
             style={{
-              flexDirection: "row",
-              top: 25,
+              color: "#fff",
+              alignSelf: "center",
+              top: 6,
+              fontWeight: "300",
+              fontSize: 12,
             }}
           >
-            <FontAwesome
-              name="circle"
-              size={13}
-              // color={props.isTaken ?  : "#aaa"}
-              color={"#439558"}
-              style={styles.icon}
-            />
-            <Text style={[styles.cardNumber, { maxWidth: 225 }]}>
-              /{item}/ - Assessment #{index + 1}
-            </Text>
-          </View>
-          <View style={[styles.play, { backgroundColor: "#439558" }]}>
-            <Text
-              style={{
-                color: "#fff",
-                alignSelf: "center",
-                top: 6,
-                fontWeight: "300",
-                fontSize: 12,
-              }}
-            >
-              Play!
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+            Play!
+          </Text>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -150,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SpeechRemedial;
+export default AuditoryRemedial;

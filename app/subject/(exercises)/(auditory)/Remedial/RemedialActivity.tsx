@@ -1,6 +1,6 @@
 import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
-import { submitMatchingActivity, takeAuditoryActivity } from "@/utils/auditory";
+import { submitMatchingRemedial, takeMatchingRemedial } from "@/utils/auditory";
 import getCurrentDateTime from "@/utils/DateFormat";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -17,7 +17,6 @@ import {
   View,
 } from "react-native";
 import Svg, { Line } from "react-native-svg";
-import { VolumeManager } from "react-native-volume-manager";
 
 const { width, height } = Dimensions.get("window");
 
@@ -50,13 +49,10 @@ const MatchingCards = () => {
   HeaderConfigQuiz("Matching Cards");
 
   const router = useRouter();
-  const { subjectId, activity_type, difficulty, activityId } =
-    useLocalSearchParams<{
-      subjectId: string;
-      activity_type: string;
-      difficulty: string;
-      activityId: string;
-    }>();
+  const { subjectId, remedialId } = useLocalSearchParams<{
+    subjectId: string;
+    remedialId: string;
+  }>();
 
   const [isSending, setIsSending] = useState(false);
 
@@ -121,27 +117,25 @@ const MatchingCards = () => {
     setIsSending(true);
     console.log(answers);
 
-    const res = await submitMatchingActivity(
+    const res = await submitMatchingRemedial(
       subjectId,
-      difficulty,
-      activityId,
+      remedialId,
       attemptId,
       answerLogs,
       answers,
     );
 
-    if (!res.success) {
-      return;
+    console.log(res);
+
+    if (res.success) {
+      router.push({
+        pathname: "/subject/(exercises)/AuditoryScores",
+        params: {
+          score: res.score,
+          totalItems: total,
+        },
+      });
     }
-    router.push({
-      pathname: "/subject/(exercises)/AuditoryScores",
-      params: {
-        score: res.score,
-        totalItems: total,
-        activity_type,
-        difficulty,
-      },
-    });
 
     setIsSending(false);
   };
@@ -217,38 +211,19 @@ const MatchingCards = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      const res = await takeAuditoryActivity(
-        subjectId,
-        activity_type,
-        difficulty,
-        activityId,
-      );
+      const res = await takeMatchingRemedial(subjectId, remedialId);
 
-      setActivity(res.items);
-      setAudio(res.audio_paths);
-      setAttemptId(res.attemptId);
-      setTotal(res.total);
+      if (res.success) {
+        setActivity(res.items);
+        setAudio(res.audio_paths);
+        setAttemptId(res.attemptId);
+        setTotal(res.total);
+      }
       setLoading(false);
     };
 
     fetchActivity();
   }, []);
-
-  const setVolume = async () => {
-    let volume = 1;
-
-    if (difficulty === "average") {
-      volume = 0.95;
-    } else if (difficulty === "difficulty") {
-      volume = 0.85;
-    } else if (difficulty === "challenge") {
-      volume = 0.75;
-    }
-
-    await VolumeManager.setVolume(volume);
-  };
-
-  setVolume();
 
   if (loading) {
     return (

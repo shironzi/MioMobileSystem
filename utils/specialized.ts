@@ -658,13 +658,34 @@ export async function updateSpeechActivity(
   }
 }
 
-export async function checkAvailableRemedial(
+export async function checkSpeechRemedial(
   subjectId: string,
   activityType: string,
 ) {
   try {
     const { data } = await api.get(
       `/subject/${subjectId}/specialized/speech/remedial/${activityType}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function checkAuditoryRemedial(
+  subjectId: string,
+  activityType: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/specialized/auditory/remedial/${activityType}`,
     );
 
     return data;

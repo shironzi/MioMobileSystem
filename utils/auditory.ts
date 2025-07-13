@@ -290,6 +290,68 @@ export async function takeAuditoryActivity(
   }
 }
 
+export async function takeMatchingRemedial(
+  subjectId: string,
+  remedial_id: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/remedial/matching/${remedial_id}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function submitMatchingRemedial(
+  subjectId: string,
+  remedialId: string,
+  attemptId: string,
+  answerLogs: answerLog[],
+  answers: { image_id: string; audio_id: string }[],
+) {
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+    const payload = {
+      answers,
+      answerLogs,
+    };
+
+    console.log(JSON.stringify(payload));
+
+    const response = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/matching/${remedialId}/${attemptId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function submitBingoActivity(
   subjectId: string,
   difficulty: string,
@@ -456,37 +518,37 @@ export async function updateMatchingActivity(
   }
 }
 
-export async function getAttemptActivityAuditory(
-  subjectId: string,
-  activity_type: string,
-  activityId: string,
-  attemptId: string,
-) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/auditory/${activity_type}/${activityId}/${attemptId}`;
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-
-    // if (!response.ok) {
-    //   const text = await response.text();
-    //   console.error("Error: " + text);
-    // }
-
-    return await response.json();
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
+// export async function getAttemptActivityAuditory(
+//   subjectId: string,
+//   activity_type: string,
+//   activityId: string,
+//   attemptId: string,
+// ) {
+//   try {
+//     const url = `${IPADDRESS}/subject/${subjectId}/attempts/auditory/${activity_type}/${activityId}/${attemptId}`;
+//     const token = await getAuth().currentUser?.getIdToken(true);
+//
+//     const response = await fetch(url, {
+//       method: "GET",
+//       headers: {
+//         Accept: "application/json",
+//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//       },
+//     });
+//
+//     // if (!response.ok) {
+//     //   const text = await response.text();
+//     //   console.error("Error: " + text);
+//     // }
+//
+//     return await response.json();
+//   } catch (err: any) {
+//     if (err.response) {
+//       return err.response.status;
+//     } else if (err.request) {
+//       return { error: "No response from server" };
+//     } else {
+//       return { error: err.message };
+//     }
+//   }
+// }

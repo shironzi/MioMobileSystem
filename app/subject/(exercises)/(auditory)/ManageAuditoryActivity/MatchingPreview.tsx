@@ -122,6 +122,7 @@ const MatchingPreview = () => {
   const audioPositions = useRef<{ [key: number]: AudioRef }>({});
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const player = useAudioPlayer();
 
@@ -136,10 +137,11 @@ const MatchingPreview = () => {
 
   const handleSubmit = async () => {
     console.log(answers);
-    if (answers.length !== 5) {
+    if (answers.length < 3 || answers.length > 5) {
       return;
     }
     try {
+      setIsSubmitting(true);
       const res = activityId
         ? await updateMatchingActivity(
             subjectId,
@@ -156,12 +158,14 @@ const MatchingPreview = () => {
             title,
           );
 
+      setIsSubmitting(false);
+
       console.log(res);
 
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity",
+          res.message,
           [
             {
               text: "OK",
@@ -174,7 +178,7 @@ const MatchingPreview = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", res.message);
       }
     } catch (err) {
       Alert.alert("Error", "Submission failed. Please check your inputs.");
@@ -419,9 +423,16 @@ const MatchingPreview = () => {
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
+          disabled={isSubmitting}
         >
           <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-            Update
+            {activityId
+              ? isSubmitting
+                ? "Updating..."
+                : "Update"
+              : isSubmitting
+                ? "Creating..."
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>

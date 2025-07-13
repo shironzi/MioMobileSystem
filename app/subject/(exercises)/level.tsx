@@ -12,7 +12,10 @@ import {
   View,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { checkAvailableRemedial } from "@/utils/specialized";
+import {
+  checkAuditoryRemedial,
+  checkSpeechRemedial,
+} from "@/utils/specialized";
 import LoadingCard from "@/components/loadingCard";
 
 const CARD_DATA: Record<
@@ -75,6 +78,7 @@ const level = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [remedialPhoneme, setRemedialPhoneme] = useState<string[]>([]);
+  const [remedialAuditory, setRemedialAuditory] = useState<string>("");
   const [remedialId, setRemedialId] = useState<string>("");
 
   const handleRoute = (difficulty: string) =>
@@ -103,6 +107,16 @@ const level = () => {
     });
   };
 
+  const handleAuditoryRemedial = () => {
+    router.push({
+      pathname: "/subject/(exercises)/(auditory)/Remedial/RemedialActivity",
+      params: {
+        subjectId: subjectId,
+        remedialId: remedialId,
+      },
+    });
+  };
+
   const difficultyStyles: Record<
     string,
     { backgroundColor: string; borderColor: string }
@@ -115,18 +129,33 @@ const level = () => {
   const card = CARD_DATA[activity_type] ?? CARD_DATA.picture;
 
   useEffect(() => {
-    const checkForRemedial = async () => {
-      const res = await checkAvailableRemedial(subjectId, activity_type);
+    const getRemedial = async () => {
+      if (
+        activity_type === "picture" ||
+        activity_type === "phrase" ||
+        activity_type === "question"
+      ) {
+        const res = await checkSpeechRemedial(subjectId, activity_type);
 
-      if (res.success) {
-        setRemedialPhoneme(res.phonemes);
-        setRemedialId(res.remedial_id);
+        if (res.success) {
+          setRemedialPhoneme(res.phonemes);
+          setRemedialId(res.remedial_id);
+        }
+      }
+
+      if (activity_type === "bingo" || activity_type === "matching") {
+        const res = await checkAuditoryRemedial(subjectId, activity_type);
+
+        if (res.success) {
+          setRemedialAuditory(res.activity_title);
+          setRemedialId(res.remedial_id);
+        }
       }
 
       setLoading(false);
     };
 
-    checkForRemedial();
+    getRemedial();
   }, []);
 
   if (loading) {
@@ -170,7 +199,7 @@ const level = () => {
           </View>
           <Text style={styles.actDesc}>{card.actDesc}</Text>
         </View>
-        {role === "student" && remedialPhoneme.length > 0 ? (
+        {role === "student" && remedialPhoneme.length > 0 && (
           <TouchableOpacity
             style={[styles.subLevel, difficultyStyles.easy]}
             onPress={handleRemedial}
@@ -189,7 +218,30 @@ const level = () => {
               style={styles.shape2}
             />
           </TouchableOpacity>
-        ) : (
+        )}
+
+        {role === "student" && remedialAuditory.length > 0 && (
+          <TouchableOpacity
+            style={[styles.subLevel, difficultyStyles.easy]}
+            onPress={handleAuditoryRemedial}
+          >
+            <MaterialIcons
+              name="hexagon"
+              size={40}
+              color="#439558"
+              style={styles.shape1}
+            />
+            <Text style={styles.name}>Remedial</Text>
+            <MaterialIcons
+              name="hexagon"
+              size={70}
+              color="#439558"
+              style={styles.shape2}
+            />
+          </TouchableOpacity>
+        )}
+
+        {remedialPhoneme.length === 0 && remedialAuditory.length === 0 && (
           <View>
             <Text style={styles.headerText}>Choose Difficulty Mode</Text>
             <TouchableOpacity

@@ -1,5 +1,4 @@
 import {
-  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
 import { formatDayDateTimeWithAmPm } from "@/utils/DateFormat";
+import LoadingCard from "@/components/loadingCard";
 
 interface Attempt {
   id: string;
@@ -33,6 +33,7 @@ const RemedialAttempts = () => {
     }>();
 
   const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleRemedialRoute = (id: string) => {
     router.push({
@@ -62,24 +63,28 @@ const RemedialAttempts = () => {
       if (res.success) {
         setAttempts(res.attempts);
       } else {
-        Alert.alert(
-          "Activity Attempts not found",
-          res.message,
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                router.back();
-              },
-            },
-          ],
-          { cancelable: false },
-        );
+        setAttempts([]);
       }
+      setLoading(false);
     };
 
     fetchAttempts();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <View style={globalStyles.container}>

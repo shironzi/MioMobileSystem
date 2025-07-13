@@ -73,6 +73,7 @@ const BingoPreview = () => {
   const [currentAudio, setCurrentAudio] = useState<number>(0);
   const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const player = useAudioPlayer();
 
@@ -120,6 +121,7 @@ const BingoPreview = () => {
     });
 
     try {
+      setIsCreating(true);
       const res = activityId
         ? await updateBingoActivity(
             subjectId,
@@ -140,11 +142,12 @@ const BingoPreview = () => {
           );
 
       console.log(res);
+      setIsCreating(false);
 
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity",
+          res.message,
           [
             {
               text: "OK",
@@ -157,7 +160,7 @@ const BingoPreview = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", res.message);
       }
     } catch (err) {
       Alert.alert("Error", "Submission failed. Please check your inputs.");
@@ -254,9 +257,16 @@ const BingoPreview = () => {
         <TouchableOpacity
           style={[globalStyles.submitButton, { width: "48%" }]}
           onPress={handleSubmit}
+          disabled={isCreating}
         >
           <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-            {activityId ? "Update" : "Create"}
+            {activityId
+              ? isCreating
+                ? "Updating..."
+                : "Update"
+              : isCreating
+                ? "Creating..."
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>

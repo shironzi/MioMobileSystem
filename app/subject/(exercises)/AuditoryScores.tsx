@@ -7,13 +7,13 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const AuditoryScores = () => {
-  headerConfigScoreDetails("Score Detail");
-
   const { score, activity_type, difficulty } = useLocalSearchParams<{
     score: string;
     activity_type: string;
     difficulty: string;
   }>();
+
+  headerConfigScoreDetails("Score Detail", activity_type);
 
   const fill = !isNaN(parseFloat(score)) ? parseFloat(score) : 0;
 
@@ -37,13 +37,11 @@ const AuditoryScores = () => {
   };
 
   return (
-    <ScrollView style={{ flex: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={[globalStyles.container, { rowGap: 20, flex:1 }]}>
-        <View style={{marginHorizontal:15}}>
+    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+      <View style={[globalStyles.container, { rowGap: 20, flex: 1 }]}>
+        <View style={{ marginHorizontal: 15 }}>
           <Text style={styles.title}>{getTitle(activity_type)}</Text>
-          <Text style={styles.subtitle}>{difficulty}</Text>
+          <Text style={styles.subtitle}>{difficulty ?? "Remedial"}</Text>
         </View>
 
         <View style={[globalStyles.cardContainer, {}]}>
@@ -85,13 +83,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 300 as const,
     lineHeight: 28,
-    textTransform:"capitalize"
+    textTransform: "capitalize",
   },
   sectionTitle: {
     fontWeight: 500 as const,
     fontSize: 18,
     marginVertical: 10,
-    marginBottom:20
+    marginBottom: 20,
   },
   scoreRow: {
     flexDirection: "row",
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     borderColor: "#ddd",
-    borderWidth:1
+    borderWidth: 1,
   },
   wordTitle: {
     fontSize: 18,

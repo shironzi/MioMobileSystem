@@ -3,11 +3,7 @@ import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import globalStyles from "@/styles/globalStyles";
 import getCurrentDateTime from "@/utils/DateFormat";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import {
-  getAttemptActivityAuditory,
-  submitBingoActivity,
-  takeAuditoryActivity,
-} from "@/utils/auditory";
+import { submitBingoActivity, takeAuditoryActivity } from "@/utils/auditory";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
@@ -27,13 +23,12 @@ const bingo = () => {
   const getInstruction =
     "Click the speaker twice to hear the words from Piddie. Choose the picture that matches what you hear.";
 
-  const { subjectId, difficulty, activity_type, activityId, prevAttemptId } =
+  const { subjectId, difficulty, activity_type, activityId } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
-      prevAttemptId: string;
     }>();
 
   const [isSending, setIsSending] = useState(false);
@@ -152,19 +147,12 @@ const bingo = () => {
     let isMounted = true;
 
     const fetchData = async () => {
-      const res = prevAttemptId
-        ? await getAttemptActivityAuditory(
-            subjectId,
-            activity_type,
-            activityId,
-            prevAttemptId,
-          )
-        : await takeAuditoryActivity(
-            subjectId,
-            activity_type,
-            difficulty,
-            activityId,
-          );
+      const res = await takeAuditoryActivity(
+        subjectId,
+        activity_type,
+        difficulty,
+        activityId,
+      );
 
       console.log(res);
       if (!res.success) {
@@ -215,11 +203,11 @@ const bingo = () => {
     let volume = 1;
 
     if (difficulty === "average") {
-      volume = 0.9;
+      volume = 0.95;
     } else if (difficulty === "difficulty") {
-      volume = 0.8;
+      volume = 0.85;
     } else if (difficulty === "challenge") {
-      volume = 0.7;
+      volume = 0.75;
     }
 
     await VolumeManager.setVolume(volume);
@@ -228,125 +216,126 @@ const bingo = () => {
   setVolume();
 
   return (
-    <FlatList
-      data={activityData}
-      numColumns={3}
-      keyExtractor={(item) => item.image_id}
-      renderItem={({ item }) => (
-        <BingoCard
-          image={item.image_url}
-          isMatched={matchedIds.includes(item.image_id)}
-          onPress={() => handleCardPress(item.image_id)}
-        />
-      )}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingHorizontal: 20,
-        paddingBottom: 50,
-      }}
-      ListHeaderComponent={
-        <View>
-          {/* <Text style={styles.difficulty}>{difficulty}</Text> */}
-          <View
-            style={{
-              marginHorizontal: 10,
-              borderColor: "#ddd",
-              borderWidth: 1,
-              borderRadius: 20,
-              paddingHorizontal: 10,
-              marginBottom: 15,
-              marginTop: 20,
-              left: -5,
-            }}
-          >
-            <Text
+    <View style={{ backgroundColor: "#fff", height: "100%" }}>
+      <FlatList
+        data={activityData}
+        numColumns={3}
+        keyExtractor={(item) => item.image_id}
+        renderItem={({ item }) => (
+          <BingoCard
+            image={item.image_url}
+            isMatched={matchedIds.includes(item.image_id)}
+            onPress={() => handleCardPress(item.image_id)}
+          />
+        )}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingBottom: 50,
+        }}
+        ListHeaderComponent={
+          <View>
+            <View
               style={{
                 marginHorizontal: 10,
-                textAlign: "justify",
-                fontWeight: "500",
-                fontSize: 16,
-                color: "#2264dc",
-                marginTop: 10,
+                borderColor: "#ddd",
+                borderWidth: 1,
+                borderRadius: 20,
+                paddingHorizontal: 10,
+                marginBottom: 15,
+                marginTop: 20,
+                left: -5,
               }}
             >
-              Piddie Tips!
-            </Text>
+              <Text
+                style={{
+                  marginHorizontal: 10,
+                  textAlign: "justify",
+                  fontWeight: "500",
+                  fontSize: 16,
+                  color: "#2264dc",
+                  marginTop: 10,
+                }}
+              >
+                Piddie Tips!
+              </Text>
 
-            <Text
-              style={{
-                marginTop: 5,
-                margin: 10,
-                textAlign: "justify",
-                fontWeight: "300",
-              }}
-            >
-              {getInstruction}
-            </Text>
+              <Text
+                style={{
+                  marginTop: 5,
+                  margin: 10,
+                  textAlign: "justify",
+                  fontWeight: "300",
+                }}
+              >
+                {getInstruction}
+              </Text>
+            </View>
           </View>
-        </View>
-      }
-      ListFooterComponent={
-        <View style={styles.footerContainer}>
-          <View
-            style={{
-              borderColor: "#ddd",
-              borderWidth: 1,
-              borderRadius: 20,
-              marginVertical: 15,
-              marginHorizontal: 10,
-              width: "93%",
-              top: 0,
-            }}
-          >
-            <Text
+        }
+        ListFooterComponent={
+          <View style={styles.footerContainer}>
+            <View
               style={{
-                textAlign: "center",
-                marginTop: -20,
-                top: 45,
-                left: 10,
-                fontWeight: 300,
-                fontSize: 14,
+                borderColor: "#ddd",
+                borderWidth: 1,
+                borderRadius: 20,
+                marginVertical: 15,
+                marginHorizontal: 10,
+                width: "93%",
+                top: 0,
               }}
             >
-              Tap the speaker
-            </Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: -20,
+                  top: 45,
+                  left: 10,
+                  fontWeight: 300,
+                  fontSize: 14,
+                }}
+              >
+                Tap the speaker
+              </Text>
+              <TouchableOpacity
+                style={[
+                  styles.speakerIcon,
+                  { backgroundColor: "#ffbf18" },
+                  // isPlaying
+                  // 	? { backgroundColor: "#ffbf18" }
+                  // 	: { backgroundColor: "#ddd" },
+                ]}
+                onPress={playAudio}
+              >
+                <FontAwesome6 name="volume-high" size={25} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
+              onPress={handleSubmit}
               style={[
-                styles.speakerIcon,
-                { backgroundColor: "#ffbf18" },
-                // isPlaying
-                // 	? { backgroundColor: "#ffbf18" }
-                // 	: { backgroundColor: "#ddd" },
+                styles.nextButton,
+                !isPlaying && matchedIds.length >= audioFiles.length
+                  ? { backgroundColor: "#FFBF18" }
+                  : { backgroundColor: "#ddd" },
               ]}
-              onPress={playAudio}
+              disabled={
+                isPlaying || isSending || matchedIds.length < audioFiles.length
+              }
             >
-              <FontAwesome6 name="volume-high" size={25} color="#fff" />
+              <Text style={styles.nextText}>
+                {isSending
+                  ? "Submitting...."
+                  : isPlaying
+                    ? "Playing..."
+                    : "Submit"}
+              </Text>
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={[
-              styles.nextButton,
-              !isPlaying && matchedIds.length >= audioFiles.length
-                ? { backgroundColor: "#FFBF18" }
-                : { backgroundColor: "#ddd" },
-            ]}
-            disabled={
-              isPlaying || isSending || matchedIds.length < audioFiles.length
-            }
-          >
-            <Text style={styles.nextText}>
-              {isSending
-                ? "Submitting...."
-                : isPlaying
-                  ? "Playing..."
-                  : "Submit"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      }
-    />
+        }
+      />
+    </View>
   );
 };
 

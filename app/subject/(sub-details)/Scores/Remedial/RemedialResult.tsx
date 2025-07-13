@@ -92,9 +92,6 @@ const RemedialResult = () => {
         [
           {
             text: "OK",
-            onPress: () => {
-              router.back();
-            },
           },
         ],
         { cancelable: false },
