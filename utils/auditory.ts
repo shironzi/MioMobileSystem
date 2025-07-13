@@ -230,7 +230,7 @@ export async function updateBingoActivity(
 
     audioFiles.forEach((item, index) => {
       if (item.audio) {
-        formData.append(`audio[${index}][audio_file]`, {
+        formData.append(`activity[${index}][audio_file]`, {
           uri: item.audio.uri,
           name: item.audio.name,
           type: item.audio.mimeType ?? "audio/mpeg",
@@ -276,6 +276,27 @@ export async function takeAuditoryActivity(
   try {
     const { data } = await api.post(
       `/subject/${subjectId}/auditory/${activityType}/${difficulty}/${activityId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function takeBingoRemedial(
+  subjectId: string,
+  remedial_id: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedial_id}`,
     );
 
     return data;
@@ -372,6 +393,51 @@ export async function submitBingoActivity(
 
     const response = await fetch(
       `${IPADDRESS}/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          answers,
+          audio_played: totalPlay,
+        }),
+      },
+    );
+
+    return await response.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function submitBingoRemedial(
+  subjectId: string,
+  remedialId: string,
+  attemptId: string,
+  answers: { image_id: string; selected_at: string }[],
+  totalPlay: { audio_id: string; played_at: string[] }[],
+) {
+  try {
+    const token = await getAuth().currentUser?.getIdToken(true);
+
+    console.log(
+      JSON.stringify({
+        answers,
+        audio_played: totalPlay,
+      }),
+    );
+
+    const response = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedialId}/${attemptId}`,
       {
         method: "POST",
         headers: {

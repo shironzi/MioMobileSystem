@@ -108,13 +108,26 @@ const level = () => {
   };
 
   const handleAuditoryRemedial = () => {
-    router.push({
-      pathname: "/subject/(exercises)/(auditory)/Remedial/RemedialActivity",
-      params: {
-        subjectId: subjectId,
-        remedialId: remedialId,
-      },
-    });
+    console.log(remedialId);
+    if (activity_type === "matching") {
+      router.push({
+        pathname: "/subject/(exercises)/(auditory)/Remedial/RemedialActivity",
+        params: {
+          subjectId: subjectId,
+          remedialId: remedialId,
+        },
+      });
+      return;
+    } else {
+      router.push({
+        pathname:
+          "/subject/(exercises)/(auditory)/Remedial/BingoRemedialActivity",
+        params: {
+          subjectId: subjectId,
+          remedialId: remedialId,
+        },
+      });
+    }
   };
 
   const difficultyStyles: Record<

@@ -29,8 +29,10 @@ interface BingoItem {
 }
 
 interface AudioItem {
+  id: string;
   audio: FileInfo | null;
   audio_path: string | null;
+  audio_id: string | null;
 }
 
 const BingoPreview = () => {
@@ -82,12 +84,31 @@ const BingoPreview = () => {
     image_url: item.file?.uri ?? item.image_path ?? "",
   }));
 
+  const [matchedPairs, setMatchedPairs] = useState<
+    { image_id: string; audio_id: string | null }[]
+  >([]);
+
   const handleCardPress = (image_id: string) => {
-    setMatchedIds((prev) => {
-      if (!prev.includes(image_id)) {
-        return [...prev, image_id];
+    setMatchedPairs((prev) => {
+      const exists = prev.find(
+        (pair) =>
+          pair.image_id === image_id &&
+          pair.audio_id === parsedBingoAudio[currentAudio].audio_id,
+      );
+
+      if (exists) {
+        return prev.filter(
+          (pair) =>
+            !(
+              pair.image_id === image_id &&
+              pair.audio_id === parsedBingoAudio[currentAudio].audio_id
+            ),
+        );
       } else {
-        return prev.filter((id) => id !== image_id);
+        return [
+          ...prev,
+          { image_id, audio_id: parsedBingoAudio[currentAudio].audio_id },
+        ];
       }
     });
   };
@@ -221,23 +242,6 @@ const BingoPreview = () => {
           />
         )}
       />
-
-      {/* <View
-        style={{ height: 120, justifyContent: "center", alignItems: "center" }}
-      >
-        <TouchableOpacity
-          style={[
-            styles.speakerIcon,
-            isPlaying
-              ? { backgroundColor: "#FFBF18" }
-              : { backgroundColor: "#DEDFE2" },
-          ]}
-          onPress={playAudio}
-          disabled={isPlaying}
-        >
-          <FontAwesome6 name="volume-high" size={25} color="#fff" />
-        </TouchableOpacity>
-      </View> */}
       <View
         style={{
           flexDirection: "row",

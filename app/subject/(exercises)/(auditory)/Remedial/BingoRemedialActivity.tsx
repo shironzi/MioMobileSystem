@@ -3,7 +3,7 @@ import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import globalStyles from "@/styles/globalStyles";
 import getCurrentDateTime from "@/utils/DateFormat";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import { submitBingoActivity, takeAuditoryActivity } from "@/utils/auditory";
+import { submitBingoRemedial, takeBingoRemedial } from "@/utils/auditory";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { VolumeManager } from "react-native-volume-manager";
 
 const bingo = () => {
   HeaderConfigQuiz("Piddie Says");
@@ -23,13 +22,12 @@ const bingo = () => {
   const getInstruction =
     "Click the speaker twice to hear the words from Piddie. Choose the picture that matches what you hear.";
 
-  const { subjectId, difficulty, activity_type, activityId } =
-    useLocalSearchParams<{
-      activity_type: string;
-      difficulty: string;
-      subjectId: string;
-      activityId: string;
-    }>();
+  const { subjectId, activity_type, remedialId } = useLocalSearchParams<{
+    subjectId: string;
+    activity_type: string;
+    activity_title: string;
+    remedialId: string;
+  }>();
 
   const [isSending, setIsSending] = useState(false);
 
@@ -117,10 +115,9 @@ const bingo = () => {
 
     setIsSending(true);
 
-    const res = await submitBingoActivity(
+    const res = await submitBingoRemedial(
       subjectId,
-      difficulty,
-      activityId,
+      remedialId,
       attemptId,
       answers,
       totalPlay,
@@ -135,7 +132,7 @@ const bingo = () => {
           score: res.score,
           totalItems: activityData.length,
           activityType: activity_type,
-          difficulty: difficulty,
+          difficulty: "Remedial",
         },
       });
     }
@@ -179,12 +176,7 @@ const bingo = () => {
     let isMounted = true;
 
     const fetchData = async () => {
-      const res = await takeAuditoryActivity(
-        subjectId,
-        activity_type,
-        difficulty,
-        activityId,
-      );
+      const res = await takeBingoRemedial(subjectId, remedialId);
 
       console.log(res);
       if (!res.success) {
@@ -206,7 +198,7 @@ const bingo = () => {
     return () => {
       isMounted = false;
     };
-  }, [subjectId, activity_type, difficulty, activityId]);
+  }, [subjectId, remedialId]);
 
   if (loading) {
     return (
@@ -230,22 +222,6 @@ const bingo = () => {
       </View>
     );
   }
-
-  const setVolume = async () => {
-    let volume = 1;
-
-    if (difficulty === "average") {
-      volume = 0.95;
-    } else if (difficulty === "difficulty") {
-      volume = 0.85;
-    } else if (difficulty === "challenge") {
-      volume = 0.75;
-    }
-
-    await VolumeManager.setVolume(volume);
-  };
-
-  setVolume();
 
   return (
     <View style={{ backgroundColor: "#fff", height: "100%" }}>
