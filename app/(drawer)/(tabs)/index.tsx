@@ -64,6 +64,7 @@ const index = () => {
       setName(data.name);
       if (data.role) {
         await SecureStore.setItemAsync("role", data.role);
+        await SecureStore.setItemAsync("name", data.name);
       }
 
       console.log(data);

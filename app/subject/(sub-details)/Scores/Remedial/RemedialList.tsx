@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import React, { useEffect, useState } from "react";
 import { getRemedialList, getRemedialListByStudent } from "@/utils/specialized";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
 import RemedialItem from "@/app/subject/(sub-details)/Scores/Remedial/RemedialItem";
 import LoadingCard from "@/components/loadingCard";
@@ -19,15 +19,36 @@ interface Remedial {
 const RemedialList = () => {
   useHeaderConfig("Scores");
 
-  const { subjectId, role, studentId } = useLocalSearchParams<{
+  const { subjectId, role, studentId, firstname } = useLocalSearchParams<{
     subjectId: string;
     role: string;
     studentId: string;
+    firstname: string;
   }>();
   const [activeRemedial, setActivityRemedial] = useState<Remedial[]>([]);
   const [inactiveRemedial, setInactivityRemedial] = useState<Remedial[]>([]);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const handleAddSchedule = () => {
+    if (!activeRemedial.length) {
+      Alert.alert(
+        "No Active Remedials",
+        "There are currently no active remedial activities available for this student.",
+      );
+      return;
+    }
+
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/Remedial/AddRemedialSchedule",
+      params: {
+        subjectId,
+        studentId,
+        activeRemedials: JSON.stringify(activeRemedial),
+        studentName: firstname,
+      },
+    });
+  };
 
   useEffect(() => {
     const fetchRemedial = async () => {
@@ -61,10 +82,11 @@ const RemedialList = () => {
       </View>
     );
   }
+  console.log(firstname);
 
   return (
     <View style={[{ backgroundColor: "#fff", height: "100%", rowGap: 20 }]}>
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddSchedule}>
         <View
           style={{
             top: 20,

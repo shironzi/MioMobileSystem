@@ -34,7 +34,7 @@ const ScoreStudentList = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleViewActivity = (studentId: string) => {
+  const handleViewActivity = (studentId: string, firstname?: string) => {
     if (activityType === "assignments") {
       router.push({
         pathname: "/subject/(sub-details)/Scores/ScoresAcademic",
@@ -64,6 +64,7 @@ const ScoreStudentList = () => {
           subjectId: subjectId,
           role: role,
           studentId: studentId,
+          firstname: firstname,
         },
       });
     } else {
@@ -126,7 +127,9 @@ const ScoreStudentList = () => {
           <TouchableOpacity
             key={student.student_id}
             style={styles.studentItem}
-            onPress={() => handleViewActivity(student.student_id)}
+            onPress={() =>
+              handleViewActivity(student.student_id, student.first_name)
+            }
           >
             <View
               style={{

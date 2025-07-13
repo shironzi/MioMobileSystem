@@ -83,10 +83,7 @@ export async function getRemedialList(subjectId: string) {
   }
 }
 
-export async function getRemedialListByStudent(
-  subjectId: string,
-  studentId: string,
-) {
+export async function getRemedialListByStudent(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/scores/remedialList`);
 
@@ -120,6 +117,61 @@ export async function getRemedialAttempts(
       return err.response.status;
     } else if (err.request) {
       return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function CreateRemedialSchedule(
+  studentId: string,
+  subjectId: string,
+  remedialId: string,
+  date: Date,
+  startTime: Date,
+  endTime: Date,
+  message: string,
+  remedialType: string,
+  mode: string,
+  room: string,
+  meetingLink: string,
+) {
+  try {
+    const startTimeStr = startTime
+      ? `${startTime.getHours().toString().padStart(2, "0")}:${startTime
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}`
+      : "";
+
+    const endTimeStr = endTime
+      ? `${endTime.getHours().toString().padStart(2, "0")}:${endTime
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}`
+      : "";
+
+    const payload = {
+      date: date.toISOString().split("T")[0],
+      start: startTimeStr,
+      end: endTimeStr,
+      message: message.trim(),
+      mode: mode,
+      room: mode === "faceToFace" ? room : null,
+      meetingLink: mode === "online" ? meetingLink : null,
+    };
+
+    const { data } = await api.post(
+      `/schedules/${studentId}/${subjectId}/${remedialType}/${remedialId}`,
+      payload,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server", asd: err.request };
     } else {
       return { error: err.message };
     }
