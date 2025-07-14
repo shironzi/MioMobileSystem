@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import globalStyles from "@/styles/globalStyles";
 import { router } from "expo-router";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import globalStyles from "@/styles/globalStyles";
 
 const RemedialItem = ({
   subjectId,
@@ -33,8 +33,12 @@ const RemedialItem = ({
     activityTypeText = "Word";
   } else if (activityType === "phrase") {
     activityTypeText = "Reading";
-  } else {
+  } else if (activityType === "picture") {
     activityTypeText = "Picture";
+  } else if (activityType === "bingo") {
+    activityTypeText = "Piddie Says";
+  } else if (activityType === "matching") {
+    activityTypeText = "Piddie Says";
   }
 
   const handleRoute = (phoneme: string) => {
@@ -67,41 +71,71 @@ const RemedialItem = ({
 
   return (
     <View>
-      <TouchableOpacity onPress={toggleDropdown} style={styles.dropdownButton}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <Text style={styles.buttonText}>
-            {activityTypeText + " - " + activity_title}
-          </Text>
-          <AntDesign
-            name={isVisible ? "up" : "down"}
-            size={24}
-            color="#FFBF18"
-          />
-        </View>
-        <MaterialIcons
-          name={isVisible ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={24}
-          color="#fff"
-        />
-      </TouchableOpacity>
-
-      {isVisible && (
-        <View style={{ rowGap: 10 }}>
-          {remedial.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[globalStyles.cardContainer]}
-              onPress={() => handleRoute(item)}
+      {(activityType === "picture" ||
+        activityType === "phrase" ||
+        activityType === "phrase") && (
+        <View>
+          <TouchableOpacity
+            onPress={toggleDropdown}
+            style={styles.dropdownButton}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
             >
-              <Text>/{item}/ Practice</Text>
-            </TouchableOpacity>
-          ))}
+              <Text style={styles.buttonText}>
+                {activityTypeText + " - " + activity_title}
+              </Text>
+              <AntDesign
+                name={isVisible ? "up" : "down"}
+                size={24}
+                color="#FFBF18"
+              />
+            </View>
+            <MaterialIcons
+              name={isVisible ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+              size={24}
+              color="#fff"
+            />
+          </TouchableOpacity>
+
+          {isVisible && (
+            <View style={{ rowGap: 10 }}>
+              {remedial.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[globalStyles.cardContainer]}
+                  onPress={() => handleRoute(item)}
+                >
+                  <Text>/{item}/ Practice</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+
+      {(activityType === "bingo" || activityType === "matching") && (
+        <View>
+          <TouchableOpacity
+            onPress={toggleDropdown}
+            style={styles.dropdownButton}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Text style={styles.buttonText}>
+                {activityTypeText + " - " + activity_title}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -143,4 +177,5 @@ const styles = StyleSheet.create({
   },
 });
 
+// @ts-ignore
 export default RemedialItem;

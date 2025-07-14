@@ -102,7 +102,7 @@ const RemedialList = () => {
         <View style={globalStyles.cardContainer}>
           <Text style={globalStyles.textLabel}>Active</Text>
           <View style={globalStyles.divider}></View>
-          {activeRemedial.map((item, index) => (
+          {activeRemedial?.map((item, index) => (
             <RemedialItem
               subjectId={subjectId}
               remedialId={item.remedialId}

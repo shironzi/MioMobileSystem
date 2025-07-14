@@ -217,7 +217,10 @@ const AuditoryScores = () => {
         </View>
         <View style={{ rowGap: 20 }}>
           {feedbacks.length === 0 ? (
-            <Text style={styles.feedbackText}>{feedback}</Text>
+            <View style={globalStyles.cardContainer}>
+              <Text style={styles.sectionTitle}>Mio Feedback</Text>
+              <Text style={styles.feedbackText}>{feedback}</Text>
+            </View>
           ) : (
             feedbacks.map((item, index) => (
               <SpeechDetailedDropdown

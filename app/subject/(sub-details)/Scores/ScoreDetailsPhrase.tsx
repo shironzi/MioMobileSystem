@@ -11,14 +11,13 @@ import PhraseScoreDetailsDropdown from "@/app/subject/(sub-details)/Scores/Phras
 const ScoreDetailsPhrase = () => {
   headerConfigScoreDetails("Score Details");
 
-  const { subjectId, activityType, activityId, userId, attemptId, role } =
+  const { subjectId, activityType, activityId, userId, attemptId } =
     useLocalSearchParams<{
       subjectId: string;
       activityType: string;
       activityId: string;
       userId: string;
       attemptId: string;
-      role: string;
     }>();
 
   const [overallScore, setOverallScore] = useState<number>(0);
@@ -51,12 +50,7 @@ const ScoreDetailsPhrase = () => {
             userId,
             attemptId,
           )
-        : await getAttemptStudent(
-            subjectId,
-            activityType,
-            activityId,
-            attemptId,
-          );
+        : await getAttemptStudent(subjectId, activityType, activityId);
 
       if (res?.success) {
         console.log(res);

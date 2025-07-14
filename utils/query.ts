@@ -96,6 +96,8 @@ export async function createAnnouncement(
       formdata.append(`urls[${index}][url]`, url);
     });
 
+    console.log(formdata);
+
     const token = await getAuth().currentUser?.getIdToken(true);
 
     const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
