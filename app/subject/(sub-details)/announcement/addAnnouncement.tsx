@@ -43,13 +43,13 @@ const addAnnouncement = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
   const [descHeight, setDescHeight] = useState<number>(200);
   const [files, setFiles] = useState<FileInfo[] | string[]>([]);
   const [imageUrl, setImageUrl] = useState<{ url: string; name: string }[]>([]);
   const [urls, setUrls] = useState<string[]>([""]);
   const [urlError, setUrlError] = useState<UrlError[]>([]);
   const [inputError, setInputError] = useState<{ error: string }[]>([]);
+  const [showPicker, setShowPicker] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlePreview = () => {
@@ -86,13 +86,6 @@ const addAnnouncement = () => {
 
   const handleFileUpload = (files: FileInfo[]) => {
     setFiles(files);
-  };
-
-  const onChange = (event: any, selectedDate?: Date) => {
-    setShow(false);
-    if (event.type === "set" && selectedDate) {
-      setDate(selectedDate);
-    }
   };
 
   const handleAddUrl = () => {
@@ -191,33 +184,54 @@ const addAnnouncement = () => {
               </View>
             </View>
             <View style={styles.section}>
-              <Text style={styles.label}>Date</Text>
-              <TouchableOpacity
-                style={styles.input}
-                onPress={() => setShow(true)}
-              >
+              <Text style={globalStyles.text1}>Date</Text>
+              <View style={{ width: "100%" }}>
+                {/*{errorInputs.some((error) => error.id === "date") && (*/}
+                <Text style={globalStyles.errorText}>
+                  This field is required!
+                </Text>
+                {/*)}*/}
                 <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginHorizontal: 5,
-                  }}
+                  style={[
+                    globalStyles.cardContainer,
+                    // errorInputs.some((error) => error.id === "date") && {
+                    //   borderColor: "red",
+                    // },
+                  ]}
                 >
-                  <Text>{date.toDateString()}</Text>
-                  <MaterialIcons name="date-range" size={20} color="#ffbf18" />
-                </View>
+                  <TouchableOpacity
+                    onPress={() => setShowPicker(true)}
+                    style={[
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      },
+                    ]}
+                  >
+                    <Text style={{ color: date ? "#000" : "#aaa" }}>
+                      {date ? date.toDateString() : "Select date"}
+                    </Text>
+                    <MaterialIcons
+                      name="date-range"
+                      size={22}
+                      color="#ffbf18"
+                    />
+                  </TouchableOpacity>
 
-                {show && (
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="calendar"
-                    onChange={onChange}
-                    maximumDate={new Date(2100, 12, 31)}
-                    minimumDate={new Date(2000, 0, 1)}
-                  />
-                )}
-              </TouchableOpacity>
+                  {showPicker && (
+                    <DateTimePicker
+                      value={date ?? new Date()}
+                      mode={"date"}
+                      display="default"
+                      minimumDate={new Date()}
+                      onChange={(_, selected) => {
+                        setShowPicker(false);
+                        if (selected) setDate(selected);
+                      }}
+                    />
+                  )}
+                </View>
+              </View>
             </View>
 
             <View style={styles.section}>
