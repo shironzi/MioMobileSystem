@@ -80,10 +80,7 @@ const AnnouncementDetails = () => {
   }
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      // contentContainerStyle={{ paddingBottom: 100 }}
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <SafeAreaView
         style={{ backgroundColor: "#fff", flex: 1, paddingBottom: 400 }}
       >
@@ -96,22 +93,12 @@ const AnnouncementDetails = () => {
                 borderColor: "#ddd",
                 borderWidth: 1,
                 borderRadius: 20,
-                // padding: 30,
               },
             ]}
           >
-            {/* <Text style={[styles.label, { color: "#2264dc", marginTop: 5 }]}>
-							Title
-						</Text> */}
             <Text style={[styles.label]}>{announcement.title}</Text>
             <Text style={[styles.text]}>{announcement.date_posted}</Text>
-            {/* <Text style={[styles.label, { color: "#2264dc", marginTop: 16 }]}>
-							Description
-						</Text> */}
             <Text style={[styles.desc]}>{announcement.description}</Text>
-            {/* <Text style={[styles.label, { color: "#2264dc", marginTop: 16 }]}>
-							Posted On
-						</Text> */}
 
             {announcement.links.length > 0 && (
               <>
@@ -180,16 +167,6 @@ const AnnouncementDetails = () => {
                 })}
               </>
             )}
-
-            {/* Back Button */}
-            {/* <View style={styles.buttonWrapper}>
-							<TouchableOpacity
-								style={[globalStyles.submitButton, { width: "50%" }]}
-								onPress={() => router.back()}
-							>
-								<Text style={globalStyles.submitButtonText}>Back</Text>
-							</TouchableOpacity>
-						</View> */}
           </View>
         </View>
       </SafeAreaView>

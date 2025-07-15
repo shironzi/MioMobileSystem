@@ -189,7 +189,7 @@ export async function editAnnouncement(
   }
 }
 
-export async function deleteAnnouncements(
+export async function deleteAnnouncement(
   subjectId: string,
   announcementId: string,
 ) {
@@ -197,6 +197,29 @@ export async function deleteAnnouncements(
     const { data } = await api.delete(
       `/subject/${subjectId}/announcement/${announcementId}`,
     );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function deleteAnnouncements(
+  subjectId: string,
+  announcement_ids: string[],
+) {
+  try {
+    const payload = { announcement_ids: announcement_ids };
+
+    const { data } = await api.delete(`/subject/${subjectId}/announcement`, {
+      data: payload, // ✅ CORRECT: attaches the JSON body properly
+    });
 
     return data;
   } catch (err: any) {

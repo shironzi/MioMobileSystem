@@ -20,6 +20,7 @@ const announceCard = (props: {
   announcementId: string;
   role: string;
   handleDelete: () => void;
+  disable: boolean;
 }) => {
   const router = useRouter();
 
@@ -58,13 +59,13 @@ const announceCard = (props: {
 
   const panGesture = Gesture.Pan()
     .onUpdate((e) => {
-      if (props.role !== "teacher") return;
+      if (props.role !== "teacher" && !props.disable) return;
       if (e.translationX < 0 && e.translationX > -110) {
         translatedX.value = e.translationX;
       }
     })
     .onEnd(() => {
-      if (props.role !== "teacher") return;
+      if (props.role !== "teacher" && !props.disable) return;
       if (translatedX.value < -90) {
         translatedX.value = withTiming(-1000, { duration: 1500 });
         runOnJS(props.handleDelete)();

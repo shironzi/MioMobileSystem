@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#aaa",
-    // marginBottom: 10,
   },
   picker: {
     fontSize: 14,
@@ -255,7 +254,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#2D861B",
-    // fontSize: 12,
   },
   absent: {
     backgroundColor: "#FF564680",

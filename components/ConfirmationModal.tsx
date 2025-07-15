@@ -9,13 +9,18 @@ const ConfirmationModal = (props: {
   approveDisplay: string;
   handleCancel: () => void;
   handleApprove: () => void;
+  isActive: boolean;
 }) => {
   return (
     <Modal
       visible={props.isVisible}
       transparent
       animationType="fade"
-      onRequestClose={() => props.handleCancel}
+      onRequestClose={() => {
+        if (!props.isActive) {
+          props.handleCancel;
+        }
+      }}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
@@ -36,7 +41,11 @@ const ConfirmationModal = (props: {
               </Text>
               <TouchableOpacity>
                 <MaterialIcons
-                  onPress={() => props.handleCancel}
+                  onPress={() => {
+                    if (!props.isActive) {
+                      props.handleCancel;
+                    }
+                  }}
                   name="close"
                   size={20}
                   style={{

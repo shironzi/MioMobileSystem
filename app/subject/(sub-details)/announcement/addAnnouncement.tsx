@@ -19,6 +19,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import getAnnouncementTemplate from "@/app/subject/(sub-details)/announcement/AnnouncementTemplates";
 
 interface FileInfo {
   uri: string;
@@ -51,6 +53,7 @@ const addAnnouncement = () => {
   const [inputError, setInputError] = useState<{ error: string }[]>([]);
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [template, setTemplate] = useState<string>("");
 
   const handlePreview = () => {
     const errors: { error: string }[] = [];
@@ -117,6 +120,13 @@ const addAnnouncement = () => {
   };
 
   useEffect(() => {
+    const { title: templateTitle, description: templateDesc } =
+      getAnnouncementTemplate(template, date);
+    setTitle(templateTitle);
+    setDescription(templateDesc);
+  }, [template, date]);
+
+  useEffect(() => {
     if (!announcementId) return;
     setLoading(true);
     (async () => {
@@ -164,7 +174,7 @@ const addAnnouncement = () => {
               )}
               <View>
                 <TextInput
-                  placeholder="Enter title"
+                  placeholder="Enter Announcement Title"
                   style={[
                     styles.input,
                     { paddingRight: 35 },
@@ -183,22 +193,35 @@ const addAnnouncement = () => {
                 />
               </View>
             </View>
+
+            <View>
+              <Text style={styles.label}>Template</Text>
+              <View style={globalStyles.dropdownStyle}>
+                <Picker
+                  selectedValue={template}
+                  onValueChange={(itemValue) => setTemplate(itemValue)}
+                  mode={"dropdown"}
+                >
+                  <Picker.Item label="-- Select Template --" value="" />
+                  <Picker.Item label="No Classes" value="no_class" />
+                  <Picker.Item label="Emergency" value="emergency" />
+                  <Picker.Item
+                    label="Assignment Reminder"
+                    value="reminder_assignment"
+                  />
+                  <Picker.Item label="Quiz Reminder" value="reminder_quiz" />
+                </Picker>
+              </View>
+            </View>
             <View style={styles.section}>
               <Text style={globalStyles.text1}>Date</Text>
               <View style={{ width: "100%" }}>
-                {/*{errorInputs.some((error) => error.id === "date") && (*/}
-                <Text style={globalStyles.errorText}>
-                  This field is required!
-                </Text>
-                {/*)}*/}
-                <View
-                  style={[
-                    globalStyles.cardContainer,
-                    // errorInputs.some((error) => error.id === "date") && {
-                    //   borderColor: "red",
-                    // },
-                  ]}
-                >
+                {inputError.some((err) => err.error === "date") && (
+                  <Text style={globalStyles.errorText}>
+                    This field is required!
+                  </Text>
+                )}
+                <View style={[globalStyles.cardContainer]}>
                   <TouchableOpacity
                     onPress={() => setShowPicker(true)}
                     style={[
@@ -226,7 +249,9 @@ const addAnnouncement = () => {
                       minimumDate={new Date()}
                       onChange={(_, selected) => {
                         setShowPicker(false);
-                        if (selected) setDate(selected);
+                        if (selected) {
+                          setDate(selected);
+                        }
                       }}
                     />
                   )}

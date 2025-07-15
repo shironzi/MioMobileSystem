@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -241,7 +240,7 @@ const AddRemedialSchedule = () => {
       <View style={[globalStyles.cardContainer1, { rowGap: 20 }]}>
         <View style={{ rowGap: 5 }}>
           <Text style={globalStyles.text1}>Remedial Type</Text>
-          <View style={styles.dropdownStyle}>
+          <View style={globalStyles.dropdownStyle}>
             <Picker
               selectedValue={remedialType}
               onValueChange={(itemValue) => setRemedialType(itemValue)}
@@ -255,7 +254,7 @@ const AddRemedialSchedule = () => {
         </View>
         <View style={{ rowGap: 5 }}>
           <Text style={globalStyles.text1}>Remedial Activity</Text>
-          <View style={styles.dropdownStyle}>
+          <View style={globalStyles.dropdownStyle}>
             <Picker
               selectedValue={remedialActivity}
               onValueChange={(itemValue) => setRemedialActivity(itemValue)}
@@ -287,7 +286,7 @@ const AddRemedialSchedule = () => {
           )}
           <View
             style={[
-              styles.dropdownStyle,
+              globalStyles.dropdownStyle,
               errorInputs.some((error) => error.id === "mode") && {
                 borderColor: "red",
               },
@@ -527,14 +526,5 @@ const AddRemedialSchedule = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  dropdownStyle: {
-    borderWidth: 1,
-    borderColor: "#82828257",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-  },
-});
 
 export default AddRemedialSchedule;

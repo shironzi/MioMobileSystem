@@ -25,16 +25,6 @@ const newCourseDetails = () => {
       role: string;
     }>();
 
-  // const headerTitle =
-  //   subjectType === "specialized"
-  //     ? specializedType === "speech"
-  //       ? "Speech Development"
-  //       : specializedType === "auditory"
-  //         ? "Auditory Development"
-  //         : specializedType === "language"
-  //           ? "Language Development"
-  //           : "Course Details"
-  //     : "Course Details";
   const headerTitle =
     subjectType === "specialized" && role !== "parent"
       ? specializedType === "speech"
@@ -227,9 +217,9 @@ const newCourseDetails = () => {
           onPress={useCallback(() => {
             router.push({
               pathname: "/subject/modules",
-              params: { subjectId: id },
+              params: { subjectId: id, role: role },
             });
-          }, [router, id])}
+          }, [router, id, role])}
         >
           <View style={styles.row}>
             <Image
