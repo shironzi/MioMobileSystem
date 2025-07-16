@@ -32,6 +32,7 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
                 activity_type === "question"
               ) {
                 navigation.goBack();
+                navigation.goBack();
               }
             }}
           >
