@@ -105,7 +105,7 @@ const PictureFlashcards = () => {
 
       if (res.success) {
         if (!isMounted) return;
-        setCards(res.flashcards);
+        setCards(Object.values(res.flashcards));
         setAttemptId(res.attemptId);
 
         setCurrentCard(res.currentItem ?? 0);

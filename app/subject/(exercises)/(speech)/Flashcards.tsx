@@ -97,7 +97,7 @@ const Flashcards = () => {
 
       if (res.success && res.flashcards) {
         setAttemptId(res.attemptId);
-        setCards(res.flashcards);
+        setCards(Object.values(res.flashcards));
         setCurrentCard(res.currentItem);
       } else {
         Alert.alert("Access Denied", res.message, [
