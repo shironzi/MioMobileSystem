@@ -56,24 +56,8 @@ export async function addModule(
   prerequisite_id: string,
   prerequisite_type: string,
   sub_sections: ModuleSection[],
+  position: string,
 ) {
-  // 'title' => 'required|string',
-  //   'description' => 'required|string',
-  //   'files' => 'nullable|array|min:1',
-  //   'files.*' => 'required|file',
-  //   'prereq_status' => 'required|string',
-  //   'visibility' => 'required|string|in:private,public',
-  //   'prerequisite_id' => 'nullable|string',
-  //   'prerequisite_type' => 'nullable|string',
-  //   'sub_sections' => 'nullable|array',
-  //   'sub_sections.*.title' => 'required|string',
-  //   'sub_sections.*.description' => 'required|string',
-  //   'sub_sections.*.files' => 'nullable|array',
-  //   'sub_sections.*.files.*' => 'required|file',
-  //   'sub_sections.*.video_links' => 'nullable|array',
-  //   'sub_sections.*.video_links.*' => 'required|string',
-  //   'position' => "required|string",
-
   const formData = new FormData();
 
   formData.append("title", title);

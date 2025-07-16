@@ -104,16 +104,8 @@ const PictureFlashcards = () => {
       );
 
       if (res.success) {
-        const fetchedFlashcards = Object.entries(res.flashcards).map(
-          ([key, value]: [string, any]) => ({
-            flashcard_id: key,
-            text: value.text,
-            image_url: value?.image_url,
-          }),
-        );
-
         if (!isMounted) return;
-        setCards(fetchedFlashcards);
+        setCards(res.flashcards);
         setAttemptId(res.attemptId);
 
         setCurrentCard(res.currentItem ?? 0);

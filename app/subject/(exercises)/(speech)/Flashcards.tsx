@@ -96,15 +96,8 @@ const Flashcards = () => {
       );
 
       if (res.success && res.flashcards) {
-        const fetchedFlashcards = Object.entries(res.flashcards).map(
-          ([key, value]: [string, any]) => ({
-            flashcard_id: key,
-            text: value.text,
-          }),
-        );
-
         setAttemptId(res.attemptId);
-        setCards(fetchedFlashcards);
+        setCards(res.flashcards);
         setCurrentCard(res.currentItem);
       } else {
         Alert.alert("Access Denied", res.message, [
