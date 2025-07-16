@@ -22,7 +22,7 @@ interface Subsection {
 
 interface Prerequisite {
   id: string;
-  type: "quiz" | "assignment" | "module"; // Can be one of these types
+  type: "quiz" | "assignment" | "module";
 }
 
 interface File {

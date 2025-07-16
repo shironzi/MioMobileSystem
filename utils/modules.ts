@@ -2,7 +2,7 @@ import { api } from "@/utils/apiClient";
 
 export async function getModules(subjectId: string) {
   try {
-    const { data } = await api.get(`/subjects/${subjectId}/modules`);
+    const { data } = await api.get(`/subject/${subjectId}/modules`);
 
     return data;
   } catch (err: any) {
@@ -18,7 +18,7 @@ export async function getModules(subjectId: string) {
 
 export async function getModuleById(subjectId: string, moduleId: string) {
   try {
-    const { data } = await api.get(`/subjects/${subjectId}/module/${moduleId}`);
+    const { data } = await api.get(`/subject/${subjectId}/module/${moduleId}`);
 
     return data;
   } catch (err: any) {
@@ -29,5 +29,97 @@ export async function getModuleById(subjectId: string, moduleId: string) {
     } else {
       return { error: err.message };
     }
+  }
+}
+
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
+interface ModuleSection {
+  id: string;
+  title: string;
+  description: string;
+  files: FileInfo[];
+  videoLink?: string[];
+}
+
+export async function addModule(
+  subjectId: string,
+  title: string,
+  description: string,
+  files: FileInfo[],
+  hasPreRequisites: boolean,
+  visibility: string,
+  prerequisite_id: string,
+  prerequisite_type: string,
+  sub_sections: ModuleSection[],
+) {
+  // 'title' => 'required|string',
+  //   'description' => 'required|string',
+  //   'files' => 'nullable|array|min:1',
+  //   'files.*' => 'required|file',
+  //   'prereq_status' => 'required|string',
+  //   'visibility' => 'required|string|in:private,public',
+  //   'prerequisite_id' => 'nullable|string',
+  //   'prerequisite_type' => 'nullable|string',
+  //   'sub_sections' => 'nullable|array',
+  //   'sub_sections.*.title' => 'required|string',
+  //   'sub_sections.*.description' => 'required|string',
+  //   'sub_sections.*.files' => 'nullable|array',
+  //   'sub_sections.*.files.*' => 'required|file',
+  //   'sub_sections.*.video_links' => 'nullable|array',
+  //   'sub_sections.*.video_links.*' => 'required|string',
+  //   'position' => "required|string",
+
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("description", description);
+
+  if (files.length > 0) {
+    files.forEach((file, index) => {
+      formData.append(`files[${index}]`, {
+        uri: file.uri,
+        name: file.name,
+        type: file.mimeType,
+      } as any);
+    });
+  }
+
+  formData.append("prereq_status", hasPreRequisites.toString());
+  formData.append("visibility", visibility);
+
+  if (hasPreRequisites) {
+    formData.append("prerequisite_id", prerequisite_id);
+    formData.append("prerequisite_type", prerequisite_type);
+  }
+
+  if (sub_sections.length > 0) {
+    sub_sections.forEach((item, index) => {
+      formData.append(`sub_sections[${index}][title]`, item.title);
+      formData.append(`sub_sections[${index}][description]`, item.description);
+
+      if (item.files?.length > 0) {
+        item.files.forEach((file, index) => {
+          formData.append(`sub_sections[${index}][files][${index}]`, {
+            uri: file.uri,
+            name: file.name,
+            type: file.mimeType,
+          } as any);
+        });
+      }
+
+      if (item.videoLink && item.videoLink.length > 0) {
+        item.videoLink.forEach((video, index) => {
+          formData.append(
+            `sub_sections[${index}][video_links][${index}]`,
+            video,
+          );
+        });
+      }
+    });
   }
 }

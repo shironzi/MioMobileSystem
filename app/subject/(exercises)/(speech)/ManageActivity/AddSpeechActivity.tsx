@@ -34,11 +34,6 @@ interface Flashcard {
   text: string;
 }
 
-// interface Activity {
-//   activity_id: string;
-//   activity_title: string;
-// }
-
 type Parameters = {
   subjectId: string;
   activity_type: string;
@@ -62,22 +57,13 @@ const picture = {
 };
 
 const AddSpeechActivity = () => {
-  const { subjectId, activity_type, difficulty, category, activityId } =
+  const { subjectId, activity_type, difficulty, activityId } =
     useLocalSearchParams<Parameters>();
   const [loading, setLoading] = useState<boolean>(true);
-
-  // headers
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [activityTitle, setActivityTitle] = useState<string>("");
   const [titleError, setTitleError] = useState<boolean>(false);
-  // const [isRemedial, setIsRemedial] = useState<boolean>(false);
-  // const [selectedActivityId, setSelectedActivityId] = useState<string>("");
-  //
-  // // activities
-  // const [pictureActivities, setPictureActivities] = useState<Activity[]>([]);
-  // const [phraseActivities, setPhraseActivities] = useState<Activity[]>([]);
-  // const [questionActivities, setQuestionActivities] = useState<Activity[]>([]);
   const [phraseFlashcard, setPhraseFlashcard] = useState<Flashcard[]>([data]);
   const [questionFlashcard, setQuestionFlashcard] = useState<Flashcard[]>([
     data,
@@ -101,36 +87,11 @@ const AddSpeechActivity = () => {
       setActivityTitle={setActivityTitle}
       titleError={titleError}
       activityId={activityId}
-      // isRemedial={isRemedial}
-      // setIsRemedial={setIsRemedial}
-      // pictureActivities={pictureActivities}
-      // phraseActivities={phraseActivities}
-      // questionActivities={questionActivities}
-      // selectedActivityId={selectedActivityId}
-      // setSelectedActivityId={setSelectedActivityId}
     />
   );
 
   useEffect(() => {
-    if (!activityId) {
-      // const fetchActivityList = async () => {
-      //   const res = await getActivityList(subjectId);
-      //
-      //   console.log(res);
-      //
-      //   if (res.success) {
-      //     setPictureActivities(res.picture_activities);
-      //     setPhraseActivities(res.phrase_activities);
-      //     setQuestionActivities(res.question_activities);
-      //   }
-      //
-      //   setLoading(false);
-      // };
-      //
-      // fetchActivityList();
-
-      return;
-    }
+    if (!activityId) return;
 
     const fetchActivity = async () => {
       const res = await getActivityById(
@@ -220,8 +181,6 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              // isRemedial={isRemedial}
-              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}
@@ -247,8 +206,6 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              // isRemedial={isRemedial}
-              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}
@@ -274,8 +231,6 @@ const AddSpeechActivity = () => {
               activityId={activityId}
               activityTitle={activityTitle}
               titleError={setTitleError}
-              // isRemedial={isRemedial}
-              // selectedActivityId={selectedActivityId}
             />
           )}
           ListHeaderComponent={header}

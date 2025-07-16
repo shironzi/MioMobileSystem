@@ -10,15 +10,26 @@ interface FileInfo {
   mimeType?: string;
 }
 
-const FileUploadSingle = (props: {
+interface Props {
   handleFile: (file: FileInfo) => void;
   fileTypes: string[];
-}) => {
+  showAddFile?: boolean;
+  hasError?: boolean;
+}
+
+const FileUploadSingle = ({
+  handleFile,
+  fileTypes,
+  showAddFile = true,
+  hasError = false,
+}: Props) => {
   const [file, setFile] = useState<FileInfo | null>(null);
   const [fileError, setFileError] = useState<boolean>(false);
 
+  console.log(hasError);
+
   const mapFileTypesToMimes = () => {
-    return props.fileTypes
+    return fileTypes
       .map((type) => {
         switch (type) {
           case "pdf":
@@ -56,7 +67,7 @@ const FileUploadSingle = (props: {
       const { uri, name, mimeType } = res.assets[0];
       setFile({ uri, name, mimeType });
       setFileError(false);
-      props.handleFile({ uri, name, mimeType });
+      handleFile({ uri, name, mimeType });
     } else {
       setFileError(true);
     }
@@ -73,33 +84,38 @@ const FileUploadSingle = (props: {
         <View style={styles.fileInfoContainer}>
           <TouchableOpacity
             onPress={handleFileUpload}
-            style={[styles.fileUpload, fileError && { borderColor: "#db4141" }]}
+            style={[
+              styles.fileUpload,
+              (fileError || hasError) && { borderColor: "#db4141" },
+            ]}
           >
             <Text>Choose File</Text>
           </TouchableOpacity>
-          <Text style={[styles.filename, fileError && { color: "#db4141" }]}>
+          <Text
+            style={[
+              styles.filename,
+              (fileError || hasError) && { color: "#db4141" },
+            ]}
+          >
             {file ? file.name : "No file chosen"}
           </Text>
         </View>
 
         {file ? (
           <TouchableOpacity onPress={handleRemoveFile}>
-            <AntDesign
-              name="close"
-              size={24}
-              color="#aaa"
-              style={{ left: 25, top: -15 }}
-            />
+            <AntDesign name="close" size={24} color="#aaa" />
           </TouchableOpacity>
         ) : null}
       </View>
 
-      <TouchableOpacity style={styles.addFileRow} onPress={handleFileUpload}>
-        <View style={styles.addFileTextContainer}>
-          <MaterialIcons name="add" size={20} color="#FFBF18" />
-          <Text style={styles.addFileText}>Add File</Text>
-        </View>
-      </TouchableOpacity>
+      {showAddFile && (
+        <TouchableOpacity style={styles.addFileRow} onPress={handleFileUpload}>
+          <View style={styles.addFileTextContainer}>
+            <MaterialIcons name="add" size={20} color="#FFBF18" />
+            <Text style={styles.addFileText}>Add File</Text>
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -177,5 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// @ts-ignore
 export default RemedialItem;

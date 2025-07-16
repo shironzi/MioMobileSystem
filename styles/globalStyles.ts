@@ -154,6 +154,12 @@ const globalStyles = StyleSheet.create({
     top: -60,
     lineHeight: 20,
   },
+  dropdownStyle: {
+    borderWidth: 1,
+    borderColor: "#82828257",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+  },
 });
 
 export default globalStyles;

@@ -29,8 +29,6 @@ interface Props {
   activityId: string;
   activityTitle: string;
   titleError: (value: boolean) => void;
-  // isRemedial: boolean;
-  // selectedActivityId: string;
 }
 
 const QuestionRenderItem = ({
@@ -48,8 +46,6 @@ const QuestionRenderItem = ({
   activityId,
   activityTitle,
   titleError,
-  // isRemedial,
-  // selectedActivityId,
 }: Props) => {
   useHeaderConfig("Add Flashcard");
 
@@ -129,8 +125,6 @@ const QuestionRenderItem = ({
         difficulty: difficulty,
         activityId: activityId,
         title: activityTitle,
-        // isRemedial: isRemedial.toString(),
-        // selectedActivityId: selectedActivityId,
       },
     });
   };

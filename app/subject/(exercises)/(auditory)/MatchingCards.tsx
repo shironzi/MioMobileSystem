@@ -117,6 +117,7 @@ const MatchingCards = () => {
 
   const handleSubmit = async () => {
     if (!attemptId) return;
+    if (answers.length < activity.length) return;
 
     setIsSending(true);
     console.log(answers);
@@ -396,7 +397,9 @@ const MatchingCards = () => {
           <TouchableOpacity
             style={[globalStyles.submitButton, { width: "100%" }]}
             onPress={handleSubmit}
-            disabled={isSending || isPlaying}
+            disabled={
+              isSending || isPlaying || answers.length < activity.length
+            }
           >
             <Text style={[globalStyles.submitButtonText, { top: 3 }]}>
               {isSending ? "Submitting" : "Submit"}
