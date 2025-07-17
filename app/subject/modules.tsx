@@ -2,8 +2,8 @@ import ModuleCard from "@/components/ModuleCard";
 import LoadingCard from "@/components/loadingCard";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { useAuthGuard } from "@/utils/useAuthGuard";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { memo, useCallback, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -49,23 +49,33 @@ const ModulesScreen = () => {
     });
   };
 
-  useEffect(() => {
-    if (!subjectId) return;
+  useFocusEffect(
+    useCallback(() => {
+      if (!subjectId) return;
 
-    const fetch = async () => {
-      try {
-        const response = await getModules(subjectId);
-        setModuleList(response.modules);
-        setAssignments(response.assignments);
-      } catch (err) {
-        useAuthGuard(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      let isActive = true;
 
-    fetch();
-  }, [subjectId]);
+      const fetch = async () => {
+        try {
+          const res = await getModules(subjectId);
+          if (isActive && res.success) {
+            setModuleList(res.modules);
+            setAssignments(res.assignments);
+          }
+        } catch (err) {
+          if (isActive) useAuthGuard(err);
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      };
+
+      fetch();
+
+      return () => {
+        isActive = false;
+      };
+    }, [subjectId]),
+  );
 
   if (loading) {
     return (

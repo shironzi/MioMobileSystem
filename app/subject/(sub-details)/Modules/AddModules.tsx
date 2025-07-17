@@ -12,6 +12,7 @@ import AddModuleFooter from "@/app/subject/(sub-details)/Modules/AddModuleFooter
 import AddModuleHeader from "@/app/subject/(sub-details)/Modules/AddModuleHeader";
 import { useLocalSearchParams } from "expo-router";
 import FileUpload from "@/components/FileUpload";
+import { addModule } from "@/utils/modules";
 
 interface FileInfo {
   uri: string;
@@ -83,8 +84,9 @@ const AddModules = () => {
   const [selectedPreRequisite, setSelectedPreRequisite] = useState<string>("");
   const [publish, setPublish] = useState<string>("private");
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const createModule = () => {
+  const createModule = async () => {
     const errors: Error[] = [];
 
     if (!title.trim().length) {
@@ -116,6 +118,22 @@ const AddModules = () => {
     }
 
     setInputErrors([]);
+
+    setIsSubmitting(true);
+    const res = await addModule(
+      subjectId,
+      title,
+      description,
+      moduleFile,
+      hasPreRequisites,
+      publish,
+      selectedPreRequisite,
+      preRequisiteType,
+      subSections,
+      modulePosition,
+    );
+    console.log(res);
+    setIsSubmitting(false);
   };
 
   const setSectionTitle = (id: string, title: string) => {
@@ -204,6 +222,7 @@ const AddModules = () => {
       createModule={createModule}
       modules={moduleList}
       assignments={assignmentList}
+      isSubmitting={isSubmitting}
     />
   );
 
@@ -229,7 +248,7 @@ const AddModules = () => {
               )}
               <TextInput
                 value={item.title}
-                onChangeText={(value) => setSectionDesc(item.id, value)}
+                onChangeText={(value) => setSectionTitle(item.id, value)}
                 style={[
                   globalStyles.textInputContainer,
                   inputErrors.some(
@@ -250,8 +269,8 @@ const AddModules = () => {
                 </Text>
               )}
               <TextInput
-                value={item.title}
-                onChangeText={(value) => setSectionTitle(item.id, value)}
+                value={item.description}
+                onChangeText={(value) => setSectionDesc(item.id, value)}
                 style={[
                   globalStyles.textInputContainer,
                   { minHeight: 150, textAlignVertical: "top" },

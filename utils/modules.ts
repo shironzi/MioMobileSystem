@@ -1,4 +1,6 @@
 import { api } from "@/utils/apiClient";
+import { getAuth } from "@react-native-firebase/auth";
+const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function getModules(subjectId: string) {
   try {
@@ -75,6 +77,7 @@ export async function addModule(
 
   formData.append("prereq_status", hasPreRequisites.toString());
   formData.append("visibility", visibility);
+  formData.append("position", position);
 
   if (hasPreRequisites) {
     formData.append("prerequisite_id", prerequisite_id);
@@ -105,5 +108,28 @@ export async function addModule(
         });
       }
     });
+  }
+
+  const token = await getAuth().currentUser?.getIdToken(true);
+
+  try {
+    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/module`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    return await res.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
   }
 }

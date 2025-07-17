@@ -39,12 +39,10 @@ const AddModuleHeader = ({
   inputErrors,
   modules,
 }: Props) => {
-  const lastModule = modules[modules.length - 1];
-  const lastNumber = parseInt(lastModule.split(" ")[1]) || 0;
-  const newNumber = lastNumber + 1;
+  const modulesLen = modules.length + 1;
 
   useEffect(() => {
-    setModulePosition(newNumber.toString());
+    setModulePosition(modulesLen.toString());
   }, []);
 
   return (
@@ -121,8 +119,8 @@ const AddModuleHeader = ({
               />
             ))}
             <Picker.Item
-              label={newNumber + " - (Add to End)"}
-              value={newNumber.toString()}
+              label={modulesLen + " - (Add to End)"}
+              value={modulesLen.toString()}
             />
           </Picker>
         </View>

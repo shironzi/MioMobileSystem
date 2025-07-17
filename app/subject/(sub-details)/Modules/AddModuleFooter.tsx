@@ -19,6 +19,7 @@ interface Props {
   createModule: () => void;
   modules: string[];
   assignments: Assignment[];
+  isSubmitting: boolean;
 }
 
 const AddModuleFooter = ({
@@ -33,6 +34,7 @@ const AddModuleFooter = ({
   createModule,
   modules,
   assignments,
+  isSubmitting,
 }: Props) => {
   return (
     <View style={[{ marginBottom: 100 }]}>
@@ -139,8 +141,11 @@ const AddModuleFooter = ({
         <TouchableOpacity
           style={[globalStyles.submitButton, { marginHorizontal: "auto" }]}
           onPress={createModule}
+          disabled={isSubmitting}
         >
-          <Text style={globalStyles.submitButtonText}>Create</Text>
+          <Text style={globalStyles.submitButtonText}>
+            {isSubmitting ? "Creating..." : "Create"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
