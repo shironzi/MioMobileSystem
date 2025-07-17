@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { Text, TextInput, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import React, { useEffect } from "react";
+import React from "react";
 import FileUpload from "@/components/FileUpload";
 
 interface FileInfo {
@@ -39,12 +39,6 @@ const AddModuleHeader = ({
   inputErrors,
   modules,
 }: Props) => {
-  const modulesLen = modules.length + 1;
-
-  useEffect(() => {
-    setModulePosition(modulesLen.toString());
-  }, []);
-
   return (
     <View style={globalStyles.cardContainer1}>
       <View>
@@ -104,7 +98,7 @@ const AddModuleHeader = ({
         </View>
       </View>
       <View>
-        <Text style={globalStyles.text1}>Module Position</Text>
+        <Text style={globalStyles.text1}>Remedial For</Text>
         <View style={globalStyles.dropdownStyle}>
           <Picker
             selectedValue={modulePosition}
@@ -118,10 +112,6 @@ const AddModuleHeader = ({
                 key={index.toString()}
               />
             ))}
-            <Picker.Item
-              label={modulesLen + " - (Add to End)"}
-              value={modulesLen.toString()}
-            />
           </Picker>
         </View>
       </View>

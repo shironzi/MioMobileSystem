@@ -49,6 +49,20 @@ const ModulesScreen = () => {
     });
   };
 
+  const handleAddRemedial = () => {
+    const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
+    const encodedAssignments =
+      encodeURIComponent(JSON.stringify(assignments)) ?? [];
+    router.push({
+      pathname: "/subject/(sub-details)/Modules/AddRemedial",
+      params: {
+        modules: encodedModules,
+        assignments: encodedAssignments,
+        subjectId: subjectId,
+      },
+    });
+  };
+
   useFocusEffect(
     useCallback(() => {
       if (!subjectId) return;
@@ -95,18 +109,35 @@ const ModulesScreen = () => {
   return (
     <View style={styles.container}>
       {role === "teacher" && (
-        <TouchableOpacity style={styles.addButton} onPress={handleAddModule}>
-          <View
-            style={{
-              top: 20,
-              alignSelf: "center",
-              flexDirection: "row",
-            }}
+        <View>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddModule}>
+            <View
+              style={{
+                top: 20,
+                alignSelf: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Ionicons name="add-circle" size={20} color="#ffbf18" />
+              <Text style={styles.addText}>Add Module</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddRemedial}
           >
-            <Ionicons name="add-circle" size={20} color="#ffbf18" />
-            <Text style={styles.addText}>Add Module</Text>
-          </View>
-        </TouchableOpacity>
+            <View
+              style={{
+                top: 20,
+                alignSelf: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Ionicons name="add-circle" size={20} color="#ffbf18" />
+              <Text style={styles.addText}>Add Remedial</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
         {moduleList.length > 0 ? (
