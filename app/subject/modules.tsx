@@ -1,7 +1,6 @@
 import ModuleCard from "@/components/ModuleCard";
 import LoadingCard from "@/components/loadingCard";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { useAuthGuard } from "@/utils/useAuthGuard";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
@@ -49,45 +48,34 @@ const ModulesScreen = () => {
     });
   };
 
-  const handleAddRemedial = () => {
-    const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
-    const encodedAssignments =
-      encodeURIComponent(JSON.stringify(assignments)) ?? [];
-    router.push({
-      pathname: "/subject/(sub-details)/Modules/AddRemedial",
-      params: {
-        modules: encodedModules,
-        assignments: encodedAssignments,
-        subjectId: subjectId,
-      },
-    });
-  };
+  // const handleAddRemedial = () => {
+  //   const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
+  //   const encodedAssignments =
+  //     encodeURIComponent(JSON.stringify(assignments)) ?? [];
+  //   router.push({
+  //     pathname: "/subject/(sub-details)/Modules/AddRemedial",
+  //     params: {
+  //       modules: encodedModules,
+  //       assignments: encodedAssignments,
+  //       subjectId: subjectId,
+  //     },
+  //   });
+  // };
 
   useFocusEffect(
     useCallback(() => {
       if (!subjectId) return;
 
-      let isActive = true;
-
       const fetch = async () => {
-        try {
-          const res = await getModules(subjectId);
-          if (isActive && res.success) {
-            setModuleList(res.modules);
-            setAssignments(res.assignments);
-          }
-        } catch (err) {
-          if (isActive) useAuthGuard(err);
-        } finally {
-          if (isActive) setLoading(false);
+        const res = await getModules(subjectId);
+        if (res.success) {
+          setModuleList(res.modules);
+          setAssignments(res.assignments);
         }
+        setLoading(false);
       };
 
       fetch();
-
-      return () => {
-        isActive = false;
-      };
     }, [subjectId]),
   );
 
@@ -122,21 +110,21 @@ const ModulesScreen = () => {
               <Text style={styles.addText}>Add Module</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddRemedial}
-          >
-            <View
-              style={{
-                top: 20,
-                alignSelf: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Ionicons name="add-circle" size={20} color="#ffbf18" />
-              <Text style={styles.addText}>Add Remedial</Text>
-            </View>
-          </TouchableOpacity>
+          {/*<TouchableOpacity*/}
+          {/*  style={styles.addButton}*/}
+          {/*  onPress={handleAddRemedial}*/}
+          {/*>*/}
+          {/*  <View*/}
+          {/*    style={{*/}
+          {/*      top: 20,*/}
+          {/*      alignSelf: "center",*/}
+          {/*      flexDirection: "row",*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    <Ionicons name="add-circle" size={20} color="#ffbf18" />*/}
+          {/*    <Text style={styles.addText}>Add Remedial</Text>*/}
+          {/*  </View>*/}
+          {/*</TouchableOpacity>*/}
         </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>

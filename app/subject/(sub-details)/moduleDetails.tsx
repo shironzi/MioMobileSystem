@@ -1,45 +1,33 @@
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
 import React, { memo, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { getModuleById } from "@/utils/modules";
 import Feather from "@expo/vector-icons/Feather";
 import WebView from "react-native-webview";
 import LoadingCard from "@/components/loadingCard";
 
-interface Media {
-  name: string;
-  path: string;
-  url: string;
-}
-
 interface Subsection {
   description: string;
-  media: Media[];
+  media: string[];
+  video_links: string[];
   title: string;
-}
-
-interface Prerequisite {
-  id: string;
-  type: "quiz" | "assignment" | "module";
-}
-
-interface File {
-  name: string;
-  path: string;
-  url: string;
 }
 
 interface Module {
   description: string;
-  files: File[];
+  files: string[];
   module_id: string;
-  prereq_status: boolean;
-  prerequisite: Prerequisite;
   subsections: Subsection[];
   title: string;
-  visibility: "public" | "private";
 }
 
 const moduleDetails = () => {
@@ -65,14 +53,14 @@ const moduleDetails = () => {
         setModule(res.module);
       }
 
+      console.log(res);
+
       setLoading(false);
     };
     fetchModule();
   }, []);
 
-  const handleOnPress = () => {
-    const url = module?.files[0].url;
-    console.log(url);
+  const handleOnPress = (url: string) => {
     if (url) {
       setWebViewUri(url);
     }
@@ -95,34 +83,60 @@ const moduleDetails = () => {
 
   return (
     <View style={styles.container}>
-      {module?.module_id ? (
-        <View>
+      {module ? (
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={globalStyles.cardContainer1}>
             <Text style={globalStyles.text1}>
               [M{index} - Main] {title}
             </Text>
             <Text>{description}</Text>
-            <TouchableOpacity
-              onPress={handleOnPress}
-              style={[
-                globalStyles.submitButton,
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  columnGap: 10,
-                },
-              ]}
-            >
-              <Feather name="download" size={20} color="#fff" />
-              <Text style={globalStyles.submitButtonText}>Download</Text>
-            </TouchableOpacity>
+            {module.files.map((item) => {
+              let fileType = "unknown";
+              const lastSegment = item.split(".").pop();
+              if (lastSegment) {
+                fileType = lastSegment.split("?")[0];
+              }
+
+              return (
+                <View>
+                  {fileType === "png" ||
+                    (fileType === "jpg" && (
+                      <Image source={{ uri: fileType }} />
+                    ))}
+                  {fileType === "pdf" && (
+                    <TouchableOpacity
+                      onPress={() => handleOnPress(item)}
+                      style={[
+                        globalStyles.submitButton,
+                        {
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          columnGap: 10,
+                        },
+                      ]}
+                    >
+                      <Feather name="download" size={20} color="#fff" />
+                      <Text style={globalStyles.submitButtonText}>
+                        Download ({fileType.toUpperCase()})
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            })}
           </View>
+          {module.subsections.map((item) => (
+            <View style={[globalStyles.cardContainer1, { marginVertical: 0 }]}>
+              <Text style={globalStyles.text1}>{item.title}</Text>
+              <Text>{item.description}</Text>
+            </View>
+          ))}
 
           {webViewUri && (
             <WebView source={{ uri: webViewUri }} style={{ flex: 1 }} />
           )}
-        </View>
+        </ScrollView>
       ) : (
         <View>
           <Text>There was no modules yet!</Text>
