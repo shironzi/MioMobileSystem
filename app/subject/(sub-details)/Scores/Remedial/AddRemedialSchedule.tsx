@@ -150,14 +150,12 @@ const AddRemedialSchedule = () => {
       meetingLink,
     );
 
-    console.log(res);
-
     setIsCreating(false);
 
     if (res.success) {
       Alert.alert(
         "Success",
-        "Successfully created the activity",
+        res.message,
         [
           {
             text: "OK",

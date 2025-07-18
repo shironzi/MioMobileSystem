@@ -14,6 +14,7 @@ import { getModuleById } from "@/utils/modules";
 import Feather from "@expo/vector-icons/Feather";
 import WebView from "react-native-webview";
 import LoadingCard from "@/components/loadingCard";
+import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
 
 interface Subsection {
   description: string;
@@ -28,6 +29,8 @@ interface Module {
   module_id: string;
   subsections: Subsection[];
   title: string;
+  video_url: string;
+  reference: string;
 }
 
 const moduleDetails = () => {
@@ -80,6 +83,7 @@ const moduleDetails = () => {
       </View>
     );
   }
+  console.log(module?.video_url);
 
   return (
     <View style={styles.container}>
@@ -125,6 +129,15 @@ const moduleDetails = () => {
                 </View>
               );
             })}
+
+            {module.video_url && (
+              <YoutubeVideoPlayer video_url={module.video_url} />
+            )}
+            {module.reference && (
+              <Text style={globalStyles.text2}>
+                Reference: {module.reference}
+              </Text>
+            )}
           </View>
           {module.subsections.map((item, index) => (
             <View
@@ -133,6 +146,41 @@ const moduleDetails = () => {
             >
               <Text style={globalStyles.text1}>{item.title}</Text>
               <Text>{item.description}</Text>
+              {item.media.map((item, index) => {
+                let fileType = "unknown";
+                const lastSegment = item.split(".").pop();
+                if (lastSegment) {
+                  fileType = lastSegment.split("?")[0];
+                }
+
+                return (
+                  <View key={index}>
+                    {fileType === "png" ||
+                      (fileType === "jpg" && (
+                        <Image source={{ uri: fileType }} />
+                      ))}
+                    {fileType === "pdf" && (
+                      <TouchableOpacity
+                        onPress={() => handleOnPress(item)}
+                        style={[
+                          globalStyles.submitButton,
+                          {
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            columnGap: 10,
+                          },
+                        ]}
+                      >
+                        <Feather name="download" size={20} color="#fff" />
+                        <Text style={globalStyles.submitButtonText}>
+                          Download ({fileType.toUpperCase()})
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                );
+              })}
             </View>
           ))}
 

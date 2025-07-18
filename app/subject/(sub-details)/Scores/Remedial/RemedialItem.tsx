@@ -38,7 +38,7 @@ const RemedialItem = ({
   } else if (activityType === "bingo") {
     activityTypeText = "Piddie Says";
   } else if (activityType === "matching") {
-    activityTypeText = "Piddie Says";
+    activityTypeText = "Matching Cards";
   }
 
   const handleRoute = (phoneme: string = "") => {
