@@ -131,7 +131,7 @@ export async function getAuditoryRemedialAttempts(
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}`,
+      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}/auditory`,
     );
 
     return data;

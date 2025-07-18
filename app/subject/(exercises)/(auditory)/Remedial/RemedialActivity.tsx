@@ -8,6 +8,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -218,6 +219,13 @@ const MatchingCards = () => {
         setAudio(res.audio_paths);
         setAttemptId(res.attemptId);
         setTotal(res.total);
+      } else {
+        Alert.alert("", res.message, [
+          {
+            text: "OK",
+            onPress: () => router.back(),
+          },
+        ]);
       }
       setLoading(false);
     };

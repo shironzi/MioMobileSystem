@@ -39,18 +39,32 @@ const RemedialAttempts = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleRemedialRoute = (id: string) => {
-    router.push({
-      pathname: "/subject/(sub-details)/Scores/Remedial/RemedialResult",
-      params: {
-        subjectId: subjectId,
-        remedialId: remedialId,
-        phoneme: phoneme,
-        activityType: activityType,
-        role: role,
-        studentId: studentId,
-        attemptId: id,
-      },
-    });
+    if (phoneme.trim().length > 0) {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/Remedial/RemedialResult",
+        params: {
+          subjectId: subjectId,
+          remedialId: remedialId,
+          phoneme: phoneme,
+          activityType: activityType,
+          role: role,
+          studentId: studentId,
+          attemptId: id,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/Remedial/AuditoryResult",
+        params: {
+          subjectId: subjectId,
+          remedialId: remedialId,
+          activityType: activityType,
+          role: role,
+          studentId: studentId,
+          attemptId: id,
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -69,6 +83,8 @@ const RemedialAttempts = () => {
             activityType,
             remedialId,
           );
+
+      console.log(res);
 
       if (res.success) {
         setAttempts(res.attempts);

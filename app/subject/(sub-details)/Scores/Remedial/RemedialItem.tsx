@@ -121,7 +121,7 @@ const RemedialItem = ({
       {(activityType === "bingo" || activityType === "matching") && (
         <View>
           <TouchableOpacity
-            onPress={() => handleRoute(activityType)}
+            onPress={() => handleRoute()}
             style={styles.dropdownButton}
           >
             <View

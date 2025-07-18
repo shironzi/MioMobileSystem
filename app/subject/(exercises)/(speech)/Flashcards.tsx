@@ -100,7 +100,7 @@ const Flashcards = () => {
         setCards(Object.values(res.flashcards));
         setCurrentCard(res.currentItem);
       } else {
-        Alert.alert("Access Denied", res.message, [
+        Alert.alert("", res.message, [
           {
             text: "OK",
             onPress: () => router.back(),

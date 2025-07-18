@@ -622,6 +622,52 @@ export async function getAttempt(
   }
 }
 
+export async function getAuditoryRemedialAttempt(
+  subjectId: string,
+  activityType: string,
+  remedialId: string,
+  studentid: string,
+  attemptId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${studentid}/${activityType}/${remedialId}/${attemptId}/auditory`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getStudentRemedialAuditory(
+  subjectId: string,
+  activityType: string,
+  remedialId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${activityType}/${remedialId}/auditory`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getAttemptStudent(
   subjectId: string,
   activityType: string,
@@ -682,6 +728,32 @@ export async function addComment(
   try {
     const { data } = await api.post(
       `/subject/${subjectId}/teacher/scores/${activityType}/${activityId}/${studentId}/${attemptId}`,
+      { comment: comment },
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function addAuditoryComment(
+  subjectId: string,
+  activityType: string,
+  remedialId: string,
+  studentId: string,
+  attemptId: string,
+  comment: string,
+) {
+  try {
+    const { data } = await api.post(
+      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}/${attemptId}`,
       { comment: comment },
     );
 

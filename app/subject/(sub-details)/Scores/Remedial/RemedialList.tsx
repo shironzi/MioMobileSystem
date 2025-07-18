@@ -29,6 +29,7 @@ const RemedialList = () => {
   const [inactiveRemedial, setInactivityRemedial] = useState<Remedial[]>([]);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activityTypes, setActivityTypes] = useState<string[]>([]);
 
   const handleAddSchedule = () => {
     if (!activeRemedial.length) {
@@ -39,12 +40,15 @@ const RemedialList = () => {
       return;
     }
 
+    console.log(activityTypes);
+
     router.push({
       pathname: "/subject/(sub-details)/Scores/Remedial/AddRemedialSchedule",
       params: {
         subjectId,
         studentId,
         activeRemedials: JSON.stringify(activeRemedial),
+        activityTypes: JSON.stringify(activityTypes),
         studentName: firstname,
       },
     });
@@ -67,6 +71,15 @@ const RemedialList = () => {
 
     fetchRemedial();
   }, []);
+
+  useEffect(() => {
+    if (activeRemedial.length > 0) {
+      const uniqueTypes = Array.from(
+        new Set(activeRemedial.map((item) => item.activityType)),
+      );
+      setActivityTypes(uniqueTypes);
+    }
+  }, [activeRemedial]);
 
   if (loading) {
     return (

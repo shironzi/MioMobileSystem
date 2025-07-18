@@ -31,15 +31,19 @@ interface Error {
 
 const AddRemedialSchedule = () => {
   useHeaderConfig("Remedial Schedule");
-  const { subjectId, studentId, activeRemedials, studentName } =
+  const { subjectId, studentId, activeRemedials, studentName, activityTypes } =
     useLocalSearchParams<{
       subjectId: string;
       studentId: string;
       activeRemedials: string;
       studentName: string;
+      activityTypes: string;
     }>();
-  const parsedActiveRemedials = JSON.parse(activeRemedials) as Remedial[];
-  const [remedialType, setRemedialType] = useState<string>("picture");
+  const parsedActiveRemedials: Remedial[] = JSON.parse(activeRemedials);
+  const parsedActivityTypes: string[] = JSON.parse(activityTypes);
+  const [remedialType, setRemedialType] = useState<string>(
+    parsedActivityTypes[0],
+  );
   const [filteredRemedial, setFilteredRemedial] = useState<Remedial[]>([]);
   const [remedialActivity, setRemedialActivity] = useState<string>("");
   const [mode, setMode] = useState<string>("");
@@ -249,9 +253,13 @@ const AddRemedialSchedule = () => {
               onValueChange={(itemValue) => setRemedialType(itemValue)}
               mode={"dropdown"}
             >
-              <Picker.Item label="Picture" value="picture" />
-              <Picker.Item label="Word" value="question" />
-              <Picker.Item label="Reading" value="phrase" />
+              {parsedActivityTypes.map((item, index) => (
+                <Picker.Item
+                  label={item.charAt(0).toUpperCase() + item.slice(1)}
+                  value={item}
+                  key={index}
+                />
+              ))}
             </Picker>
           </View>
         </View>

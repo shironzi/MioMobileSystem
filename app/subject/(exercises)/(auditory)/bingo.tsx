@@ -9,6 +9,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -176,8 +177,6 @@ const bingo = () => {
   }, [player, currentAudio, audioFiles]);
 
   useEffect(() => {
-    let isMounted = true;
-
     const fetchData = async () => {
       const res = await takeAuditoryActivity(
         subjectId,
@@ -186,26 +185,22 @@ const bingo = () => {
         activityId,
       );
 
-      console.log(res);
-      if (!res.success) {
-        console.log("failed to take activity");
-      }
-
-      setAttemptId(res.attemptId);
-      if (isMounted) {
+      if (res.success) {
+        setAttemptId(res.attemptId);
         setActivityData(res.items);
-
-        console.log(res.items);
         setAudioFiles(res.audio_paths);
-        setLoading(false);
+      } else {
+        Alert.alert("", res.message, [
+          {
+            text: "OK",
+            onPress: () => router.back(),
+          },
+        ]);
       }
+      setLoading(false);
     };
 
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
   }, [subjectId, activity_type, difficulty, activityId]);
 
   if (loading) {
