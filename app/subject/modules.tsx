@@ -12,12 +12,14 @@ import {
 } from "react-native";
 import { getModules } from "@/utils/modules";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import globalStyles from "@/styles/globalStyles";
 
 interface Module {
   id: string;
   title: string;
   description: string;
   visible: boolean;
+  remedial_module?: boolean;
 }
 
 interface Assignment {
@@ -38,6 +40,7 @@ const ModulesScreen = () => {
   }>();
 
   const [moduleList, setModuleList] = useState<Module[]>([]);
+  const [remedialList, setRemedialList] = useState<Module[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [specialized, setSpecialized] = useState<Specialized[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,6 +86,7 @@ const ModulesScreen = () => {
         const res = await getModules(subjectId);
         if (res.success) {
           setModuleList(res.modules);
+          setRemedialList(res.remedials);
           setAssignments(res.assignments);
           setSpecialized(res.specialized);
         }
@@ -143,17 +147,37 @@ const ModulesScreen = () => {
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
         {moduleList.length > 0 ? (
-          moduleList.map((item, index) => (
-            <ModuleCard
-              key={index}
-              index={index}
-              id={item.id}
-              title={item.title}
-              visible={item.visible}
-              description={item.description}
-              subjectId={subjectId}
-            />
-          ))
+          <View>
+            {moduleList.map((item, index) => (
+              <ModuleCard
+                key={index}
+                index={index}
+                id={item.id}
+                title={item.title}
+                visible={item.visible}
+                description={item.description}
+                subjectId={subjectId}
+              />
+            ))}
+
+            {role === "teacher" && (
+              <View style={{ marginVertical: 50 }}>
+                <Text style={globalStyles.text1}>Remedials</Text>
+                {remedialList.map((item, index) => (
+                  <ModuleCard
+                    key={index}
+                    index={index}
+                    id={item.id}
+                    title={item.title}
+                    visible={item.visible}
+                    description={item.description}
+                    subjectId={subjectId}
+                    isRemedial={item.remedial_module}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
         ) : (
           <View>
             <Text>This Subject has no modules yet.</Text>

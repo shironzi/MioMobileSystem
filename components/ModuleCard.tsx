@@ -10,6 +10,7 @@ type Module = {
   visible: boolean;
   index: number;
   subjectId: string;
+  isRemedial?: boolean;
 };
 
 const ModuleCard = ({
@@ -19,6 +20,7 @@ const ModuleCard = ({
   visible,
   index,
   subjectId,
+  isRemedial = false,
 }: Module) => {
   const router = useRouter();
 
@@ -52,7 +54,7 @@ const ModuleCard = ({
           />
           <View style={styles.titleContainer}>
             <Text style={styles.title} numberOfLines={3}>
-              [Module {index + 1}] - {title}
+              {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
             </Text>
           </View>
           <FontAwesome6
