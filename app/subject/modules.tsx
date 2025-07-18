@@ -160,23 +160,21 @@ const ModulesScreen = () => {
               />
             ))}
 
-            {role === "teacher" && (
-              <View style={{ marginVertical: 50 }}>
-                <Text style={globalStyles.text1}>Remedials</Text>
-                {remedialList.map((item, index) => (
-                  <ModuleCard
-                    key={index}
-                    index={index}
-                    id={item.id}
-                    title={item.title}
-                    visible={item.visible}
-                    description={item.description}
-                    subjectId={subjectId}
-                    isRemedial={item.remedial_module}
-                  />
-                ))}
-              </View>
-            )}
+            <View style={{ marginVertical: 50 }}>
+              <Text style={globalStyles.text1}>Remedials</Text>
+              {remedialList.map((item, index) => (
+                <ModuleCard
+                  key={index}
+                  index={index}
+                  id={item.id}
+                  title={item.title}
+                  visible={item.visible}
+                  description={item.description}
+                  subjectId={subjectId}
+                  isRemedial={item.remedial_module}
+                />
+              ))}
+            </View>
           </View>
         ) : (
           <View>
