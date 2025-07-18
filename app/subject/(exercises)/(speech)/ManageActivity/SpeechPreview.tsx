@@ -106,7 +106,7 @@ const SpeechPreview = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", res.message);
+        Alert.alert("Failed", res.message);
       }
     } catch (err) {
       console.log(err);

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
+  Alert,
   FlatList,
   Text,
   TextInput,
@@ -10,7 +11,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
 import AddModuleFooter from "@/app/subject/(sub-details)/Modules/AddModuleFooter";
 import AddModuleHeader from "@/app/subject/(sub-details)/Modules/AddModuleHeader";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import FileUpload from "@/components/FileUpload";
 import { addModule } from "@/utils/modules";
 
@@ -136,7 +137,25 @@ const AddModules = () => {
       modulePosition,
       difficulty,
     );
-    console.log(res);
+
+    if (res.success) {
+      Alert.alert(
+        "Success",
+        res.message,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.back();
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      Alert.alert("Failed", res.message);
+    }
+
     setIsSubmitting(false);
   };
 
