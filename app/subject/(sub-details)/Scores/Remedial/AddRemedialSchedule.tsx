@@ -146,6 +146,8 @@ const AddRemedialSchedule = () => {
       meetingLink,
     );
 
+    console.log(res);
+
     setIsCreating(false);
 
     if (res.success) {
@@ -209,7 +211,8 @@ const AddRemedialSchedule = () => {
               })
             : ""
         }  \n` +
-        `📍 ${mode === "faceToFace" ? `Location: ${room}` : `Link: ${meetingLink}`}  \n` +
+        `📍 ${mode === "faceToFace" ? `Location: ${room}` : `Location: Online`}  \n` +
+        `🔗 Link: ${meetingLink}  \n` +
         `💡 Type: ${remedialType}  \n` +
         `👤 Teacher: ${teacherName ? teacherName : ""}\n` +
         "\n" +

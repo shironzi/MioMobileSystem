@@ -41,7 +41,7 @@ const RemedialItem = ({
     activityTypeText = "Piddie Says";
   }
 
-  const handleRoute = (phoneme: string) => {
+  const handleRoute = (phoneme: string = "") => {
     if (role === "teacher") {
       router.push({
         pathname: "/subject/(sub-details)/Scores/Remedial/RemedialAttempts",
@@ -121,7 +121,7 @@ const RemedialItem = ({
       {(activityType === "bingo" || activityType === "matching") && (
         <View>
           <TouchableOpacity
-            onPress={toggleDropdown}
+            onPress={() => handleRoute(activityType)}
             style={styles.dropdownButton}
           >
             <View

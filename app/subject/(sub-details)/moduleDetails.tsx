@@ -90,7 +90,7 @@ const moduleDetails = () => {
               [M{index} - Main] {title}
             </Text>
             <Text>{description}</Text>
-            {module.files.map((item) => {
+            {module.files.map((item, index) => {
               let fileType = "unknown";
               const lastSegment = item.split(".").pop();
               if (lastSegment) {
@@ -98,7 +98,7 @@ const moduleDetails = () => {
               }
 
               return (
-                <View>
+                <View key={index}>
                   {fileType === "png" ||
                     (fileType === "jpg" && (
                       <Image source={{ uri: fileType }} />

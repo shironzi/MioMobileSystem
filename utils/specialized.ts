@@ -123,6 +123,29 @@ export async function getRemedialAttempts(
   }
 }
 
+export async function getAuditoryRemedialAttempts(
+  subjectId: string,
+  studentId: string,
+  activityType: string,
+  remedialId: string,
+) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function CreateRemedialSchedule(
   studentId: string,
   subjectId: string,

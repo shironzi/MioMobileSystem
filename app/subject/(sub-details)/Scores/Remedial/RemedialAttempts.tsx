@@ -6,7 +6,10 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getRemedialAttempts } from "@/utils/specialized";
+import {
+  getAuditoryRemedialAttempts,
+  getRemedialAttempts,
+} from "@/utils/specialized";
 import { router, useLocalSearchParams } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
@@ -52,13 +55,20 @@ const RemedialAttempts = () => {
 
   useEffect(() => {
     const fetchAttempts = async () => {
-      const res = await getRemedialAttempts(
-        subjectId,
-        studentId,
-        activityType,
-        remedialId,
-        phoneme,
-      );
+      const res = phoneme.trim().length
+        ? await getRemedialAttempts(
+            subjectId,
+            studentId,
+            activityType,
+            remedialId,
+            phoneme,
+          )
+        : await getAuditoryRemedialAttempts(
+            subjectId,
+            studentId,
+            activityType,
+            remedialId,
+          );
 
       if (res.success) {
         setAttempts(res.attempts);
