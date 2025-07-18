@@ -57,7 +57,7 @@ const RemedialList = () => {
   useEffect(() => {
     const fetchRemedial = async () => {
       const res = studentId
-        ? await getRemedialListByStudent(subjectId)
+        ? await getRemedialListByStudent(subjectId, studentId)
         : await getRemedialList(subjectId);
 
       console.log(res);

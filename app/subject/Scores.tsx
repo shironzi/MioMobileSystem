@@ -124,12 +124,18 @@ const Scores = () => {
               difficulty={difficulty}
               placeholder={`${
                 activityType === "phrase"
-                  ? "Reading"
+                  ? "Reading Flashcards"
                   : activityType === "question"
-                    ? "Word"
-                    : activityType.charAt(0).toUpperCase() +
-                      activityType.slice(1)
-              } Flashcards`}
+                    ? "Word Flashcards"
+                    : activityType === "picture"
+                      ? "Picture Flashcards"
+                      : activityType === "bingo"
+                        ? "Piddie Says"
+                        : activityType === "matching"
+                          ? "Matching Cards"
+                          : activityType.charAt(0).toUpperCase() +
+                            activityType.slice(1)
+              } `}
               activityType={activityType}
               activityIds={info.activity_ids}
               role={role}

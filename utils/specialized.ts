@@ -83,9 +83,14 @@ export async function getRemedialList(subjectId: string) {
   }
 }
 
-export async function getRemedialListByStudent(subjectId: string) {
+export async function getRemedialListByStudent(
+  subjectId: string,
+  studentId: string,
+) {
   try {
-    const { data } = await api.get(`/subject/${subjectId}/scores/remedialList`);
+    const { data } = await api.get(
+      `/subject/${subjectId}/scores/remedialList/${studentId}`,
+    );
 
     return data;
   } catch (err: any) {
