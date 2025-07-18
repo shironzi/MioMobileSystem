@@ -95,10 +95,11 @@ const Flashcards = () => {
         activityId,
       );
 
-      if (res.success && res.flashcards) {
+      if (res.success) {
         setAttemptId(res.attemptId);
         setCards(Object.values(res.flashcards));
-        setCurrentCard(res.currentItem);
+        setCurrentCard(res.currentItem ?? 0);
+        setLoading(false);
       } else {
         Alert.alert("", res.message, [
           {
@@ -107,8 +108,6 @@ const Flashcards = () => {
           },
         ]);
       }
-
-      setLoading(false);
     };
     fetchActivity();
   }, []);
