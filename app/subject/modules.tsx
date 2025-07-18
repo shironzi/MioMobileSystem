@@ -20,6 +20,17 @@ interface Module {
   visible: boolean;
 }
 
+interface Assignment {
+  id: string;
+  title: string;
+}
+
+interface Specialized {
+  id: string;
+  title: string;
+  difficulty: string;
+}
+
 const ModulesScreen = () => {
   const { subjectId, role } = useLocalSearchParams<{
     subjectId: string;
@@ -27,9 +38,8 @@ const ModulesScreen = () => {
   }>();
 
   const [moduleList, setModuleList] = useState<Module[]>([]);
-  const [assignments, setAssignments] = useState<
-    { id: string; title: string }[]
-  >([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [specialized, setSpecialized] = useState<Specialized[]>([]);
   const [loading, setLoading] = useState(true);
 
   HeaderConfig("Modules");
@@ -38,11 +48,14 @@ const ModulesScreen = () => {
     const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
     const encodedAssignments =
       encodeURIComponent(JSON.stringify(assignments)) ?? [];
+    const encodedSpecialized =
+      encodeURIComponent(JSON.stringify(specialized)) ?? [];
     router.push({
       pathname: "/subject/(sub-details)/Modules/AddModules",
       params: {
         modules: encodedModules,
         assignments: encodedAssignments,
+        specialized: encodedSpecialized,
         subjectId: subjectId,
       },
     });
@@ -71,6 +84,7 @@ const ModulesScreen = () => {
         if (res.success) {
           setModuleList(res.modules);
           setAssignments(res.assignments);
+          setSpecialized(res.specialized);
         }
         setLoading(false);
       };

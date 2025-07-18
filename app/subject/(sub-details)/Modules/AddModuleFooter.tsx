@@ -1,10 +1,17 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
+import { useEffect, useState } from "react";
 
 interface Assignment {
   id: string;
   title: string;
+}
+
+interface Specialized {
+  id: string;
+  title: string;
+  difficulty: string;
 }
 
 interface Props {
@@ -20,6 +27,9 @@ interface Props {
   modules: string[];
   assignments: Assignment[];
   isSubmitting: boolean;
+  difficulty: string;
+  setDifficulty: (value: string) => void;
+  specialized: Specialized[];
 }
 
 const AddModuleFooter = ({
@@ -35,7 +45,24 @@ const AddModuleFooter = ({
   modules,
   assignments,
   isSubmitting,
+  difficulty,
+  setDifficulty,
+  specialized,
 }: Props) => {
+  const [filteredSpecialized, setFilteredSpecialized] = useState<Specialized[]>(
+    [],
+  );
+
+  useEffect(() => {
+    const filtered = specialized.filter(
+      (item) => item.difficulty.toLowerCase() === difficulty.toLowerCase(),
+    );
+
+    console.log(filtered);
+
+    setFilteredSpecialized(filtered);
+  }, [difficulty]);
+
   return (
     <View style={[{ marginBottom: 100 }]}>
       <TouchableOpacity
@@ -73,34 +100,72 @@ const AddModuleFooter = ({
                     />
                     <Picker.Item label="Module Completion" value="module" />
                     <Picker.Item label="Assignment" value="assignment" />
+                    <Picker.Item
+                      label="Specialized Activity"
+                      value="specialized"
+                    />
                   </Picker>
                 </View>
 
-                <View style={globalStyles.dropdownStyle}>
-                  <Picker
-                    selectedValue={selectedPreRequisite}
-                    onValueChange={setSelectedPreRequisite}
-                    mode={"dropdown"}
-                  >
-                    <Picker.Item
-                      label="Select"
-                      value=""
-                      enabled={selectedPreRequisite.trim().length === 0}
-                    />
-                    {preRequisiteType === "module" &&
-                      modules.map((item) => (
-                        <Picker.Item key={item} label={item} value={item} />
-                      ))}
-
-                    {preRequisiteType === "assignment" &&
-                      assignments.map((item) => (
+                {preRequisiteType === "specialized" && (
+                  <View>
+                    <Text style={globalStyles.text1}>Difficulty</Text>
+                    <View style={globalStyles.dropdownStyle}>
+                      <Picker
+                        selectedValue={difficulty}
+                        onValueChange={setDifficulty}
+                        mode={"dropdown"}
+                      >
                         <Picker.Item
-                          key={item.id}
-                          label={item.title}
-                          value={item.id}
+                          label="Select"
+                          value=""
+                          enabled={difficulty.trim().length === 0}
                         />
-                      ))}
-                  </Picker>
+                        <Picker.Item label="Easy" value="easy" />
+                        <Picker.Item label="Average" value="average" />
+                        <Picker.Item label="Difficult" value="difficult" />
+                        <Picker.Item label="Challenge" value="challenge" />
+                      </Picker>
+                    </View>
+                  </View>
+                )}
+
+                <View>
+                  <View style={globalStyles.dropdownStyle}>
+                    <Picker
+                      selectedValue={selectedPreRequisite}
+                      onValueChange={setSelectedPreRequisite}
+                      mode={"dropdown"}
+                    >
+                      <Picker.Item
+                        label="Select"
+                        value=""
+                        enabled={selectedPreRequisite.trim().length === 0}
+                      />
+                      {preRequisiteType === "module" &&
+                        modules.map((item) => (
+                          <Picker.Item key={item} label={item} value={item} />
+                        ))}
+
+                      {preRequisiteType === "assignment" &&
+                        assignments.map((item) => (
+                          <Picker.Item
+                            key={item.id}
+                            label={item.title}
+                            value={item.id}
+                          />
+                        ))}
+
+                      {preRequisiteType === "specialized" &&
+                        filteredSpecialized?.map((item) => (
+                          <Picker.Item
+                            key={item.id}
+                            label={item.title}
+                            value={item.id}
+                          />
+                        ))}
+                    </Picker>
+                  </View>
                 </View>
               </View>
             </View>

@@ -46,13 +46,21 @@ interface Assignment {
   title: string;
 }
 
+interface Specialized {
+  id: string;
+  title: string;
+  difficulty: string;
+}
+
 const AddModules = () => {
   useHeaderConfig("Modules");
-  const { subjectId, modules, assignments } = useLocalSearchParams<{
-    subjectId: string;
-    modules: string;
-    assignments: string;
-  }>();
+  const { subjectId, modules, assignments, specialized } =
+    useLocalSearchParams<{
+      subjectId: string;
+      modules: string;
+      assignments: string;
+      specialized: string;
+    }>();
 
   const moduleList = useMemo<string[]>(() => {
     try {
@@ -72,6 +80,15 @@ const AddModules = () => {
     }
   }, [assignments]);
 
+  const SpecializedList = useMemo<Specialized[]>(() => {
+    try {
+      const parsed: Specialized[] = JSON.parse(specialized || "[]");
+      return parsed;
+    } catch {
+      return [];
+    }
+  }, [specialized]);
+
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [moduleFile, setModuleFile] = useState<FileInfo[]>([]);
@@ -85,6 +102,7 @@ const AddModules = () => {
   const [publish, setPublish] = useState<string>("private");
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [difficulty, setDifficulty] = useState<string>("");
 
   const createModule = async () => {
     const errors: Error[] = [];
@@ -95,21 +113,6 @@ const AddModules = () => {
     if (!description.trim().length) {
       errors.push({ name: "description" });
     }
-
-    // subSections.forEach((item) => {
-    //   if (!item.title.trim().length) {
-    //     errors.push({ name: "subTitle", id: item.id });
-    //   }
-    //   if (!item.description.trim().length) {
-    //     errors.push({ name: "subDescription", id: item.id });
-    //   }
-    //
-    //   if (!item.file) {
-    //     if (!item.file && (!item.videoLink || item.videoLink.length === 0)) {
-    //       errors.push({ name: "subFile", id: item.id });
-    //     }
-    //   }
-    // });
 
     if (errors.length) {
       setInputErrors(errors);
@@ -131,6 +134,7 @@ const AddModules = () => {
       preRequisiteType,
       subSections,
       modulePosition,
+      difficulty,
     );
     console.log(res);
     setIsSubmitting(false);
@@ -222,7 +226,10 @@ const AddModules = () => {
       createModule={createModule}
       modules={moduleList}
       assignments={assignmentList}
+      specialized={SpecializedList}
       isSubmitting={isSubmitting}
+      difficulty={difficulty}
+      setDifficulty={setDifficulty}
     />
   );
 

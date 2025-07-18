@@ -126,8 +126,11 @@ const moduleDetails = () => {
               );
             })}
           </View>
-          {module.subsections.map((item) => (
-            <View style={[globalStyles.cardContainer1, { marginVertical: 0 }]}>
+          {module.subsections.map((item, index) => (
+            <View
+              style={[globalStyles.cardContainer1, { marginVertical: 0 }]}
+              key={index}
+            >
               <Text style={globalStyles.text1}>{item.title}</Text>
               <Text>{item.description}</Text>
             </View>

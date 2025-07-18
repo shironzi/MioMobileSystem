@@ -59,6 +59,7 @@ export async function addModule(
   prerequisite_type: string,
   sub_sections: ModuleSection[],
   position: string,
+  difficulty: string,
 ) {
   const formData = new FormData();
 
@@ -78,6 +79,7 @@ export async function addModule(
   formData.append("prereq_status", hasPreRequisites.toString());
   formData.append("visibility", visibility);
   formData.append("position", position);
+  formData.append("difficulty", difficulty);
 
   if (hasPreRequisites) {
     formData.append("prerequisite_id", prerequisite_id);

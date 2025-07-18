@@ -11,7 +11,7 @@ import globalStyles from "@/styles/globalStyles";
 import { useLocalSearchParams } from "expo-router";
 import FileUpload from "@/components/FileUpload";
 import { addRemedial } from "@/utils/modules";
-import RemedialModuleHeader from "@/app/subject/(sub-details)/Modules/RemedialModuleHeader";
+import RemedialModuleHeader from "@/components/Remedials/RemedialModuleHeader";
 
 interface FileInfo {
   uri: string;
