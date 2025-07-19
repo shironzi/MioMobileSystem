@@ -80,6 +80,7 @@ const ModulesScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setLoading(true);
       if (!subjectId) return;
 
       const fetch = async () => {
@@ -165,7 +166,9 @@ const ModulesScreen = () => {
             ))}
 
             <View style={{ marginVertical: 50 }}>
-              <Text style={globalStyles.text1}>Remedials</Text>
+              <Text style={[globalStyles.text1, { marginHorizontal: 10 }]}>
+                Supplementary Modules
+              </Text>
               {remedialList.map((item, index) => (
                 <ModuleCard
                   key={index}

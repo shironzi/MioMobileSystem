@@ -1,19 +1,16 @@
 import React, { useMemo, useState } from "react";
-import {
-  Alert,
-  FlatList,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, FlatList, View } from "react-native";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import globalStyles from "@/styles/globalStyles";
 import AddModuleFooter from "@/app/subject/(sub-details)/Modules/AddModuleFooter";
 import AddModuleHeader from "@/app/subject/(sub-details)/Modules/AddModuleHeader";
 import { router, useLocalSearchParams } from "expo-router";
-import FileUpload from "@/components/FileUpload";
-import { addModule } from "@/utils/modules";
+import {
+  addModule,
+  addRemedial,
+  updateModule,
+  updateRemedial,
+} from "@/utils/modules";
+import AddModuleItem from "@/app/subject/(sub-details)/Modules/AddModuleItem";
 
 interface FileInfo {
   uri: string;
@@ -21,12 +18,19 @@ interface FileInfo {
   mimeType?: string;
 }
 
+interface Subsection {
+  description: string;
+  media: File[];
+  video_links: string[];
+  title: string;
+}
+
 interface ModuleSection {
   id: string;
   title: string;
   description: string;
   files: FileInfo[];
-  videoLink?: string[];
+  videoLink: string[];
 }
 
 interface Error {
@@ -57,21 +61,73 @@ const AddModules = () => {
   useHeaderConfig("Modules");
   const {
     subjectId,
+    moduleId,
     modules,
     assignments,
     specialized,
     moduleTitle = "",
     moduleDescription = "",
     position = "0",
+    encodedModulesFiles,
+    encodedSubSections,
+    prereq_status,
+    visibility,
+    remedialModule = "false",
+    focus_ipa = "",
   } = useLocalSearchParams<{
     subjectId: string;
+    moduleId: string;
     modules: string;
     assignments: string;
     specialized: string;
     moduleTitle: string;
     moduleDescription: string;
     position: string;
+    encodedModulesFiles: string;
+    encodedSubSections: string;
+    prereq_status: string;
+    visibility: string;
+    remedialModule: string;
+    focus_ipa: string;
   }>();
+
+  const moduleFiles = useMemo<FileInfo[]>(() => {
+    try {
+      const parsed: any = JSON.parse(encodedModulesFiles || "[]");
+
+      const mapped: FileInfo[] = parsed.map((file: any) => ({
+        name: file.name,
+        uri: file.url,
+      }));
+
+      return mapped;
+    } catch {
+      return [];
+    }
+  }, [encodedModulesFiles]);
+
+  const SubSectionList = useMemo<ModuleSection[]>(() => {
+    try {
+      const parsed: Subsection[] = JSON.parse(encodedSubSections || "[]");
+
+      return parsed.map(
+        (section, index): ModuleSection => ({
+          id: index.toString(),
+          title: section.title,
+          description: section.description,
+          files: (section.media || []).map((file: any) => ({
+            name: file.name,
+            uri: file.url,
+          })),
+          videoLink: section.video_links || [],
+        }),
+      );
+    } catch {
+      return [
+        { id: "0", title: "", description: "", files: [], videoLink: [] },
+      ];
+    }
+  }, [encodedSubSections]);
 
   const moduleList = useMemo<string[]>(() => {
     try {
@@ -102,18 +158,26 @@ const AddModules = () => {
 
   const [title, setTitle] = useState<string>(moduleTitle);
   const [description, setDescription] = useState<string>(moduleDescription);
-  const [moduleFile, setModuleFile] = useState<FileInfo[]>([]);
+  const [moduleFile, setModuleFile] = useState<FileInfo[]>(moduleFiles);
   const [modulePosition, setModulePosition] = useState<string>(position);
-  const [subSections, setSubsections] = useState<ModuleSection[]>([
-    { id: "0", title: "", description: "", files: [], videoLink: [] },
-  ]);
-  const [hasPreRequisites, setHasPreRequisites] = useState<boolean>(false);
+  const [subSections, setSubsections] = useState<ModuleSection[]>(
+    SubSectionList.length
+      ? SubSectionList
+      : [{ id: "0", title: "", description: "", files: [], videoLink: [] }],
+  );
+  const [hasPreRequisites, setHasPreRequisites] = useState<boolean>(
+    prereq_status === "true",
+  );
   const [preRequisiteType, setPreRequisiteType] = useState<string>("");
   const [selectedPreRequisite, setSelectedPreRequisite] = useState<string>("");
-  const [publish, setPublish] = useState<string>("private");
+  const [publish, setPublish] = useState<string>(visibility);
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [difficulty, setDifficulty] = useState<string>("");
+  const [isRemedial, setIsRemedial] = useState<boolean>(
+    remedialModule === "true",
+  );
+  const [focusedIpa, setFocusIpa] = useState<string>(focus_ipa);
 
   const createModule = async () => {
     const errors: Error[] = [];
@@ -125,6 +189,10 @@ const AddModules = () => {
       errors.push({ name: "description" });
     }
 
+    if (isRemedial && !focusedIpa.trim().length) {
+      errors.push({ name: "focus_ipa" });
+    }
+
     if (errors.length) {
       setInputErrors(errors);
       console.log(errors);
@@ -134,19 +202,53 @@ const AddModules = () => {
     setInputErrors([]);
 
     setIsSubmitting(true);
-    const res = await addModule(
-      subjectId,
-      title,
-      description,
-      moduleFile,
-      hasPreRequisites,
-      publish,
-      selectedPreRequisite,
-      preRequisiteType,
-      subSections,
-      modulePosition,
-      difficulty,
-    );
+    const res = moduleId
+      ? isRemedial
+        ? await updateRemedial(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            subSections,
+            focusedIpa,
+            moduleId,
+          )
+        : await updateModule(
+            subjectId,
+            moduleId,
+            title,
+            description,
+            moduleFile,
+            hasPreRequisites,
+            publish,
+            selectedPreRequisite,
+            preRequisiteType,
+            subSections,
+            modulePosition,
+            difficulty,
+          )
+      : isRemedial
+        ? await addRemedial(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            subSections,
+            focusedIpa,
+          )
+        : await addModule(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            hasPreRequisites,
+            publish,
+            selectedPreRequisite,
+            preRequisiteType,
+            subSections,
+            modulePosition,
+            difficulty,
+          );
 
     if (res.success) {
       Alert.alert(
@@ -156,6 +258,9 @@ const AddModules = () => {
           {
             text: "OK",
             onPress: () => {
+              {
+                moduleId && router.back();
+              }
               router.back();
             },
           },
@@ -228,6 +333,36 @@ const AddModules = () => {
     );
   };
 
+  const deleteSectionLink = (id: string, idx: number) => {
+    setSubsections((prevSubsections) =>
+      prevSubsections.map((section) => {
+        if (section.id === id) {
+          const updatedLinks = section.videoLink.filter(
+            (_, index) => index !== idx,
+          );
+          return {
+            ...section,
+            videoLink: updatedLinks,
+          };
+        }
+        return section;
+      }),
+    );
+  };
+
+  const handleAddSection = () => {
+    setSubsections((prev) => [
+      ...prev,
+      {
+        id: (prev.length + 1).toString(),
+        title: "",
+        description: "",
+        files: [],
+        videoLink: [],
+      },
+    ]);
+  };
+
   const Header = (
     <AddModuleHeader
       title={title}
@@ -235,10 +370,16 @@ const AddModules = () => {
       description={description}
       setDescription={setDescription}
       setModuleFile={setModuleFile}
+      moduleFile={moduleFile}
       modulePosition={modulePosition}
       setModulePosition={setModulePosition}
       inputErrors={inputErrors}
       modules={moduleList}
+      moduleId={moduleId}
+      isRemedial={isRemedial}
+      setIsRemedial={setIsRemedial}
+      focusedIpa={focusedIpa}
+      setFocusedIpa={setFocusIpa}
     />
   );
 
@@ -259,6 +400,9 @@ const AddModules = () => {
       isSubmitting={isSubmitting}
       difficulty={difficulty}
       setDifficulty={setDifficulty}
+      moduleId={moduleId}
+      isRemedial={isRemedial}
+      handleAddSection={handleAddSection}
     />
   );
 
@@ -269,106 +413,18 @@ const AddModules = () => {
         ListHeaderComponent={Header}
         ListFooterComponent={Footer}
         renderItem={({ item, index }) => (
-          <View style={[globalStyles.cardContainer1, { marginTop: 0 }]}>
-            {index === 0 && (
-              <Text style={globalStyles.text1}>Sub-sections</Text>
-            )}
-            <View>
-              <Text style={globalStyles.text1}>Sub-section Title</Text>
-              {inputErrors.some(
-                (err) => err.name === "subTitle" && err.id === item.id,
-              ) && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              <TextInput
-                value={item.title}
-                onChangeText={(value) => setSectionTitle(item.id, value)}
-                style={[
-                  globalStyles.textInputContainer,
-                  inputErrors.some(
-                    (err) => err.name === "subTitle" && err.id === item.id,
-                  ) && {
-                    borderColor: "red",
-                  },
-                ]}
-              />
-            </View>
-            <View>
-              <Text style={globalStyles.text1}>Description</Text>
-              {inputErrors.some(
-                (err) => err.name === "subDescription" && err.id === item.id,
-              ) && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              <TextInput
-                value={item.description}
-                onChangeText={(value) => setSectionDesc(item.id, value)}
-                style={[
-                  globalStyles.textInputContainer,
-                  { minHeight: 150, textAlignVertical: "top" },
-                  inputErrors.some(
-                    (err) =>
-                      err.name === "subDescription" && err.id === item.id,
-                  ) && {
-                    borderColor: "red",
-                  },
-                ]}
-                multiline
-              />
-            </View>
-            <View>
-              <Text style={globalStyles.text2}>
-                Image / PDF / PPT / Document Files
-              </Text>
-              {inputErrors.some(
-                (err) => err.name === "subFile" && err.id === item.id,
-              ) && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              <FileUpload
-                handleFiles={(file: FileInfo[]) => {
-                  setSectionFile(item.id, file);
-                }}
-              />
-            </View>
-            {(item?.videoLink ?? []).map?.((video, idx) => (
-              <View key={idx}>
-                <Text style={globalStyles.text2}>
-                  Accepts PDF, PPT, video, images, etc. (Max: 100MB per file)
-                  Video Links (YouTube, etc.)
-                </Text>
-                {inputErrors.some(
-                  (err) => err.name === "videoLink" && err.id === item.id,
-                ) && (
-                  <Text style={[globalStyles.errorText]}>
-                    This field is required
-                  </Text>
-                )}
-                <TextInput
-                  value={video}
-                  onChangeText={(value) => setSectionLink(item.id, value, idx)}
-                  style={[
-                    globalStyles.textInputContainer,
-                    inputErrors.some(
-                      (err) => err.name === "videoLink" && err.id === item.id,
-                    ) && { borderColor: "red" },
-                  ]}
-                />
-              </View>
-            ))}
-            <TouchableOpacity
-              style={globalStyles.submitButton}
-              onPress={() => handleAddLink(item.id)}
-            >
-              <Text style={globalStyles.submitButtonText}>Add Link</Text>
-            </TouchableOpacity>
-          </View>
+          <AddModuleItem
+            key={index}
+            index={index}
+            item={item}
+            inputErrors={inputErrors}
+            setSectionTitle={setSectionTitle}
+            setSectionDesc={setSectionDesc}
+            setSectionFile={setSectionFile}
+            setSectionLink={setSectionLink}
+            handleAddLink={handleAddLink}
+            deleteSectionLink={deleteSectionLink}
+          />
         )}
       />
     </View>

@@ -14,11 +14,16 @@ interface Errors {
   index: number;
 }
 
-const FileUpload = (props: {
+const FileUpload = ({
+  handleFiles,
+  FileUploads = [],
+  fileTypes,
+}: {
   handleFiles: (file: FileInfo[]) => void;
+  FileUploads?: FileInfo[];
   fileTypes?: string;
 }) => {
-  const [files, setFiles] = useState<FileInfo[]>([]);
+  const [files, setFiles] = useState<FileInfo[]>(FileUploads);
   const [fileErrors, setFileErrors] = useState<Errors[]>([]);
 
   const handleAddFile = () => {
@@ -40,7 +45,7 @@ const FileUpload = (props: {
 
   const handleFileUpload = async (index: number) => {
     const res = await DocumentPicker.getDocumentAsync({
-      type: props.fileTypes ? props.fileTypes : ["image/*", "application/*"],
+      type: fileTypes ? fileTypes : ["image/*", "application/*"],
       copyToCacheDirectory: true,
     });
 
@@ -59,7 +64,7 @@ const FileUpload = (props: {
   };
 
   useEffect(() => {
-    props.handleFiles(files);
+    handleFiles(files);
   }, [files]);
 
   return (
@@ -112,13 +117,12 @@ const FileUpload = (props: {
             style={{
               flexDirection: "row",
               marginLeft: 10,
-              left: -40,
-              marginTop: -150,
+              left: -30,
             }}
           >
             <MaterialIcons name="add" size={20} color="#FFBF18" />
             <Text style={styles.addFileText}>
-              {props.fileTypes ? "Add Image" : "Add File"}
+              {fileTypes ? "Add Image" : "Add File"}
             </Text>
           </View>
         </TouchableOpacity>
@@ -130,6 +134,7 @@ const FileUpload = (props: {
 const styles = StyleSheet.create({
   uploadHeader: {
     width: "100%",
+    height: "auto",
     backgroundColor: "#434242",
     paddingVertical: 9,
     paddingHorizontal: 26,
@@ -159,7 +164,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
     width: 100,
     alignItems: "center",
-
     left: -15,
   },
   filename: {
@@ -171,8 +175,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     left: 10,
     padding: 5,
-    marginTop: 80,
-    marginBottom: 10,
   },
   addFileText: {
     color: "#FFBF18",

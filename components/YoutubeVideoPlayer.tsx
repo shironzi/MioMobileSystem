@@ -25,7 +25,7 @@ export default function YoutubeVideoPlayer({
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <YoutubePlayer
         height={200}
-        width={300}
+        width={325}
         play={playing}
         videoId={videoId}
         onChangeState={onStateChange}

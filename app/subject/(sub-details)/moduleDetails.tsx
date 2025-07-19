@@ -30,17 +30,6 @@ interface Module {
   remedial_module?: boolean;
 }
 
-interface Assignment {
-  id: string;
-  title: string;
-}
-
-interface Specialized {
-  id: string;
-  title: string;
-  difficulty: string;
-}
-
 interface Subsection {
   description: string;
   media: File[];
@@ -54,6 +43,9 @@ interface Module {
   module_id: string;
   subsections: Subsection[];
   title: string;
+  prereq_status: boolean;
+  visibility: string;
+  focus_ipa: string;
 }
 
 const moduleDetails = () => {
@@ -74,6 +66,7 @@ const moduleDetails = () => {
     modules,
     assignments,
     specialized,
+    isRemedial,
   } = useLocalSearchParams<{
     id: string;
     title: string;
@@ -84,6 +77,7 @@ const moduleDetails = () => {
     modules: string;
     assignments: string;
     specialized: string;
+    isRemedial: string;
   }>();
 
   useEffect(() => {
@@ -106,19 +100,47 @@ const moduleDetails = () => {
   };
 
   const editModule = () => {
-    router.push({
-      pathname: "/subject/(sub-details)/Modules/AddModules",
-      params: {
-        moduleId: id,
-        subjectId,
-        modules,
-        assignments,
-        specialized,
-        moduleTitle: title,
-        moduleDescription: description,
-        position: position?.toString(),
-      },
-    });
+    const encodedModulesFiles =
+      encodeURIComponent(JSON.stringify(module?.files)) ?? [];
+    const encodedSubSections =
+      encodeURIComponent(JSON.stringify(module?.subsections)) ?? [];
+
+    if (isRemedial) {
+      router.push({
+        pathname: "/subject/(sub-details)/Modules/AddModules",
+        params: {
+          moduleId: id,
+          subjectId,
+          modules,
+          assignments,
+          specialized,
+          moduleTitle: module?.title,
+          moduleDescription: module?.description,
+          encodedModulesFiles,
+          encodedSubSections,
+          remedialModule: isRemedial,
+          focus_ipa: module?.focus_ipa,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/Modules/AddModules",
+        params: {
+          moduleId: id,
+          subjectId,
+          modules,
+          assignments,
+          specialized,
+          moduleTitle: module?.title,
+          moduleDescription: module?.description,
+          position: position?.toString(),
+          encodedModulesFiles,
+          encodedSubSections,
+          prereq_status: module?.prereq_status.toString(),
+          visibility: module?.visibility,
+        },
+      });
+    }
   };
 
   if (loading) {
@@ -150,7 +172,9 @@ const moduleDetails = () => {
                 }}
               >
                 <Ionicons name="add-circle" size={20} color="#ffbf18" />
-                <Text style={styles.addText}>Edit Module</Text>
+                <Text style={styles.addText}>
+                  Edit {isRemedial === "true" ? "Remedial" : "Module"}
+                </Text>
               </View>
             </TouchableOpacity>
           )}
@@ -159,7 +183,7 @@ const moduleDetails = () => {
               [M{index} - Main] {title}
             </Text>
             <Text style={globalStyles.text2}>{description}</Text>
-            {module.files.map((item, index) => {
+            {module.files?.map((item, index) => {
               let fileType = "unknown";
               const lastSegment = item.url.split(".").pop();
               if (lastSegment) {
@@ -238,8 +262,8 @@ const moduleDetails = () => {
                     </View>
                   );
                 })}
-                {item.video_links?.map((item) => (
-                  <YoutubeVideoPlayer video_url={item} />
+                {item.video_links?.map((item, index) => (
+                  <YoutubeVideoPlayer video_url={item} key={index} />
                 ))}
               </View>
             ))}

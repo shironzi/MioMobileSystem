@@ -40,7 +40,6 @@ const ScoreDetails = () => {
   const [overallScore, setOverallScore] = useState<number>();
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!subjectId || !activityId || !attemptId) return;
@@ -66,7 +65,6 @@ const ScoreDetails = () => {
       );
 
       setTotal(100);
-
       setOverallScore(res.overall_score);
       setEvaluationsScore(entries);
       setLoading(false);
@@ -79,14 +77,6 @@ const ScoreDetails = () => {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
@@ -117,12 +107,9 @@ const ScoreDetails = () => {
             }}
           >
             {activity_type === "picture" && "Picture Flashcards"}
-
             {activity_type === "pronunciation" &&
               "ReadMe: Pronunciation Challenge"}
-
             {activity_type === "phrases" && "Phrase Flashcards"}
-
             {activity_type === "question" && "Question Flashcards"}
           </Text>
 

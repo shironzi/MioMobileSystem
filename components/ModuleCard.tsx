@@ -71,6 +71,7 @@ const ModuleCard = ({
         modules: encodedModules,
         assignments: encodedAssignments,
         specialized: encodedSpecialized,
+        isRemedial: "true",
       },
     });
   };
