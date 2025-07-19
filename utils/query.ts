@@ -584,6 +584,22 @@ export async function getQuizById(subjectId: string, quizId: string) {
 
 export async function getStudents(subjectId: string) {
   try {
+    const { data } = await api.get(`/subject/${subjectId}/students`);
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function getPeoples(subjectId: string) {
+  try {
     const { data } = await api.get(`/subject/${subjectId}/peoples`);
 
     return data;
