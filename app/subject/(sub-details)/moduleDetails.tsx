@@ -9,28 +9,51 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { getModuleById } from "@/utils/modules";
 import Feather from "@expo/vector-icons/Feather";
 import WebView from "react-native-webview";
 import LoadingCard from "@/components/loadingCard";
 import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
+import { Ionicons } from "@expo/vector-icons";
+
+interface File {
+  name: string;
+  url: string;
+}
+
+interface Module {
+  id: string;
+  title: string;
+  description: string;
+  visible: boolean;
+  remedial_module?: boolean;
+}
+
+interface Assignment {
+  id: string;
+  title: string;
+}
+
+interface Specialized {
+  id: string;
+  title: string;
+  difficulty: string;
+}
 
 interface Subsection {
   description: string;
-  media: string[];
+  media: File[];
   video_links: string[];
   title: string;
 }
 
 interface Module {
   description: string;
-  files: string[];
+  files: File[];
   module_id: string;
   subsections: Subsection[];
   title: string;
-  video_url: string;
-  reference: string;
 }
 
 const moduleDetails = () => {
@@ -39,13 +62,28 @@ const moduleDetails = () => {
   const [module, setModule] = useState<Module>();
   const [webViewUri, setWebViewUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [position, setPosition] = useState<number>();
 
-  const { id, title, description, subjectId, index } = useLocalSearchParams<{
+  const {
+    id,
+    title,
+    description,
+    subjectId,
+    index,
+    role,
+    modules,
+    assignments,
+    specialized,
+  } = useLocalSearchParams<{
     id: string;
     title: string;
     description: string;
     subjectId: string;
     index: string;
+    role: string;
+    modules: string;
+    assignments: string;
+    specialized: string;
   }>();
 
   useEffect(() => {
@@ -54,10 +92,8 @@ const moduleDetails = () => {
 
       if (res.success) {
         setModule(res.module);
+        setPosition(res.position);
       }
-
-      console.log(res);
-
       setLoading(false);
     };
     fetchModule();
@@ -67,6 +103,22 @@ const moduleDetails = () => {
     if (url) {
       setWebViewUri(url);
     }
+  };
+
+  const editModule = () => {
+    router.push({
+      pathname: "/subject/(sub-details)/Modules/AddModules",
+      params: {
+        moduleId: id,
+        subjectId,
+        modules,
+        assignments,
+        specialized,
+        moduleTitle: title,
+        moduleDescription: description,
+        position: position?.toString(),
+      },
+    });
   };
 
   if (loading) {
@@ -83,20 +135,33 @@ const moduleDetails = () => {
       </View>
     );
   }
-  console.log(module?.video_url);
 
   return (
     <View style={styles.container}>
       {module ? (
         <ScrollView showsVerticalScrollIndicator={false}>
+          {role === "teacher" && (
+            <TouchableOpacity style={styles.addButton} onPress={editModule}>
+              <View
+                style={{
+                  top: 20,
+                  alignSelf: "center",
+                  flexDirection: "row",
+                }}
+              >
+                <Ionicons name="add-circle" size={20} color="#ffbf18" />
+                <Text style={styles.addText}>Edit Module</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           <View style={globalStyles.cardContainer1}>
             <Text style={globalStyles.text1}>
               [M{index} - Main] {title}
             </Text>
-            <Text>{description}</Text>
+            <Text style={globalStyles.text2}>{description}</Text>
             {module.files.map((item, index) => {
               let fileType = "unknown";
-              const lastSegment = item.split(".").pop();
+              const lastSegment = item.url.split(".").pop();
               if (lastSegment) {
                 fileType = lastSegment.split("?")[0];
               }
@@ -109,7 +174,7 @@ const moduleDetails = () => {
                     ))}
                   {fileType === "pdf" && (
                     <TouchableOpacity
-                      onPress={() => handleOnPress(item)}
+                      onPress={() => handleOnPress(item.url)}
                       style={[
                         globalStyles.submitButton,
                         {
@@ -129,60 +194,56 @@ const moduleDetails = () => {
                 </View>
               );
             })}
-
-            {module.video_url && (
-              <YoutubeVideoPlayer video_url={module.video_url} />
-            )}
-            {module.reference && (
-              <Text style={globalStyles.text2}>
-                Reference: {module.reference}
-              </Text>
-            )}
           </View>
-          {module.subsections.map((item, index) => (
-            <View
-              style={[globalStyles.cardContainer1, { marginVertical: 0 }]}
-              key={index}
-            >
-              <Text style={globalStyles.text1}>{item.title}</Text>
-              <Text>{item.description}</Text>
-              {item.media.map((item, index) => {
-                let fileType = "unknown";
-                const lastSegment = item.split(".").pop();
-                if (lastSegment) {
-                  fileType = lastSegment.split("?")[0];
-                }
+          <View style={{ rowGap: 20, marginBottom: 70 }}>
+            {module.subsections?.map((item, index) => (
+              <View
+                style={[globalStyles.cardContainer1, { marginVertical: 0 }]}
+                key={index}
+              >
+                <Text style={globalStyles.text1}>{item.title}</Text>
+                <Text style={globalStyles.text2}>{item.description}</Text>
+                {item.media?.map((item, index) => {
+                  let fileType = "unknown";
+                  const lastSegment = item.url.split(".").pop();
+                  if (lastSegment) {
+                    fileType = lastSegment.split("?")[0];
+                  }
 
-                return (
-                  <View key={index}>
-                    {fileType === "png" ||
-                      (fileType === "jpg" && (
-                        <Image source={{ uri: fileType }} />
-                      ))}
-                    {fileType === "pdf" && (
-                      <TouchableOpacity
-                        onPress={() => handleOnPress(item)}
-                        style={[
-                          globalStyles.submitButton,
-                          {
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            columnGap: 10,
-                          },
-                        ]}
-                      >
-                        <Feather name="download" size={20} color="#fff" />
-                        <Text style={globalStyles.submitButtonText}>
-                          Download ({fileType.toUpperCase()})
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
-          ))}
+                  return (
+                    <View key={index}>
+                      {fileType === "png" ||
+                        (fileType === "jpg" && (
+                          <Image source={{ uri: fileType }} />
+                        ))}
+                      {fileType === "pdf" && (
+                        <TouchableOpacity
+                          onPress={() => handleOnPress(item.url)}
+                          style={[
+                            globalStyles.submitButton,
+                            {
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              columnGap: 10,
+                            },
+                          ]}
+                        >
+                          <Feather name="download" size={20} color="#fff" />
+                          <Text style={globalStyles.submitButtonText}>
+                            Download ({fileType.toUpperCase()})
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  );
+                })}
+                {item.video_links?.map((item) => (
+                  <YoutubeVideoPlayer video_url={item} />
+                ))}
+              </View>
+            ))}
+          </View>
 
           {webViewUri && (
             <WebView source={{ uri: webViewUri }} style={{ flex: 1 }} />
@@ -201,7 +262,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 10,
   },
   cardContainer: {
     padding: 20,
@@ -230,6 +290,22 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     fontWeight: 300,
+  },
+  addButton: {
+    backgroundColor: "#fcefcc",
+    borderColor: "#ffbf18",
+    borderWidth: 2,
+    borderRadius: 20,
+    borderStyle: "dashed",
+    margin: 30,
+    marginBottom: 20,
+    height: 60,
+    marginTop: 20,
+  },
+  addText: {
+    color: "#ffbf18",
+    fontWeight: 500,
+    marginHorizontal: 10,
   },
 });
 

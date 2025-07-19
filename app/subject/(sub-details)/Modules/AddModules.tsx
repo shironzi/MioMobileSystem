@@ -55,13 +55,23 @@ interface Specialized {
 
 const AddModules = () => {
   useHeaderConfig("Modules");
-  const { subjectId, modules, assignments, specialized } =
-    useLocalSearchParams<{
-      subjectId: string;
-      modules: string;
-      assignments: string;
-      specialized: string;
-    }>();
+  const {
+    subjectId,
+    modules,
+    assignments,
+    specialized,
+    moduleTitle = "",
+    moduleDescription = "",
+    position = "0",
+  } = useLocalSearchParams<{
+    subjectId: string;
+    modules: string;
+    assignments: string;
+    specialized: string;
+    moduleTitle: string;
+    moduleDescription: string;
+    position: string;
+  }>();
 
   const moduleList = useMemo<string[]>(() => {
     try {
@@ -90,10 +100,10 @@ const AddModules = () => {
     }
   }, [specialized]);
 
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>(moduleTitle);
+  const [description, setDescription] = useState<string>(moduleDescription);
   const [moduleFile, setModuleFile] = useState<FileInfo[]>([]);
-  const [modulePosition, setModulePosition] = useState<string>("");
+  const [modulePosition, setModulePosition] = useState<string>(position);
   const [subSections, setSubsections] = useState<ModuleSection[]>([
     { id: "0", title: "", description: "", files: [], videoLink: [] },
   ]);

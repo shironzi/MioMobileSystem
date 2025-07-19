@@ -3,7 +3,26 @@ import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-type Module = {
+interface Module {
+  id: string;
+  title: string;
+  description: string;
+  visible: boolean;
+  remedial_module?: boolean;
+}
+
+interface Assignment {
+  id: string;
+  title: string;
+}
+
+interface Specialized {
+  id: string;
+  title: string;
+  difficulty: string;
+}
+
+type Props = {
   id: string;
   title: string;
   description: string;
@@ -11,6 +30,10 @@ type Module = {
   index: number;
   subjectId: string;
   isRemedial?: boolean;
+  role: string;
+  modules?: Module[];
+  assignments?: Assignment[];
+  specialized?: Specialized[];
 };
 
 const ModuleCard = ({
@@ -21,12 +44,20 @@ const ModuleCard = ({
   index,
   subjectId,
   isRemedial = false,
-}: Module) => {
+  role,
+  modules,
+  assignments,
+  specialized,
+}: Props) => {
   const router = useRouter();
 
   const handleRoute = () => {
     if (!visible) return;
-    console.log(id);
+    const encodedModules = encodeURIComponent(JSON.stringify(modules)) ?? [];
+    const encodedAssignments =
+      encodeURIComponent(JSON.stringify(assignments)) ?? [];
+    const encodedSpecialized =
+      encodeURIComponent(JSON.stringify(specialized)) ?? [];
 
     router.push({
       pathname: "/subject/(sub-details)/moduleDetails",
@@ -36,6 +67,10 @@ const ModuleCard = ({
         description: description,
         subjectId: subjectId,
         index: index + 1,
+        role,
+        modules: encodedModules,
+        assignments: encodedAssignments,
+        specialized: encodedSpecialized,
       },
     });
   };

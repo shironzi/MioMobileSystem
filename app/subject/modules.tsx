@@ -157,6 +157,10 @@ const ModulesScreen = () => {
                 visible={item.visible}
                 description={item.description}
                 subjectId={subjectId}
+                role={role}
+                modules={moduleList}
+                assignments={assignments}
+                specialized={specialized}
               />
             ))}
 
@@ -172,6 +176,7 @@ const ModulesScreen = () => {
                   description={item.description}
                   subjectId={subjectId}
                   isRemedial={item.remedial_module}
+                  role={role}
                 />
               ))}
             </View>
