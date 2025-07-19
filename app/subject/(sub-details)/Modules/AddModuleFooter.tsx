@@ -212,6 +212,7 @@ const AddModuleFooter = ({
         style={{
           flexDirection: "row",
           alignItems: "center",
+          marginTop: 70,
         }}
       >
         <TouchableOpacity
