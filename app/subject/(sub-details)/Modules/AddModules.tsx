@@ -4,7 +4,12 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import AddModuleFooter from "@/app/subject/(sub-details)/Modules/AddModuleFooter";
 import AddModuleHeader from "@/app/subject/(sub-details)/Modules/AddModuleHeader";
 import { router, useLocalSearchParams } from "expo-router";
-import { addModule, updateModule } from "@/utils/modules";
+import {
+  addModule,
+  addRemedial,
+  updateModule,
+  updateRemedial,
+} from "@/utils/modules";
 import AddModuleItem from "@/app/subject/(sub-details)/Modules/AddModuleItem";
 
 interface FileInfo {
@@ -68,6 +73,9 @@ const AddModules = () => {
     prereq_status,
     visibility,
     specializedType,
+    remedialModule,
+    focus_ipa,
+    encodedWordList,
   } = useLocalSearchParams<{
     subjectId: string;
     moduleId: string;
@@ -82,6 +90,9 @@ const AddModules = () => {
     prereq_status: string;
     visibility: string;
     specializedType: string;
+    remedialModule: string;
+    focus_ipa: string;
+    encodedWordList: string;
   }>();
 
   const moduleFiles = useMemo<FileInfo[]>(() => {
@@ -122,10 +133,10 @@ const AddModules = () => {
     }
   }, [encodedSubSections]);
 
-  const moduleList = useMemo<string[]>(() => {
+  const moduleList = useMemo<{ title: string; id: string }[]>(() => {
     try {
       const parsed: Module[] = JSON.parse(modules || "[]");
-      return parsed.map((m) => m.title);
+      return parsed.map((m) => ({ title: m.title, id: m.id }));
     } catch {
       return [];
     }
@@ -167,6 +178,11 @@ const AddModules = () => {
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [difficulty, setDifficulty] = useState<string>("");
+  const [isRemedial, setIsRemedial] = useState<boolean>(
+    remedialModule === "true",
+  );
+  const [focusedIpa, setFocusIpa] = useState<string>(focus_ipa);
+  const [targetModule, setTargetModule] = useState<string>("");
 
   const createModule = async () => {
     const errors: Error[] = [];
@@ -187,33 +203,52 @@ const AddModules = () => {
 
     setIsSubmitting(true);
     const res = moduleId
-      ? await updateModule(
-          subjectId,
-          moduleId,
-          title,
-          description,
-          moduleFile,
-          hasPreRequisites,
-          publish,
-          selectedPreRequisite,
-          preRequisiteType,
-          subSections,
-          modulePosition,
-          difficulty,
-        )
-      : await addModule(
-          subjectId,
-          title,
-          description,
-          moduleFile,
-          hasPreRequisites,
-          publish,
-          selectedPreRequisite,
-          preRequisiteType,
-          subSections,
-          modulePosition,
-          difficulty,
-        );
+      ? isRemedial
+        ? await updateRemedial(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            subSections,
+            focusedIpa,
+            moduleId,
+          )
+        : await updateModule(
+            subjectId,
+            moduleId,
+            title,
+            description,
+            moduleFile,
+            hasPreRequisites,
+            publish,
+            selectedPreRequisite,
+            preRequisiteType,
+            subSections,
+            modulePosition,
+            difficulty,
+          )
+      : isRemedial
+        ? await addRemedial(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            subSections,
+            focusedIpa,
+          )
+        : await addModule(
+            subjectId,
+            title,
+            description,
+            moduleFile,
+            hasPreRequisites,
+            publish,
+            selectedPreRequisite,
+            preRequisiteType,
+            subSections,
+            modulePosition,
+            difficulty,
+          );
 
     if (res.success) {
       Alert.alert(
@@ -257,8 +292,23 @@ const AddModules = () => {
     }
 
     setInputErrors([]);
+
+    const encodedModulesFiles =
+      encodeURIComponent(JSON.stringify(moduleFile)) ?? [];
+    const encodedSubSections =
+      encodeURIComponent(JSON.stringify(subSections)) ?? [];
+
     router.push({
       pathname: "/subject/(sub-details)/Modules/AddModuleAuditory",
+      params: {
+        subjectId: subjectId,
+        title: title,
+        description: description,
+        moduleFiles: encodedModulesFiles,
+        subSections: encodedSubSections,
+        targetModule: targetModule,
+        encodedWordList: encodedWordList,
+      },
     });
   };
 
@@ -364,6 +414,13 @@ const AddModules = () => {
       inputErrors={inputErrors}
       modules={moduleList}
       moduleId={moduleId}
+      isRemedial={isRemedial}
+      setIsRemedial={setIsRemedial}
+      focusedIpa={focusedIpa}
+      setFocusedIpa={setFocusIpa}
+      specializedType={specializedType}
+      setTargetModule={setTargetModule}
+      targetModule={targetModule}
     />
   );
 
@@ -388,6 +445,7 @@ const AddModules = () => {
       handleAddSection={handleAddSection}
       specializedType={specializedType}
       handleNext={handleNext}
+      isRemedial={isRemedial}
     />
   );
 

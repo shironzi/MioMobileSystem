@@ -24,14 +24,14 @@ interface Props {
   publish: string;
   setPublish: (value: string) => void;
   createModule: () => void;
-  modules: string[];
+  modules: { title: string; id: string }[];
   assignments: Assignment[];
   isSubmitting: boolean;
   difficulty: string;
   setDifficulty: (value: string) => void;
   specialized: Specialized[];
   moduleId: string;
-  isRemedial?: boolean;
+  isRemedial: boolean;
   handleAddSection: () => void;
   specializedType: string;
   handleNext?: () => void;
@@ -160,9 +160,9 @@ const AddModuleFooter = ({
                           {preRequisiteType === "module" &&
                             modules.map((item) => (
                               <Picker.Item
-                                key={item}
-                                label={item}
-                                value={item}
+                                key={item.id}
+                                label={item.title}
+                                value={item.id}
                               />
                             ))}
 
@@ -232,7 +232,7 @@ const AddModuleFooter = ({
           disabled={isSubmitting}
         >
           {specializedType === "auditory" ? (
-            <Text>Next</Text>
+            <Text style={globalStyles.submitButtonText}>Next</Text>
           ) : (
             <Text style={globalStyles.submitButtonText}>
               {isSubmitting

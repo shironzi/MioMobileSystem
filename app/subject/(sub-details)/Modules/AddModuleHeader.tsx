@@ -27,12 +27,15 @@ interface Props {
   modulePosition: string;
   setModulePosition: (value: string) => void;
   inputErrors: Error[];
-  modules: string[];
+  modules: { title: string; id: string }[];
   moduleId: string;
-  isRemedial?: boolean;
-  setIsRemedial?: (value: boolean) => void;
-  focusedIpa?: string;
-  setFocusedIpa?: (value: string) => void;
+  isRemedial: boolean;
+  setIsRemedial: (value: boolean) => void;
+  focusedIpa: string;
+  setFocusedIpa: (value: string) => void;
+  specializedType: string;
+  setTargetModule: (value: string) => void;
+  targetModule: string;
 }
 
 const ipaList = [
@@ -94,6 +97,9 @@ const AddModuleHeader = ({
   setIsRemedial,
   focusedIpa,
   setFocusedIpa,
+  specializedType,
+  setTargetModule,
+  targetModule,
 }: Props) => {
   const modulesLen = modules.length + 1;
 
@@ -138,7 +144,7 @@ const AddModuleHeader = ({
           multiline
         />
       </View>
-      <View>
+      <View style={{ marginBottom: 50 }}>
         <Text style={globalStyles.text1}>Module Files</Text>
         <Text style={globalStyles.text2}>
           Accepts PDF, PPT, video, images, etc. (Max: 100MB per file)
@@ -161,10 +167,10 @@ const AddModuleHeader = ({
           </View>
         </View>
       </View>
-      {moduleId && (
+      {!moduleId && (
         <TouchableOpacity
-          onPress={() => (setIsRemedial ? setIsRemedial(!isRemedial) : null)}
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 50 }}
+          onPress={() => setIsRemedial(!isRemedial)}
+          style={{ flexDirection: "row", alignItems: "center" }}
         >
           {isRemedial ? (
             <MaterialIcons name="check-box" size={24} color="black" />
@@ -176,7 +182,7 @@ const AddModuleHeader = ({
             />
           )}
           <Text style={{ fontStyle: "italic", color: "#1a1a1a" }}>
-            Is Supplementary Module?
+            Supplementary Module?
           </Text>
         </TouchableOpacity>
       )}
@@ -207,37 +213,80 @@ const AddModuleHeader = ({
         </View>
       ) : (
         <View>
-          <Text style={globalStyles.text1}>Focus IPA</Text>
-          {inputErrors.some((err) => err.name === "focus_ipa") && (
-            <Text style={globalStyles.errorText}>This field is required</Text>
+          {specializedType === "auditory" ? (
+            <View>
+              {inputErrors.some((err) => err.name === "focus_ipa") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
+              )}
+              {!moduleId && (
+                <View
+                  style={[
+                    globalStyles.dropdownStyle,
+                    inputErrors.some((err) => err.name === "focus_ipa") && {
+                      borderColor: "red",
+                    },
+                  ]}
+                >
+                  <Picker
+                    selectedValue={targetModule}
+                    onValueChange={setTargetModule}
+                    mode="dropdown"
+                  >
+                    <Picker.Item
+                      label="Select"
+                      value=""
+                      enabled={targetModule === ""}
+                    />
+                    {modules.map((item, index) => (
+                      <Picker.Item
+                        label={item.title}
+                        value={item.id}
+                        key={index}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              )}
+            </View>
+          ) : (
+            <View>
+              <Text style={globalStyles.text1}>Focus IPA</Text>
+              {inputErrors.some((err) => err.name === "focus_ipa") && (
+                <Text style={globalStyles.errorText}>
+                  This field is required
+                </Text>
+              )}
+              <View
+                style={[
+                  globalStyles.dropdownStyle,
+                  inputErrors.some((err) => err.name === "focus_ipa") && {
+                    borderColor: "red",
+                  },
+                ]}
+              >
+                <Picker
+                  selectedValue={focusedIpa}
+                  onValueChange={setFocusedIpa}
+                  mode="dropdown"
+                >
+                  <Picker.Item
+                    label="Select"
+                    value=""
+                    enabled={focusedIpa === ""}
+                  />
+                  {ipaList.map((title, index) => (
+                    <Picker.Item
+                      label={`/` + title + `/`}
+                      value={title}
+                      key={index}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
           )}
-          <View
-            style={[
-              globalStyles.dropdownStyle,
-              inputErrors.some((err) => err.name === "focus_ipa") && {
-                borderColor: "red",
-              },
-            ]}
-          >
-            <Picker
-              selectedValue={focusedIpa}
-              onValueChange={setFocusedIpa}
-              mode="dropdown"
-            >
-              <Picker.Item
-                label="Select"
-                value=""
-                enabled={focusedIpa === ""}
-              />
-              {ipaList.map((title, index) => (
-                <Picker.Item
-                  label={`/` + title + `/`}
-                  value={title}
-                  key={index}
-                />
-              ))}
-            </Picker>
-          </View>
         </View>
       )}
     </View>

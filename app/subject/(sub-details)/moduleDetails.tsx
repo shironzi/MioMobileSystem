@@ -16,6 +16,7 @@ import WebView from "react-native-webview";
 import LoadingCard from "@/components/loadingCard";
 import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
 import { Ionicons } from "@expo/vector-icons";
+import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
 
 interface File {
   name: string;
@@ -37,6 +38,12 @@ interface Subsection {
   title: string;
 }
 
+interface word {
+  word: string;
+  media: File | null;
+  video_link: string;
+}
+
 interface Module {
   description: string;
   files: File[];
@@ -46,6 +53,8 @@ interface Module {
   prereq_status: boolean;
   visibility: string;
   focus_ipa: string;
+  remedial_for: string;
+  words: word[];
 }
 
 const moduleDetails = () => {
@@ -108,10 +117,11 @@ const moduleDetails = () => {
       encodeURIComponent(JSON.stringify(module?.files)) ?? [];
     const encodedSubSections =
       encodeURIComponent(JSON.stringify(module?.subsections)) ?? [];
-
+    const encodedWordList =
+      encodeURIComponent(JSON.stringify(module?.words)) ?? [];
     if (isRemedial) {
       router.push({
-        pathname: "/subject/(sub-details)/Modules/AddRemedial",
+        pathname: "/subject/(sub-details)/Modules/AddModules",
         params: {
           moduleId: id,
           subjectId,
@@ -122,6 +132,7 @@ const moduleDetails = () => {
           remedialModule: isRemedial,
           focus_ipa: module?.focus_ipa,
           specializedType: specializedType,
+          encodedWordList: encodedWordList,
         },
       });
     } else {
@@ -272,15 +283,27 @@ const moduleDetails = () => {
             ))}
           </View>
 
-          <View
-            style={[globalStyles.cardContainer1, { marginVertical: "auto" }]}
-          >
-            {/*<AuditoryWord video_url={""} />*/}
-            {/*{show && <YoutubeVideoPlayer video_url={video_url} />}*/}
-            {/*<TouchableOpacity onPress={() => setShow(!show)}>*/}
-            {/*  <Text style={globalStyles.text1}>Wrong</Text>*/}
-            {/*</TouchableOpacity>*/}
+          <View style={globalStyles.cardContainer1}>
+            <Text style={globalStyles.text1}>🎧 Listen and Repeat!</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              Let’s practice saying words clearly!🗣️
+            </Text>
+            <Text style={{ fontSize: 13 }}>
+              <Text style={{ fontWeight: "bold" }}>Need help?</Text> Tap the
+              question mark{" "}
+              <Text style={{ fontWeight: "bold", fontSize: 15 }}>(?)</Text>{" "}
+              button to watch a short video. It will show you how to move your
+              mouth and lips to say the word the right way.
+            </Text>
           </View>
+          {module?.words.map((item, index) => (
+            <View
+              style={[globalStyles.cardContainer1, { marginVertical: "auto" }]}
+              key={index}
+            >
+              <AuditoryWord text={item.word} video_link={item.video_link} />
+            </View>
+          ))}
 
           {webViewUri && (
             <WebView source={{ uri: webViewUri }} style={{ flex: 1 }} />
