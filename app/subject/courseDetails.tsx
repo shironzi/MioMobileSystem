@@ -217,9 +217,13 @@ const newCourseDetails = () => {
           onPress={useCallback(() => {
             router.push({
               pathname: "/subject/modules",
-              params: { subjectId: id, role: role },
+              params: {
+                subjectId: id,
+                role: role,
+                specializedType: specializedType ?? "",
+              },
             });
-          }, [router, id, role])}
+          }, [router, id, role, specializedType])}
         >
           <View style={styles.row}>
             <Image

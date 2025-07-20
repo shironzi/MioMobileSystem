@@ -67,6 +67,7 @@ const moduleDetails = () => {
     assignments,
     specialized,
     isRemedial,
+    specializedType,
   } = useLocalSearchParams<{
     id: string;
     title: string;
@@ -78,6 +79,7 @@ const moduleDetails = () => {
     assignments: string;
     specialized: string;
     isRemedial: string;
+    specializedType: string;
   }>();
 
   useEffect(() => {
@@ -86,7 +88,7 @@ const moduleDetails = () => {
 
       if (res.success) {
         setModule(res.module);
-        setPosition(res.position);
+        setPosition(res.position + 1);
       }
       setLoading(false);
     };
@@ -99,6 +101,8 @@ const moduleDetails = () => {
     }
   };
 
+  console.log(specializedType);
+
   const editModule = () => {
     const encodedModulesFiles =
       encodeURIComponent(JSON.stringify(module?.files)) ?? [];
@@ -107,19 +111,17 @@ const moduleDetails = () => {
 
     if (isRemedial) {
       router.push({
-        pathname: "/subject/(sub-details)/Modules/AddModules",
+        pathname: "/subject/(sub-details)/Modules/AddRemedial",
         params: {
           moduleId: id,
           subjectId,
-          modules,
-          assignments,
-          specialized,
           moduleTitle: module?.title,
           moduleDescription: module?.description,
           encodedModulesFiles,
           encodedSubSections,
           remedialModule: isRemedial,
           focus_ipa: module?.focus_ipa,
+          specializedType: specializedType,
         },
       });
     } else {
@@ -138,6 +140,7 @@ const moduleDetails = () => {
           encodedSubSections,
           prereq_status: module?.prereq_status.toString(),
           visibility: module?.visibility,
+          specializedType: specializedType,
         },
       });
     }
@@ -267,6 +270,16 @@ const moduleDetails = () => {
                 ))}
               </View>
             ))}
+          </View>
+
+          <View
+            style={[globalStyles.cardContainer1, { marginVertical: "auto" }]}
+          >
+            {/*<AuditoryWord video_url={""} />*/}
+            {/*{show && <YoutubeVideoPlayer video_url={video_url} />}*/}
+            {/*<TouchableOpacity onPress={() => setShow(!show)}>*/}
+            {/*  <Text style={globalStyles.text1}>Wrong</Text>*/}
+            {/*</TouchableOpacity>*/}
           </View>
 
           {webViewUri && (

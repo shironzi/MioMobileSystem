@@ -31,8 +31,10 @@ interface Props {
   setDifficulty: (value: string) => void;
   specialized: Specialized[];
   moduleId: string;
-  isRemedial: boolean;
+  isRemedial?: boolean;
   handleAddSection: () => void;
+  specializedType: string;
+  handleNext?: () => void;
 }
 
 const AddModuleFooter = ({
@@ -54,10 +56,14 @@ const AddModuleFooter = ({
   moduleId,
   isRemedial,
   handleAddSection,
+  specializedType,
+  handleNext,
 }: Props) => {
   const [filteredSpecialized, setFilteredSpecialized] = useState<Specialized[]>(
     [],
   );
+
+  console.log(specializedType);
 
   useEffect(() => {
     const filtered = specialized.filter(
@@ -222,18 +228,22 @@ const AddModuleFooter = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[globalStyles.submitButton, { marginHorizontal: "auto" }]}
-          onPress={createModule}
+          onPress={specializedType === "auditory" ? handleNext : createModule}
           disabled={isSubmitting}
         >
-          <Text style={globalStyles.submitButtonText}>
-            {isSubmitting
-              ? moduleId
-                ? "Updating..."
-                : "Creating..."
-              : moduleId
-                ? "Update"
-                : "Create"}
-          </Text>
+          {specializedType === "auditory" ? (
+            <Text>Next</Text>
+          ) : (
+            <Text style={globalStyles.submitButtonText}>
+              {isSubmitting
+                ? moduleId
+                  ? "Updating..."
+                  : "Creating..."
+                : moduleId
+                  ? "Update"
+                  : "Create"}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

@@ -4,7 +4,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import AddModuleFooter from "@/app/subject/(sub-details)/Modules/AddModuleFooter";
 import AddModuleHeader from "@/app/subject/(sub-details)/Modules/AddModuleHeader";
 import { router, useLocalSearchParams } from "expo-router";
-import { addModule, updateModule } from "@/utils/modules";
+import { addRemedial, updateRemedial } from "@/utils/modules";
 import AddModuleItem from "@/app/subject/(sub-details)/Modules/AddModuleItem";
 
 interface FileInfo {
@@ -34,32 +34,11 @@ interface Error {
   index?: number;
 }
 
-interface Module {
-  id: string;
-  title: string;
-  description: string;
-  visible: boolean;
-}
-
-interface Assignment {
-  id: string;
-  title: string;
-}
-
-interface Specialized {
-  id: string;
-  title: string;
-  difficulty: string;
-}
-
-const AddModules = () => {
+const AddRemedial = () => {
   useHeaderConfig("Modules");
   const {
     subjectId,
     moduleId,
-    modules,
-    assignments,
-    specialized,
     moduleTitle = "",
     moduleDescription = "",
     position = "0",
@@ -67,13 +46,11 @@ const AddModules = () => {
     encodedSubSections,
     prereq_status,
     visibility,
-    specializedType,
+    remedialModule = "false",
+    focus_ipa = "",
   } = useLocalSearchParams<{
     subjectId: string;
     moduleId: string;
-    modules: string;
-    assignments: string;
-    specialized: string;
     moduleTitle: string;
     moduleDescription: string;
     position: string;
@@ -81,7 +58,8 @@ const AddModules = () => {
     encodedSubSections: string;
     prereq_status: string;
     visibility: string;
-    specializedType: string;
+    remedialModule: string;
+    focus_ipa: string;
   }>();
 
   const moduleFiles = useMemo<FileInfo[]>(() => {
@@ -122,33 +100,6 @@ const AddModules = () => {
     }
   }, [encodedSubSections]);
 
-  const moduleList = useMemo<string[]>(() => {
-    try {
-      const parsed: Module[] = JSON.parse(modules || "[]");
-      return parsed.map((m) => m.title);
-    } catch {
-      return [];
-    }
-  }, [modules]);
-
-  const assignmentList = useMemo<Assignment[]>(() => {
-    try {
-      const parsed: Assignment[] = JSON.parse(assignments || "[]");
-      return parsed;
-    } catch {
-      return [];
-    }
-  }, [assignments]);
-
-  const SpecializedList = useMemo<Specialized[]>(() => {
-    try {
-      const parsed: Specialized[] = JSON.parse(specialized || "[]");
-      return parsed;
-    } catch {
-      return [];
-    }
-  }, [specialized]);
-
   const [title, setTitle] = useState<string>(moduleTitle);
   const [description, setDescription] = useState<string>(moduleDescription);
   const [moduleFile, setModuleFile] = useState<FileInfo[]>(moduleFiles);
@@ -163,10 +114,14 @@ const AddModules = () => {
   );
   const [preRequisiteType, setPreRequisiteType] = useState<string>("");
   const [selectedPreRequisite, setSelectedPreRequisite] = useState<string>("");
-  const [publish, setPublish] = useState<string>(visibility ?? "private");
+  const [publish, setPublish] = useState<string>(visibility);
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [difficulty, setDifficulty] = useState<string>("");
+  const [isRemedial, setIsRemedial] = useState<boolean>(
+    remedialModule === "true",
+  );
+  const [focusedIpa, setFocusIpa] = useState<string>(focus_ipa);
 
   const createModule = async () => {
     const errors: Error[] = [];
@@ -178,8 +133,13 @@ const AddModules = () => {
       errors.push({ name: "description" });
     }
 
+    if (isRemedial && !focusedIpa.trim().length) {
+      errors.push({ name: "focus_ipa" });
+    }
+
     if (errors.length) {
       setInputErrors(errors);
+      console.log(errors);
       return;
     }
 
@@ -187,32 +147,22 @@ const AddModules = () => {
 
     setIsSubmitting(true);
     const res = moduleId
-      ? await updateModule(
+      ? await updateRemedial(
           subjectId,
+          title,
+          description,
+          moduleFile,
+          subSections,
+          focusedIpa,
           moduleId,
-          title,
-          description,
-          moduleFile,
-          hasPreRequisites,
-          publish,
-          selectedPreRequisite,
-          preRequisiteType,
-          subSections,
-          modulePosition,
-          difficulty,
         )
-      : await addModule(
+      : await addRemedial(
           subjectId,
           title,
           description,
           moduleFile,
-          hasPreRequisites,
-          publish,
-          selectedPreRequisite,
-          preRequisiteType,
           subSections,
-          modulePosition,
-          difficulty,
+          focusedIpa,
         );
 
     if (res.success) {
@@ -236,30 +186,7 @@ const AddModules = () => {
       Alert.alert("Failed", res.message);
     }
 
-    console.log(res);
-
     setIsSubmitting(false);
-  };
-
-  const handleNext = async () => {
-    const errors: Error[] = [];
-
-    if (!title.trim().length) {
-      errors.push({ name: "title" });
-    }
-    if (!description.trim().length) {
-      errors.push({ name: "description" });
-    }
-
-    if (errors.length) {
-      setInputErrors(errors);
-      return;
-    }
-
-    setInputErrors([]);
-    router.push({
-      pathname: "/subject/(sub-details)/Modules/AddModuleAuditory",
-    });
   };
 
   const setSectionTitle = (id: string, title: string) => {
@@ -362,8 +289,12 @@ const AddModules = () => {
       modulePosition={modulePosition}
       setModulePosition={setModulePosition}
       inputErrors={inputErrors}
-      modules={moduleList}
+      modules={[]}
       moduleId={moduleId}
+      isRemedial={isRemedial}
+      setIsRemedial={setIsRemedial}
+      focusedIpa={focusedIpa}
+      setFocusedIpa={setFocusIpa}
     />
   );
 
@@ -378,16 +309,16 @@ const AddModules = () => {
       publish={publish}
       setPublish={setPublish}
       createModule={createModule}
-      modules={moduleList}
-      assignments={assignmentList}
-      specialized={SpecializedList}
+      modules={[]}
+      assignments={[]}
+      specialized={[]}
       isSubmitting={isSubmitting}
       difficulty={difficulty}
       setDifficulty={setDifficulty}
       moduleId={moduleId}
+      isRemedial={isRemedial}
       handleAddSection={handleAddSection}
-      specializedType={specializedType}
-      handleNext={handleNext}
+      specializedType={""}
     />
   );
 
@@ -416,4 +347,4 @@ const AddModules = () => {
   );
 };
 
-export default AddModules;
+export default AddRemedial;

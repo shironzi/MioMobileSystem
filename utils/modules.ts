@@ -65,6 +65,10 @@ export async function addModule(
 
   formData.append("title", title);
   formData.append("description", description);
+  formData.append("prereq_status", hasPreRequisites.toString());
+  formData.append("visibility", visibility);
+  formData.append("position", position);
+  formData.append("difficulty", difficulty);
 
   if (files.length > 0) {
     files.forEach((file, index) => {
@@ -75,11 +79,6 @@ export async function addModule(
       } as any);
     });
   }
-
-  formData.append("prereq_status", hasPreRequisites.toString());
-  formData.append("visibility", visibility);
-  formData.append("position", position);
-  formData.append("difficulty", difficulty);
 
   if (hasPreRequisites) {
     formData.append("prerequisite_id", prerequisite_id);
@@ -92,8 +91,8 @@ export async function addModule(
       formData.append(`sub_sections[${index}][description]`, item.description);
 
       if (item.files?.length > 0) {
-        item.files.forEach((file, videoIndex) => {
-          formData.append(`sub_sections[${index}][files][${videoIndex}]`, {
+        item.files.forEach((file, fileIndex) => {
+          formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
             type: file.mimeType,
@@ -113,6 +112,7 @@ export async function addModule(
   }
 
   const token = await getAuth().currentUser?.getIdToken(true);
+  console.log(formData);
 
   try {
     const res = await fetch(`${IPADDRESS}/subject/${subjectId}/module`, {

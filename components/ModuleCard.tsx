@@ -34,6 +34,7 @@ type Props = {
   modules?: Module[];
   assignments?: Assignment[];
   specialized?: Specialized[];
+  specializedType?: string;
 };
 
 const ModuleCard = ({
@@ -48,6 +49,7 @@ const ModuleCard = ({
   modules,
   assignments,
   specialized,
+  specializedType,
 }: Props) => {
   const router = useRouter();
 
@@ -71,7 +73,8 @@ const ModuleCard = ({
         modules: encodedModules,
         assignments: encodedAssignments,
         specialized: encodedSpecialized,
-        isRemedial: "true",
+        isRemedial: isRemedial.toString(),
+        specializedType: specializedType,
       },
     });
   };

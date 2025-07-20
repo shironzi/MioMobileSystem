@@ -29,10 +29,10 @@ interface Props {
   inputErrors: Error[];
   modules: string[];
   moduleId: string;
-  isRemedial: boolean;
-  setIsRemedial: (value: boolean) => void;
-  focusedIpa: string;
-  setFocusedIpa: (value: string) => void;
+  isRemedial?: boolean;
+  setIsRemedial?: (value: boolean) => void;
+  focusedIpa?: string;
+  setFocusedIpa?: (value: string) => void;
 }
 
 const ipaList = [
@@ -98,7 +98,7 @@ const AddModuleHeader = ({
   const modulesLen = modules.length + 1;
 
   useEffect(() => {
-    if (modulePosition.trim().length > 0) return;
+    if (!modulePosition) return;
     setModulePosition(modulesLen.toString());
   }, []);
 
@@ -161,25 +161,27 @@ const AddModuleHeader = ({
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() => setIsRemedial(!isRemedial)}
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 50 }}
-      >
-        {isRemedial ? (
-          <MaterialIcons name="check-box" size={24} color="black" />
-        ) : (
-          <MaterialIcons
-            name="check-box-outline-blank"
-            size={24}
-            color="black"
-          />
-        )}
-        <Text style={{ fontStyle: "italic", color: "#1a1a1a" }}>
-          Is Remedial Module?
-        </Text>
-      </TouchableOpacity>
+      {moduleId && (
+        <TouchableOpacity
+          onPress={() => (setIsRemedial ? setIsRemedial(!isRemedial) : null)}
+          style={{ flexDirection: "row", alignItems: "center", marginTop: 50 }}
+        >
+          {isRemedial ? (
+            <MaterialIcons name="check-box" size={24} color="black" />
+          ) : (
+            <MaterialIcons
+              name="check-box-outline-blank"
+              size={24}
+              color="black"
+            />
+          )}
+          <Text style={{ fontStyle: "italic", color: "#1a1a1a" }}>
+            Is Supplementary Module?
+          </Text>
+        </TouchableOpacity>
+      )}
       {!isRemedial ? (
-        <View>
+        <View style={{ marginTop: 50 }}>
           <Text style={globalStyles.text1}>Module Position</Text>
           <View style={globalStyles.dropdownStyle}>
             <Picker

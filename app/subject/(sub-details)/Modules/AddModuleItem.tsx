@@ -106,13 +106,12 @@ const AddModuleItem = ({
             setSectionFile(item.id, file);
           }}
         />
+        <Text style={globalStyles.text2}>
+          Accepts PDF, PPT, video, images, etc. (Max: 100MB per file)
+        </Text>
       </View>
       {item?.videoLink.map?.((video, idx) => (
         <View key={idx}>
-          <Text style={globalStyles.text2}>
-            Accepts PDF, PPT, video, images, etc. (Max: 100MB per file) Video
-            Links (YouTube, etc.)
-          </Text>
           <View
             style={{
               flexDirection: "row",
@@ -136,6 +135,7 @@ const AddModuleItem = ({
               <FontAwesome6 name="trash" size={20} color="red" />
             </TouchableOpacity>
           </View>
+          <Text style={globalStyles.text2}>Video Links (YouTube, etc.)</Text>
         </View>
       ))}
 

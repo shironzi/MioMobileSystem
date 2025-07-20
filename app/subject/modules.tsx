@@ -34,9 +34,10 @@ interface Specialized {
 }
 
 const ModulesScreen = () => {
-  const { subjectId, role } = useLocalSearchParams<{
+  const { subjectId, role, specializedType } = useLocalSearchParams<{
     subjectId: string;
     role: string;
+    specializedType: string;
   }>();
 
   const [moduleList, setModuleList] = useState<Module[]>([]);
@@ -60,23 +61,10 @@ const ModulesScreen = () => {
         assignments: encodedAssignments,
         specialized: encodedSpecialized,
         subjectId: subjectId,
+        specializedType: specializedType,
       },
     });
   };
-
-  // const handleAddRemedial = () => {
-  //   const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
-  //   const encodedAssignments =
-  //     encodeURIComponent(JSON.stringify(assignments)) ?? [];
-  //   router.push({
-  //     pathname: "/subject/(sub-details)/Modules/AddRemedial",
-  //     params: {
-  //       modules: encodedModules,
-  //       assignments: encodedAssignments,
-  //       subjectId: subjectId,
-  //     },
-  //   });
-  // };
 
   useFocusEffect(
     useCallback(() => {
@@ -129,21 +117,6 @@ const ModulesScreen = () => {
               <Text style={styles.addText}>Add Module</Text>
             </View>
           </TouchableOpacity>
-          {/*<TouchableOpacity*/}
-          {/*  style={styles.addButton}*/}
-          {/*  onPress={handleAddRemedial}*/}
-          {/*>*/}
-          {/*  <View*/}
-          {/*    style={{*/}
-          {/*      top: 20,*/}
-          {/*      alignSelf: "center",*/}
-          {/*      flexDirection: "row",*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    <Ionicons name="add-circle" size={20} color="#ffbf18" />*/}
-          {/*    <Text style={styles.addText}>Add Remedial</Text>*/}
-          {/*  </View>*/}
-          {/*</TouchableOpacity>*/}
         </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -162,6 +135,7 @@ const ModulesScreen = () => {
                 modules={moduleList}
                 assignments={assignments}
                 specialized={specialized}
+                specializedType={specializedType}
               />
             ))}
 
@@ -180,6 +154,7 @@ const ModulesScreen = () => {
                   subjectId={subjectId}
                   isRemedial={item.remedial_module}
                   role={role}
+                  specializedType={specializedType}
                 />
               ))}
             </View>
