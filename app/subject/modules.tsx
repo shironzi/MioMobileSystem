@@ -67,6 +67,10 @@ const ModulesScreen = () => {
     });
   };
 
+  const handleDeleteModule = () => {
+    console.log("delete");
+  };
+
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
@@ -138,6 +142,7 @@ const ModulesScreen = () => {
                   assignments={assignments}
                   specialized={specialized}
                   specializedType={specializedType}
+                  handleDeleteModule={handleAddModule}
                 />
               ))}
 
@@ -157,6 +162,7 @@ const ModulesScreen = () => {
                     isRemedial={item.remedial_module}
                     role={role}
                     specializedType={specializedType}
+                    handleDeleteModule={handleAddModule}
                   />
                 ))}
               </View>

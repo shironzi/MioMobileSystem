@@ -26,15 +26,8 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
             onPress={() => {
               navigation.goBack();
               navigation.goBack();
-              if (
-                activity_type === "picture" ||
-                activity_type === "phrase" ||
-                activity_type === "question"
-              ) {
-                navigation.goBack();
-                navigation.goBack();
-                navigation.goBack();
-              }
+              navigation.goBack();
+              navigation.goBack();
             }}
           >
             <FontAwesome6 name="arrow-left-long" size={24} color="#282727" />
@@ -51,7 +44,7 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
 
         headerBackTitleVisible: false,
       });
-    }, [navigation, title, activity_type]),
+    }, [navigation, title]),
   );
 };
 

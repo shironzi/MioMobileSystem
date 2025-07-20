@@ -1,6 +1,6 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   runOnJS,
@@ -43,6 +43,7 @@ type Props = {
   assignments?: Assignment[];
   specialized?: Specialized[];
   specializedType?: string;
+  handleDeleteModule: (id: string) => void;
 };
 
 const ModuleCard = ({
@@ -58,6 +59,7 @@ const ModuleCard = ({
   assignments,
   specialized,
   specializedType,
+  handleDeleteModule,
 }: Props) => {
   const router = useRouter();
 
@@ -88,67 +90,73 @@ const ModuleCard = ({
   };
 
   const translatedX = useSharedValue(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const panGesture = Gesture.Pan()
-    .onUpdate((e) => {
-      if (role !== "teacher") return;
-      if (e.translationX < 0 && e.translationX > -110) {
-        translatedX.value = e.translationX;
-      }
-    })
-    .onEnd(() => {
-      if (role !== "teacher") return;
-      if (translatedX.value < -90) {
-        translatedX.value = withTiming(-1000, { duration: 1500 });
-        // runOnJS(props.handleDelete)();
-      }
-      translatedX.value = withTiming(0, { duration: 700 });
-    });
+  // const panGesture = Gesture.Pan()
+  //   .onStart((e) => {
+  //     runOnJS(setIsDragging)(true);
+  //   })
+  //   .onUpdate((e) => {
+  //     if (role !== "teacher") return;
+  //     if (e.translationX < 0 && e.translationX > -110) {
+  //       translatedX.value = e.translationX;
+  //     }
+  //   })
+  //   .onEnd(() => {
+  //     if (role !== "teacher") return;
+  //     if (translatedX.value < -90) {
+  //       translatedX.value = withTiming(-1000, { duration: 1500 });
+  //       runOnJS(handleDeleteModule)(id);
+  //     }
+  //     translatedX.value = withTiming(0, { duration: 700 });
+  //     runOnJS(setIsDragging)(false);
+  //   });
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translatedX.value }],
-  }));
+  // const animatedStyle = useAnimatedStyle(() => ({
+  //   transform: [{ translateX: translatedX.value }],
+  // }));
 
   return (
-    <GestureDetector gesture={panGesture}>
-      <View>
-        {role === "teacher" && (
-          <View style={styles.deleteBackground}>
-            <MaterialIcons name="delete" size={28} color="white" />
-          </View>
-        )}
-        <Animated.View style={[animatedStyle]}>
-          <TouchableOpacity
-            onPress={handleRoute}
-            style={styles.touchableOpacity}
-          >
-            <View style={styles.cardContainer}>
-              <View style={styles.cardContent}>
-                <View
-                  style={[
-                    styles.yellowBulletin,
-                    visible
-                      ? { backgroundColor: "#FFBF18" }
-                      : { backgroundColor: "#00000024" },
-                  ]}
-                />
-                <View style={styles.titleContainer}>
-                  <Text style={styles.title} numberOfLines={3}>
-                    {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
-                  </Text>
-                </View>
-                <FontAwesome6
-                  name="arrow-right-long"
-                  size={15}
-                  color="#1f1f1f"
-                  style={{ left: -10 }}
-                />
-              </View>
+    <View>
+      {/*{role === "teacher" && (*/}
+      {/*  <View style={styles.deleteBackground}>*/}
+      {/*    <MaterialIcons name="delete" size={28} color="white" />*/}
+      {/*  </View>*/}
+      {/*)}*/}
+      {/*<GestureDetector gesture={panGesture}>*/}
+      {/*  <Animated.View style={[animatedStyle]}>*/}
+      <TouchableOpacity
+        onPress={handleRoute}
+        style={styles.touchableOpacity}
+        activeOpacity={100}
+      >
+        <View style={styles.cardContainer}>
+          <View style={styles.cardContent}>
+            <View
+              style={[
+                styles.yellowBulletin,
+                visible
+                  ? { backgroundColor: "#FFBF18" }
+                  : { backgroundColor: "#00000024" },
+              ]}
+            />
+            <View style={styles.titleContainer}>
+              <Text style={styles.title} numberOfLines={3}>
+                {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
+              </Text>
             </View>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    </GestureDetector>
+            <FontAwesome6
+              name="arrow-right-long"
+              size={15}
+              color="#1f1f1f"
+              style={{ left: -10 }}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+      {/*  </Animated.View>*/}
+      {/*</GestureDetector>*/}
+    </View>
   );
 };
 

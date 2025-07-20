@@ -18,6 +18,24 @@ export async function getModules(subjectId: string) {
   }
 }
 
+export async function deleteModule(subjectId: string, moduleId: string) {
+  try {
+    const { data } = await api.delete(
+      `/subject/${subjectId}/module/${moduleId}`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getModuleById(subjectId: string, moduleId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/module/${moduleId}`);
