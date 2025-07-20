@@ -86,7 +86,7 @@ const AddRemedialSchedule = () => {
       }
 
       const startHour = startTime.getHours();
-      if (startHour < 7 || startHour >= 17) {
+      if (startHour < 6 || startHour >= 17) {
         errors.push({ id: "startTime", type: "outOfRange" });
       }
     }
@@ -104,7 +104,7 @@ const AddRemedialSchedule = () => {
       }
 
       const endHour = endTime.getHours();
-      if (endHour < 7 || endHour >= 17) {
+      if (endHour < 6 || endHour >= 17) {
         errors.push({ id: "endTime", type: "outOfRange" });
       }
 
@@ -116,9 +116,9 @@ const AddRemedialSchedule = () => {
         const diffMs = endTime.getTime() - startTime.getTime();
         const diffMinutes = diffMs / (1000 * 60);
 
-        if (diffMinutes < 15) {
+        if (diffMinutes <= 30) {
           errors.push({ id: "endTime", type: "tooShort" });
-        } else if (diffMinutes > 30) {
+        } else if (diffMinutes >= 61) {
           errors.push({ id: "endTime", type: "tooLong" });
         }
       }
@@ -468,11 +468,11 @@ const AddRemedialSchedule = () => {
                   if (error.type === "lessThanStart")
                     return "The end time must be later than the start time.";
                   if (error.type === "tooShort")
-                    return "The session must be at least 15 minutes long.";
+                    return "The session must be at least 30 minutes long.";
                   if (error.type === "tooLong")
-                    return "The session must not exceed 30 minutes.";
+                    return "The session must not exceed 60 minutes.";
                   if (error.type === "outOfRange")
-                    return "Time must be between 7:00 AM and 5:00 PM.";
+                    return "Time must be between 6:00 AM and 5:00 PM.";
                   return "";
                 })()}
               </Text>

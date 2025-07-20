@@ -59,7 +59,7 @@ const AddModuleItem = ({
       <View>
         <Text style={globalStyles.text1}>Sub-section Title</Text>
         {inputErrors.some(
-          (err) => err.name === "subTitle" && err.id === item.id,
+          (err) => err.name === "subsection" && err.id === item.id,
         ) && <Text style={globalStyles.errorText}>This field is required</Text>}
         <TextInput
           value={item.title}
@@ -67,7 +67,7 @@ const AddModuleItem = ({
           style={[
             globalStyles.textInputContainer,
             inputErrors.some(
-              (err) => err.name === "subTitle" && err.id === item.id,
+              (err) => err.name === "subsection" && err.id === item.id,
             ) && {
               borderColor: "red",
             },
@@ -77,7 +77,7 @@ const AddModuleItem = ({
       <View>
         <Text style={globalStyles.text1}>Description</Text>
         {inputErrors.some(
-          (err) => err.name === "subDescription" && err.id === item.id,
+          (err) => err.name === "subsection" && err.id === item.id,
         ) && <Text style={globalStyles.errorText}>This field is required</Text>}
         <TextInput
           value={item.description}
@@ -86,7 +86,7 @@ const AddModuleItem = ({
             globalStyles.textInputContainer,
             { minHeight: 150, textAlignVertical: "top" },
             inputErrors.some(
-              (err) => err.name === "subDescription" && err.id === item.id,
+              (err) => err.name === "subsection" && err.id === item.id,
             ) && {
               borderColor: "red",
             },

@@ -6,11 +6,12 @@ import LoadingCard from "@/components/loadingCard";
 import {
   getBingoActivityById,
   getMatchingActivityById,
+  getRemedialList,
 } from "@/utils/auditory";
 import HeaderConfig from "@/utils/HeaderConfig";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 interface FileInfo {
@@ -33,10 +34,27 @@ interface Audio {
   audio: FileInfo | null;
 }
 
+interface Remedial {
+  id: string;
+  title: string;
+}
+
+interface Matching {
+  image_id: string;
+  audio_id: string;
+}
+
+const matching = {
+  id: "0",
+  file: null,
+  image_path: null,
+  image_id: null,
+};
+
 const AddAuditoryActivity = () => {
   HeaderConfig("Add Auditory Activity");
 
-  const { subjectId, activity_type, difficulty, category, activityId } =
+  const { subjectId, activity_type, difficulty, activityId } =
     useLocalSearchParams<{
       subjectId: string;
       activity_type: string;
@@ -44,27 +62,22 @@ const AddAuditoryActivity = () => {
       category: string;
       activityId: string;
     }>();
+
   const [bingoItems, setBingoItems] = useState<Items[]>([
     { id: "0", file: null, image_path: null, image_id: null },
   ]);
-  const [matchingItems, setMatchingItems] = useState<Items[]>([
-    {
-      id: "0",
-      file: null,
-      image_path: null,
-      image_id: null,
-    },
-  ]);
+  const [matchingItems, setMatchingItems] = useState<Items[]>([matching]);
   const [bingoAudio, setBingoAudio] = useState<Audio[]>([]);
   const [matchingAudio, setMatchingAudio] = useState<Audio[]>([]);
-  const [matchingAnswers, setMatchingAnswers] = useState<
-    { image_id: string; audio_id: string }[]
-  >([]);
+  const [matchingAnswers, setMatchingAnswers] = useState<Matching[]>([]);
   const [activityType, setActivityType] = useState<string>("bingo");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [loading, setLoading] = useState<boolean>(true);
   const [activityTitle, setActivityTitle] = useState<string>("");
   const [titleError, setTitleError] = useState<boolean>(false);
+  const [remedialId, setRemedialId] = useState<string>("");
+  const [remedialList, setRemedialList] = useState<Remedial[]>([]);
+  const [remedialIdError, setRemedialIdError] = useState<boolean>(false);
 
   const handleFileUpload = (index: number, file: FileInfo) => {
     if (activityType === "bingo") {
@@ -209,6 +222,12 @@ const AddAuditoryActivity = () => {
       return;
     }
 
+    if (!remedialId.trim()) {
+      setRemedialIdError(true);
+      return;
+    }
+
+    setRemedialIdError(false);
     setTitleError(false);
 
     if (activityType === "bingo") {
@@ -242,6 +261,7 @@ const AddAuditoryActivity = () => {
           bingoItems: encodedItems,
           bingoAudio: encodedAudio,
           title: activityTitle,
+          remedialId: remedialId,
         },
       });
     } else if (activityType === "matching") {
@@ -282,6 +302,7 @@ const AddAuditoryActivity = () => {
           matchingAudio: encodedAudios,
           matchingAnswers: encodedAnswer,
           title: activityTitle,
+          remedialId: remedialId,
         },
       });
     }
@@ -297,9 +318,17 @@ const AddAuditoryActivity = () => {
             difficulty,
             activityId,
           );
-          setBingoItems(res.items);
-          setBingoAudio(res.audio);
-          setActivityTitle(res.title);
+          if (res.success) {
+            setBingoItems(res.items);
+            setBingoAudio(res.audio);
+            setActivityTitle(res.title);
+            setRemedialList(res.remedials);
+            setRemedialId(res.remedial_id);
+
+            console.log(remedialId);
+          } else {
+            Alert.alert("Error", "Please try again later.");
+          }
         } else if (activity_type === "matching") {
           const res = await getMatchingActivityById(
             subjectId,
@@ -308,16 +337,32 @@ const AddAuditoryActivity = () => {
             activityId,
           );
 
-          console.log(res);
-          setMatchingItems(res.items);
-          setMatchingAudio(res.audio);
-          setMatchingAnswers(res.answers);
-          setActivityType("matching");
-          setActivityTitle(res.title);
+          if (res.success) {
+            setMatchingItems(res.items);
+            setMatchingAudio(res.audio);
+            setMatchingAnswers(res.answers);
+            setActivityType("matching");
+            setActivityTitle(res.title);
+            setRemedialList(res.remedials);
+            setRemedialId(res.remedial_id);
+          } else {
+            Alert.alert("Error", "Please try again later.");
+          }
         }
         setLoading(false);
       };
       fetchActivity();
+    } else {
+      setLoading(true);
+      const fetchRemedialList = async () => {
+        const res = await getRemedialList(subjectId);
+
+        if (res.success) {
+          setRemedialList(res.remedials);
+        }
+      };
+      setLoading(false);
+      fetchRemedialList();
     }
   }, []);
 
@@ -365,7 +410,6 @@ const AddAuditoryActivity = () => {
     }
     return null;
   };
-  // HeaderConfig(activityId ? "Update Flashcard" : "Add Flashcard");
 
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
@@ -385,6 +429,10 @@ const AddAuditoryActivity = () => {
               activityTitle={activityTitle}
               titleError={titleError}
               activityId={activityId}
+              remedialList={remedialList}
+              setRemedialId={setRemedialId}
+              remedialId={remedialId}
+              remedialIdError={remedialIdError}
             />
           }
           ListFooterComponent={
@@ -423,6 +471,10 @@ const AddAuditoryActivity = () => {
               activityTitle={activityTitle}
               titleError={titleError}
               activityId={activityId}
+              remedialList={remedialList}
+              setRemedialId={setRemedialId}
+              remedialId={remedialId}
+              remedialIdError={remedialIdError}
             />
           }
           ListFooterComponent={

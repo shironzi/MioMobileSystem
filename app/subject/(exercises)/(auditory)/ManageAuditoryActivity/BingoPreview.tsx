@@ -46,6 +46,7 @@ const BingoPreview = () => {
     bingoItems,
     bingoAudio,
     title,
+    remedialId,
   } = useLocalSearchParams<{
     subjectId: string;
     activityType: string;
@@ -54,6 +55,7 @@ const BingoPreview = () => {
     bingoItems: string;
     bingoAudio: string;
     title: string;
+    remedialId: string;
   }>();
 
   const parsedBingoItems = useMemo<BingoItem[]>(() => {
@@ -84,33 +86,35 @@ const BingoPreview = () => {
     image_url: item.file?.uri ?? item.image_path ?? "",
   }));
 
-  const [matchedPairs, setMatchedPairs] = useState<
-    { image_id: string; audio_id: string | null }[]
-  >([]);
-
   const handleCardPress = (image_id: string) => {
-    setMatchedPairs((prev) => {
-      const exists = prev.find(
-        (pair) =>
-          pair.image_id === image_id &&
-          pair.audio_id === parsedBingoAudio[currentAudio].audio_id,
-      );
+    setMatchedIds((prev) =>
+      prev.includes(image_id)
+        ? prev.filter((id) => id !== image_id)
+        : [...prev, image_id],
+    );
 
-      if (exists) {
-        return prev.filter(
-          (pair) =>
-            !(
-              pair.image_id === image_id &&
-              pair.audio_id === parsedBingoAudio[currentAudio].audio_id
-            ),
-        );
-      } else {
-        return [
-          ...prev,
-          { image_id, audio_id: parsedBingoAudio[currentAudio].audio_id },
-        ];
-      }
-    });
+    // setMatchedPairs((prev) => {
+    //   const exists = prev.find(
+    //     (pair) =>
+    //       pair.image_id === image_id &&
+    //       pair.audio_id === parsedBingoAudio[currentAudio].audio_id,
+    //   );
+    //
+    //   if (exists) {
+    //     return prev.filter(
+    //       (pair) =>
+    //         !(
+    //           pair.image_id === image_id &&
+    //           pair.audio_id === parsedBingoAudio[currentAudio].audio_id
+    //         ),
+    //     );
+    //   } else {
+    //     return [
+    //       ...prev,
+    //       { image_id, audio_id: parsedBingoAudio[currentAudio].audio_id },
+    //     ];
+    //   }
+    // });
   };
 
   const playAudio = useCallback(async () => {
@@ -152,6 +156,7 @@ const BingoPreview = () => {
             activity,
             parsedBingoAudio,
             title,
+            remedialId,
           )
         : await createBingoActivity(
             subjectId,
@@ -160,6 +165,7 @@ const BingoPreview = () => {
             activity,
             parsedBingoAudio,
             title,
+            remedialId,
           );
 
       console.log(res);
@@ -173,6 +179,8 @@ const BingoPreview = () => {
             {
               text: "OK",
               onPress: () => {
+                router.back();
+                router.back();
                 router.back();
                 router.back();
               },
@@ -190,7 +198,6 @@ const BingoPreview = () => {
 
   return (
     <View style={[globalStyles.container, { flex: 1, padding: 20 }]}>
-      {/* <Text style={styles.difficulty}></Text> */}
       <View
         style={{
           borderColor: "#ddd",

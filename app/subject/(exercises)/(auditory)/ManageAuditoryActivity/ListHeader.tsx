@@ -3,6 +3,11 @@ import { Picker } from "@react-native-picker/picker";
 import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
+interface Remedial {
+  id: string;
+  title: string;
+}
+
 const ListHeader = (props: {
   activityType: string;
   setActivityType: (value: string) => void;
@@ -12,6 +17,10 @@ const ListHeader = (props: {
   setActivityTitle: (value: string) => void;
   activityTitle: string;
   activityId: string;
+  remedialList: Remedial[];
+  setRemedialId: (value: string) => void;
+  remedialId: string;
+  remedialIdError: boolean;
 }) => (
   <View style={{ margin: 25, marginBottom: 0 }}>
     <View style={globalStyles.cardContainer}>
@@ -66,6 +75,28 @@ const ListHeader = (props: {
           </View>
         </View>
       )}
+      <View>
+        <Text style={globalStyles.text1}>Supplementary Module</Text>
+        {props.remedialIdError && (
+          <Text style={globalStyles.errorText}>This field is required</Text>
+        )}
+        <View style={styles.picker}>
+          <Picker
+            mode="dropdown"
+            selectedValue={props.remedialId}
+            onValueChange={props.setRemedialId}
+          >
+            <Picker.Item
+              label="Select"
+              value=""
+              enabled={props.remedialId === ""}
+            />
+            {props.remedialList.map((item) => (
+              <Picker.Item label={item.title} value={item.id} key={item.id} />
+            ))}
+          </Picker>
+        </View>
+      </View>
     </View>
   </View>
 );

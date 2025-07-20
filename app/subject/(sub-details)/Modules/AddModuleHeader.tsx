@@ -34,8 +34,6 @@ interface Props {
   focusedIpa: string;
   setFocusedIpa: (value: string) => void;
   specializedType: string;
-  setTargetModule: (value: string) => void;
-  targetModule: string;
 }
 
 const ipaList = [
@@ -98,13 +96,11 @@ const AddModuleHeader = ({
   focusedIpa,
   setFocusedIpa,
   specializedType,
-  setTargetModule,
-  targetModule,
 }: Props) => {
   const modulesLen = modules.length + 1;
 
   useEffect(() => {
-    if (!modulePosition) return;
+    if (modulePosition) return;
     setModulePosition(modulesLen.toString());
   }, []);
 
@@ -187,7 +183,7 @@ const AddModuleHeader = ({
         </TouchableOpacity>
       )}
       {!isRemedial ? (
-        <View style={{ marginTop: 50 }}>
+        <View>
           <Text style={globalStyles.text1}>Module Position</Text>
           <View style={globalStyles.dropdownStyle}>
             <Picker
@@ -197,7 +193,7 @@ const AddModuleHeader = ({
             >
               {modules.map((title, index) => (
                 <Picker.Item
-                  label={index + 1 + " - " + title}
+                  label={index + 1 + " - " + title.title}
                   value={index.toString()}
                   key={index.toString()}
                 />
@@ -214,42 +210,7 @@ const AddModuleHeader = ({
       ) : (
         <View>
           {specializedType === "auditory" ? (
-            <View>
-              {inputErrors.some((err) => err.name === "focus_ipa") && (
-                <Text style={globalStyles.errorText}>
-                  This field is required
-                </Text>
-              )}
-              {!moduleId && (
-                <View
-                  style={[
-                    globalStyles.dropdownStyle,
-                    inputErrors.some((err) => err.name === "focus_ipa") && {
-                      borderColor: "red",
-                    },
-                  ]}
-                >
-                  <Picker
-                    selectedValue={targetModule}
-                    onValueChange={setTargetModule}
-                    mode="dropdown"
-                  >
-                    <Picker.Item
-                      label="Select"
-                      value=""
-                      enabled={targetModule === ""}
-                    />
-                    {modules.map((item, index) => (
-                      <Picker.Item
-                        label={item.title}
-                        value={item.id}
-                        key={index}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-              )}
-            </View>
+            <View></View>
           ) : (
             <View>
               <Text style={globalStyles.text1}>Focus IPA</Text>

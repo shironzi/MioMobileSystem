@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
 import { Picker } from "@react-native-picker/picker";
-import { useEffect, useState } from "react";
+import React from "react";
 
 interface Assignment {
   id: string;
@@ -12,6 +12,12 @@ interface Specialized {
   id: string;
   title: string;
   difficulty: string;
+}
+
+interface Error {
+  name: string;
+  id?: string;
+  index?: number;
 }
 
 interface Props {
@@ -27,14 +33,13 @@ interface Props {
   modules: { title: string; id: string }[];
   assignments: Assignment[];
   isSubmitting: boolean;
-  difficulty: string;
-  setDifficulty: (value: string) => void;
   specialized: Specialized[];
   moduleId: string;
   isRemedial: boolean;
   handleAddSection: () => void;
   specializedType: string;
   handleNext?: () => void;
+  inputErrors: Error[];
 }
 
 const AddModuleFooter = ({
@@ -50,31 +55,14 @@ const AddModuleFooter = ({
   modules,
   assignments,
   isSubmitting,
-  difficulty,
-  setDifficulty,
   specialized,
   moduleId,
   isRemedial,
   handleAddSection,
   specializedType,
   handleNext,
+  inputErrors,
 }: Props) => {
-  const [filteredSpecialized, setFilteredSpecialized] = useState<Specialized[]>(
-    [],
-  );
-
-  console.log(specializedType);
-
-  useEffect(() => {
-    const filtered = specialized.filter(
-      (item) => item.difficulty.toLowerCase() === difficulty.toLowerCase(),
-    );
-
-    console.log(filtered);
-
-    setFilteredSpecialized(filtered);
-  }, [difficulty]);
-
   return (
     <View style={[{ marginBottom: 100 }]}>
       <View>
@@ -102,7 +90,19 @@ const AddModuleFooter = ({
                 <View>
                   <Text style={globalStyles.text1}>Select Requirement</Text>
                   <View style={{ rowGap: 10 }}>
-                    <View style={globalStyles.dropdownStyle}>
+                    {inputErrors.some((err) => err.name === "preReqType") && (
+                      <Text style={globalStyles.errorText}>
+                        This field is required
+                      </Text>
+                    )}
+                    <View
+                      style={[
+                        globalStyles.dropdownStyle,
+                        inputErrors.some(
+                          (err) => err.name === "preReqType",
+                        ) && { borderColor: "red" },
+                      ]}
+                    >
                       <Picker
                         selectedValue={preRequisiteType}
                         onValueChange={setPreRequisiteType}
@@ -122,31 +122,22 @@ const AddModuleFooter = ({
                       </Picker>
                     </View>
 
-                    {preRequisiteType === "specialized" && (
-                      <View>
-                        <Text style={globalStyles.text1}>Difficulty</Text>
-                        <View style={globalStyles.dropdownStyle}>
-                          <Picker
-                            selectedValue={difficulty}
-                            onValueChange={setDifficulty}
-                            mode={"dropdown"}
-                          >
-                            <Picker.Item
-                              label="Select"
-                              value=""
-                              enabled={difficulty.trim().length === 0}
-                            />
-                            <Picker.Item label="Easy" value="easy" />
-                            <Picker.Item label="Average" value="average" />
-                            <Picker.Item label="Difficult" value="difficult" />
-                            <Picker.Item label="Challenge" value="challenge" />
-                          </Picker>
-                        </View>
-                      </View>
-                    )}
-
                     <View>
-                      <View style={globalStyles.dropdownStyle}>
+                      {inputErrors.some(
+                        (err) => err.name === "preReqSelect",
+                      ) && (
+                        <Text style={globalStyles.errorText}>
+                          This field is required
+                        </Text>
+                      )}
+                      <View
+                        style={[
+                          globalStyles.dropdownStyle,
+                          inputErrors.some(
+                            (err) => err.name === "preReqSelect",
+                          ) && { borderColor: "red" },
+                        ]}
+                      >
                         <Picker
                           selectedValue={selectedPreRequisite}
                           onValueChange={setSelectedPreRequisite}
@@ -176,7 +167,7 @@ const AddModuleFooter = ({
                             ))}
 
                           {preRequisiteType === "specialized" &&
-                            filteredSpecialized?.map((item) => (
+                            specialized?.map((item) => (
                               <Picker.Item
                                 key={item.id}
                                 label={item.title}

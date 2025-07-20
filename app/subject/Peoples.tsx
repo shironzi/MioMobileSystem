@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getPeoples } from "@/utils/query";
 import { useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useHeaderConfig from "@/utils/HeaderConfig";
+import LoadingCard from "@/components/loadingCard";
 
 interface User {
   student_id: string;
@@ -20,6 +21,7 @@ const Peoples = () => {
 
   const [peoples, setPeoples] = useState<User[]>([]);
   const [searchBar, setSearchBar] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   const filteredPeoples = peoples.filter((person) => {
     const query = searchBar.toLowerCase();
@@ -38,10 +40,27 @@ const Peoples = () => {
       if (res.success) {
         setPeoples(res.peoples);
       }
+
+      setLoading(false);
     };
 
     fetchPeoples();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <LoadingCard></LoadingCard>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ backgroundColor: "#fff", height: "100%" }}>

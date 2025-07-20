@@ -367,7 +367,7 @@ const Analytics = () => {
 
       <View style={{}}>
         <AnalyticsCard
-          data={data?.quizzes_overall_completion_rate ?? 0}
+          data={data?.assignments_overall_completion_rate ?? 0}
           title={"Assignments"}
           percentage={
             data?.assignments_overall_completion_rate.toString() ?? "0"

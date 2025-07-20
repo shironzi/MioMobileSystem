@@ -12,7 +12,7 @@ import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
 import { router, useLocalSearchParams } from "expo-router";
-import { addRemedialAuditory } from "@/utils/modules";
+import { addRemedialAuditory, updateRemedialAuditory } from "@/utils/modules";
 import FileUploadSingle from "@/components/FileUploadSingle";
 
 interface FileInfo {
@@ -54,6 +54,7 @@ const AddModuleAuditory = () => {
     subSections,
     targetModule,
     encodedWordList,
+    moduleId,
   } = useLocalSearchParams<{
     subjectId: string;
     title: string;
@@ -62,6 +63,7 @@ const AddModuleAuditory = () => {
     subSections: string;
     targetModule: string;
     encodedWordList: string;
+    moduleId: string;
   }>();
 
   const specializedWordList = useMemo<Word[]>(() => {
@@ -141,15 +143,26 @@ const AddModuleAuditory = () => {
 
   const handleCreate = async () => {
     setIsSubmitting(true);
-    const res = await addRemedialAuditory(
-      subjectId,
-      title,
-      description,
-      moduleFileList,
-      subsectionsList,
-      targetModule,
-      wordList,
-    );
+    const res = moduleId
+      ? await updateRemedialAuditory(
+          subjectId,
+          title,
+          description,
+          moduleFileList,
+          subsectionsList,
+          targetModule,
+          wordList,
+          moduleId,
+        )
+      : await addRemedialAuditory(
+          subjectId,
+          title,
+          description,
+          moduleFileList,
+          subsectionsList,
+          targetModule,
+          wordList,
+        );
 
     setIsSubmitting(false);
 
@@ -208,7 +221,13 @@ const AddModuleAuditory = () => {
           disabled={isSubmitting}
         >
           <Text style={globalStyles.submitButtonText}>
-            {isSubmitting ? "Creating..." : "Create"}
+            {isSubmitting
+              ? moduleId
+                ? "Updating"
+                : "Creating..."
+              : moduleId
+                ? "Update"
+                : "Create"}
           </Text>
         </TouchableOpacity>
       </View>

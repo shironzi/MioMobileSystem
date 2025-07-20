@@ -59,7 +59,6 @@ export async function addModule(
   prerequisite_type: string,
   sub_sections: ModuleSection[],
   position: string,
-  difficulty: string,
 ) {
   const formData = new FormData();
 
@@ -68,7 +67,6 @@ export async function addModule(
   formData.append("prereq_status", hasPreRequisites.toString());
   formData.append("visibility", visibility);
   formData.append("position", position);
-  formData.append("difficulty", difficulty);
 
   if (files.length > 0) {
     files.forEach((file, index) => {
@@ -148,7 +146,6 @@ export async function updateModule(
   prerequisite_type: string,
   sub_sections: ModuleSection[],
   position: string,
-  difficulty: string,
 ) {
   const formData = new FormData();
 
@@ -170,7 +167,6 @@ export async function updateModule(
   formData.append("prereq_status", hasPreRequisites.toString());
   formData.append("visibility", visibility);
   formData.append("position", position);
-  formData.append("difficulty", difficulty);
 
   if (hasPreRequisites) {
     formData.append("prerequisite_id", prerequisite_id);
@@ -391,6 +387,104 @@ export async function addRemedialAuditory(
   try {
     const res = await fetch(
       `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      },
+    );
+
+    return await res.json();
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
+export async function updateRemedialAuditory(
+  subjectId: string,
+  title: string,
+  description: string,
+  files: FileInfo[],
+  sub_sections: ModuleSection[],
+  remedial_for: string,
+  words: Word[],
+  moduleId: string,
+) {
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("remedial_for", remedial_for);
+
+  if (files.length > 0) {
+    files.forEach((file, index) => {
+      formData.append(`files[${index}]`, {
+        uri: file.uri,
+        name: file.name,
+        type: file.mimeType,
+      } as any);
+    });
+  }
+
+  if (sub_sections.length > 0) {
+    sub_sections.forEach((item, index) => {
+      formData.append(`sub_sections[${index}][title]`, item.title);
+      formData.append(`sub_sections[${index}][description]`, item.description);
+
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
+          formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
+            uri: file.uri,
+            name: file.name,
+            type: file.mimeType,
+          } as any);
+        });
+      }
+
+      if (item.videoLink && item.videoLink.length > 0) {
+        item.videoLink.forEach((video, videoIndex) => {
+          formData.append(
+            `sub_sections[${index}][video_links][${videoIndex}]`,
+            video,
+          );
+        });
+      }
+    });
+  }
+
+  if (words.length > 0) {
+    words.forEach((item, index) => {
+      formData.append(`words[${index}][word]`, item.word);
+
+      if (item.media) {
+        formData.append(`words[${index}][file]`, {
+          uri: item.media.uri,
+          name: item.media.name,
+          type: item.media.mimeType,
+        } as any);
+      }
+
+      if (item.video_link) {
+        formData.append(`words[${index}][video_link]`, item.video_link);
+      }
+    });
+  }
+
+  const token = await getAuth().currentUser?.getIdToken(true);
+  console.log(formData);
+
+  try {
+    const res = await fetch(
+      `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory/${moduleId}`,
       {
         method: "POST",
         headers: {

@@ -67,7 +67,7 @@ const AddModules = () => {
     specialized,
     moduleTitle = "",
     moduleDescription = "",
-    position = "0",
+    position,
     encodedModulesFiles,
     encodedSubSections,
     prereq_status,
@@ -177,12 +177,10 @@ const AddModules = () => {
   const [publish, setPublish] = useState<string>(visibility ?? "private");
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [difficulty, setDifficulty] = useState<string>("");
   const [isRemedial, setIsRemedial] = useState<boolean>(
     remedialModule === "true",
   );
   const [focusedIpa, setFocusIpa] = useState<string>(focus_ipa);
-  const [targetModule, setTargetModule] = useState<string>("");
 
   const createModule = async () => {
     const errors: Error[] = [];
@@ -193,6 +191,30 @@ const AddModules = () => {
     if (!description.trim().length) {
       errors.push({ name: "description" });
     }
+
+    if (subSections.length > 0) {
+      subSections.forEach((item) => {
+        if (!item.title.trim()) {
+          errors.push({ name: "subsection", id: item.id });
+        }
+
+        if (!item.description.trim()) {
+          errors.push({ name: "subsection", id: item.id });
+        }
+      });
+    }
+
+    console.log(hasPreRequisites);
+    if (hasPreRequisites) {
+      if (!preRequisiteType || preRequisiteType.trim() === "") {
+        errors.push({ name: "preReqType" });
+      }
+      if (!selectedPreRequisite || selectedPreRequisite.trim() === "") {
+        errors.push({ name: "preReqSelect" });
+      }
+    }
+
+    console.log(errors);
 
     if (errors.length) {
       setInputErrors(errors);
@@ -225,7 +247,6 @@ const AddModules = () => {
             preRequisiteType,
             subSections,
             modulePosition,
-            difficulty,
           )
       : isRemedial
         ? await addRemedial(
@@ -247,7 +268,6 @@ const AddModules = () => {
             preRequisiteType,
             subSections,
             modulePosition,
-            difficulty,
           );
 
     if (res.success) {
@@ -286,6 +306,18 @@ const AddModules = () => {
       errors.push({ name: "description" });
     }
 
+    if (subSections.length > 0) {
+      subSections.forEach((item) => {
+        if (!item.title.trim()) {
+          errors.push({ name: "subsection", id: item.id });
+        }
+
+        if (!item.description.trim()) {
+          errors.push({ name: "subsection", id: item.id });
+        }
+      });
+    }
+
     if (errors.length) {
       setInputErrors(errors);
       return;
@@ -306,8 +338,8 @@ const AddModules = () => {
         description: description,
         moduleFiles: encodedModulesFiles,
         subSections: encodedSubSections,
-        targetModule: targetModule,
         encodedWordList: encodedWordList,
+        moduleId: moduleId,
       },
     });
   };
@@ -419,8 +451,6 @@ const AddModules = () => {
       focusedIpa={focusedIpa}
       setFocusedIpa={setFocusIpa}
       specializedType={specializedType}
-      setTargetModule={setTargetModule}
-      targetModule={targetModule}
     />
   );
 
@@ -439,13 +469,12 @@ const AddModules = () => {
       assignments={assignmentList}
       specialized={SpecializedList}
       isSubmitting={isSubmitting}
-      difficulty={difficulty}
-      setDifficulty={setDifficulty}
       moduleId={moduleId}
       handleAddSection={handleAddSection}
       specializedType={specializedType}
       handleNext={handleNext}
       isRemedial={isRemedial}
+      inputErrors={inputErrors}
     />
   );
 

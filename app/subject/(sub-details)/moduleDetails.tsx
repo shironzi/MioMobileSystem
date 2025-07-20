@@ -17,6 +17,7 @@ import LoadingCard from "@/components/loadingCard";
 import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
 import { Ionicons } from "@expo/vector-icons";
 import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
+import VideoScreen from "@/components/VideoScreen";
 
 interface File {
   name: string;
@@ -97,7 +98,9 @@ const moduleDetails = () => {
 
       if (res.success) {
         setModule(res.module);
-        setPosition(res.position + 1);
+        setPosition(res.position);
+
+        console.log(position);
       }
       setLoading(false);
     };
@@ -110,8 +113,6 @@ const moduleDetails = () => {
     }
   };
 
-  console.log(specializedType);
-
   const editModule = () => {
     const encodedModulesFiles =
       encodeURIComponent(JSON.stringify(module?.files)) ?? [];
@@ -119,7 +120,7 @@ const moduleDetails = () => {
       encodeURIComponent(JSON.stringify(module?.subsections)) ?? [];
     const encodedWordList =
       encodeURIComponent(JSON.stringify(module?.words)) ?? [];
-    if (isRemedial) {
+    if (isRemedial === "true") {
       router.push({
         pathname: "/subject/(sub-details)/Modules/AddModules",
         params: {
@@ -210,7 +211,9 @@ const moduleDetails = () => {
                     (fileType === "jpg" && (
                       <Image source={{ uri: fileType }} />
                     ))}
-                  {fileType === "pdf" && (
+                  {(fileType === "pdf" ||
+                    fileType === "ppt" ||
+                    fileType === "pptx") && (
                     <TouchableOpacity
                       onPress={() => handleOnPress(item.url)}
                       style={[
@@ -229,6 +232,7 @@ const moduleDetails = () => {
                       </Text>
                     </TouchableOpacity>
                   )}
+                  {fileType === "mp4" && <VideoScreen videoSource={item.url} />}
                 </View>
               );
             })}
@@ -254,7 +258,9 @@ const moduleDetails = () => {
                         (fileType === "jpg" && (
                           <Image source={{ uri: fileType }} />
                         ))}
-                      {fileType === "pdf" && (
+                      {(fileType === "pdf" ||
+                        fileType === "ppt" ||
+                        fileType === "pptx") && (
                         <TouchableOpacity
                           onPress={() => handleOnPress(item.url)}
                           style={[
@@ -273,6 +279,9 @@ const moduleDetails = () => {
                           </Text>
                         </TouchableOpacity>
                       )}
+                      {fileType === "mp4" && (
+                        <VideoScreen videoSource={item.url} />
+                      )}
                     </View>
                   );
                 })}
@@ -283,27 +292,34 @@ const moduleDetails = () => {
             ))}
           </View>
 
-          <View style={globalStyles.cardContainer1}>
-            <Text style={globalStyles.text1}>🎧 Listen and Repeat!</Text>
-            <Text style={{ fontWeight: "bold" }}>
-              Let’s practice saying words clearly!🗣️
-            </Text>
-            <Text style={{ fontSize: 13 }}>
-              <Text style={{ fontWeight: "bold" }}>Need help?</Text> Tap the
-              question mark{" "}
-              <Text style={{ fontWeight: "bold", fontSize: 15 }}>(?)</Text>{" "}
-              button to watch a short video. It will show you how to move your
-              mouth and lips to say the word the right way.
-            </Text>
-          </View>
-          {module?.words.map((item, index) => (
-            <View
-              style={[globalStyles.cardContainer1, { marginVertical: "auto" }]}
-              key={index}
-            >
-              <AuditoryWord text={item.word} video_link={item.video_link} />
+          {module.words.length > 0 && (
+            <View>
+              <View style={globalStyles.cardContainer1}>
+                <Text style={globalStyles.text1}>🎧 Listen and Repeat!</Text>
+                <Text style={{ fontWeight: "bold" }}>
+                  Let’s practice saying words clearly!🗣️
+                </Text>
+                <Text style={{ fontSize: 13 }}>
+                  <Text style={{ fontWeight: "bold" }}>Need help?</Text> Tap the
+                  question mark{" "}
+                  <Text style={{ fontWeight: "bold", fontSize: 15 }}>(?)</Text>{" "}
+                  button to watch a short video. It will show you how to move
+                  your mouth and lips to say the word the right way.
+                </Text>
+              </View>
+              {module?.words.map((item, index) => (
+                <View
+                  style={[
+                    globalStyles.cardContainer1,
+                    { marginVertical: "auto" },
+                  ]}
+                  key={index}
+                >
+                  <AuditoryWord text={item.word} video_link={item.video_link} />
+                </View>
+              ))}
             </View>
-          ))}
+          )}
 
           {webViewUri && (
             <WebView source={{ uri: webViewUri }} style={{ flex: 1 }} />

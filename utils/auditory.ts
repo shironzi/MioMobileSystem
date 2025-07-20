@@ -73,6 +73,7 @@ export async function createBingoActivity(
     audio_path: string | null;
   }[],
   title: string,
+  remedialId: string,
 ) {
   try {
     const formData = new FormData();
@@ -80,6 +81,7 @@ export async function createBingoActivity(
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
     formData.append("title", title);
+    formData.append("remedial_id", remedialId);
 
     bingoItems.forEach((item, index) => {
       if (item.file) {
@@ -139,6 +141,7 @@ export async function createMatchingActivity(
   difficulty: string,
   answers: Answer[],
   title: string,
+  remedialId: string,
 ) {
   try {
     const formData = new FormData();
@@ -146,6 +149,7 @@ export async function createMatchingActivity(
     formData.append("activity_type", activityType);
     formData.append("difficulty", difficulty);
     formData.append("title", title);
+    formData.append("remedial_id", remedialId);
 
     answers.forEach((item, index) => {
       formData.append(`activity[${index}][image]`, {
@@ -205,11 +209,13 @@ export async function updateBingoActivity(
     audio_id?: string | null;
   }[],
   title: string,
+  remedialId: string,
 ) {
   try {
     const formData = new FormData();
 
     formData.append("title", title);
+    formData.append("remedial_id", remedialId);
 
     bingoItems.forEach((item, index) => {
       if (item.file) {
@@ -532,12 +538,14 @@ export async function updateMatchingActivity(
   activityId: string,
   answers: Answer[],
   title: string,
+  remedialId: string,
 ) {
   try {
     const token = await getAuth().currentUser?.getIdToken(true);
     const formData = new FormData();
 
     formData.append(`title`, title);
+    formData.append("remedial_id", remedialId);
     answers.forEach((answer, index) => {
       formData.append(`activity[${index}][image_id]`, answer.image_id ?? "");
       formData.append(`activity[${index}][audio_id]`, answer.audio_id ?? "");
@@ -584,37 +592,20 @@ export async function updateMatchingActivity(
   }
 }
 
-// export async function getAttemptActivityAuditory(
-//   subjectId: string,
-//   activity_type: string,
-//   activityId: string,
-//   attemptId: string,
-// ) {
-//   try {
-//     const url = `${IPADDRESS}/subject/${subjectId}/attempts/auditory/${activity_type}/${activityId}/${attemptId}`;
-//     const token = await getAuth().currentUser?.getIdToken(true);
-//
-//     const response = await fetch(url, {
-//       method: "GET",
-//       headers: {
-//         Accept: "application/json",
-//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//       },
-//     });
-//
-//     // if (!response.ok) {
-//     //   const text = await response.text();
-//     //   console.error("Error: " + text);
-//     // }
-//
-//     return await response.json();
-//   } catch (err: any) {
-//     if (err.response) {
-//       return err.response.status;
-//     } else if (err.request) {
-//       return { error: "No response from server" };
-//     } else {
-//       return { error: err.message };
-//     }
-//   }
-// }
+export async function getRemedialList(subjectId: string) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/module/remedials/list`,
+    );
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}

@@ -269,7 +269,6 @@ const AddMessage = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 bottom: 0,
-                marginTop: -70,
               }}
             >
               <TouchableOpacity
