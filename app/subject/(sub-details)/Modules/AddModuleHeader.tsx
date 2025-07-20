@@ -36,48 +36,48 @@ interface Props {
   specializedType: string;
 }
 
-const ipaList = [
-  "ɑ",
-  "æ",
-  "ə",
-  "ʌ",
-  "ɔ",
-  "aʊ",
-  "aɪ",
-  "b",
-  "tʃ",
-  "d",
-  "ð",
-  "ɛ",
-  "ɚ",
-  "eɪ",
-  "f",
-  "g",
-  "h",
-  "ɪ",
-  "i",
-  "dʒ",
-  "k",
-  "l",
-  "m",
-  "n",
-  "ŋ",
-  "oʊ",
-  "ɔɪ",
-  "p",
-  "r",
-  "s",
-  "ʃ",
-  "t",
-  "θ",
-  "ʊ",
-  "u",
-  "v",
-  "w",
-  "j",
-  "z",
-  "ʒ",
-];
+const ipaToPhoneme = {
+  ɑ: "aa",
+  æ: "ae",
+  ə: "ah0",
+  ʌ: "ah1",
+  ɔ: "ao",
+  aʊ: "aw",
+  aɪ: "ay",
+  b: "b",
+  tʃ: "ch",
+  d: "d",
+  ð: "dh",
+  ɛ: "eh",
+  ɚ: "er",
+  eɪ: "ey",
+  f: "f",
+  g: "g",
+  h: "hh",
+  ɪ: "ih",
+  i: "iy",
+  dʒ: "jh",
+  k: "k",
+  l: "l",
+  m: "m",
+  n: "n",
+  ŋ: "ng",
+  oʊ: "ow",
+  ɔɪ: "oy",
+  p: "p",
+  r: "r",
+  s: "s",
+  ʃ: "sh",
+  t: "t",
+  θ: "th",
+  ʊ: "uh",
+  u: "uw",
+  v: "v",
+  w: "w",
+  j: "y",
+  z: "z",
+  ʒ: "zh",
+};
 
 const AddModuleHeader = ({
   title,
@@ -103,6 +103,11 @@ const AddModuleHeader = ({
     if (modulePosition) return;
     setModulePosition(modulesLen.toString());
   }, []);
+
+  const ipaList = Object.entries(ipaToPhoneme).map(([ipa, phoneme]) => ({
+    label: `/${ipa}/`,
+    value: phoneme,
+  }));
 
   return (
     <View style={globalStyles.cardContainer1}>
@@ -237,11 +242,11 @@ const AddModuleHeader = ({
                     value=""
                     enabled={focusedIpa === ""}
                   />
-                  {ipaList.map((title, index) => (
+                  {ipaList.map((item, index) => (
                     <Picker.Item
-                      label={`/` + title + `/`}
-                      value={title}
                       key={index}
+                      label={item.label} // shows /ɑ/
+                      value={item.value} // returns "aa"
                     />
                   ))}
                 </Picker>

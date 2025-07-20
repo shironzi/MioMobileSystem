@@ -2,6 +2,14 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface Module {
   id: string;
@@ -79,43 +87,77 @@ const ModuleCard = ({
     });
   };
 
+  const translatedX = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      if (role !== "teacher") return;
+      if (e.translationX < 0 && e.translationX > -110) {
+        translatedX.value = e.translationX;
+      }
+    })
+    .onEnd(() => {
+      if (role !== "teacher") return;
+      if (translatedX.value < -90) {
+        translatedX.value = withTiming(-1000, { duration: 1500 });
+        // runOnJS(props.handleDelete)();
+      }
+      translatedX.value = withTiming(0, { duration: 700 });
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translatedX.value }],
+  }));
+
   return (
-    <TouchableOpacity onPress={handleRoute} style={styles.touchableOpacity}>
-      <View style={styles.cardContainer}>
-        <View style={styles.cardContent}>
-          <View
-            style={[
-              styles.yellowBulletin,
-              visible
-                ? { backgroundColor: "#FFBF18" }
-                : { backgroundColor: "#00000024" },
-            ]}
-          />
-          <View style={styles.titleContainer}>
-            <Text style={styles.title} numberOfLines={3}>
-              {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
-            </Text>
+    <GestureDetector gesture={panGesture}>
+      <View>
+        {role === "teacher" && (
+          <View style={styles.deleteBackground}>
+            <MaterialIcons name="delete" size={28} color="white" />
           </View>
-          <FontAwesome6
-            name="arrow-right-long"
-            size={15}
-            color="#1f1f1f"
-            style={{ left: -10 }}
-          />
-        </View>
+        )}
+        <Animated.View style={[animatedStyle]}>
+          <TouchableOpacity
+            onPress={handleRoute}
+            style={styles.touchableOpacity}
+          >
+            <View style={styles.cardContainer}>
+              <View style={styles.cardContent}>
+                <View
+                  style={[
+                    styles.yellowBulletin,
+                    visible
+                      ? { backgroundColor: "#FFBF18" }
+                      : { backgroundColor: "#00000024" },
+                  ]}
+                />
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title} numberOfLines={3}>
+                    {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
+                  </Text>
+                </View>
+                <FontAwesome6
+                  name="arrow-right-long"
+                  size={15}
+                  color="#1f1f1f"
+                  style={{ left: -10 }}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
-    </TouchableOpacity>
+    </GestureDetector>
   );
 };
 
 const styles = StyleSheet.create({
   touchableOpacity: {
     backgroundColor: "#fff",
-    // padding: 15,
     borderRadius: 20,
     borderColor: "#ddd",
     borderWidth: 1,
-    margin: 10,
   },
   cardContainer: {
     borderRadius: 10,
@@ -149,6 +191,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 5,
     marginRight: 5,
+  },
+  deleteBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#db4141",
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "flex-end",
+    borderRadius: 20,
+    zIndex: 0,
   },
 });
 

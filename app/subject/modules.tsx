@@ -13,6 +13,7 @@ import {
 import { getModules } from "@/utils/modules";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import globalStyles from "@/styles/globalStyles";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface Module {
   id: string;
@@ -120,30 +121,10 @@ const ModulesScreen = () => {
         </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {moduleList.length > 0 ? (
-          <View>
-            {moduleList.map((item, index) => (
-              <ModuleCard
-                key={index}
-                index={index}
-                id={item.id}
-                title={item.title}
-                visible={item.visible}
-                description={item.description}
-                subjectId={subjectId}
-                role={role}
-                modules={moduleList}
-                assignments={assignments}
-                specialized={specialized}
-                specializedType={specializedType}
-              />
-            ))}
-
-            <View style={{ marginVertical: 50 }}>
-              <Text style={[globalStyles.text1, { marginHorizontal: 10 }]}>
-                Supplementary Modules
-              </Text>
-              {remedialList.map((item, index) => (
+        <GestureHandlerRootView>
+          {moduleList.length > 0 ? (
+            <View>
+              {moduleList.map((item, index) => (
                 <ModuleCard
                   key={index}
                   index={index}
@@ -152,18 +133,40 @@ const ModulesScreen = () => {
                   visible={item.visible}
                   description={item.description}
                   subjectId={subjectId}
-                  isRemedial={item.remedial_module}
                   role={role}
+                  modules={moduleList}
+                  assignments={assignments}
+                  specialized={specialized}
                   specializedType={specializedType}
                 />
               ))}
+
+              <View style={{ marginVertical: 50 }}>
+                <Text style={[globalStyles.text1, { marginHorizontal: 10 }]}>
+                  Supplementary Modules
+                </Text>
+                {remedialList.map((item, index) => (
+                  <ModuleCard
+                    key={index}
+                    index={index}
+                    id={item.id}
+                    title={item.title}
+                    visible={item.visible}
+                    description={item.description}
+                    subjectId={subjectId}
+                    isRemedial={item.remedial_module}
+                    role={role}
+                    specializedType={specializedType}
+                  />
+                ))}
+              </View>
             </View>
-          </View>
-        ) : (
-          <View>
-            <Text>This Subject has no modules yet.</Text>
-          </View>
-        )}
+          ) : (
+            <View>
+              <Text>This Subject has no modules yet.</Text>
+            </View>
+          )}
+        </GestureHandlerRootView>
       </ScrollView>
     </View>
   );

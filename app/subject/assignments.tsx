@@ -162,6 +162,7 @@ const assignments = () => {
         approveDisplay={"Delete"}
         handleCancel={() => setDeleteConfirm(false)}
         handleApprove={() => handleDelete()}
+        isActive={false}
       />
     </View>
   );
