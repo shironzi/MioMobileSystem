@@ -1,4 +1,4 @@
-import login, { requestOtp } from "@/utils/auth";
+import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -106,14 +106,16 @@ const Index = () => {
           await SecureStore.setItemAsync(`password`, userPassword);
         }
 
-        const request = await requestOtp();
-        console.log(request);
-        if (request) {
-          router.push({
-            pathname: "/(login)/LoginOtp",
-            params: { message: request.message },
-          });
-        }
+        router.replace("/(drawer)/(tabs)");
+
+        // const request = await requestOtp();
+        // console.log(request);
+        // if (request) {
+        //   router.push({
+        //     pathname: "/(login)/LoginOtp",
+        //     params: { message: request.message },
+        //   });
+        // }
       } else {
         setErrorMessage("Login failed. Please try again.");
       }
