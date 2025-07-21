@@ -127,7 +127,7 @@ const ModulesScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <GestureHandlerRootView>
           {moduleList.length > 0 ? (
-            <View>
+            <View style={{ rowGap: 20, marginTop: 10 }}>
               {moduleList.map((item, index) => (
                 <ModuleCard
                   key={index}
@@ -146,7 +146,7 @@ const ModulesScreen = () => {
                 />
               ))}
 
-              <View style={{ marginVertical: 50 }}>
+              <View style={{ marginVertical: 50, rowGap: 20 }}>
                 <Text style={[globalStyles.text1, { marginHorizontal: 10 }]}>
                   Supplementary Modules
                 </Text>

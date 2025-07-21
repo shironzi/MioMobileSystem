@@ -270,6 +270,8 @@ const AddModules = () => {
             modulePosition,
           );
 
+    console.log(res);
+
     if (res.success) {
       Alert.alert(
         "Success",
