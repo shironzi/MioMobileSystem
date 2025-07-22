@@ -1,13 +1,11 @@
 import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { createBingoActivity, updateBingoActivity } from "@/utils/auditory";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAudioPlayer } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useMemo, useState } from "react";
 import {
-  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -78,6 +76,8 @@ const BingoPreview = () => {
   const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [isPlayed, setIsPlayed] = useState(false);
 
   const player = useAudioPlayer();
 
@@ -86,12 +86,19 @@ const BingoPreview = () => {
     image_url: item.file?.uri ?? item.image_path ?? "",
   }));
 
-  const handleCardPress = (image_id: string) => {
-    setMatchedIds((prev) =>
-      prev.includes(image_id)
-        ? prev.filter((id) => id !== image_id)
-        : [...prev, image_id],
-    );
+  const handleCardPress = (image_id: number) => {
+    if (!isPlayed) return;
+    // setMatchedIds((prev) =>
+    //   prev.includes(image_id)
+    //     ? prev.filter((id) => id !== image_id)
+    //     : [...prev, image_id],
+    // );
+
+    const newArray = [...answers];
+    newArray[currentAudio] = image_id.toString();
+    setAnswers(newArray);
+
+    console.log(answers);
 
     // setMatchedPairs((prev) => {
     //   const exists = prev.find(
@@ -145,55 +152,57 @@ const BingoPreview = () => {
       };
     });
 
-    try {
-      setIsCreating(true);
-      const res = activityId
-        ? await updateBingoActivity(
-            subjectId,
-            activityType,
-            activityDifficulty,
-            activityId,
-            activity,
-            parsedBingoAudio,
-            title,
-            remedialId,
-          )
-        : await createBingoActivity(
-            subjectId,
-            activityType,
-            activityDifficulty,
-            activity,
-            parsedBingoAudio,
-            title,
-            remedialId,
-          );
+    console.log(answers);
 
-      console.log(res);
-      setIsCreating(false);
-
-      if (res.success) {
-        Alert.alert(
-          "Success",
-          res.message,
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                router.back();
-                router.back();
-                router.back();
-                router.back();
-              },
-            },
-          ],
-          { cancelable: false },
-        );
-      } else {
-        Alert.alert("Error", res.message);
-      }
-    } catch (err) {
-      Alert.alert("Error", "Submission failed. Please check your inputs.");
-    }
+    // try {
+    //   setIsCreating(true);
+    //   const res = activityId
+    //     ? await updateBingoActivity(
+    //         subjectId,
+    //         activityType,
+    //         activityDifficulty,
+    //         activityId,
+    //         activity,
+    //         parsedBingoAudio,
+    //         title,
+    //         remedialId,
+    //       )
+    //     : await createBingoActivity(
+    //         subjectId,
+    //         activityType,
+    //         activityDifficulty,
+    //         activity,
+    //         parsedBingoAudio,
+    //         title,
+    //         remedialId,
+    //       );
+    //
+    //   console.log(res);
+    //   setIsCreating(false);
+    //
+    //   if (res.success) {
+    //     Alert.alert(
+    //       "Success",
+    //       res.message,
+    //       [
+    //         {
+    //           text: "OK",
+    //           onPress: () => {
+    //             router.back();
+    //             router.back();
+    //             router.back();
+    //             router.back();
+    //           },
+    //         },
+    //       ],
+    //       { cancelable: false },
+    //     );
+    //   } else {
+    //     Alert.alert("Error", res.message);
+    //   }
+    // } catch (err) {
+    //   Alert.alert("Error", "Submission failed. Please check your inputs.");
+    // }
   };
 
   return (
@@ -241,11 +250,11 @@ const BingoPreview = () => {
         data={activityData}
         numColumns={3}
         keyExtractor={(item) => item.image_id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <BingoCard
             image={item.image_url}
-            isMatched={matchedIds.includes(item.image_id)}
-            onPress={() => handleCardPress(item.image_id)}
+            isMatched={answers.some((aud) => aud === index.toString())}
+            onPress={() => handleCardPress(index)}
           />
         )}
       />
