@@ -66,7 +66,6 @@ export async function createBingoActivity(
   bingoItems: {
     file: FileInfo | null;
     image_path: string | null;
-    is_answer: boolean;
   }[],
   audioFiles: {
     audio: FileInfo | null;
@@ -74,6 +73,7 @@ export async function createBingoActivity(
   }[],
   title: string,
   remedialId: string,
+  answers: string[],
 ) {
   try {
     const formData = new FormData();
@@ -91,11 +91,6 @@ export async function createBingoActivity(
           type: item.file.mimeType ?? "image/jpeg",
         } as any);
       }
-
-      formData.append(
-        `activity[${index}][is_answer]`,
-        item.is_answer ? "true" : "false",
-      );
     });
 
     audioFiles.forEach((item, index) => {
@@ -106,6 +101,10 @@ export async function createBingoActivity(
           type: item.audio.mimeType ?? "audio/mpeg",
         } as any);
       }
+    });
+
+    answers.forEach((item, index) => {
+      formData.append(`answers[${index}]`, item);
     });
 
     const token = await getAuth().currentUser?.getIdToken(true);
@@ -201,7 +200,6 @@ export async function updateBingoActivity(
     file: FileInfo | null;
     image_path: string | null;
     image_id?: string | null;
-    is_answer: boolean;
   }[],
   audioFiles: {
     audio: FileInfo | null;
@@ -210,6 +208,8 @@ export async function updateBingoActivity(
   }[],
   title: string,
   remedialId: string,
+  answers: string[],
+  audio_answers: string[],
 ) {
   try {
     const formData = new FormData();
@@ -226,17 +226,12 @@ export async function updateBingoActivity(
         } as any);
       }
 
-      formData.append(
-        `activity[${index}][is_answer]`,
-        item.is_answer ? "true" : "false",
-      );
-
       formData.append(`activity[${index}][image_id]`, item.image_id ?? "");
     });
 
     audioFiles.forEach((item, index) => {
       if (item.audio) {
-        formData.append(`activity[${index}][audio_file]`, {
+        formData.append(`audio[${index}][audio_file]`, {
           uri: item.audio.uri,
           name: item.audio.name,
           type: item.audio.mimeType ?? "audio/mpeg",
@@ -244,6 +239,14 @@ export async function updateBingoActivity(
       }
 
       formData.append(`audio[${index}][audio_id]`, item.audio_id ?? "");
+    });
+
+    answers.forEach((item, index) => {
+      formData.append(`answers[${index}][image_id]`, item);
+    });
+
+    audio_answers.forEach((item, index) => {
+      formData.append(`answers[${index}][audio_id]`, item);
     });
 
     const token = await getAuth().currentUser?.getIdToken(true);

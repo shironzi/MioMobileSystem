@@ -2,16 +2,18 @@ import BingoCard from "@/components/trainingActivities/auditory/bingoCard";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { createBingoActivity, updateBingoActivity } from "@/utils/auditory";
 
 interface FileInfo {
   uri: string;
@@ -73,56 +75,55 @@ const BingoPreview = () => {
   }, [bingoAudio]);
 
   const [currentAudio, setCurrentAudio] = useState<number>(0);
-  const [matchedIds, setMatchedIds] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [answers, setAnswers] = useState<string[]>([]);
+  const [audioAnswers, setAudioAnswers] = useState<string[]>([]);
   const [isPlayed, setIsPlayed] = useState(false);
 
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
 
   const activityData = parsedBingoItems.map((item) => ({
     image_id: item.id,
     image_url: item.file?.uri ?? item.image_path ?? "",
   }));
 
-  const handleCardPress = (image_id: number) => {
+  const handleCardPress = (image_id: string) => {
     if (!isPlayed) return;
-    // setMatchedIds((prev) =>
-    //   prev.includes(image_id)
-    //     ? prev.filter((id) => id !== image_id)
-    //     : [...prev, image_id],
-    // );
 
-    const newArray = [...answers];
-    newArray[currentAudio] = image_id.toString();
-    setAnswers(newArray);
+    // let current = currentAudio - 1;
+    // if (current < 0) {
+    //   current = 0;
+    // }
 
-    console.log(answers);
+    const newImage = [...answers];
+    newImage[currentAudio] = image_id;
+    setAnswers(newImage);
 
-    // setMatchedPairs((prev) => {
-    //   const exists = prev.find(
-    //     (pair) =>
-    //       pair.image_id === image_id &&
-    //       pair.audio_id === parsedBingoAudio[currentAudio].audio_id,
-    //   );
-    //
-    //   if (exists) {
-    //     return prev.filter(
-    //       (pair) =>
-    //         !(
-    //           pair.image_id === image_id &&
-    //           pair.audio_id === parsedBingoAudio[currentAudio].audio_id
-    //         ),
-    //     );
-    //   } else {
-    //     return [
-    //       ...prev,
-    //       { image_id, audio_id: parsedBingoAudio[currentAudio].audio_id },
-    //     ];
-    //   }
-    // });
+    const newAudio = [...audioAnswers];
+    newAudio[currentAudio] =
+      parsedBingoAudio.find((_, index) => index === currentAudio)?.audio_id ??
+      "";
+    setAudioAnswers(newAudio);
+
+    if (!newImage[currentAudio] || newImage[currentAudio].length < 0) {
+      return;
+    }
+    setCurrentAudio((prev) =>
+      prev >= parsedBingoAudio.length - 1 ? 0 : prev + 1,
+    );
+
+    console.log(audioAnswers);
   };
+
+  useEffect(() => {
+    if (status.playing) {
+      setIsPlaying(true);
+    } else if (status.didJustFinish) {
+      setIsPlaying(false);
+    }
+  }, [status.playing, status.didJustFinish]);
 
   const playAudio = useCallback(async () => {
     const uri =
@@ -132,14 +133,10 @@ const BingoPreview = () => {
 
     player.replace({ uri });
     player.play();
-    setIsPlaying(true);
+    setIsPlayed(true);
 
-    setTimeout(async () => {
-      setIsPlaying(false);
-      setCurrentAudio((prev) =>
-        prev >= parsedBingoAudio.length - 1 ? 0 : prev + 1,
-      );
-    }, 1500);
+    console.log(currentAudio);
+    console.log(uri);
   }, [player, currentAudio, parsedBingoAudio]);
 
   const handleSubmit = async () => {
@@ -148,61 +145,60 @@ const BingoPreview = () => {
         file: item.file,
         image_path: item.image_path,
         image_id: item.image_id,
-        is_answer: matchedIds.includes(item.id),
       };
     });
+    try {
+      setIsCreating(true);
+      const res = activityId
+        ? await updateBingoActivity(
+            subjectId,
+            activityType,
+            activityDifficulty,
+            activityId,
+            activity,
+            parsedBingoAudio,
+            title,
+            remedialId,
+            answers,
+            audioAnswers,
+          )
+        : await createBingoActivity(
+            subjectId,
+            activityType,
+            activityDifficulty,
+            activity,
+            parsedBingoAudio,
+            title,
+            remedialId,
+            answers,
+          );
 
-    console.log(answers);
+      console.log(res);
+      setIsCreating(false);
 
-    // try {
-    //   setIsCreating(true);
-    //   const res = activityId
-    //     ? await updateBingoActivity(
-    //         subjectId,
-    //         activityType,
-    //         activityDifficulty,
-    //         activityId,
-    //         activity,
-    //         parsedBingoAudio,
-    //         title,
-    //         remedialId,
-    //       )
-    //     : await createBingoActivity(
-    //         subjectId,
-    //         activityType,
-    //         activityDifficulty,
-    //         activity,
-    //         parsedBingoAudio,
-    //         title,
-    //         remedialId,
-    //       );
-    //
-    //   console.log(res);
-    //   setIsCreating(false);
-    //
-    //   if (res.success) {
-    //     Alert.alert(
-    //       "Success",
-    //       res.message,
-    //       [
-    //         {
-    //           text: "OK",
-    //           onPress: () => {
-    //             router.back();
-    //             router.back();
-    //             router.back();
-    //             router.back();
-    //           },
-    //         },
-    //       ],
-    //       { cancelable: false },
-    //     );
-    //   } else {
-    //     Alert.alert("Error", res.message);
-    //   }
-    // } catch (err) {
-    //   Alert.alert("Error", "Submission failed. Please check your inputs.");
-    // }
+      if (res.success) {
+        Alert.alert(
+          "Success",
+          res.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+                router.back();
+                router.back();
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      } else {
+        Alert.alert("Error", res.message);
+      }
+    } catch (err) {
+      Alert.alert("Error", "Submission failed. Please check your inputs.");
+    }
   };
 
   return (
@@ -253,8 +249,10 @@ const BingoPreview = () => {
         renderItem={({ item, index }) => (
           <BingoCard
             image={item.image_url}
-            isMatched={answers.some((aud) => aud === index.toString())}
-            onPress={() => handleCardPress(index)}
+            isMatched={answers.some(
+              (aud) => aud === index.toString() || aud === item.image_id,
+            )}
+            onPress={() => handleCardPress(item.image_id ?? index.toString())}
           />
         )}
       />
