@@ -3,9 +3,9 @@ import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActiveActivity } from "@/utils/specialized";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 interface Attempt {
   attemptId: string;
@@ -84,6 +84,7 @@ const ViewActivity = () => {
             subjectId,
             activity_type,
             activityId,
+            difficulty,
           );
 
           if (res.success) {
@@ -105,6 +106,20 @@ const ViewActivity = () => {
             console.log(res.has_active_attempt);
             setTotalAttempts(res.total_attempt);
             setIsPassed(res.is_passed);
+          } else {
+            Alert.alert(
+              "Message",
+              res.message,
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    router.back();
+                  },
+                },
+              ],
+              { cancelable: false },
+            );
           }
         } catch (err) {
           setAttempts([]);
@@ -113,7 +128,7 @@ const ViewActivity = () => {
       };
 
       fetchAttempts();
-    }, [subjectId, activity_type, activityId]),
+    }, [subjectId, activity_type, activityId, difficulty]),
   );
 
   if (loading) {

@@ -13,7 +13,6 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
-import { formatDayDateTimeWithAmPm } from "@/utils/DateFormat";
 import LoadingCard from "@/components/loadingCard";
 
 interface Attempt {
@@ -129,9 +128,7 @@ const RemedialAttempts = () => {
             >
               <Text style={styles.id}>ID: {item.id}</Text>
               <Text>Overall Score: {item.score}</Text>
-              <Text>
-                Submitted: {formatDayDateTimeWithAmPm(item.submitted_at)}
-              </Text>
+              <Text>Submitted: {item.submitted_at}</Text>
             </TouchableOpacity>
           )}
         />

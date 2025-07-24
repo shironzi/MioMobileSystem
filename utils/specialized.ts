@@ -305,10 +305,11 @@ export async function getActiveActivity(
   subjectId: string,
   activity_type: string,
   activityId: string,
+  difficulty: string,
 ) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/attempts/${activity_type}/${activityId}`,
+      `/subject/${subjectId}/attempts/${activity_type}/${difficulty}/${activityId}`,
     );
 
     return data;
