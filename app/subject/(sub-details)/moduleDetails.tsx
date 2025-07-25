@@ -19,9 +19,10 @@ import { Ionicons } from "@expo/vector-icons";
 import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
 import VideoScreen from "@/components/VideoScreen";
 
-interface File {
+interface FileInfo {
+  uri: string;
   name: string;
-  url: string;
+  mimeType?: string;
 }
 
 interface Module {
@@ -34,20 +35,20 @@ interface Module {
 
 interface Subsection {
   description: string;
-  media: File[];
+  media: FileInfo[];
   video_links: string[];
   title: string;
 }
 
 interface word {
   word: string;
-  media: File | null;
+  media: FileInfo | null;
   video_link: string;
 }
 
 interface Module {
   description: string;
-  files: File[];
+  files: FileInfo[];
   module_id: string;
   subsections: Subsection[];
   title: string;
@@ -200,7 +201,7 @@ const moduleDetails = () => {
             <Text style={globalStyles.text2}>{description}</Text>
             {module.files?.map((item, index) => {
               let fileType = "unknown";
-              const lastSegment = item.url.split(".").pop();
+              const lastSegment = item.uri.split(".").pop();
               if (lastSegment) {
                 fileType = lastSegment.split("?")[0];
               }
@@ -215,7 +216,7 @@ const moduleDetails = () => {
                     fileType === "ppt" ||
                     fileType === "pptx") && (
                     <TouchableOpacity
-                      onPress={() => handleOnPress(item.url)}
+                      onPress={() => handleOnPress(item.uri)}
                       style={[
                         globalStyles.submitButton,
                         {
@@ -232,7 +233,7 @@ const moduleDetails = () => {
                       </Text>
                     </TouchableOpacity>
                   )}
-                  {fileType === "mp4" && <VideoScreen videoSource={item.url} />}
+                  {fileType === "mp4" && <VideoScreen videoSource={item.uri} />}
                 </View>
               );
             })}
@@ -247,7 +248,7 @@ const moduleDetails = () => {
                 <Text style={globalStyles.text2}>{item.description}</Text>
                 {item.media?.map((item, index) => {
                   let fileType = "unknown";
-                  const lastSegment = item.url.split(".").pop();
+                  const lastSegment = item.uri.split(".").pop();
                   if (lastSegment) {
                     fileType = lastSegment.split("?")[0];
                   }
@@ -262,7 +263,7 @@ const moduleDetails = () => {
                         fileType === "ppt" ||
                         fileType === "pptx") && (
                         <TouchableOpacity
-                          onPress={() => handleOnPress(item.url)}
+                          onPress={() => handleOnPress(item.uri)}
                           style={[
                             globalStyles.submitButton,
                             {
@@ -280,7 +281,7 @@ const moduleDetails = () => {
                         </TouchableOpacity>
                       )}
                       {fileType === "mp4" && (
-                        <VideoScreen videoSource={item.url} />
+                        <VideoScreen videoSource={item.uri} />
                       )}
                     </View>
                   );

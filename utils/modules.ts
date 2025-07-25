@@ -1,5 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
+
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function getModules(subjectId: string) {
@@ -62,7 +63,7 @@ interface ModuleSection {
   id: string;
   title: string;
   description: string;
-  files: FileInfo[];
+  media: FileInfo[];
   videoLink?: string[];
 }
 
@@ -106,8 +107,8 @@ export async function addModule(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -152,6 +153,16 @@ export async function addModule(
   }
 }
 
+const getMimeType = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.headers.get("Content-Type") ?? "unrecognized";
+  } catch (error) {
+    console.error("Failed to get MIME type:", error);
+    return "unrecognized";
+  }
+};
+
 export async function updateModule(
   subjectId: string,
   moduleId: string,
@@ -171,15 +182,23 @@ export async function updateModule(
   formData.append("description", description);
 
   if (files.length > 0) {
-    files.forEach((file, index) => {
-      if (!file.mimeType || !file.uri || !file.name) return;
+    for (const file of files) {
+      const index = files.indexOf(file);
+      if (!file.uri || !file.name) continue;
+
+      let fileType = file.mimeType;
+      if (!fileType) {
+        fileType = await getMimeType(file.uri);
+      }
 
       formData.append(`files[${index}]`, {
         uri: file.uri,
         name: file.name,
-        type: file.mimeType,
+        type: fileType,
       } as any);
-    });
+    }
+
+    console.log(files.length);
   }
 
   formData.append("prereq_status", hasPreRequisites.toString());
@@ -196,8 +215,8 @@ export async function updateModule(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           if (!file.mimeType || !file.uri || !file.name) return;
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
@@ -274,8 +293,8 @@ export async function addRemedial(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -360,8 +379,8 @@ export async function addRemedialAuditory(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -458,8 +477,8 @@ export async function updateRemedialAuditory(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -555,8 +574,8 @@ export async function updateRemedial(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
+      if (item.media?.length > 0) {
+        item.media.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,

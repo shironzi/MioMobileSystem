@@ -20,7 +20,7 @@ interface ModuleSection {
   id: string;
   title: string;
   description: string;
-  files: FileInfo[];
+  media: FileInfo[];
   videoLink: string[];
 }
 

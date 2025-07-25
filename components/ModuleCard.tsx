@@ -92,70 +92,75 @@ const ModuleCard = ({
   const translatedX = useSharedValue(0);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  // const panGesture = Gesture.Pan()
-  //   .onStart((e) => {
-  //     runOnJS(setIsDragging)(true);
-  //   })
-  //   .onUpdate((e) => {
-  //     if (role !== "teacher") return;
-  //     if (e.translationX < 0 && e.translationX > -110) {
-  //       translatedX.value = e.translationX;
-  //     }
-  //   })
-  //   .onEnd(() => {
-  //     if (role !== "teacher") return;
-  //     if (translatedX.value < -90) {
-  //       translatedX.value = withTiming(-1000, { duration: 1500 });
-  //       runOnJS(handleDeleteModule)(id);
-  //     }
-  //     translatedX.value = withTiming(0, { duration: 700 });
-  //     runOnJS(setIsDragging)(false);
-  //   });
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      runOnJS(setIsDragging)(true);
+    })
+    .onUpdate((e) => {
+      if (role !== "teacher") return;
+      if (e.translationX < 0 && e.translationX > -110) {
+        translatedX.value = e.translationX;
+      }
+    })
+    .onEnd(() => {
+      if (role !== "teacher") return;
+      if (translatedX.value < -90) {
+        translatedX.value = withTiming(-1000, { duration: 1500 });
+        runOnJS(handleDeleteModule)(id);
+      }
+      translatedX.value = withTiming(0, { duration: 700 });
 
-  // const animatedStyle = useAnimatedStyle(() => ({
-  //   transform: [{ translateX: translatedX.value }],
-  // }));
+      if (translatedX.value === 0) {
+        runOnJS(setIsDragging)(false);
+      }
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translatedX.value }],
+  }));
 
   return (
     <View>
-      {/*{role === "teacher" && (*/}
-      {/*  <View style={styles.deleteBackground}>*/}
-      {/*    <MaterialIcons name="delete" size={28} color="white" />*/}
-      {/*  </View>*/}
-      {/*)}*/}
-      {/*<GestureDetector gesture={panGesture}>*/}
-      {/*  <Animated.View style={[animatedStyle]}>*/}
-      <TouchableOpacity
-        onPress={handleRoute}
-        style={styles.touchableOpacity}
-        activeOpacity={100}
-      >
-        <View style={styles.cardContainer}>
-          <View style={styles.cardContent}>
-            <View
-              style={[
-                styles.yellowBulletin,
-                visible
-                  ? { backgroundColor: "#FFBF18" }
-                  : { backgroundColor: "#00000024" },
-              ]}
-            />
-            <View style={styles.titleContainer}>
-              <Text style={styles.title} numberOfLines={3}>
-                {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
-              </Text>
-            </View>
-            <FontAwesome6
-              name="arrow-right-long"
-              size={15}
-              color="#1f1f1f"
-              style={{ left: -10 }}
-            />
-          </View>
+      {role === "teacher" && (
+        <View style={styles.deleteBackground}>
+          <MaterialIcons name="delete" size={28} color="white" />
         </View>
-      </TouchableOpacity>
-      {/*  </Animated.View>*/}
-      {/*</GestureDetector>*/}
+      )}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View style={[animatedStyle]}>
+          <TouchableOpacity
+            onPress={() => {
+              if (!isDragging) handleRoute();
+            }}
+            style={styles.touchableOpacity}
+            activeOpacity={100}
+          >
+            <View style={styles.cardContainer}>
+              <View style={styles.cardContent}>
+                <View
+                  style={[
+                    styles.yellowBulletin,
+                    visible
+                      ? { backgroundColor: "#FFBF18" }
+                      : { backgroundColor: "#00000024" },
+                  ]}
+                />
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title} numberOfLines={3}>
+                    {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
+                  </Text>
+                </View>
+                <FontAwesome6
+                  name="arrow-right-long"
+                  size={15}
+                  color="#1f1f1f"
+                  style={{ left: -10 }}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      </GestureDetector>
     </View>
   );
 };
