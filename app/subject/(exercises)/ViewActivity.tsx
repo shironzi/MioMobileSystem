@@ -103,7 +103,6 @@ const ViewActivity = () => {
 
             setAttempts(sortedAttempts);
             setActiveAttempt(res.has_active_attempt ?? false);
-            console.log(res.has_active_attempt);
             setTotalAttempts(res.total_attempt);
             setIsPassed(res.is_passed);
           } else {

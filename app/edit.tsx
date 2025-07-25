@@ -74,7 +74,7 @@ const Edit = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", res.message);
       }
       setIsSubmitting(false);
     } catch (err) {

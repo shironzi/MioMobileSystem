@@ -27,12 +27,13 @@ const SpeechRemedial = () => {
 
   const handleRoute = (phoneme: string) => {
     router.push({
-      pathname: "/subject/(exercises)/(speech)/RemedialActivity",
+      pathname: "/subject/(exercises)/(speech)/MicrophoneTest",
       params: {
         subjectId: subjectId,
         activity_type: activity_type,
         phoneme: phoneme,
-        remedialId: remedialId,
+        activityId: remedialId,
+        remedial: "true",
       },
     });
   };
