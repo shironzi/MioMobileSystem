@@ -64,18 +64,25 @@ const Peoples = () => {
 
 	return (
 		<ScrollView style={{ backgroundColor: "#fff", height: "100%" }}>
-			<View style={{ width: "90%", marginHorizontal: "auto", marginTop: 20 }}>
+			<View
+				style={{
+					width: "90%",
+					marginHorizontal: "auto",
+					marginTop: 20,
+				}}
+			>
 				<View
 					style={[
 						globalStyles.textInputContainer,
-						{ flexDirection: "row", alignItems: "center" },
+						{ flexDirection: "row", alignItems: "center", borderRadius: 20 },
 					]}
 				>
-					<Ionicons name="search-sharp" size={24} color="#aaa" />
+					<Ionicons name="search-sharp" size={20} color="#aaa" />
 					<TextInput
 						value={searchBar}
 						onChangeText={setSearchBar}
 						style={{ width: "100%" }}
+						placeholder="Looking for..."
 					/>
 				</View>
 			</View>
