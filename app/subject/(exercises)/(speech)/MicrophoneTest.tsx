@@ -9,185 +9,194 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const MicrophoneTest = () => {
-	useHeaderConfig("Flashcards");
+  useHeaderConfig("Microphone Test");
 
-	const {
-		category,
-		activity_type,
-		role,
-		subjectId,
-		activityId,
-		difficulty,
-		attemptId,
-	} = useLocalSearchParams<{
-		category: string;
-		activity_type: string;
-		role: string;
-		difficulty: string;
-		subjectId: string;
-		activityId: string;
-		attemptId: string;
-	}>();
+  const {
+    category,
+    activity_type,
+    role,
+    subjectId,
+    activityId,
+    difficulty,
+    attemptId,
+    remedial,
+    phoneme,
+  } = useLocalSearchParams<{
+    category: string;
+    activity_type: string;
+    role: string;
+    difficulty: string;
+    subjectId: string;
+    activityId: string;
+    attemptId: string;
+    remedial: string;
+    phoneme: string;
+  }>();
 
-	const [recordingAudio, setRecordingAudio] = useState<string | null>("");
+  const [recordingAudio, setRecordingAudio] = useState<string | null>("");
 
-	const handleTakeExercise = () => {
-		if (activity_type === "picture") {
-			router.push({
-				pathname:
-					role === "teacher"
-						? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-						: "/subject/(exercises)/(speech)/PictureFlashcards",
-				params: {
-					subjectId,
-					activity_type,
-					difficulty,
-					category,
-					activityId,
-					prevAttemptId: attemptId,
-				},
-			});
-		}
+  const handleTakeExercise = () => {
+    router.push({
+      pathname: "/subject/(exercises)/(speech)/RemedialActivity",
+      params: {
+        subjectId: subjectId,
+        activity_type: activity_type,
+        phoneme: phoneme,
+        remedialId: activityId,
+      },
+    });
 
-		if (
-			activity_type === "phrase" ||
-			activity_type === "question" ||
-			activity_type === "pronunciation"
-		) {
-			router.push({
-				pathname:
-					role === "teacher"
-						? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-						: "/subject/(exercises)/(speech)/Flashcards",
-				params: {
-					subjectId,
-					activity_type,
-					difficulty,
-					category,
-					activityId,
-					prevAttemptId: attemptId,
-				},
-			});
-		}
-	};
+    if (remedial === "true") {
+    } else if (activity_type === "picture") {
+      router.push({
+        pathname:
+          role === "teacher"
+            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+            : "/subject/(exercises)/(speech)/PictureFlashcards",
+        params: {
+          subjectId,
+          activity_type,
+          difficulty,
+          category,
+          activityId,
+          prevAttemptId: attemptId,
+        },
+      });
+    } else if (activity_type === "phrase" || activity_type === "question") {
+      router.push({
+        pathname:
+          role === "teacher"
+            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
+            : "/subject/(exercises)/(speech)/Flashcards",
+        params: {
+          subjectId,
+          activity_type,
+          difficulty,
+          category,
+          activityId,
+          prevAttemptId: attemptId,
+        },
+      });
+    }
+  };
 
-	return (
-		<GestureHandlerRootView>
-			<View
-				style={[
-					{
-						height: "100%",
-						backgroundColor: "#fff",
-					},
-				]}
-			>
-				<View style={[globalStyles.cardContainer1, { marginBottom: 15 }]}>
-					<View>
-						<Image
-							source={require("@/assets/mic_test.png")}
-							style={[styles.image, { width: 170, height: 200 }]}
-						/>
-						<Text
-							style={[
-								globalStyles.text1,
-								{
-									marginHorizontal: "auto",
-									fontSize: 20,
-									marginVertical: 10,
-								},
-							]}
-						>
-							Microphone Test
-						</Text>
-						<Text
-							style={[
-								globalStyles.text1,
-								{
-									marginHorizontal: "auto",
-									fontSize: 14,
-									fontWeight: 300,
-								},
-							]}
-						>
-							Say "Piddie" to test the microphone
-						</Text>
-					</View>
-				</View>
-				<View style={{ marginHorizontal: 20, marginBottom: 15 }}>
-					<FlashcardMicrophone
-						onStop={(uri) => {
-							setRecordingAudio(uri);
-						}}
-					/>
-				</View>
-				<View style={[{ marginTop: 0, marginHorizontal: 20 }]}>
-					{recordingAudio && (
-						<View>
-							<AudioPlayer uri={recordingAudio} />
+  return (
+    <GestureHandlerRootView>
+      <View
+        style={[
+          {
+            height: "100%",
+            backgroundColor: "#fff",
+          },
+        ]}
+      >
+        <View style={[globalStyles.cardContainer1, { marginBottom: 15 }]}>
+          <View>
+            <Image
+              source={require("@/assets/mic_test.png")}
+              style={[styles.image, { width: 170, height: 200 }]}
+            />
+            <Text
+              style={[
+                globalStyles.text1,
+                {
+                  marginHorizontal: "auto",
+                  fontSize: 20,
+                  marginVertical: 10,
+                },
+              ]}
+            >
+              Microphone Test
+            </Text>
+            <Text
+              style={[
+                globalStyles.text1,
+                {
+                  marginHorizontal: "auto",
+                  fontSize: 14,
+                  fontWeight: 300,
+                },
+              ]}
+            >
+              Say "Piddie" to test the microphone
+            </Text>
+          </View>
+        </View>
+        <View style={{ marginHorizontal: 20, marginBottom: 15 }}>
+          <FlashcardMicrophone
+            onStop={(uri) => {
+              setRecordingAudio(uri);
+            }}
+          />
+        </View>
+        <View style={[{ marginTop: 0, marginHorizontal: 20 }]}>
+          {recordingAudio && (
+            <View>
+              <AudioPlayer uri={recordingAudio} />
 
-							<Text
-								style={[
-									globalStyles.text1,
-									{
-										marginHorizontal: "auto",
-										marginVertical: 10,
-										fontSize: 14,
-										fontWeight: 300,
-									},
-								]}
-							>
-								Did you hear your voice clearly?
-							</Text>
-							<View
-								style={{
-									flexDirection: "row",
-									justifyContent: "space-around",
-								}}
-							>
-								<TouchableOpacity
-									style={[
-										globalStyles.submitButton,
-										{
-											backgroundColor: "#fff",
-											borderWidth: 1,
-											borderColor: "#FFBF18",
-											width: "45%",
-										},
-									]}
-									onPress={() => router.back()}
-								>
-									<Text
-										style={[
-											globalStyles.submitButtonText,
-											{ color: "#FFBF18" },
-										]}
-									>
-										No
-									</Text>
-								</TouchableOpacity>
+              <Text
+                style={[
+                  globalStyles.text1,
+                  {
+                    marginHorizontal: "auto",
+                    marginVertical: 10,
+                    fontSize: 14,
+                    fontWeight: 300,
+                  },
+                ]}
+              >
+                Did you hear your voice clearly?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
+                <TouchableOpacity
+                  style={[
+                    globalStyles.submitButton,
+                    {
+                      backgroundColor: "#fff",
+                      borderWidth: 1,
+                      borderColor: "#FFBF18",
+                      width: "45%",
+                    },
+                  ]}
+                  onPress={() => router.back()}
+                >
+                  <Text
+                    style={[
+                      globalStyles.submitButtonText,
+                      { color: "#FFBF18" },
+                    ]}
+                  >
+                    No
+                  </Text>
+                </TouchableOpacity>
 
-								<TouchableOpacity
-									style={[globalStyles.submitButton, { width: "45%" }]}
-									onPress={handleTakeExercise}
-								>
-									<Text style={globalStyles.submitButtonText}>Yes</Text>
-								</TouchableOpacity>
-							</View>
-						</View>
-					)}
-				</View>
-			</View>
-		</GestureHandlerRootView>
-	);
+                <TouchableOpacity
+                  style={[globalStyles.submitButton, { width: "45%" }]}
+                  onPress={handleTakeExercise}
+                >
+                  <Text style={globalStyles.submitButtonText}>Yes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
+      </View>
+    </GestureHandlerRootView>
+  );
 };
 
 const styles = StyleSheet.create({
-	image: {
-		width: 250,
-		height: 250,
-		alignSelf: "center",
-		marginVertical: "auto",
-	},
+  image: {
+    width: 250,
+    height: 250,
+    alignSelf: "center",
+    marginVertical: "auto",
+  },
 });
 
 export default memo(MicrophoneTest);

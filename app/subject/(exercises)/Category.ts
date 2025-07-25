@@ -60,7 +60,7 @@ export default function handleCategory({
         pathname:
           role === "teacher"
             ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
-            : "/subject/(exercises)/(auditory)/MatchingCards",
+            : "/subject/(exercises)/(auditory)/SpeakerTest",
         params: {
           subjectId,
           activity_type,

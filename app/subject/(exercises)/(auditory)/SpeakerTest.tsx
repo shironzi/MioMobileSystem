@@ -11,7 +11,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 const audioSource = require("@/assets/audio/piddie.mp3");
 
 const SpeakerTest = () => {
-  useHeaderConfig("Flashcards");
+  useHeaderConfig("Audio Test");
 
   const {
     category,
@@ -21,6 +21,7 @@ const SpeakerTest = () => {
     activityId,
     difficulty,
     attemptId,
+    remedial,
   } = useLocalSearchParams<{
     category: string;
     activity_type: string;
@@ -29,13 +30,12 @@ const SpeakerTest = () => {
     subjectId: string;
     activityId: string;
     attemptId: string;
+    remedial: string;
   }>();
 
   const player = useAudioPlayer(audioSource);
   const status = useAudioPlayerStatus(player);
-
   const [played, setPlayed] = useState<boolean>(false);
-
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   useEffect(() => {
@@ -53,7 +53,18 @@ const SpeakerTest = () => {
   };
 
   const handleTakeExercise = () => {
-    if (activity_type === "bingo") {
+    if (remedial === "true") {
+      router.push({
+        pathname:
+          activity_type === "matching"
+            ? "/subject/(exercises)/(auditory)/Remedial/RemedialActivity"
+            : "/subject/(exercises)/(auditory)/Remedial/BingoRemedialActivity",
+        params: {
+          subjectId: subjectId,
+          remedialId: activityId,
+        },
+      });
+    } else if (activity_type === "bingo") {
       router.push({
         pathname:
           role === "teacher"
@@ -68,9 +79,7 @@ const SpeakerTest = () => {
           prevAttemptId: attemptId,
         },
       });
-    }
-
-    if (activity_type === "matching") {
+    } else if (activity_type === "matching") {
       router.push({
         pathname:
           role === "teacher"
