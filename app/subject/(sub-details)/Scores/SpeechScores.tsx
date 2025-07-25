@@ -131,7 +131,7 @@ const SpeechScores = ({
 								resizeMode="contain"
 								style={globalStyles.image}
 							/>
-							<Text style={globalStyles.line1}>No Module Yet</Text>
+							<Text style={globalStyles.line1}>No Exercises Yet</Text>
 							<Text style={globalStyles.line2}>
 								There’s nothing available in this{"\n"}section right now.
 							</Text>
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
 		borderColor: "#00000024",
 		paddingHorizontal: 15,
 		paddingVertical: 8,
+		marginBottom: 8,
 	},
 	item: {
 		paddingVertical: 8,
