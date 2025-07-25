@@ -114,7 +114,7 @@ const ModulesScreen = () => {
 					globalStyles.text1,
 					{
 						marginHorizontal: 15,
-						color: "#2264dc",
+						color: "#000",
 						marginTop: 10,
 						marginBottom: 5,
 					},
@@ -164,7 +164,7 @@ const ModulesScreen = () => {
 								<Text
 									style={[
 										globalStyles.text1,
-										{ marginHorizontal: 10, color: "#2264dc", left: -5 },
+										{ marginHorizontal: 10, color: "#000", left: -5 },
 									]}
 								>
 									Supplementary Modules
