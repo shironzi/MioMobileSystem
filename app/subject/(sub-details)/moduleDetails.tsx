@@ -19,10 +19,10 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 
-interface File {
-	name: string;
-	url: string;
-}
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
 
 interface Module {
 	id: string;
@@ -33,29 +33,29 @@ interface Module {
 }
 
 interface Subsection {
-	description: string;
-	media: File[];
-	video_links: string[];
-	title: string;
+  description: string;
+  media: FileInfo[];
+  video_links: string[];
+  title: string;
 }
 
 interface word {
-	word: string;
-	media: File | null;
-	video_link: string;
+  word: string;
+  media: FileInfo | null;
+  video_link: string;
 }
 
 interface Module {
-	description: string;
-	files: File[];
-	module_id: string;
-	subsections: Subsection[];
-	title: string;
-	prereq_status: boolean;
-	visibility: string;
-	focus_ipa: string;
-	remedial_for: string;
-	words: word[];
+  description: string;
+  files: FileInfo[];
+  module_id: string;
+  subsections: Subsection[];
+  title: string;
+  prereq_status: boolean;
+  visibility: string;
+  focus_ipa: string;
+  remedial_for: string;
+  words: word[];
 }
 
 const moduleDetails = () => {

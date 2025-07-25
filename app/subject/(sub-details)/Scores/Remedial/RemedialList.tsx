@@ -99,19 +99,26 @@ const RemedialList = () => {
 
   return (
     <View style={[{ backgroundColor: "#fff", height: "100%", rowGap: 20 }]}>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddSchedule}>
-        <View
-          style={{
-            top: 20,
-            alignSelf: "center",
-            flexDirection: "row",
-          }}
-        >
-          <Ionicons name="add-circle" size={20} color="#ffbf18" />
-          <Text style={styles.addText}>Add Remedial Schedule</Text>
-        </View>
-      </TouchableOpacity>
-      <View style={{ paddingHorizontal: 20, rowGap: 20 }}>
+      {role === "teacher" && (
+        <TouchableOpacity style={styles.addButton} onPress={handleAddSchedule}>
+          <View
+            style={{
+              top: 20,
+              alignSelf: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Ionicons name="add-circle" size={20} color="#ffbf18" />
+            <Text style={styles.addText}>Add Remedial Schedule</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+      <View
+        style={[
+          { paddingHorizontal: 20, rowGap: 20 },
+          role === "teacher" && { marginTop: 20 },
+        ]}
+      >
         <View style={globalStyles.cardContainer}>
           <Text style={globalStyles.textLabel}>Active</Text>
           <View style={globalStyles.divider}></View>
