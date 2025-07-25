@@ -1,6 +1,6 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import {
   Image,
   RefreshControl,
@@ -15,15 +15,35 @@ import HeaderConfig from "@/utils/HeaderConfig";
 
 const newCourseDetails = () => {
   const router = useRouter();
-  const { id, description, title, role, subjectType, specializedType } =
-    useLocalSearchParams<{
-      id: string;
-      title: string;
-      description: string;
-      subjectType: string;
-      specializedType?: string;
-      role: string;
-    }>();
+  const {
+    id,
+    title,
+    role,
+    subjectType,
+    specializedType,
+    image_url,
+    banner_description,
+    banner_subTitle,
+    banner_title,
+  } = useLocalSearchParams<{
+    id: string;
+    title: string;
+    subjectType: string;
+    specializedType?: string;
+    role: string;
+    image_url: string;
+    banner_subTitle: string;
+    banner_title: string;
+    banner_description: string;
+  }>();
+
+  const parsedImageUrl = useMemo<string>(() => {
+    try {
+      return JSON.parse(image_url || "");
+    } catch {
+      return [];
+    }
+  }, [image_url]);
 
   const headerTitle =
     subjectType === "specialized" && role !== "parent"
@@ -47,6 +67,18 @@ const newCourseDetails = () => {
     }, 2000);
   };
 
+  const getCourseCode = () => {
+    const words = title.trim().split(/\s+/);
+
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase(); // First 2 letters of the single word
+    } else {
+      const firstLetter = words[0].charAt(0).toUpperCase();
+      const lastLetter = words[words.length - 1].charAt(0).toUpperCase();
+      return firstLetter + lastLetter;
+    }
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -57,14 +89,18 @@ const newCourseDetails = () => {
       }
     >
       <View style={styles.cardContainer}>
-        <Image
-          source={require("@/assets/dashImage/english.png")}
-          style={styles.subImg}
-        />
+        {parsedImageUrl.trim().length > 0 ? (
+          <Image source={{ uri: parsedImageUrl }} style={styles.subImg} />
+        ) : (
+          <Text style={{ margin: "auto", fontSize: 85 }}>
+            {getCourseCode()}
+          </Text>
+        )}
+
         <View style={styles.group}>
-          <Text style={styles.subId}>{id}</Text>
-          <Text style={styles.subName}>{title}</Text>
-          <Text style={styles.subDesc}>{description}</Text>
+          <Text style={styles.subId}>{banner_subTitle}</Text>
+          <Text style={styles.subName}>{banner_title}</Text>
+          <Text style={styles.subDesc}>{banner_description}</Text>
         </View>
       </View>
 

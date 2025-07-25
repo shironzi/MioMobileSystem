@@ -34,6 +34,9 @@ type Subject = {
   specialized_type: string | null;
   image: string;
   background_color: string;
+  banner_subTitle: string;
+  banner_title: string;
+  banner_description: string;
 };
 
 const index = () => {
@@ -67,8 +70,6 @@ const index = () => {
         await SecureStore.setItemAsync("name", data.name);
       }
 
-      console.log(data);
-
       if (data === 401) {
       }
       setLoading(false);
@@ -80,8 +81,6 @@ const index = () => {
   useEffect(() => {
     fetchSubjects();
   }, []);
-
-  console.log(subjects);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {
     if (!subjects) return [];
@@ -244,6 +243,9 @@ const index = () => {
                     courseImage={subject.image}
                     role={role}
                     background_color={subject.background_color}
+                    banner_subTitle={subject.banner_subTitle}
+                    banner_title={subject.banner_title}
+                    banner_description={subject.banner_description}
                   />
                   <Text>{courseCardView}</Text>
                 </View>
@@ -264,6 +266,9 @@ const index = () => {
                   courseImage={subject.image}
                   role={role}
                   background_color={subject.background_color}
+                  banner_subTitle={subject.banner_subTitle}
+                  banner_title={subject.banner_title}
+                  banner_description={subject.banner_description}
                 />
                 <Text>{courseCardView}</Text>
               </View>

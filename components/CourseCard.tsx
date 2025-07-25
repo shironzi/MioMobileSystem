@@ -13,6 +13,9 @@ const CourseCard = (props: {
   specializedType: string | null;
   role: string | null;
   background_color: string;
+  banner_subTitle: string;
+  banner_title: string;
+  banner_description: string;
 }) => {
   const router = useRouter();
 
@@ -28,25 +31,30 @@ const CourseCard = (props: {
     }
   };
 
+  const handleRoute = () => {
+    const imageUrl = encodeURIComponent(JSON.stringify(props.courseImage));
+
+    router.push({
+      pathname: "/subject/courseDetails",
+      params: {
+        id: props.courseId,
+        description: props.description,
+        title: props.courseTitle,
+        subjectType: props.subjectType,
+        role: props.role,
+        specializedType: props.specializedType,
+        image_url: imageUrl,
+        banner_subTitle: props.banner_subTitle,
+        banner_title: props.banner_title,
+        banner_description: props.banner_description,
+      },
+    });
+  };
+
   const courseCode = getCourseCode(props.courseTitle);
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={() =>
-        router.push({
-          pathname: "/subject/courseDetails",
-          params: {
-            id: props.courseId,
-            description: props.description,
-            title: props.courseTitle,
-            subjectType: props.subjectType,
-            role: props.role,
-            specializedType: props.specializedType,
-          },
-        })
-      }
-    >
+    <TouchableOpacity activeOpacity={0.9} onPress={handleRoute}>
       <View
         style={{
           height: 190,
