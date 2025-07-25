@@ -1,13 +1,5 @@
-import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
-import LoadingCard from "@/components/loadingCard";
-import VideoScreen from "@/components/VideoScreen";
-import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
-import { getModuleById } from "@/utils/modules";
-import { Ionicons } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
-import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
   Image,
@@ -17,12 +9,19 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { getModuleById } from "@/utils/modules";
+import Feather from "@expo/vector-icons/Feather";
 import WebView from "react-native-webview";
+import LoadingCard from "@/components/loadingCard";
+import YoutubeVideoPlayer from "@/components/YoutubeVideoPlayer";
+import { Ionicons } from "@expo/vector-icons";
+import AuditoryWord from "@/app/subject/(sub-details)/Modules/AuditoryWord";
+import VideoScreen from "@/components/VideoScreen";
 
-interface FileInfo {
-  uri: string;
+interface File {
   name: string;
-  mimeType?: string;
+  url: string;
 }
 
 interface Module {
@@ -35,20 +34,20 @@ interface Module {
 
 interface Subsection {
   description: string;
-  media: FileInfo[];
+  media: File[];
   video_links: string[];
   title: string;
 }
 
 interface word {
   word: string;
-  media: FileInfo | null;
+  media: File | null;
   video_link: string;
 }
 
 interface Module {
   description: string;
-  files: FileInfo[];
+  files: File[];
   module_id: string;
   subsections: Subsection[];
   title: string;
@@ -198,23 +197,10 @@ const moduleDetails = () => {
             <Text style={globalStyles.text1}>
               [M{index} - Main] {title}
             </Text>
-            <Text
-              style={[
-                globalStyles.text2,
-                {
-                  fontSize: 14,
-                  lineHeight: 20,
-                  color: "#000",
-                  fontWeight: "300",
-                  marginVertical: -5,
-                },
-              ]}
-            >
-              {description}
-            </Text>
+            <Text style={globalStyles.text2}>{description}</Text>
             {module.files?.map((item, index) => {
               let fileType = "unknown";
-              const lastSegment = item.uri.split(".").pop();
+              const lastSegment = item.url.split(".").pop();
               if (lastSegment) {
                 fileType = lastSegment.split("?")[0];
               }
@@ -229,31 +215,24 @@ const moduleDetails = () => {
                     fileType === "ppt" ||
                     fileType === "pptx") && (
                     <TouchableOpacity
-                      onPress={() => handleOnPress(item.uri)}
+                      onPress={() => handleOnPress(item.url)}
                       style={[
-                        // globalStyles.submitButton,
+                        globalStyles.submitButton,
                         {
                           flexDirection: "row",
                           alignItems: "center",
                           justifyContent: "center",
                           columnGap: 10,
-                          alignSelf: "flex-start",
-                          // left: -125,
                         },
                       ]}
                     >
-                      <Feather name="download" size={20} color="#ffbf18" />
-                      <Text
-                        style={[
-                          globalStyles.submitButtonText,
-                          { color: "#ffbf18", fontWeight: 400 },
-                        ]}
-                      >
-                        {fileType.toUpperCase()}
+                      <Feather name="download" size={20} color="#fff" />
+                      <Text style={globalStyles.submitButtonText}>
+                        Download ({fileType.toUpperCase()})
                       </Text>
                     </TouchableOpacity>
                   )}
-                  {fileType === "mp4" && <VideoScreen videoSource={item.uri} />}
+                  {fileType === "mp4" && <VideoScreen videoSource={item.url} />}
                 </View>
               );
             })}
@@ -265,23 +244,10 @@ const moduleDetails = () => {
                 key={index}
               >
                 <Text style={globalStyles.text1}>{item.title}</Text>
-                <Text
-                  style={[
-                    globalStyles.text2,
-                    {
-                      fontSize: 14,
-                      lineHeight: 20,
-                      color: "#000",
-                      fontWeight: "300",
-                      marginVertical: -5,
-                    },
-                  ]}
-                >
-                  {item.description}
-                </Text>
+                <Text style={globalStyles.text2}>{item.description}</Text>
                 {item.media?.map((item, index) => {
                   let fileType = "unknown";
-                  const lastSegment = item.uri.split(".").pop();
+                  const lastSegment = item.url.split(".").pop();
                   if (lastSegment) {
                     fileType = lastSegment.split("?")[0];
                   }
@@ -296,31 +262,25 @@ const moduleDetails = () => {
                         fileType === "ppt" ||
                         fileType === "pptx") && (
                         <TouchableOpacity
-                          onPress={() => handleOnPress(item.uri)}
+                          onPress={() => handleOnPress(item.url)}
                           style={[
-                            // globalStyles.submitButton,
+                            globalStyles.submitButton,
                             {
                               flexDirection: "row",
                               alignItems: "center",
                               justifyContent: "center",
                               columnGap: 10,
-                              alignSelf: "flex-start",
                             },
                           ]}
                         >
                           <Feather name="download" size={20} color="#fff" />
-                          <Text
-                            style={[
-                              globalStyles.submitButtonText,
-                              { color: "#ffbf18", fontWeight: 400 },
-                            ]}
-                          >
-                            {fileType.toUpperCase()}
+                          <Text style={globalStyles.submitButtonText}>
+                            Download ({fileType.toUpperCase()})
                           </Text>
                         </TouchableOpacity>
                       )}
                       {fileType === "mp4" && (
-                        <VideoScreen videoSource={item.uri} />
+                        <VideoScreen videoSource={item.url} />
                       )}
                     </View>
                   );
@@ -366,22 +326,8 @@ const moduleDetails = () => {
           )}
         </ScrollView>
       ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            backgroundColor: "#fff",
-            flex: 1,
-          }}
-        >
-          <Image
-            source={require("@/assets/load/noavailable.png")}
-            resizeMode="contain"
-            style={globalStyles.image}
-          />
-          <Text style={globalStyles.line1}>No Module Yet</Text>
-          <Text style={globalStyles.line2}>
-            There’s nothing available in this{"\n"}section right now.
-          </Text>
+        <View>
+          <Text>There was no modules yet!</Text>
         </View>
       )}
     </View>

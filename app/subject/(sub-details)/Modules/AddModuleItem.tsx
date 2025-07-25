@@ -20,7 +20,7 @@ interface ModuleSection {
   id: string;
   title: string;
   description: string;
-  media: FileInfo[];
+  files: FileInfo[];
   videoLink: string[];
 }
 
@@ -105,6 +105,7 @@ const AddModuleItem = ({
           handleFiles={(file: FileInfo[]) => {
             setSectionFile(item.id, file);
           }}
+          FileUploads={item.files}
         />
         <Text style={globalStyles.text2}>
           Accepts PDF, PPT, video, images, etc. (Max: 100MB per file)

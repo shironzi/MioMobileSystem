@@ -29,7 +29,7 @@ interface ModuleSection {
   id: string;
   title: string;
   description: string;
-  media: FileInfo[];
+  files: FileInfo[];
   videoLink: string[];
 }
 
@@ -119,7 +119,7 @@ const AddModules = () => {
           id: index.toString(),
           title: section.title,
           description: section.description,
-          media: (section.media || []).map((file: any) => ({
+          files: (section.media || []).map((file: any) => ({
             name: file.name,
             uri: file.url,
           })),
@@ -128,7 +128,7 @@ const AddModules = () => {
       );
     } catch {
       return [
-        { id: "0", title: "", description: "", media: [], videoLink: [] },
+        { id: "0", title: "", description: "", files: [], videoLink: [] },
       ];
     }
   }, [encodedSubSections]);
@@ -167,7 +167,7 @@ const AddModules = () => {
   const [subSections, setSubsections] = useState<ModuleSection[]>(
     SubSectionList.length
       ? SubSectionList
-      : [{ id: "0", title: "", description: "", media: [], videoLink: [] }],
+      : [{ id: "0", title: "", description: "", files: [], videoLink: [] }],
   );
   const [hasPreRequisites, setHasPreRequisites] = useState<boolean>(
     prereq_status === "true",
@@ -429,7 +429,7 @@ const AddModules = () => {
         id: (prev.length + 1).toString(),
         title: "",
         description: "",
-        media: [],
+        files: [],
         videoLink: [],
       },
     ]);

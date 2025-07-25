@@ -4,7 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -191,6 +191,20 @@ const AddRemedialSchedule = () => {
     }
   }, [remedialType]);
 
+  const getType = useCallback(() => {
+    if (remedialType === "picture") {
+      return "Picture Flashcard";
+    } else if (remedialType === "question") {
+      return "Reading Flashcard";
+    } else if (remedialType === "phrase") {
+      return "Word Flashcard";
+    } else if (remedialType === "bingo") {
+      return "Piddie Says";
+    } else if (remedialType === "matching") {
+      return "Matching Cards";
+    }
+  }, [remedialType]);
+
   useEffect(() => {
     setMessage(
       `Hi ${studentName},\n` +
@@ -215,7 +229,7 @@ const AddRemedialSchedule = () => {
         }  \n` +
         `📍 ${mode === "faceToFace" ? `Location: ${room}` : `Location: Online`}  \n` +
         `🔗 Link: ${meetingLink}  \n` +
-        `💡 Type: ${remedialType}  \n` +
+        `💡 Type: ${getType()} \n` +
         `👤 Teacher: ${teacherName ? teacherName : ""}\n` +
         "\n" +
         "Please come prepared and bring any materials you might need.\n" +

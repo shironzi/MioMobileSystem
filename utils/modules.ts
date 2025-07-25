@@ -63,7 +63,7 @@ interface ModuleSection {
   id: string;
   title: string;
   description: string;
-  media: FileInfo[];
+  files: FileInfo[];
   videoLink?: string[];
 }
 
@@ -107,8 +107,8 @@ export async function addModule(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -215,8 +215,8 @@ export async function updateModule(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           if (!file.mimeType || !file.uri || !file.name) return;
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
@@ -293,8 +293,8 @@ export async function addRemedial(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -379,8 +379,8 @@ export async function addRemedialAuditory(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -477,8 +477,8 @@ export async function updateRemedialAuditory(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
@@ -574,8 +574,8 @@ export async function updateRemedial(
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.media?.length > 0) {
-        item.media.forEach((file, fileIndex) => {
+      if (item.files?.length > 0) {
+        item.files.forEach((file, fileIndex) => {
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
