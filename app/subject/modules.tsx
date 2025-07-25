@@ -1,207 +1,240 @@
 import ModuleCard from "@/components/ModuleCard";
 import LoadingCard from "@/components/loadingCard";
+import globalStyles from "@/styles/globalStyles";
 import HeaderConfig from "@/utils/HeaderConfig";
+import { getModules } from "@/utils/modules";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useState } from "react";
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
 } from "react-native";
-import { getModules } from "@/utils/modules";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import globalStyles from "@/styles/globalStyles";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface Module {
-  id: string;
-  title: string;
-  description: string;
-  visible: boolean;
-  remedial_module?: boolean;
+	id: string;
+	title: string;
+	description: string;
+	visible: boolean;
+	remedial_module?: boolean;
 }
 
 interface Assignment {
-  id: string;
-  title: string;
+	id: string;
+	title: string;
 }
 
 interface Specialized {
-  id: string;
-  title: string;
-  difficulty: string;
+	id: string;
+	title: string;
+	difficulty: string;
 }
 
 const ModulesScreen = () => {
-  const { subjectId, role, specializedType } = useLocalSearchParams<{
-    subjectId: string;
-    role: string;
-    specializedType: string;
-  }>();
+	const { subjectId, role, specializedType } = useLocalSearchParams<{
+		subjectId: string;
+		role: string;
+		specializedType: string;
+	}>();
 
-  const [moduleList, setModuleList] = useState<Module[]>([]);
-  const [remedialList, setRemedialList] = useState<Module[]>([]);
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [specialized, setSpecialized] = useState<Specialized[]>([]);
-  const [loading, setLoading] = useState(true);
+	const [moduleList, setModuleList] = useState<Module[]>([]);
+	const [remedialList, setRemedialList] = useState<Module[]>([]);
+	const [assignments, setAssignments] = useState<Assignment[]>([]);
+	const [specialized, setSpecialized] = useState<Specialized[]>([]);
+	const [loading, setLoading] = useState(true);
 
-  HeaderConfig("Modules");
+	HeaderConfig("Modules");
 
-  const handleAddModule = () => {
-    const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
-    const encodedAssignments =
-      encodeURIComponent(JSON.stringify(assignments)) ?? [];
-    const encodedSpecialized =
-      encodeURIComponent(JSON.stringify(specialized)) ?? [];
-    router.push({
-      pathname: "/subject/(sub-details)/Modules/AddModules",
-      params: {
-        modules: encodedModules,
-        assignments: encodedAssignments,
-        specialized: encodedSpecialized,
-        subjectId: subjectId,
-        specializedType: specializedType,
-      },
-    });
-  };
+	const handleAddModule = () => {
+		const encodedModules = encodeURIComponent(JSON.stringify(moduleList)) ?? [];
+		const encodedAssignments =
+			encodeURIComponent(JSON.stringify(assignments)) ?? [];
+		const encodedSpecialized =
+			encodeURIComponent(JSON.stringify(specialized)) ?? [];
+		router.push({
+			pathname: "/subject/(sub-details)/Modules/AddModules",
+			params: {
+				modules: encodedModules,
+				assignments: encodedAssignments,
+				specialized: encodedSpecialized,
+				subjectId: subjectId,
+				specializedType: specializedType,
+			},
+		});
+	};
 
-  const handleDeleteModule = () => {
-    console.log("delete");
-  };
+	const handleDeleteModule = () => {
+		console.log("delete");
+	};
 
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      if (!subjectId) return;
+	useFocusEffect(
+		useCallback(() => {
+			setLoading(true);
+			if (!subjectId) return;
 
-      const fetch = async () => {
-        const res = await getModules(subjectId);
-        if (res.success) {
-          setModuleList(res.modules);
-          setRemedialList(res.remedials);
-          setAssignments(res.assignments);
-          setSpecialized(res.specialized);
-        }
-        setLoading(false);
-      };
+			const fetch = async () => {
+				const res = await getModules(subjectId);
+				if (res.success) {
+					setModuleList(res.modules);
+					setRemedialList(res.remedials);
+					setAssignments(res.assignments);
+					setSpecialized(res.specialized);
+				}
+				setLoading(false);
+			};
 
-      fetch();
-    }, [subjectId]),
-  );
+			fetch();
+		}, [subjectId])
+	);
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
-  }
+	if (loading) {
+		return (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					backgroundColor: "#fff",
+				}}
+			>
+				<LoadingCard></LoadingCard>
+			</View>
+		);
+	}
 
-  return (
-    <View style={styles.container}>
-      {role === "teacher" && (
-        <View>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddModule}>
-            <View
-              style={{
-                top: 20,
-                alignSelf: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Ionicons name="add-circle" size={20} color="#ffbf18" />
-              <Text style={styles.addText}>Add Module</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      )}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <GestureHandlerRootView>
-          {moduleList.length > 0 ? (
-            <View style={{ rowGap: 20, marginTop: 10 }}>
-              {moduleList.map((item, index) => (
-                <ModuleCard
-                  key={index}
-                  index={index}
-                  id={item.id}
-                  title={item.title}
-                  visible={item.visible}
-                  description={item.description}
-                  subjectId={subjectId}
-                  role={role}
-                  modules={moduleList}
-                  assignments={assignments}
-                  specialized={specialized}
-                  specializedType={specializedType}
-                  handleDeleteModule={handleAddModule}
-                />
-              ))}
+	return (
+		<View style={styles.container}>
+			<Text
+				style={[
+					globalStyles.text1,
+					{
+						marginHorizontal: 15,
+						color: "#2264dc",
+						marginTop: 10,
+						marginBottom: 5,
+					},
+				]}
+			>
+				Subject Modules
+			</Text>
+			{role === "teacher" && (
+				<View>
+					<TouchableOpacity style={styles.addButton} onPress={handleAddModule}>
+						<View
+							style={{
+								top: 20,
+								alignSelf: "center",
+								flexDirection: "row",
+							}}
+						>
+							<Ionicons name="add-circle" size={20} color="#ffbf18" />
+							<Text style={styles.addText}>Add Module</Text>
+						</View>
+					</TouchableOpacity>
+				</View>
+			)}
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<GestureHandlerRootView>
+					{moduleList.length > 0 ? (
+						<View style={{ rowGap: 15, marginTop: 10, marginHorizontal: 10 }}>
+							{moduleList.map((item, index) => (
+								<ModuleCard
+									key={index}
+									index={index}
+									id={item.id}
+									title={item.title}
+									visible={item.visible}
+									description={item.description}
+									subjectId={subjectId}
+									role={role}
+									modules={moduleList}
+									assignments={assignments}
+									specialized={specialized}
+									specializedType={specializedType}
+									handleDeleteModule={handleAddModule}
+								/>
+							))}
 
-              <View style={{ marginVertical: 50, rowGap: 20 }}>
-                <Text style={[globalStyles.text1, { marginHorizontal: 10 }]}>
-                  Supplementary Modules
-                </Text>
-                {remedialList.map((item, index) => (
-                  <ModuleCard
-                    key={index}
-                    index={index}
-                    id={item.id}
-                    title={item.title}
-                    visible={item.visible}
-                    description={item.description}
-                    subjectId={subjectId}
-                    isRemedial={item.remedial_module}
-                    role={role}
-                    specializedType={specializedType}
-                    handleDeleteModule={handleAddModule}
-                  />
-                ))}
-              </View>
-            </View>
-          ) : (
-            <View>
-              <Text>This Subject has no modules yet.</Text>
-            </View>
-          )}
-        </GestureHandlerRootView>
-      </ScrollView>
-    </View>
-  );
+							<View style={{ rowGap: 15, marginHorizontal: 0 }}>
+								<Text
+									style={[
+										globalStyles.text1,
+										{ marginHorizontal: 10, color: "#2264dc", left: -5 },
+									]}
+								>
+									Supplementary Modules
+								</Text>
+								{remedialList.map((item, index) => (
+									<ModuleCard
+										key={index}
+										index={index}
+										id={item.id}
+										title={item.title}
+										visible={item.visible}
+										description={item.description}
+										subjectId={subjectId}
+										isRemedial={item.remedial_module}
+										role={role}
+										specializedType={specializedType}
+										handleDeleteModule={handleAddModule}
+									/>
+								))}
+							</View>
+						</View>
+					) : (
+						<View
+							style={{
+								justifyContent: "center",
+								backgroundColor: "#fff",
+								flex: 1,
+							}}
+						>
+							<Image
+								source={require("@/assets/load/noavailable.png")}
+								resizeMode="contain"
+								style={globalStyles.image}
+							/>
+							<Text style={globalStyles.line1}>No Module Yet</Text>
+							<Text style={globalStyles.line2}>
+								There’s nothing available in this{"\n"}section right now.
+							</Text>
+						</View>
+					)}
+				</GestureHandlerRootView>
+			</ScrollView>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    backgroundColor: "#fff",
-    height: "100%",
-  },
-  addButton: {
-    left: -28,
-    width: "98%",
-    backgroundColor: "#fcefcc",
-    borderColor: "#ffbf18",
-    borderWidth: 2,
-    borderRadius: 20,
-    borderStyle: "dashed",
-    margin: 30,
-    marginBottom: 20,
-    height: 60,
-    marginVertical: 5,
-  },
-  addText: {
-    color: "#ffbf18",
-    fontWeight: 500,
-    marginHorizontal: 10,
-  },
+	container: {
+		padding: 10,
+		backgroundColor: "#fff",
+		height: "100%",
+	},
+	addButton: {
+		left: -28,
+		width: "98%",
+		backgroundColor: "#fcefcc",
+		borderColor: "#ffbf18",
+		borderWidth: 2,
+		borderRadius: 20,
+		borderStyle: "dashed",
+		margin: 30,
+		marginBottom: 20,
+		height: 60,
+		marginVertical: 5,
+	},
+	addText: {
+		color: "#ffbf18",
+		fontWeight: 500,
+		marginHorizontal: 10,
+	},
 });
 
 export default memo(ModulesScreen);

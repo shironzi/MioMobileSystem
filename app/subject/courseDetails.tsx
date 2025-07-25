@@ -314,8 +314,8 @@ const newCourseDetails = () => {
 				>
 					<View style={styles.row}>
 						<Image
-							source={require("@/assets/course/people3.png")}
-							style={[styles.courseImg, { width: 40 }]}
+							source={require("@/assets/course/acc.png")}
+							style={[styles.courseImg, { width: 40, left: -15 }]}
 						/>
 						<Text style={{ fontSize: 14, left: -65 }}>People</Text>
 						<FontAwesome6
