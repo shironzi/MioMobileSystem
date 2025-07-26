@@ -4,24 +4,14 @@ import LoadingCard from "@/components/loadingCard";
 import globalStyles from "@/styles/globalStyles";
 import { fetchStudentAnalytics, getChildAnalytics } from "@/utils/analytics";
 import useHeaderConfig from "@/utils/HeaderConfig";
-import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
-import * as FileSystem from "expo-file-system";
 import { useLocalSearchParams } from "expo-router";
-import * as Sharing from "expo-sharing";
-import { shareAsync } from "expo-sharing";
 import React, { useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { BarChart, PieChart } from "react-native-gifted-charts";
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 interface TotalPerDifficulty {
   phrase: {
@@ -99,27 +89,27 @@ const StudentAnalytics = () => {
     "easy" | "average" | "difficulty" | "challenge"
   >("easy");
 
-  async function downloadFile(url: string) {
-    try {
-      const fileName = url.split("/").pop(); // Extract the file name from the URL
-      if (!FileSystem.documentDirectory) {
-        return;
-      }
-      const localUri = FileSystem.documentDirectory + fileName;
-
-      const { uri } = await FileSystem.downloadAsync(url, localUri);
-      console.log("Download completed to", uri);
-
-      // Share the file using expo-sharing
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri);
-      } else {
-        console.log("Sharing is not available on this platform");
-      }
-    } catch (error) {
-      console.error("Error downloading or sharing file", error);
-    }
-  }
+  // async function downloadFile(url: string) {
+  //   try {
+  //     const fileName = url.split("/").pop(); // Extract the file name from the URL
+  //     if (!FileSystem.documentDirectory) {
+  //       return;
+  //     }
+  //     const localUri = FileSystem.documentDirectory + fileName;
+  //
+  //     const { uri } = await FileSystem.downloadAsync(url, localUri);
+  //     console.log("Download completed to", uri);
+  //
+  //     // Share the file using expo-sharing
+  //     if (await Sharing.isAvailableAsync()) {
+  //       await Sharing.shareAsync(uri);
+  //     } else {
+  //       console.log("Sharing is not available on this platform");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error downloading or sharing file", error);
+  //   }
+  // }
 
   useEffect(() => {
     setLoading(true);
@@ -265,22 +255,28 @@ const StudentAnalytics = () => {
           percentage={data?.average_score_quizzes.toString() ?? "0"}
         />
 
-        <AnalyticsCard
-          data={data?.speech_completion_rate ?? 0}
-          title={"Speech"}
-          percentage={data?.speech_completion_rate.toString() ?? "0"}
-        />
+        {data?.speech_completion_rate && (
+          <AnalyticsCard
+            data={data?.speech_completion_rate ?? 0}
+            title={"Speech"}
+            percentage={data?.speech_completion_rate.toString() ?? "0"}
+          />
+        )}
 
-        <AnalyticsCard
-          data={data?.auditory_completion_rate ?? 0}
-          title={"Auditory"}
-          percentage={data?.auditory_completion_rate.toString() ?? "0"}
-        />
-        <AnalyticsCard
-          data={data?.language_completion_rate ?? 0}
-          title={"Language"}
-          percentage={data?.language_completion_rate.toString() ?? "0"}
-        />
+        {data?.auditory_completion_rate && (
+          <AnalyticsCard
+            data={data?.auditory_completion_rate ?? 0}
+            title={"Auditory"}
+            percentage={data?.auditory_completion_rate.toString() ?? "0"}
+          />
+        )}
+        {data?.language_completion_rate && (
+          <AnalyticsCard
+            data={data?.language_completion_rate ?? 0}
+            title={"Language"}
+            percentage={data?.language_completion_rate.toString() ?? "0"}
+          />
+        )}
       </View>
       <View
         style={{
@@ -514,6 +510,7 @@ const StudentAnalytics = () => {
           alignItems: "center",
           justifyContent: "space-between",
           marginVertical: 10,
+          paddingBottom: 70,
         }}
       >
         <View

@@ -93,7 +93,7 @@ const SpeechPreview = () => {
       if (res.success) {
         Alert.alert(
           "Success",
-          "Successfully created the activity",
+          res.message,
           [
             {
               text: "OK",
@@ -106,7 +106,7 @@ const SpeechPreview = () => {
           { cancelable: false },
         );
       } else {
-        Alert.alert("Failed", res.message);
+        Alert.alert("Message", res.message);
       }
     } catch (err) {
       console.log(err);

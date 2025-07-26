@@ -20,7 +20,9 @@ import {
   View,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import getAnnouncementTemplate from "@/app/subject/(sub-details)/announcement/AnnouncementTemplates";
+import getAnnouncementTemplate, {
+  getTemplateType,
+} from "@/app/subject/(sub-details)/announcement/AnnouncementTemplates";
 
 interface FileInfo {
   uri: string;
@@ -120,6 +122,7 @@ const addAnnouncement = () => {
   };
 
   useEffect(() => {
+    if (announcementId) return;
     const { title: templateTitle, description: templateDesc } =
       getAnnouncementTemplate(template, date);
     setTitle(templateTitle);
@@ -138,9 +141,9 @@ const addAnnouncement = () => {
       setDate(new Date(data.date_posted));
       setUrls(data.links);
 
-      data.files.forEach((item: any) => {
-        setImageUrl((prev) => [...prev, { url: item.url, name: item.name }]);
-      });
+      const dataTemplate: string = await getTemplateType(data.title);
+      console.log(dataTemplate);
+      setTemplate(dataTemplate);
       setLoading(false);
     })();
   }, [subjectId, announcementId]);
