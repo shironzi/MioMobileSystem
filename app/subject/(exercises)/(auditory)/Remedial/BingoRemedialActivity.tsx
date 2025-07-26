@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import FeedbackAlert from "@/components/FeedbackAlert";
 
 const bingo = () => {
   HeaderConfigQuiz("Piddie Says");
@@ -49,6 +50,7 @@ const bingo = () => {
   const [answers, setAnswers] = useState<
     { image_id: string; selected_at: string; audio_id: string }[]
   >([]);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
@@ -127,15 +129,19 @@ const bingo = () => {
     console.log(res);
 
     if (res.success) {
-      router.push({
-        pathname: "/subject/(exercises)/AuditoryScores",
-        params: {
-          score: res.score,
-          totalItems: activityData.length,
-          activityType: activity_type,
-          difficulty: "Remedial",
-        },
-      });
+      setFeedback(res.feedback);
+
+      setTimeout(() => {
+        router.push({
+          pathname: "/subject/(exercises)/AuditoryScores",
+          params: {
+            score: res.score,
+            totalItems: activityData.length,
+            activityType: activity_type,
+            difficulty: "Remedial",
+          },
+        });
+      }, 5000);
     }
 
     setIsSending(false);
@@ -337,6 +343,21 @@ const bingo = () => {
           </View>
         }
       />
+      {feedback && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FeedbackAlert message={feedback} onHide={() => setFeedback(null)} />
+        </View>
+      )}
     </View>
   );
 };
