@@ -108,20 +108,11 @@ const ModulesScreen = () => {
 	}
 
 	return (
-		<View style={styles.container}>
-			<Text
-				style={[
-					globalStyles.text1,
-					{
-						marginHorizontal: 15,
-						color: "#000",
-						marginTop: 10,
-						marginBottom: 5,
-					},
-				]}
-			>
-				Subject Modules
-			</Text>
+		<ScrollView
+			style={styles.container}
+			showsVerticalScrollIndicator={false}
+			contentContainerStyle={{ paddingBottom: 50 }}
+		>
 			{role === "teacher" && (
 				<View>
 					<TouchableOpacity style={styles.addButton} onPress={handleAddModule}>
@@ -136,9 +127,22 @@ const ModulesScreen = () => {
 							<Text style={styles.addText}>Add Module</Text>
 						</View>
 					</TouchableOpacity>
+					<Text
+						style={[
+							globalStyles.text1,
+							{
+								marginHorizontal: 15,
+								color: "#000",
+								// marginTop: 10,
+								marginBottom: 5,
+							},
+						]}
+					>
+						Subject Modules
+					</Text>
 				</View>
 			)}
-			<ScrollView showsVerticalScrollIndicator={false}>
+			<View>
 				<GestureHandlerRootView>
 					{moduleList.length > 0 ? (
 						<View style={{ rowGap: 15, marginTop: 10, marginHorizontal: 10 }}>
@@ -206,8 +210,8 @@ const ModulesScreen = () => {
 						</View>
 					)}
 				</GestureHandlerRootView>
-			</ScrollView>
-		</View>
+			</View>
+		</ScrollView>
 	);
 };
 
@@ -218,17 +222,18 @@ const styles = StyleSheet.create({
 		height: "100%",
 	},
 	addButton: {
-		left: -28,
-		width: "98%",
+		alignSelf: "center",
+		width: "95%",
 		backgroundColor: "#fcefcc",
 		borderColor: "#ffbf18",
 		borderWidth: 2,
 		borderRadius: 20,
 		borderStyle: "dashed",
 		margin: 30,
-		marginBottom: 20,
+		marginBottom: 15,
 		height: 60,
-		marginVertical: 5,
+		marginTop: 8,
+		// marginVertical: 5,
 	},
 	addText: {
 		color: "#ffbf18",

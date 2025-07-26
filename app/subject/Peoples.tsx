@@ -64,25 +64,32 @@ const Peoples = () => {
 
 	return (
 		<ScrollView style={{ backgroundColor: "#fff", height: "100%" }}>
-			<View style={{ width: "90%", marginHorizontal: "auto", marginTop: 20 }}>
+			<View
+				style={{
+					width: "90%",
+					marginHorizontal: "auto",
+					marginTop: 20,
+				}}
+			>
 				<View
 					style={[
 						globalStyles.textInputContainer,
-						{ flexDirection: "row", alignItems: "center" },
+						{ flexDirection: "row", alignItems: "center", borderRadius: 20 },
 					]}
 				>
-					<Ionicons name="search-sharp" size={24} color="#aaa" />
+					<Ionicons name="search-sharp" size={20} color="#aaa" />
 					<TextInput
 						value={searchBar}
 						onChangeText={setSearchBar}
 						style={{ width: "100%" }}
+						placeholder="Looking for..."
 					/>
 				</View>
 			</View>
 			<View
 				style={[
 					globalStyles.cardContainer1,
-					{ padding: 10, marginHorizontal: 20 },
+					{ padding: 10, marginHorizontal: 20, borderColor: "#fff" },
 				]}
 			>
 				<View
@@ -93,7 +100,7 @@ const Peoples = () => {
 						// paddingBottom: 6,
 					}}
 				>
-					<Text style={[styles.cell, styles.header, { flex: 1.5, left: 5 }]}>
+					<Text style={[styles.cell, styles.header, { flex: 1.8 }]}>
 						Person ID
 					</Text>
 					<Text style={[styles.cell, styles.header, { flex: 1.5 }]}>
@@ -102,7 +109,7 @@ const Peoples = () => {
 					<Text style={[styles.cell, styles.header, { flex: 1.5 }]}>
 						Last Name
 					</Text>
-					<Text style={[styles.cell, styles.header, { flex: 0.5 }]}>Role</Text>
+					<Text style={[styles.cell, styles.header, { flex: 0.8 }]}>Role</Text>
 				</View>
 
 				{filteredPeoples.map((item, index) => (
@@ -115,10 +122,10 @@ const Peoples = () => {
 							borderColor: "#eee",
 						}}
 					>
-						<Text style={[styles.cell, { flex: 1.5 }]}>{item.student_id}</Text>
+						<Text style={[styles.cell, { flex: 1.8 }]}>{item.student_id}</Text>
 						<Text style={[styles.cell, { flex: 1.5 }]}>{item.first_name}</Text>
 						<Text style={[styles.cell, { flex: 1.5 }]}>{item.last_name}</Text>
-						<Text style={[styles.cell, { flex: 0.5 }]}>{item.role}</Text>
+						<Text style={[styles.cell, { flex: 0.8 }]}>{item.role}</Text>
 					</View>
 				))}
 			</View>
@@ -133,6 +140,7 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		fontWeight: "500",
+		fontSize: 14,
 	},
 });
 
