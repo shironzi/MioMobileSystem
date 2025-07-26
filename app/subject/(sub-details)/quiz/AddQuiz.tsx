@@ -1,23 +1,12 @@
 import QuizFooter from "@/app/subject/(sub-details)/quiz/QuizFooter";
 import QuizHeader from "@/app/subject/(sub-details)/quiz/QuizHeader";
-import FileUpload from "@/components/FileUpload";
 import LoadingCard from "@/components/loadingCard";
-import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { createQuiz, getQuiz, updateQuiz } from "@/utils/query";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  FlatList,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, FlatList, View } from "react-native";
+import QuizItem from "@/app/subject/(sub-details)/quiz/QuizItem";
 
 interface FileInfo {
   uri: string;
@@ -28,30 +17,14 @@ interface FileInfo {
 interface QuizInfo {
   title: string;
   description: string;
-  deadline: string;
-  availableFrom: string;
-  availableTo: string;
+  deadline: Date | null;
+  availableFrom: Date | null;
+  availableTo: Date | null;
   attempts: number;
   access_code: string;
   time_limit: string;
   show_answer: boolean;
-}
-
-interface QuizItem {
-  id: string;
-  item_id?: string;
-  question: string;
-  question_image: FileInfo[] | null;
-  choices: string[];
-  answer: string[];
-  questionType:
-    | "multiple_choice"
-    | "multiple_multiple"
-    | "essay"
-    | "file_upload"
-    | "fill"
-    | "dropdown";
-  points: number;
+  visibility: string;
 }
 
 interface QuizItemError {
@@ -71,13 +44,14 @@ const AddQuiz = () => {
   const [quizInfo, setQuizInfo] = useState<QuizInfo>({
     title: "",
     description: "",
-    deadline: "",
-    availableFrom: "",
-    availableTo: "",
+    deadline: null,
+    availableFrom: null,
+    availableTo: null,
     attempts: 1,
     access_code: "",
     time_limit: "",
     show_answer: false,
+    visibility: "private",
   });
 
   const [quizItems, setQuizItems] = useState<QuizItem[]>([
@@ -93,9 +67,22 @@ const AddQuiz = () => {
   ]);
 
   const [isCreating, setIsCreating] = useState<boolean>(false);
-
   const [inputErrors, setInputErrors] = useState<QuizItemError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const handlePointsInput = (value: string, id: string) => {
+    const parsed = parseFloat(value);
+    setQuizItems((prev) =>
+      prev.map((quizItem) =>
+        quizItem.id === id
+          ? {
+              ...quizItem,
+              points: isNaN(parsed) ? 0 : parsed,
+            }
+          : quizItem,
+      ),
+    );
+  };
 
   const handleQuestionInput = (value: string, id: string) => {
     setQuizItems((prev) =>
@@ -213,6 +200,22 @@ const AddQuiz = () => {
     );
   };
 
+  const handleQuestionType = (value: string, id: string, index: number) => {
+    setQuizItems((prev) =>
+      prev.map((q) => {
+        if (q.id !== id) return q;
+
+        const updatedAnswers = [...q.answer];
+        updatedAnswers[index] = value;
+
+        return {
+          ...q,
+          answer: updatedAnswers,
+        };
+      }),
+    );
+  };
+
   const handleChangeQuestionType = (
     itemId: string,
     newType: QuizItem["questionType"],
@@ -310,57 +313,57 @@ const AddQuiz = () => {
       infoErrors.push({ name: "description", id: "" });
     }
 
-    if (quizInfo.deadline.trim()) {
-      console.log(quizInfo.deadline);
-      console.log("Tjos ");
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-
-      const deadline = quizInfo.deadline.trim()
-        ? new Date(quizInfo.deadline)
-        : null;
-      const availableFrom = quizInfo.availableFrom.trim()
-        ? new Date(quizInfo.availableFrom)
-        : null;
-      const availableTo = quizInfo.availableTo.trim()
-        ? new Date(quizInfo.availableTo)
-        : null;
-
-      if (deadline && !isNaN(deadline.getTime()) && deadline < now) {
-        infoErrors.push({
-          name: "deadline",
-          id: "",
-        });
-      }
-
-      if (availableFrom && !isNaN(availableFrom.getTime())) {
-        if (availableTo && availableFrom > availableTo) {
-          infoErrors.push({
-            name: "availableFrom",
-            id: "",
-          });
-        }
-      } else {
-        infoErrors.push({
-          name: "availableFrom",
-          id: "",
-        });
-      }
-
-      if (availableTo && !isNaN(availableTo.getTime())) {
-        if (availableFrom && availableTo < availableFrom) {
-          infoErrors.push({
-            name: "availableTo",
-            id: "",
-          });
-        }
-      } else {
-        infoErrors.push({
-          name: "availableTo",
-          id: "",
-        });
-      }
-    }
+    // if (quizInfo.deadline.trim()) {
+    //   console.log(quizInfo.deadline);
+    //   console.log("Tjos ");
+    //   const now = new Date();
+    //   now.setHours(0, 0, 0, 0);
+    //
+    //   const deadline = quizInfo.deadline.trim()
+    //     ? new Date(quizInfo.deadline)
+    //     : null;
+    //   const availableFrom = quizInfo.availableFrom.trim()
+    //     ? new Date(quizInfo.availableFrom)
+    //     : null;
+    //   const availableTo = quizInfo.availableTo.trim()
+    //     ? new Date(quizInfo.availableTo)
+    //     : null;
+    //
+    //   if (deadline && !isNaN(deadline.getTime()) && deadline < now) {
+    //     infoErrors.push({
+    //       name: "deadline",
+    //       id: "",
+    //     });
+    //   }
+    //
+    //   if (availableFrom && !isNaN(availableFrom.getTime())) {
+    //     if (availableTo && availableFrom > availableTo) {
+    //       infoErrors.push({
+    //         name: "availableFrom",
+    //         id: "",
+    //       });
+    //     }
+    //   } else {
+    //     infoErrors.push({
+    //       name: "availableFrom",
+    //       id: "",
+    //     });
+    //   }
+    //
+    //   if (availableTo && !isNaN(availableTo.getTime())) {
+    //     if (availableFrom && availableTo < availableFrom) {
+    //       infoErrors.push({
+    //         name: "availableTo",
+    //         id: "",
+    //       });
+    //     }
+    //   } else {
+    //     infoErrors.push({
+    //       name: "availableTo",
+    //       id: "",
+    //     });
+    //   }
+    // }
 
     if (infoErrors.length > 0) {
       console.log(infoErrors);
@@ -492,7 +495,7 @@ const AddQuiz = () => {
       ListHeaderComponent={
         <QuizHeader
           handleCreateQuiz={handleCreateQuiz}
-          setInfo={(info: QuizInfo) => setQuizInfo(info)}
+          setInfo={setQuizInfo}
           info={quizInfo}
           errors={inputErrors}
           setIsCreating={setIsCreating}
@@ -505,301 +508,24 @@ const AddQuiz = () => {
         const isLast = index === quizItems.length - 1;
 
         return (
-          <View
-            style={[
-              isFirst && {
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                borderTopWidth: 1,
-              },
-              isLast && {
-                borderBottomLeftRadius: 20,
-                borderBottomRightRadius: 20,
-                borderBottomWidth: 1,
-              },
-              {
-                marginHorizontal: 20,
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                padding: 20,
-                borderColor: "#00000024",
-                rowGap: 15,
-              },
-            ]}
-          >
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={globalStyles.text1}>Question {index + 1}</Text>
-                <TouchableOpacity>
-                  <Ionicons
-                    name="close-outline"
-                    size={30}
-                    color="black"
-                    onPress={() => handleRemoveItem(item.id)}
-                    style={{ marginLeft: 5 }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View>
-                {inputErrors.find((err) => err.id === item.id)?.name ===
-                  "question" && (
-                  <Text style={globalStyles.errorText}>
-                    This field is required
-                  </Text>
-                )}
-              </View>
-              <TextInput
-                value={item.question}
-                onChangeText={(value) => handleQuestionInput(value, item.id)}
-                style={[
-                  { borderBottomWidth: 1, borderColor: "#FFBF18" },
-                  inputErrors.find((err) => err.id === item.id)?.name ===
-                  "question"
-                    ? { borderColor: "red" }
-                    : { borderColor: "#FFBF18" },
-                ]}
-                placeholder={"Enter Question"}
-              />
-              <View
-                style={{
-                  marginBottom: -100,
-                  width: "90%",
-                  marginHorizontal: "auto",
-                }}
-              >
-                <FileUpload
-                  handleFiles={(file: FileInfo[]) =>
-                    handleQuestionImage(item.id, file)
-                  }
-                  fileTypes={"image/*"}
-                />
-              </View>
-            </View>
-            <View>
-              <Text style={globalStyles.text1}>Points</Text>
-              {inputErrors.some(
-                (err) => err.id === item.id && err.name === "points",
-              ) && (
-                <Text style={globalStyles.errorText}>
-                  Points must be at least 1.
-                </Text>
-              )}
-              <TextInput
-                value={item.points?.toString() || ""}
-                onChangeText={(value) => {
-                  const parsed = parseFloat(value);
-                  setQuizItems((prev) =>
-                    prev.map((quizItem) =>
-                      quizItem.id === item.id
-                        ? {
-                            ...quizItem,
-                            points: isNaN(parsed) ? 0 : parsed,
-                          }
-                        : quizItem,
-                    ),
-                  );
-                }}
-                keyboardType="numeric"
-                style={[
-                  globalStyles.inputContainer,
-                  { width: 100 },
-                  inputErrors.some(
-                    (err) => err.id === item.id && err.name === "points",
-                  ) && {
-                    borderColor: "red",
-                  },
-                ]}
-                placeholder={"Points"}
-              />
-            </View>
-
-            <View>
-              <Text style={globalStyles.text1}>Answer Type</Text>
-              <View style={globalStyles.textInputContainer}>
-                <Picker
-                  selectedValue={item.questionType}
-                  onValueChange={(value) =>
-                    handleChangeQuestionType(
-                      item.id,
-                      value as QuizItem["questionType"],
-                    )
-                  }
-                >
-                  <Picker.Item
-                    label="Multiple Choice (Radio)"
-                    value="multiple_choice"
-                  />
-                  <Picker.Item
-                    label="Multiple Choice (Checkboxes)"
-                    value="multiple_multiple"
-                  />
-                  <Picker.Item label="Essay" value="essay" />
-                  <Picker.Item label="File Upload" value="file_upload" />
-                  <Picker.Item label="Fill in the Blank" value="fill" />
-                  <Picker.Item label="Dropdown" value="dropdown" />
-                </Picker>
-              </View>
-            </View>
-            {(item.questionType === "multiple_choice" ||
-              item.questionType === "dropdown" ||
-              item.questionType === "multiple_multiple") && (
-              <View>
-                <Text style={globalStyles.text1}>Choices</Text>
-                {item.choices.map((choice, choiceIndex) => (
-                  <View
-                    key={choiceIndex}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <View style={{ width: "90%" }}>
-                      {inputErrors.find(
-                        (err) =>
-                          err.id === item.id &&
-                          err.name === "choices" &&
-                          err.index === choiceIndex,
-                      ) && (
-                        <Text style={globalStyles.errorText}>
-                          This field is required
-                        </Text>
-                      )}
-                      <TextInput
-                        value={choice}
-                        onChangeText={(text) =>
-                          handleChoiceInput(text, item.id, choiceIndex)
-                        }
-                        style={[
-                          globalStyles.inputContainer,
-                          inputErrors.find(
-                            (err) =>
-                              err.id === item.id &&
-                              err.name === "choices" &&
-                              err.index === choiceIndex,
-                          )
-                            ? { borderColor: "red" }
-                            : { borderColor: "#FFBF18" },
-                        ]}
-                        placeholder={`Choice ${choiceIndex + 1}`}
-                      />
-                    </View>
-                    <Ionicons
-                      name="close-outline"
-                      size={30}
-                      color="black"
-                      onPress={() => handleRemoveChoice(item.id, choiceIndex)}
-                      style={{ marginLeft: 5 }}
-                    />
-                  </View>
-                ))}
-                <TouchableOpacity
-                  style={{ flexDirection: "row", alignItems: "center" }}
-                  onPress={() => handleAddChoice(item.id)}
-                >
-                  <MaterialIcons name="add" size={24} color="#FFBF18" />
-                  <Text style={[globalStyles.text1, { color: "#FFBF18" }]}>
-                    Add Choice
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <View>
-              {item.questionType !== "essay" &&
-                item.questionType !== "file_upload" && (
-                  <Text style={globalStyles.text1}>Answer</Text>
-                )}
-              {(item.questionType === "multiple_choice" ||
-                item.questionType === "dropdown" ||
-                item.questionType === "multiple_multiple") && (
-                <View style={{ rowGap: 10 }}>
-                  <View
-                    style={[globalStyles.textInputContainer, { rowGap: 5 }]}
-                  >
-                    {item.answer.map((answer, index) => (
-                      <Picker
-                        key={index}
-                        selectedValue={answer}
-                        onValueChange={(value) => {
-                          setQuizItems((prev) =>
-                            prev.map((q) => {
-                              if (q.id !== item.id) return q;
-
-                              const updatedAnswers = [...q.answer];
-                              updatedAnswers[index] = value;
-
-                              return {
-                                ...q,
-                                answer: updatedAnswers,
-                              };
-                            }),
-                          );
-                        }}
-                      >
-                        {item.choices.map((choice, i) => (
-                          <Picker.Item label={choice} value={choice} key={i} />
-                        ))}
-                      </Picker>
-                    ))}
-                  </View>
-                  {item.questionType === "multiple_multiple" && (
-                    <TouchableOpacity
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                      onPress={() => handleMultipleAnswer(item.id)}
-                    >
-                      <MaterialIcons name="add" size={24} color="#FFBF18" />
-                      <Text style={[globalStyles.text1, { color: "#FFBF18" }]}>
-                        Add Answer
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-
-              {item.questionType === "fill" && (
-                <View>
-                  {inputErrors.find((err) => err.id === item.id)?.name ===
-                    "fill" && (
-                    <Text style={globalStyles.errorText}>
-                      This field is required
-                    </Text>
-                  )}
-                  <TextInput
-                    value={item.answer[0]}
-                    style={[
-                      { borderBottomWidth: 1 },
-                      inputErrors.find(
-                        (err) => err.id === item.id && err.name === "fill",
-                      )
-                        ? { borderColor: "red" }
-                        : { borderColor: "#FFBF18" },
-                    ]}
-                    placeholder={"Enter Answer"}
-                    onChangeText={(value: string) =>
-                      handleAnswer(value, item.id)
-                    }
-                  />
-                </View>
-              )}
-            </View>
-            {!isLast && (
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  marginHorizontal: -20,
-                  borderColor: "#00000024",
-                  marginTop: 20,
-                  paddingBottom: 0,
-                }}
-              ></View>
-            )}
-          </View>
+          <QuizItem
+            isFirst={isFirst}
+            isLast={isLast}
+            index={index}
+            handleRemoveItem={handleRemoveItem}
+            item={item}
+            inputErrors={inputErrors}
+            handleQuestionInput={handleQuestionInput}
+            handleQuestionImage={handleQuestionImage}
+            handlePointsInput={handlePointsInput}
+            handleChangeQuestionType={handleChangeQuestionType}
+            handleChoiceInput={handleChoiceInput}
+            handleRemoveChoice={handleRemoveChoice}
+            handleAddChoice={handleAddChoice}
+            handleMultipleAnswer={handleMultipleAnswer}
+            handleAnswer={handleAnswer}
+            handleQuestionType={handleQuestionType}
+          />
         );
       }}
       ListFooterComponent={() => <QuizFooter onAddItem={handleAddItem} />}

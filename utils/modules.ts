@@ -197,8 +197,6 @@ export async function updateModule(
         type: fileType,
       } as any);
     }
-
-    console.log(files.length);
   }
 
   formData.append("prereq_status", hasPreRequisites.toString());
@@ -211,19 +209,27 @@ export async function updateModule(
   }
 
   if (sub_sections.length > 0) {
-    sub_sections.forEach((item, index) => {
+    for (const item of sub_sections) {
+      const index = sub_sections.indexOf(item);
       formData.append(`sub_sections[${index}][title]`, item.title);
       formData.append(`sub_sections[${index}][description]`, item.description);
 
-      if (item.files?.length > 0) {
-        item.files.forEach((file, fileIndex) => {
-          if (!file.mimeType || !file.uri || !file.name) return;
+      if (item.files.length > 0) {
+        for (const file of item.files) {
+          const fileIndex = item.files.indexOf(file);
+          if (!file.uri || !file.name) continue;
+
+          let fileType = file.mimeType;
+          if (!fileType) {
+            fileType = await getMimeType(file.uri);
+          }
+
           formData.append(`sub_sections[${index}][files][${fileIndex}]`, {
             uri: file.uri,
             name: file.name,
-            type: file.mimeType,
+            type: fileType,
           } as any);
-        });
+        }
       }
 
       if (item.videoLink && item.videoLink.length > 0) {
@@ -234,10 +240,12 @@ export async function updateModule(
           );
         });
       }
-    });
+    }
   }
 
   const token = await getAuth().currentUser?.getIdToken(true);
+
+  console.log(formData);
 
   try {
     const res = await fetch(

@@ -76,6 +76,8 @@ const AddModules = () => {
     remedialModule,
     focus_ipa,
     encodedWordList,
+    prerequisite_id,
+    prerequisite_type,
   } = useLocalSearchParams<{
     subjectId: string;
     moduleId: string;
@@ -93,6 +95,8 @@ const AddModules = () => {
     remedialModule: string;
     focus_ipa: string;
     encodedWordList: string;
+    prerequisite_id: string;
+    prerequisite_type: string;
   }>();
 
   const moduleFiles = useMemo<FileInfo[]>(() => {
@@ -172,8 +176,12 @@ const AddModules = () => {
   const [hasPreRequisites, setHasPreRequisites] = useState<boolean>(
     prereq_status === "true",
   );
-  const [preRequisiteType, setPreRequisiteType] = useState<string>("");
-  const [selectedPreRequisite, setSelectedPreRequisite] = useState<string>("");
+  const [preRequisiteType, setPreRequisiteType] = useState<string>(
+    prerequisite_type ?? "",
+  );
+  const [selectedPreRequisite, setSelectedPreRequisite] = useState<string>(
+    prerequisite_id ?? "",
+  );
   const [publish, setPublish] = useState<string>(visibility ?? "private");
   const [inputErrors, setInputErrors] = useState<Error[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

@@ -217,7 +217,7 @@ const addAnnouncement = () => {
               </View>
             </View>
             <View style={styles.section}>
-              <Text style={globalStyles.text1}>Publish Date</Text>
+              <Text style={globalStyles.text1}>Date</Text>
               <View style={{ width: "100%" }}>
                 {inputError.some((err) => err.error === "date") && (
                   <Text style={globalStyles.errorText}>
@@ -250,9 +250,9 @@ const addAnnouncement = () => {
                       mode={"date"}
                       display="default"
                       minimumDate={new Date()}
-                      onChange={(_, selected) => {
+                      onChange={(event, selected) => {
                         setShowPicker(false);
-                        if (selected) {
+                        if (event.type !== "dismissed" && selected) {
                           setDate(selected);
                         }
                       }}

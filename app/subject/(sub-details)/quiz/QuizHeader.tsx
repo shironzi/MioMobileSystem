@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import globalStyles from "@/styles/globalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 
 interface QuizItemError {
   name: string;
@@ -14,13 +15,14 @@ interface QuizItemError {
 interface QuizInfo {
   title: string;
   description: string;
-  deadline: string;
-  availableFrom: string;
-  availableTo: string;
+  deadline: Date | null;
+  availableFrom: Date | null;
+  availableTo: Date | null;
   attempts: number;
   access_code: string;
   time_limit: string;
   show_answer: boolean;
+  visibility: string;
 }
 
 interface QuizItemError {
@@ -151,8 +153,8 @@ const QuizHeader = ({
           >
             <Text>
               {quizInfo.deadline
-                ? new Date(quizInfo.deadline).toDateString()
-                : "Set Deadline"}
+                ? quizInfo.deadline.toDateString()
+                : "No Due Date"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -161,12 +163,13 @@ const QuizHeader = ({
             value={quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()}
             mode="date"
             display={"default"}
+            minimumDate={new Date()}
             onChange={(event, selectedDate) => {
               setShowDeadlinePicker(false);
-              if (selectedDate) {
+              if (event.type !== "dismissed" && selectedDate) {
                 setQuizInfo((prev) => ({
                   ...prev,
-                  deadline: selectedDate.toISOString(),
+                  deadline: selectedDate,
                 }));
               }
             }}
@@ -185,7 +188,7 @@ const QuizHeader = ({
             </Text>
           )}
           <TouchableOpacity
-            onPress={() => setShowAvailableFromPicker(true)}
+            onPress={() => setShowAvailableFromPicker(info.deadline !== null)}
             style={[
               globalStyles.inputContainer,
               errors.find((err) => err.name === "availableFrom") && {
@@ -199,7 +202,7 @@ const QuizHeader = ({
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                : "Set Available To"}
+                : "Set Available From"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -214,10 +217,13 @@ const QuizHeader = ({
             display={"default"}
             onChange={(event, selectedDate) => {
               setShowAvailableFromPicker(false);
-              if (selectedDate) {
+              if (event.type !== "dismissed" && selectedDate) {
+                let date: Date | null = selectedDate;
+                if (info.deadline === null) date = null;
+
                 setQuizInfo((prev) => ({
                   ...prev,
-                  availableFrom: selectedDate.toISOString(),
+                  availableFrom: date,
                 }));
               }
             }}
@@ -234,7 +240,7 @@ const QuizHeader = ({
             </Text>
           )}
           <TouchableOpacity
-            onPress={() => setShowAvailableToPicker(true)}
+            onPress={() => setShowAvailableToPicker(info.deadline !== null)}
             style={[
               globalStyles.inputContainer,
               errors.find((err) => err.name === "availableTo") && {
@@ -261,10 +267,13 @@ const QuizHeader = ({
             display={"default"}
             onChange={(event, selectedDate) => {
               setShowAvailableToPicker(false);
-              if (selectedDate) {
+              if (event.type !== "dismissed" && selectedDate) {
+                let date: Date | null = selectedDate;
+                if (info.deadline === null) date = null;
+
                 setQuizInfo((prev) => ({
                   ...prev,
-                  availableTo: selectedDate.toISOString(),
+                  availableTo: date,
                 }));
               }
             }}
@@ -336,6 +345,24 @@ const QuizHeader = ({
             />
           )}
         </TouchableOpacity>
+      </View>
+
+      <View>
+        <Text style={globalStyles.text1}>Publish</Text>
+
+        <View style={globalStyles.dropdownStyle}>
+          <Picker
+            selectedValue={info.visibility}
+            // onValueChange={}
+            mode={"dropdown"}
+          >
+            <Picker.Item
+              label="Private (Not visible to students)"
+              value="private"
+            />
+            <Picker.Item label="Public (Students can access)" value="public" />
+          </Picker>
+        </View>
       </View>
 
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>

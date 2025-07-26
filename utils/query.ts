@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getDateAndTime } from "@/utils/DateFormat";
 import { getAuth } from "@react-native-firebase/auth";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
@@ -950,13 +949,14 @@ export async function editProfile(picture: FileInfo | null, biography: string) {
 interface QuizInfo {
   title: string;
   description: string;
-  deadline: string;
-  availableFrom: string;
-  availableTo: string;
+  deadline: Date | null;
+  availableFrom: Date | null;
+  availableTo: Date | null;
   attempts: number;
   access_code: string;
   time_limit: string;
   show_answer: boolean;
+  visibility: string;
 }
 
 interface QuizItem {
@@ -975,6 +975,12 @@ interface QuizItem {
   points: number;
 }
 
+const getTime = (date: Date) => {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
 export async function createQuiz(
   subjectId: string,
   quizInfo: QuizInfo,
@@ -988,15 +994,24 @@ export async function createQuiz(
     formdata.append("title", quizInfo.title);
     formdata.append("description", quizInfo.description);
     formdata.append("attempts", quizInfo.attempts.toString());
-    formdata.append(
-      "deadline_date",
-      quizInfo.deadline ? getDateAndTime(quizInfo.deadline) : "",
-    );
-    formdata.append("start_time", quizInfo.availableFrom);
-    formdata.append("end_time", quizInfo.availableTo);
     formdata.append("time_limit", quizInfo.time_limit);
     formdata.append("access_code", quizInfo.access_code || "");
     formdata.append("show_correct_answers", quizInfo.show_answer.toString());
+    formdata.append("visibility", quizInfo.visibility);
+
+    if (quizInfo.deadline) {
+      formdata.append(
+        "deadline_date",
+        quizInfo.deadline.toISOString().split("T")[0],
+      );
+    }
+
+    if (quizInfo.availableFrom) {
+      formdata.append("start_time", getTime(quizInfo.availableFrom));
+    }
+    if (quizInfo.availableTo) {
+      formdata.append("end_time", getTime(quizInfo.availableTo));
+    }
 
     quizItems.forEach((item, index) => {
       console.log(item);
@@ -1050,12 +1065,23 @@ export async function updateQuiz(
     formdata.append("title", quizInfo.title);
     formdata.append("description", quizInfo.description);
     formdata.append("attempts", quizInfo.attempts.toString());
-    formdata.append("deadline_date", getDateAndTime(quizInfo.deadline) || "");
-    formdata.append("start_time", quizInfo.availableFrom);
-    formdata.append("end_time", quizInfo.availableTo);
     formdata.append("time_limit", quizInfo.time_limit);
     formdata.append("access_code", quizInfo.access_code || "");
     formdata.append("show_correct_answers", "false");
+
+    if (quizInfo.deadline) {
+      formdata.append(
+        "deadline_date",
+        quizInfo.deadline.toISOString().split("T")[0],
+      );
+    }
+
+    if (quizInfo.availableFrom) {
+      formdata.append("start_time", getTime(quizInfo.availableFrom));
+    }
+    if (quizInfo.availableTo) {
+      formdata.append("end_time", getTime(quizInfo.availableTo));
+    }
 
     quizItems.forEach((item, index) => {
       formdata.append(`questions[${index}][question]`, item.question);

@@ -52,6 +52,8 @@ interface Module {
   subsections: Subsection[];
   title: string;
   prereq_status: boolean;
+  prerequisite_id: string;
+  prerequisite_type: string;
   visibility: string;
   focus_ipa: string;
   remedial_for: string;
@@ -113,6 +115,8 @@ const moduleDetails = () => {
     }
   };
 
+  console.log(module?.prerequisite_type);
+
   const editModule = () => {
     const encodedModulesFiles =
       encodeURIComponent(JSON.stringify(module?.files)) ?? [];
@@ -153,6 +157,8 @@ const moduleDetails = () => {
           prereq_status: module?.prereq_status.toString(),
           visibility: module?.visibility,
           specializedType: specializedType,
+          prerequisite_type: module?.prerequisite_type,
+          prerequisite_id: module?.prerequisite_id,
         },
       });
     }

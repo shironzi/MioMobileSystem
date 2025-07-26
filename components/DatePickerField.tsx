@@ -101,7 +101,7 @@ const addAssignment = () => {
           display={"default"}
           onChange={(event, selectedDate) => {
             setShowDeadlinePicker(false);
-            if (selectedDate) {
+            if (event.type !== "dismissed" && selectedDate) {
               setQuizInfo((prev) => ({
                 ...prev,
                 deadline: selectedDate.toISOString(),

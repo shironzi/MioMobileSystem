@@ -114,7 +114,7 @@ const assignments = () => {
               }}
             >
               <Ionicons name="add-circle" size={20} color="#ffbf18" />
-              <Text style={styles.addText}>Add Announcement</Text>
+              <Text style={styles.addText}>Add Assignment</Text>
             </View>
           </TouchableOpacity>
         )}
