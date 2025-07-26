@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, View } from "react-native";
 import QuizItem from "@/app/subject/(sub-details)/quiz/QuizItem";
+import { getDateFromTime } from "@/utils/DateFormat";
 
 interface FileInfo {
   uri: string;
@@ -18,6 +19,7 @@ interface QuizInfo {
   title: string;
   description: string;
   deadline: Date | null;
+  publish: Date | null;
   availableFrom: Date | null;
   availableTo: Date | null;
   attempts: number;
@@ -45,6 +47,7 @@ const AddQuiz = () => {
     title: "",
     description: "",
     deadline: null,
+    publish: new Date(),
     availableFrom: null,
     availableTo: null,
     attempts: 1,
@@ -309,62 +312,6 @@ const AddQuiz = () => {
       infoErrors.push({ name: "title", id: "" });
     }
 
-    if (!quizInfo.description.trim()) {
-      infoErrors.push({ name: "description", id: "" });
-    }
-
-    // if (quizInfo.deadline.trim()) {
-    //   console.log(quizInfo.deadline);
-    //   console.log("Tjos ");
-    //   const now = new Date();
-    //   now.setHours(0, 0, 0, 0);
-    //
-    //   const deadline = quizInfo.deadline.trim()
-    //     ? new Date(quizInfo.deadline)
-    //     : null;
-    //   const availableFrom = quizInfo.availableFrom.trim()
-    //     ? new Date(quizInfo.availableFrom)
-    //     : null;
-    //   const availableTo = quizInfo.availableTo.trim()
-    //     ? new Date(quizInfo.availableTo)
-    //     : null;
-    //
-    //   if (deadline && !isNaN(deadline.getTime()) && deadline < now) {
-    //     infoErrors.push({
-    //       name: "deadline",
-    //       id: "",
-    //     });
-    //   }
-    //
-    //   if (availableFrom && !isNaN(availableFrom.getTime())) {
-    //     if (availableTo && availableFrom > availableTo) {
-    //       infoErrors.push({
-    //         name: "availableFrom",
-    //         id: "",
-    //       });
-    //     }
-    //   } else {
-    //     infoErrors.push({
-    //       name: "availableFrom",
-    //       id: "",
-    //     });
-    //   }
-    //
-    //   if (availableTo && !isNaN(availableTo.getTime())) {
-    //     if (availableFrom && availableTo < availableFrom) {
-    //       infoErrors.push({
-    //         name: "availableTo",
-    //         id: "",
-    //       });
-    //     }
-    //   } else {
-    //     infoErrors.push({
-    //       name: "availableTo",
-    //       id: "",
-    //     });
-    //   }
-    // }
-
     if (infoErrors.length > 0) {
       console.log(infoErrors);
       setInputErrors((prev) => [...prev, ...infoErrors]);
@@ -402,7 +349,7 @@ const AddQuiz = () => {
         { cancelable: false },
       );
     } else {
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      Alert.alert("Message", "Something went wrong. Please try again later.");
     }
 
     setIsCreating(false);
@@ -450,15 +397,16 @@ const AddQuiz = () => {
 
           const quizInfoData = {
             ...res.quiz_info,
+            publish: new Date(res.quiz_info.publish),
             deadline: res.quiz_info.deadline
-              ? new Date(res.quiz_info.deadline).toString()
-              : "",
+              ? new Date(res.quiz_info.deadline)
+              : null,
             availableFrom: res.quiz_info.availableFrom
-              ? new Date(res.quiz_info.availableFrom).toString()
-              : "",
+              ? getDateFromTime(res.quiz_info.availableFrom)
+              : null,
             availableTo: res.quiz_info.availableTo
-              ? new Date(res.quiz_info.availableTo).toString()
-              : "",
+              ? getDateFromTime(res.quiz_info.availableTo)
+              : null,
           };
 
           setQuizItems(items);

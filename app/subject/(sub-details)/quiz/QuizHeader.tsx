@@ -16,6 +16,7 @@ interface QuizInfo {
   title: string;
   description: string;
   deadline: Date | null;
+  publish: Date | null;
   availableFrom: Date | null;
   availableTo: Date | null;
   attempts: number;
@@ -135,32 +136,30 @@ const QuizHeader = ({
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={[globalStyles.title, { width: "40%" }]}>Deadline</Text>
+        <Text style={[globalStyles.title, { width: "40%" }]}>Publish Date</Text>
         <View style={{ width: "60%" }}>
           {errors.find((err) => err.name === "deadline") && (
             <Text style={globalStyles.errorText}>
-              Deadline cannot be in the past
+              Publish cannot be in the past
             </Text>
           )}
           <TouchableOpacity
             onPress={() => setShowDeadlinePicker(true)}
             style={[
               globalStyles.inputContainer,
-              errors.find((err) => err.name === "deadline") && {
+              errors.find((err) => err.name === "publish") && {
                 borderColor: "red",
               },
             ]}
           >
             <Text>
-              {quizInfo.deadline
-                ? quizInfo.deadline.toDateString()
-                : "No Due Date"}
+              {quizInfo.publish ? quizInfo.publish.toDateString() : ""}
             </Text>
           </TouchableOpacity>
         </View>
         {showDeadlinePicker && (
           <DateTimePicker
-            value={quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()}
+            value={quizInfo.publish ? new Date(quizInfo.publish) : new Date()}
             mode="date"
             display={"default"}
             minimumDate={new Date()}
@@ -169,7 +168,7 @@ const QuizHeader = ({
               if (event.type !== "dismissed" && selectedDate) {
                 setQuizInfo((prev) => ({
                   ...prev,
-                  deadline: selectedDate,
+                  publish: selectedDate,
                 }));
               }
             }}
@@ -232,6 +231,51 @@ const QuizHeader = ({
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={[globalStyles.title, { width: "40%" }]}>
+          Deadline Date
+        </Text>
+        <View style={{ width: "60%" }}>
+          {errors.find((err) => err.name === "deadline") && (
+            <Text style={globalStyles.errorText}>
+              Deadline cannot be in the past
+            </Text>
+          )}
+          <TouchableOpacity
+            onPress={() => setShowDeadlinePicker(true)}
+            style={[
+              globalStyles.inputContainer,
+              errors.find((err) => err.name === "deadline") && {
+                borderColor: "red",
+              },
+            ]}
+          >
+            <Text>
+              {quizInfo.deadline
+                ? quizInfo.deadline.toDateString()
+                : "No Due Date"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {showDeadlinePicker && (
+          <DateTimePicker
+            value={quizInfo.deadline ? new Date(quizInfo.deadline) : new Date()}
+            mode="date"
+            display={"default"}
+            minimumDate={new Date()}
+            onChange={(event, selectedDate) => {
+              setShowDeadlinePicker(false);
+              if (event.type !== "dismissed" && selectedDate) {
+                setQuizInfo((prev) => ({
+                  ...prev,
+                  deadline: selectedDate,
+                }));
+              }
+            }}
+          />
+        )}
+      </View>
+
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={[globalStyles.title, { width: "40%" }]}>Available To</Text>
         <View style={{ width: "60%" }}>
           {errors.find((err) => err.name === "availableTo") && (
@@ -282,7 +326,9 @@ const QuizHeader = ({
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={[globalStyles.title, { width: "40%" }]}>Attempts</Text>
+        <Text style={[globalStyles.title, { width: "40%" }]}>
+          Attempts Allowed
+        </Text>
         <TextInput
           value={quizInfo.attempts.toString()}
           onChangeText={(value: string) => {
@@ -353,14 +399,13 @@ const QuizHeader = ({
         <View style={globalStyles.dropdownStyle}>
           <Picker
             selectedValue={info.visibility}
-            // onValueChange={}
+            onValueChange={(value) =>
+              setQuizInfo((prev) => ({ ...prev, visibility: value }))
+            }
             mode={"dropdown"}
           >
-            <Picker.Item
-              label="Private (Not visible to students)"
-              value="private"
-            />
-            <Picker.Item label="Public (Students can access)" value="public" />
+            <Picker.Item label="Private" value="private" />
+            <Picker.Item label="Public" value="public" />
           </Picker>
         </View>
       </View>

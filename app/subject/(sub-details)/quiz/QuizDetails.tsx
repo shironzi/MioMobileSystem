@@ -5,7 +5,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { getQuizById } from "@/utils/query";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 
 const QuizDetails = () => {
   useHeaderConfig("Quiz");
@@ -30,12 +30,17 @@ const QuizDetails = () => {
   useEffect(() => {
     const fetchQuiz = async () => {
       const res = await getQuizById(subjectId, quizId);
-      const data = res.quiz_info;
-      setTitle(data.title);
-      setDeadline(data.deadline);
-      setPoints(data.total);
-      setAttempts(data.attempts);
-      setDescription(data.description);
+      if (res.success) {
+        const data = res.quiz_info;
+
+        setTitle(data.title);
+        setDeadline(data.deadline);
+        setPoints(data.total);
+        setAttempts(data.attempts);
+        setDescription(data.description);
+      } else {
+        Alert.alert("Message", res.message);
+      }
 
       // setQuestions(
       //   data.questions.map(

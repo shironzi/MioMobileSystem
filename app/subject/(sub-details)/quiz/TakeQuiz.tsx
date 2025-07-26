@@ -2,7 +2,12 @@ import LoadingCard from "@/components/loadingCard";
 import QuestionCard from "@/components/QuestionCard";
 import globalStyles from "@/styles/globalStyles";
 import HeaderConfigQuiz from "@/utils/HeaderConfigQuiz";
-import { continueQuiz, submitAnswer, takeQuiz } from "@/utils/query";
+import {
+  continueQuiz,
+  finalizeQuiz,
+  submitAnswer,
+  takeQuiz,
+} from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -61,16 +66,7 @@ const TakeQuiz = () => {
 
       if (answer !== null || (file && file.length > 0)) {
         setIsSubmitting(true);
-        const res = await submitAnswer(
-          subjectId,
-          quizId,
-          attemptId,
-          itemId,
-          answer,
-          file,
-        );
-
-        console.log(res);
+        await submitAnswer(subjectId, quizId, attemptId, itemId, answer, file);
 
         setAnswers((prev) =>
           prev.map((a) =>
@@ -85,11 +81,34 @@ const TakeQuiz = () => {
     }
 
     if (currentItem === quizItems.length - 1) {
-      router.push({
-        pathname: "/subject/(sub-details)/quiz/QuizScore",
-        params: { subjectId: subjectId, quizId: quizId, attemptId: attemptId },
-      });
+      // router.push({
+      //   pathname: "/subject/(sub-details)/quiz/QuizScore",
+      //   params: { subjectId: subjectId, quizId: quizId, attemptId: attemptId },
+      // });
+
+      setIsSubmitting(true);
+
+      const submitQuiz = await finalizeQuiz(subjectId, quizId, attemptId);
+      console.log(submitQuiz);
+
+      if (submitQuiz.success) {
+        Alert.alert(
+          "Message",
+          submitQuiz.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      }
     }
+
+    setIsSubmitting(false);
   };
 
   const handlePrev = async () => {
@@ -117,56 +136,52 @@ const TakeQuiz = () => {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      try {
-        const res = prevAttemptId.length
-          ? await continueQuiz(subjectId, quizId, prevAttemptId)
-          : await takeQuiz(subjectId, quizId);
+      const res = prevAttemptId.length
+        ? await continueQuiz(subjectId, quizId, prevAttemptId)
+        : await takeQuiz(subjectId, quizId);
 
-        if (res.success) {
-          const itemsArray: QuizItem[] = Object.entries(res.items).map(
-            ([id, item]: [string, any]) => ({
-              id,
-              ...item,
-              options: item.options
-                ? Object.entries(item.options).map(([key, value]) => ({
-                    id: key,
-                    label: value,
-                  }))
-                : [],
-            }),
+      if (res.success) {
+        const itemsArray: QuizItem[] = Object.entries(res.items).map(
+          ([id, item]: [string, any]) => ({
+            id,
+            ...item,
+            options: item.options
+              ? Object.entries(item.options).map(([key, value]) => ({
+                  id: key,
+                  label: value,
+                }))
+              : [],
+          }),
+        );
+        if (Array.isArray(res.answers) && res.answers.length > 0) {
+          setAnswers(
+            res.answers.map((a: any) => ({
+              ...a,
+              hasChanged: false,
+            })),
           );
-          if (Array.isArray(res.answers) && res.answers.length > 0) {
-            setAnswers(
-              res.answers.map((a: any) => ({
-                ...a,
-                hasChanged: false,
-              })),
-            );
-          } else {
-            setAnswers([]);
-          }
-
-          setAttemptId(res.attemptId);
-          setQuizItems(itemsArray);
         } else {
-          Alert.alert(
-            "Failed",
-            res.message,
-            [
-              {
-                text: "OK",
-                onPress: () => {
-                  router.back();
-                },
-              },
-            ],
-            { cancelable: false },
-          );
+          setAnswers([]);
         }
-      } catch (error) {
+
+        setAttemptId(res.attemptId);
+        setQuizItems(itemsArray);
+
         setLoading(false);
-        console.error("Error fetching quiz: ", error);
-        Alert.alert("Error", "Something went wrong while loading the quiz.");
+      } else {
+        Alert.alert(
+          "Message",
+          res.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
       }
 
       setLoading(false);
@@ -233,7 +248,7 @@ const TakeQuiz = () => {
 
   return (
     <ScrollView style={{ paddingTop: 20, backgroundColor: "#fff" }}>
-      {quizItems.length && (
+      {quizItems.length > 0 && (
         <QuestionCard
           key={quizItems[currentItem].id}
           item_no={currentItem + 1}
@@ -269,6 +284,7 @@ const TakeQuiz = () => {
             { width: "48%", alignItems: "center" },
           ]}
           onPress={handlePrev}
+          disabled={isSubmitting}
         >
           <Text
             style={[
@@ -287,6 +303,7 @@ const TakeQuiz = () => {
             { width: "48%", alignItems: "center" },
           ]}
           onPress={handleNext}
+          disabled={isSubmitting}
         >
           <Text
             style={[
@@ -300,7 +317,11 @@ const TakeQuiz = () => {
               },
             ]}
           >
-            {currentItem === quizItems.length - 1 ? "Submit" : "Next"}
+            {currentItem === quizItems.length - 1
+              ? isSubmitting
+                ? "Submitting..."
+                : "Submit"
+              : "Next"}
           </Text>
         </TouchableOpacity>
       </View>

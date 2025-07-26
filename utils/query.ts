@@ -950,6 +950,7 @@ interface QuizInfo {
   title: string;
   description: string;
   deadline: Date | null;
+  publish: Date | null;
   availableFrom: Date | null;
   availableTo: Date | null;
   attempts: number;
@@ -1003,6 +1004,13 @@ export async function createQuiz(
       formdata.append(
         "deadline_date",
         quizInfo.deadline.toISOString().split("T")[0],
+      );
+    }
+
+    if (quizInfo.publish) {
+      formdata.append(
+        "publish_date",
+        quizInfo.publish.toISOString().split("T")[0],
       );
     }
 
@@ -1067,12 +1075,22 @@ export async function updateQuiz(
     formdata.append("attempts", quizInfo.attempts.toString());
     formdata.append("time_limit", quizInfo.time_limit);
     formdata.append("access_code", quizInfo.access_code || "");
-    formdata.append("show_correct_answers", "false");
+    formdata.append("show_correct_answers", quizInfo.show_answer.toString());
+    formdata.append("visibility", quizInfo.visibility);
+
+    console.log(quizInfo.visibility);
 
     if (quizInfo.deadline) {
       formdata.append(
         "deadline_date",
         quizInfo.deadline.toISOString().split("T")[0],
+      );
+    }
+
+    if (quizInfo.publish) {
+      formdata.append(
+        "publish_date",
+        quizInfo.publish.toISOString().split("T")[0],
       );
     }
 
