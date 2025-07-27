@@ -139,6 +139,7 @@ const MatchingCards = () => {
           params: {
             score: res.score,
             totalItems: total,
+            is_remedial: "true",
           },
         });
       }, 5000);

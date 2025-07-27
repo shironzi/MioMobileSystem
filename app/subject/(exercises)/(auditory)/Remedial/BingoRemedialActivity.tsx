@@ -139,6 +139,7 @@ const bingo = () => {
             totalItems: activityData.length,
             activityType: activity_type,
             difficulty: "Remedial",
+            is_remedial: "true",
           },
         });
       }, 5000);

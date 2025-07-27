@@ -7,13 +7,19 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const AuditoryScores = () => {
-  const { score, activity_type, difficulty } = useLocalSearchParams<{
-    score: string;
-    activity_type: string;
-    difficulty: string;
-  }>();
+  const { score, activity_type, difficulty, is_remedial } =
+    useLocalSearchParams<{
+      score: string;
+      activity_type: string;
+      difficulty: string;
+      is_remedial: string;
+    }>();
 
-  const isRemedial = false;
+  let isRemedial = false;
+
+  if (is_remedial === "true") {
+    isRemedial = true;
+  }
 
   headerConfigScoreDetails("Score Detail", activity_type, isRemedial);
 
