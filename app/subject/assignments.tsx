@@ -31,6 +31,7 @@ export interface Assignment {
   total: string;
   title: string;
   submission_type: string;
+  is_submitted: boolean;
 }
 
 const assignments = () => {
@@ -133,6 +134,7 @@ const assignments = () => {
                     attempts={item.attempts}
                     assignment_id={item.assignment_id}
                     submission_type={item.submission_type}
+                    is_submitted={item.is_submitted}
                     role={role}
                     handleDelete={() => {
                       setDeleteConfirm(true);

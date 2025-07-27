@@ -28,16 +28,16 @@ enum SubmissionOptions {
 const AssignmentDetails = () => {
   HeaderConfig("Assignment");
 
-  const { subjectId, assignmentId } = useLocalSearchParams<{
+  const { subjectId, assignmentId, role } = useLocalSearchParams<{
     subjectId: string;
     assignmentId: string;
+    role: string;
   }>();
 
   const [submissionType, setSubmissionType] = useState<SubmissionOptions>(
     SubmissionOptions.Text,
   );
   const [deadline, setDeadline] = useState<any>();
-  const [newDeadline, setNewDeadline] = useState<Date>();
   const [publishDate, setPublishDate] = useState<any>();
   const [availabilityFrom, setAvailabilityFrom] = useState<string>("");
   const [availabilityTo, setAvailabilityTo] = useState<string>("");
@@ -103,9 +103,6 @@ const AssignmentDetails = () => {
               assignment.submission_type === "file"
                 ? SubmissionOptions.File
                 : SubmissionOptions.Text,
-            );
-            setNewDeadline(
-              new Date(assignment.deadline + " " + assignment.availability.end),
             );
 
             setLoading(false);
@@ -208,21 +205,27 @@ const AssignmentDetails = () => {
           <Text style={globalStyles.text1}>Submission Type</Text>
           <Text>{submissionType} Entry</Text>
         </View>
-        {!isAnswering && (
-          <TouchableOpacity
-            style={[
-              globalStyles.submitButton,
-              {
-                alignItems: "center",
-                justifyContent: "center",
-                marginHorizontal: "auto",
-                marginVertical: 20,
-              },
-            ]}
-            onPress={() => setIsAnswering(true)}
-          >
-            <Text style={globalStyles.submitButtonText}>Take Assignment</Text>
-          </TouchableOpacity>
+        {role === "student" && (
+          <View>
+            {!isAnswering && (
+              <TouchableOpacity
+                style={[
+                  globalStyles.submitButton,
+                  {
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginHorizontal: "auto",
+                    marginVertical: 20,
+                  },
+                ]}
+                onPress={() => setIsAnswering(true)}
+              >
+                <Text style={globalStyles.submitButtonText}>
+                  Take Assignment
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
       </View>
 
