@@ -31,7 +31,9 @@ const RemedialFlashcards = () => {
       phoneme: string;
     }>();
 
-  const [cards, setCards] = useState<{ item_id: string; text: string }[]>([]);
+  const [cards, setCards] = useState<
+    { item_id: string; text: string; image_url: string | null }[]
+  >([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [recordingAudio, setRecordingAudio] = useState<string | null>();
@@ -200,7 +202,22 @@ const RemedialFlashcards = () => {
           )}
 
           <View style={styles.textContainer}>
-            <Text style={styles.flashcardText}>{cards[currentCard]?.text}</Text>
+            {cards[currentCard].image_url ? (
+              <Image
+                source={{ uri: cards[currentCard].image_url }}
+                style={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: 8,
+                  margin: "auto",
+                }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={styles.flashcardText}>
+                {cards[currentCard]?.text}
+              </Text>
+            )}
           </View>
         </View>
 

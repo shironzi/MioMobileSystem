@@ -144,7 +144,7 @@ const RemedialList = () => {
             }}
             onPress={() => setIsVisible(!isVisible)}
           >
-            <Text style={styles.buttonText}>Archive</Text>
+            <Text style={styles.buttonText}>Previous</Text>
             <AntDesign
               name={isVisible ? "up" : "down"}
               size={24}
