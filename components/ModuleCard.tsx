@@ -65,6 +65,7 @@ const ModuleCard = ({
 
   const handleRoute = () => {
     if (!visible) return;
+    if (translatedX.value !== 0) return;
     const encodedModules = encodeURIComponent(JSON.stringify(modules)) ?? [];
     const encodedAssignments =
       encodeURIComponent(JSON.stringify(assignments)) ?? [];
@@ -109,10 +110,7 @@ const ModuleCard = ({
         runOnJS(handleDeleteModule)(id);
       }
       translatedX.value = withTiming(0, { duration: 700 });
-
-      if (translatedX.value === 0) {
-        runOnJS(setIsDragging)(false);
-      }
+      runOnJS(setIsDragging)(false);
     });
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -130,7 +128,10 @@ const ModuleCard = ({
         <Animated.View style={[animatedStyle]}>
           <TouchableOpacity
             onPress={() => {
-              if (!isDragging) handleRoute();
+              if (isDragging) return;
+              if (translatedX.value !== 0) return;
+              console.log(translatedX.value);
+              handleRoute();
             }}
             style={styles.touchableOpacity}
             activeOpacity={100}

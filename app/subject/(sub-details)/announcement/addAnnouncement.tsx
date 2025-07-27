@@ -48,7 +48,7 @@ const addAnnouncement = () => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState(new Date());
   const [descHeight, setDescHeight] = useState<number>(200);
-  const [files, setFiles] = useState<FileInfo[] | string[]>([]);
+  const [files, setFiles] = useState<FileInfo[]>([]);
   const [imageUrl, setImageUrl] = useState<{ url: string; name: string }[]>([]);
   const [urls, setUrls] = useState<string[]>([""]);
   const [urlError, setUrlError] = useState<UrlError[]>([]);
@@ -134,17 +134,24 @@ const addAnnouncement = () => {
     setLoading(true);
     (async () => {
       const res = await getAnnouncementById(subjectId, announcementId);
-      const data = res.announcement;
+      if (res.success) {
+        const data = res.announcement;
 
-      setTitle(data.title);
-      setDescription(data.description);
-      setDate(new Date(data.date_posted));
-      setUrls(data.links);
+        setTitle(data.title);
+        setDescription(data.description);
+        setDate(new Date(data.date_posted));
+        setUrls(data.links);
 
-      const dataTemplate: string = await getTemplateType(data.title);
-      console.log(dataTemplate);
-      setTemplate(dataTemplate);
-      setLoading(false);
+        if (data.files.length > 0) {
+          data.files.map((file: any) => {
+            setFiles((prev) => [...prev, { name: file.name, uri: file.url }]);
+          });
+        }
+
+        const dataTemplate: string = await getTemplateType(data.title);
+        setTemplate(dataTemplate);
+        setLoading(false);
+      }
     })();
   }, [subjectId, announcementId]);
 
@@ -333,7 +340,7 @@ const addAnnouncement = () => {
               </TouchableOpacity>
             </View>
 
-            <View style={[globalStyles.contentPadding]}>
+            <View style={{ marginBottom: 100 }}>
               {imageUrl.map((item, index) => (
                 <View
                   style={{
@@ -357,7 +364,7 @@ const addAnnouncement = () => {
                   </TouchableOpacity>
                 </View>
               ))}
-              <FileUpload handleFiles={handleFileUpload} />
+              <FileUpload handleFiles={handleFileUpload} FileUploads={files} />
             </View>
 
             <View

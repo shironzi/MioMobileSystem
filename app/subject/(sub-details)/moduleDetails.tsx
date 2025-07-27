@@ -313,17 +313,22 @@ const moduleDetails = () => {
                   your mouth and lips to say the word the right way.
                 </Text>
               </View>
-              {module?.words.map((item, index) => (
-                <View
-                  style={[
-                    globalStyles.cardContainer1,
-                    { marginVertical: "auto" },
-                  ]}
-                  key={index}
-                >
-                  <AuditoryWord text={item.word} video_link={item.video_link} />
-                </View>
-              ))}
+              <View style={{ rowGap: 15, marginBottom: 70 }}>
+                {module?.words.map((item, index) => (
+                  <View
+                    style={[
+                      globalStyles.cardContainer1,
+                      { marginVertical: "auto" },
+                    ]}
+                    key={index}
+                  >
+                    <AuditoryWord
+                      text={item.word}
+                      video_link={item.video_link}
+                    />
+                  </View>
+                ))}
+              </View>
             </View>
           )}
 

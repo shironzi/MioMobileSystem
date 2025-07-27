@@ -323,21 +323,25 @@ function Announcements() {
         )}
       </ScrollView>
 
-      {!isEditing ? (
-        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <FontAwesome5 name="pen" size={20} color="#fff" />
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={[styles.editButton, { padding: 15 }]}
-          onPress={() => {
-            setIsEditing(false);
-            setSelectedAnnouncements([]);
-            setSelectAllAnnouncements(false);
-          }}
-        >
-          <MaterialIcons name="cancel" size={32} color="#fff" />
-        </TouchableOpacity>
+      {role === "teacher" && (
+        <View>
+          {!isEditing ? (
+            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+              <FontAwesome5 name="pen" size={20} color="#fff" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.editButton, { padding: 15 }]}
+              onPress={() => {
+                setIsEditing(false);
+                setSelectedAnnouncements([]);
+                setSelectAllAnnouncements(false);
+              }}
+            >
+              <MaterialIcons name="cancel" size={32} color="#fff" />
+            </TouchableOpacity>
+          )}
+        </View>
       )}
 
       <ConfirmationModal

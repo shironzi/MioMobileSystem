@@ -40,19 +40,19 @@ const Quiz = () => {
     fetchQuizzes();
   }, []);
 
-  const handleSelectQuiz = (quizId: string, index: number) => {
-    if (role === "teacher") {
-      router.push({
-        pathname: "/subject/(sub-details)/quiz/AddQuiz",
-        params: { subjectId: subjectId, quizId: quizId },
-      });
-    } else {
-      router.push({
-        pathname: "/subject/(sub-details)/quiz/ViewActivity",
-        params: { quizId: quizId, subjectId: subjectId, index: index + 1 },
-      });
-    }
-  };
+  // const handleSelectQuiz = (quizId: string, index: number) => {
+  //   if (role === "teacher") {
+  //     router.push({
+  //       pathname: "/subject/(sub-details)/quiz/AddQuiz",
+  //       params: { subjectId: subjectId, quizId: quizId },
+  //     });
+  //   } else {
+  //     router.push({
+  //       pathname: "/subject/(sub-details)/quiz/ViewActivity",
+  //       params: { quizId: quizId, subjectId: subjectId, index: index + 1 },
+  //     });
+  //   }
+  // };
   const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
   const [targetQuiz, setTargetQuiz] = useState<string | null>(null);
 
@@ -98,7 +98,7 @@ const Quiz = () => {
                 borderStyle: "dashed",
                 borderWidth: 2,
                 borderRadius: 20,
-                paddingVertical: 20,
+                paddingVertical: 10,
                 justifyContent: "center",
                 backgroundColor: "#FFBF1840",
                 borderColor: "#FFBF18",
@@ -119,32 +119,34 @@ const Quiz = () => {
             </TouchableOpacity>
           )}
 
-          {quizzes ? (
-            quizzes?.map((quiz, index) => (
-              <GestureHandlerRootView style={{ flex: 1 }} key={index}>
-                <QuizCard
-                  quiz_id={quiz.quiz_id}
-                  subjectId={subjectId}
-                  title={quiz.title}
-                  total_points={quiz.total_points}
-                  role={role}
-                  handleDelete={() => {
-                    setDeleteConfirm(true);
-                    setTargetQuiz(quiz.quiz_id);
-                  }}
-                />
-              </GestureHandlerRootView>
-            ))
-          ) : (
-            <View
-              style={[
-                { marginVertical: "auto", height: "100%" },
-                role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
-              ]}
-            >
-              <NoQuizzes />
-            </View>
-          )}
+          <View style={{ rowGap: 15 }}>
+            {quizzes ? (
+              quizzes?.map((quiz, index) => (
+                <GestureHandlerRootView style={{ flex: 1 }} key={index}>
+                  <QuizCard
+                    quiz_id={quiz.quiz_id}
+                    subjectId={subjectId}
+                    title={quiz.title}
+                    total_points={quiz.total_points}
+                    role={role}
+                    handleDelete={() => {
+                      setDeleteConfirm(true);
+                      setTargetQuiz(quiz.quiz_id);
+                    }}
+                  />
+                </GestureHandlerRootView>
+              ))
+            ) : (
+              <View
+                style={[
+                  { marginVertical: "auto", height: "100%" },
+                  role === "teacher" ? { marginTop: 180 } : { marginTop: 200 },
+                ]}
+              >
+                <NoQuizzes />
+              </View>
+            )}
+          </View>
         </View>
       </ScrollView>
 
@@ -155,6 +157,7 @@ const Quiz = () => {
         approveDisplay={"Delete"}
         handleCancel={() => setDeleteConfirm(false)}
         handleApprove={() => handleDelete()}
+        isActive={false}
       />
     </View>
   );

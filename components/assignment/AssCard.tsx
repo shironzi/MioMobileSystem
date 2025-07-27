@@ -28,6 +28,7 @@ const assCard = (props: {
   submission_type: string;
   role: string;
   handleDelete: () => void;
+  is_submitted: boolean;
 }) => {
   const router = useRouter();
 
@@ -46,6 +47,7 @@ const assCard = (props: {
         params: {
           subjectId: props.subjectId,
           assignmentId: props.assignment_id,
+          role: props.role,
         },
       });
     }
@@ -94,7 +96,15 @@ const assCard = (props: {
               <Text style={styles.score}> / {props.totalPoints}</Text>
             </View>
             <View style={styles.rightSection}>
-              <View style={styles.deadline}></View>
+              {props.role !== "teacher" && (
+                <View style={styles.deadline}>
+                  {props.is_submitted ? (
+                    <Text style={{ color: "green" }}>Submitted</Text>
+                  ) : (
+                    <Text style={{ color: "red" }}>Not Submitted</Text>
+                  )}
+                </View>
+              )}
               <FontAwesome6 name="arrow-right-long" size={15} color="#1f1f1f" />
             </View>
           </TouchableOpacity>
@@ -137,7 +147,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
     fontWeight: "500",
-    // marginBottom: 4,
     flexShrink: 1,
     flexWrap: "wrap",
   },
@@ -155,18 +164,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 5,
   },
-  // date: {
-  //   fontSize: 12,
-  //   color: "#888",
-  //   marginBottom: 5,
-  //   textAlign: "right",
-  // },
-  // icons: {
-  //   flexDirection: "row",
-  //   marginLeft: 5,
-  //   marginRight: 5,
-  //   top: -8,
-  // },
 });
 
 export default memo(assCard);

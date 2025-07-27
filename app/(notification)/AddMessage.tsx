@@ -40,9 +40,9 @@ const AddMessage = () => {
   const [parents, setParents] = useState<{ user_id: string; name: string }[]>(
     [],
   );
-  const [selectedUser, setSelectedUser] = useState<"student" | "parent">(
-    "student",
-  );
+  const [selectedUser, setSelectedUser] = useState<
+    "student" | "parent" | "teacher"
+  >("student");
   const [subjects, setSubjects] = useState<
     {
       subject_id: string;
@@ -85,7 +85,7 @@ const AddMessage = () => {
       if (role === "student") {
         setSelectedUser("student");
       } else if (role === "parent") {
-        setSelectedUser("parent");
+        setSelectedUser("teacher");
       }
       setRole(roleValue ?? "");
 
@@ -150,6 +150,8 @@ const AddMessage = () => {
     );
   }
 
+  console.log(parents);
+
   return (
     <KeyboardAvoidingView
       style={{ height: "100%", backgroundColor: "#fff" }}
@@ -212,7 +214,7 @@ const AddMessage = () => {
                 style={styles.picker}
                 mode={"dropdown"}
               >
-                {selectedUser === "student" ? (
+                {selectedUser === "student" || selectedUser === "teacher" ? (
                   users ? (
                     users?.map((user) => (
                       <Picker.Item

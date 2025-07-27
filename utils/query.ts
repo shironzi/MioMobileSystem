@@ -3,6 +3,16 @@ import { getAuth } from "@react-native-firebase/auth";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
+const getMimeType = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.headers.get("Content-Type") ?? "unrecognized";
+  } catch (error) {
+    console.error("Failed to get MIME type:", error);
+    return "unrecognized";
+  }
+};
+
 export async function getSubjects() {
   try {
     const { data } = await api.get(`/subjects`);
@@ -128,7 +138,6 @@ export async function editAnnouncement(
   description: string,
   files: FileInfo[],
   urls: string[],
-  existingImageUrls: { url: string; name: string }[],
   subjectId: string,
   announcementId: string,
   formattedDate: string,
@@ -140,20 +149,23 @@ export async function editAnnouncement(
     formData.append("description", description);
     formData.append("date_posted", formattedDate);
 
-    existingImageUrls.forEach((url, idx) => {
-      if (url.url.trim()) {
-        formData.append(`image_urls[${idx}]`, url.url);
-      }
-    });
+    if (files.length > 0) {
+      for (const file of files) {
+        const index = files.indexOf(file);
+        if (!file.uri || !file.name) continue;
 
-    files.forEach((file, idx) => {
-      if (!file.uri) return;
-      formData.append(`files[${idx}][file]`, {
-        uri: file.uri,
-        name: file.name,
-        type: file.mimeType ?? "application/octet-stream",
-      } as any);
-    });
+        let fileType = file.mimeType;
+        if (!fileType) {
+          fileType = await getMimeType(file.uri);
+        }
+
+        formData.append(`files[${index}]`, {
+          uri: file.uri,
+          name: file.name,
+          type: fileType,
+        } as any);
+      }
+    }
 
     urls.forEach((url, idx) => {
       if (url.trim()) {
@@ -800,6 +812,22 @@ export async function getAttendance(subjectId: string) {
   }
 }
 
+export async function getStudentAttendance(subjectId: string) {
+  try {
+    const { data } = await api.get(`/subject/${subjectId}/student/attendance`);
+
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function getAttendanceById(
   subjectId: string,
   attendanceId: string,
@@ -950,6 +978,7 @@ interface QuizInfo {
   title: string;
   description: string;
   deadline: Date | null;
+  publish: Date | null;
   availableFrom: Date | null;
   availableTo: Date | null;
   attempts: number;
@@ -963,6 +992,7 @@ interface QuizItem {
   id: string;
   item_id?: string;
   question: string;
+  question_image: FileInfo | null;
   choices: string[];
   answer: string[];
   questionType:
@@ -970,8 +1000,7 @@ interface QuizItem {
     | "multiple_multiple"
     | "essay"
     | "file_upload"
-    | "fill"
-    | "dropdown";
+    | "fill";
   points: number;
 }
 
@@ -1006,6 +1035,13 @@ export async function createQuiz(
       );
     }
 
+    if (quizInfo.publish) {
+      formdata.append(
+        "publish_date",
+        quizInfo.publish.toISOString().split("T")[0],
+      );
+    }
+
     if (quizInfo.availableFrom) {
       formdata.append("start_time", getTime(quizInfo.availableFrom));
     }
@@ -1027,6 +1063,15 @@ export async function createQuiz(
         item.choices.forEach((choice, optIdx) => {
           formdata.append(`questions[${index}][options][${optIdx}]`, choice);
         });
+      }
+
+      if (item.question_image) {
+        const image = item.question_image;
+        formdata.append(`questions[${index}][image]`, {
+          name: image.name,
+          uri: image.uri,
+          mimeType: image.mimeType,
+        } as any);
       }
     });
 
@@ -1067,12 +1112,22 @@ export async function updateQuiz(
     formdata.append("attempts", quizInfo.attempts.toString());
     formdata.append("time_limit", quizInfo.time_limit);
     formdata.append("access_code", quizInfo.access_code || "");
-    formdata.append("show_correct_answers", "false");
+    formdata.append("show_correct_answers", quizInfo.show_answer.toString());
+    formdata.append("visibility", quizInfo.visibility);
+
+    console.log(quizInfo.visibility);
 
     if (quizInfo.deadline) {
       formdata.append(
         "deadline_date",
         quizInfo.deadline.toISOString().split("T")[0],
+      );
+    }
+
+    if (quizInfo.publish) {
+      formdata.append(
+        "publish_date",
+        quizInfo.publish.toISOString().split("T")[0],
       );
     }
 

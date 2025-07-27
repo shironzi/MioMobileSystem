@@ -1,9 +1,9 @@
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { createAnnouncement, editAnnouncement } from "@/utils/query";
-import { Image as ExpoImage, Image } from "expo-image";
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   Alert,
   Linking,
@@ -47,10 +47,7 @@ const AnnouncementPreview = () => {
 
   const fileList: FileInfo[] = files ? JSON.parse(files) : [];
   const urlList: string[] = urls ? JSON.parse(urls) : [];
-  const imageList: { url: string; name: string }[] = imageUrl
-    ? JSON.parse(imageUrl)
-    : [];
-  const [localUris, setLocalUris] = useState<string[]>([]);
+  const imageList: FileInfo[] = imageUrl ? JSON.parse(imageUrl) : [];
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleCreateAnnouncement = async () => {
@@ -61,7 +58,6 @@ const AnnouncementPreview = () => {
           description,
           fileList,
           urlList,
-          imageList,
           subjectId,
           announcementId,
           formattedDate,
@@ -74,6 +70,8 @@ const AnnouncementPreview = () => {
           subjectId,
           formattedDate,
         );
+
+    console.log(res);
 
     setIsSubmitting(false);
 
@@ -97,59 +95,26 @@ const AnnouncementPreview = () => {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const uris = await Promise.all(
-        fileList.map(async (file) => {
-          try {
-            const cached = await ExpoImage.getCachePathAsync(file.uri);
-            return cached ?? file.uri;
-          } catch {
-            return file.uri;
-          }
-        }),
-      );
-      setLocalUris(uris);
-    })();
-  }, [fileList]);
-
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={{ flex: 1, height: "100%" }}
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View
         style={[
           globalStyles.container,
-          { flex: 1, paddingBottom: 500, height: "100%" },
+          { flex: 1, paddingBottom: 70, height: "100%" },
         ]}
       >
         <View style={[globalStyles.cardContainer]}>
-          {/* <Text style={[styles.label, { color: "#2264dc" }]}>Title</Text> */}
           <Text style={[styles.text, { top: 5, fontWeight: 500 }]}>
             {title}
           </Text>
-
-          {/* <Text style={[styles.label, { color: "#2264dc", top: 5 }]}>
-            Description
-          </Text> */}
           <Text
             style={[styles.text, { top: 10, fontSize: 16, marginBottom: 15 }]}
           >
             {description}
           </Text>
-          {/* 
-          {fileList.length > 0 && (
-            <Text style={[styles.label, { color: "#2264dc", top: 10 }]}>
-              Attachments
-            </Text>
-          )} */}
 
           {urlList.length > 0 && (
             <>
-              {/* <Text style={[styles.label, { color: "#2264dc", top: 10 }]}>
-                URLs
-              </Text> */}
               {urlList.map((url, index) => (
                 <Text
                   key={index}
@@ -174,29 +139,20 @@ const AnnouncementPreview = () => {
           {imageList.map((item, index) => (
             <View key={index}>
               <Image
-                source={{ uri: item.url }}
+                source={{ uri: item.uri }}
                 style={styles.image}
                 contentFit="contain"
               />
             </View>
           ))}
-          {fileList.map((file, idx) => {
-            const localUri = localUris[idx];
-            const isImage = file.mimeType?.startsWith("image/");
-            return (
-              <View key={idx} style={styles.attachment}>
-                {isImage && localUri ? (
-                  <ExpoImage
-                    source={localUri}
-                    style={styles.image}
-                    contentFit="contain"
-                  />
-                ) : (
-                  <Text style={[styles.text]}>{file.name}</Text>
-                )}
-              </View>
-            );
-          })}
+          {fileList.map((file, idx) => (
+            <Image
+              source={{ uri: file.uri }}
+              key={idx}
+              style={styles.image}
+              contentFit="contain"
+            />
+          ))}
           <View
             style={{
               flexDirection: "row",

@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import Svg, { Line } from "react-native-svg";
+import FeedbackAlert from "@/components/FeedbackAlert";
 
 const { width, height } = Dimensions.get("window");
 
@@ -77,6 +78,7 @@ const MatchingCards = () => {
   const audioPositions = useRef<{ [key: number]: AudioRef }>({});
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
@@ -129,13 +131,17 @@ const MatchingCards = () => {
     console.log(res);
 
     if (res.success) {
-      router.push({
-        pathname: "/subject/(exercises)/AuditoryScores",
-        params: {
-          score: res.score,
-          totalItems: total,
-        },
-      });
+      setFeedback(res.feedback);
+
+      setTimeout(() => {
+        router.push({
+          pathname: "/subject/(exercises)/AuditoryScores",
+          params: {
+            score: res.score,
+            totalItems: total,
+          },
+        });
+      }, 5000);
     }
 
     setIsSending(false);
@@ -387,6 +393,21 @@ const MatchingCards = () => {
           </TouchableOpacity>
         </View>
       </View>
+      {feedback && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FeedbackAlert message={feedback} onHide={() => setFeedback(null)} />
+        </View>
+      )}
     </ScrollView>
   );
 };
