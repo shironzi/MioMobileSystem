@@ -111,10 +111,22 @@ const AuditoryScores = () => {
         setFeedbacks(res.feedbacks);
         setFeedback(res.feedback);
         setComment(res.comment);
-        console.log(res.feedbacks);
+        setLoading(false);
+      } else {
+        Alert.alert(
+          "Success",
+          res.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
       }
-
-      setLoading(false);
     };
 
     fetchAttempt();
