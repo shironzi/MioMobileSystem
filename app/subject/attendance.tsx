@@ -90,7 +90,7 @@ const attendanceDetails = () => {
   return (
     <View style={[globalStyles.container, { flex: 1 }]}>
       <View style={styles.content}>
-        {role === "teacher" && (
+        {role === "teacher" ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ marginBottom: 70 }}>
               <TouchableOpacity
@@ -133,71 +133,72 @@ const attendanceDetails = () => {
               )}
             </View>
           </ScrollView>
-        )}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ marginHorizontal: "auto" }}>
-            <PieChart data={data} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                marginTop: 20,
-                alignItems: "center",
-              }}
-            >
-              <View style={{ flexDirection: "row", columnGap: 5 }}>
-                <View style={styles.labelBox} />
-                <Text style={{ fontWeight: "bold" }}>Present</Text>
-              </View>
-              <View style={{ flexDirection: "row", columnGap: 5 }}>
-                <View style={[styles.labelBox, { backgroundColor: "red" }]} />
-                <Text style={{ fontWeight: "bold" }}>Absent</Text>
-              </View>
-              <View style={{ flexDirection: "row", columnGap: 5 }}>
-                <View
-                  style={[styles.labelBox, { backgroundColor: "yellow" }]}
-                />
-                <Text style={{ fontWeight: "bold" }}>Late</Text>
-              </View>
-            </View>
-          </View>
-          <View
-            style={[
-              globalStyles.cardContainer,
-              { marginTop: 20, padding: 0, marginBottom: 70 },
-            ]}
-          >
-            <View style={styles.row}>
-              <Text style={[styles.cell, styles.headerText]}>Date</Text>
-              <Text style={[styles.cell, styles.headerText]}>Time</Text>
-              <Text style={[styles.cell, styles.headerText]}>Status</Text>
-            </View>
-            {studentAttendance.map((item, index) => {
-              const [datePart, timePart] = item.date.split(" ");
-              const time = formatTime12Hour(timePart);
-              const status =
-                item.status.charAt(0).toUpperCase() + item.status.slice(1);
-              let statusColor = "green";
-              if (status === "Late") statusColor = "yellow";
-              if (status === "Absent") statusColor = "red";
-
-              return (
-                <View style={styles.row} key={index}>
-                  <Text style={styles.cell}>{datePart}</Text>
-                  <Text style={styles.cell}>{time}</Text>
-                  <Text
-                    style={[
-                      styles.cell,
-                      { color: statusColor, fontWeight: 500 },
-                    ]}
-                  >
-                    {status}
-                  </Text>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{ marginHorizontal: "auto" }}>
+              <PieChart data={data} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  marginTop: 20,
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ flexDirection: "row", columnGap: 5 }}>
+                  <View style={styles.labelBox} />
+                  <Text style={{ fontWeight: "bold" }}>Present</Text>
                 </View>
-              );
-            })}
-          </View>
-        </ScrollView>
+                <View style={{ flexDirection: "row", columnGap: 5 }}>
+                  <View style={[styles.labelBox, { backgroundColor: "red" }]} />
+                  <Text style={{ fontWeight: "bold" }}>Absent</Text>
+                </View>
+                <View style={{ flexDirection: "row", columnGap: 5 }}>
+                  <View
+                    style={[styles.labelBox, { backgroundColor: "yellow" }]}
+                  />
+                  <Text style={{ fontWeight: "bold" }}>Late</Text>
+                </View>
+              </View>
+            </View>
+            <View
+              style={[
+                globalStyles.cardContainer,
+                { marginTop: 20, padding: 0, marginBottom: 70 },
+              ]}
+            >
+              <View style={styles.row}>
+                <Text style={[styles.cell, styles.headerText]}>Date</Text>
+                <Text style={[styles.cell, styles.headerText]}>Time</Text>
+                <Text style={[styles.cell, styles.headerText]}>Status</Text>
+              </View>
+              {studentAttendance.map((item, index) => {
+                const [datePart, timePart] = item.date.split(" ");
+                const time = formatTime12Hour(timePart);
+                const status =
+                  item.status.charAt(0).toUpperCase() + item.status.slice(1);
+                let statusColor = "green";
+                if (status === "Late") statusColor = "yellow";
+                if (status === "Absent") statusColor = "red";
+
+                return (
+                  <View style={styles.row} key={index}>
+                    <Text style={styles.cell}>{datePart}</Text>
+                    <Text style={styles.cell}>{time}</Text>
+                    <Text
+                      style={[
+                        styles.cell,
+                        { color: statusColor, fontWeight: 500 },
+                      ]}
+                    >
+                      {status}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          </ScrollView>
+        )}
       </View>
     </View>
   );
