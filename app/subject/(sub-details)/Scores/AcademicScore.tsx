@@ -1,8 +1,8 @@
 import globalStyles from "@/styles/globalStyles";
 import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { getStudentAssignmentScore } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
@@ -10,8 +10,7 @@ import LoadingCard from "@/components/loadingCard";
 const AcademicScore = () => {
   headerConfigScoreDetails("Score Detail");
 
-  const { activityType, activityId, subjectId } = useLocalSearchParams<{
-    activityType: string;
+  const { activityId, subjectId } = useLocalSearchParams<{
     activityId: string;
     subjectId: string;
   }>();
@@ -26,12 +25,28 @@ const AcademicScore = () => {
     const fetchScore = async () => {
       const res = await getStudentAssignmentScore(subjectId, activityId);
 
-      setTotal(res.total);
-      setScore(res.score);
-      setFeedback(res.feedback);
-      setComments(res.comments);
+      if (res.success) {
+        setTotal(res.total);
+        setScore(res.score);
+        setFeedback(res.feedback);
+        setComments(res.comments);
 
-      setLoading(false);
+        setLoading(false);
+      } else {
+        Alert.alert(
+          "Message",
+          res.message,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.back();
+              },
+            },
+          ],
+          { cancelable: false },
+        );
+      }
     };
 
     fetchScore();
