@@ -185,7 +185,8 @@ const QuestionItem = ({
 								onPress={handlePreview}
 							>
 								<Text style={[globalStyles.submitButtonText, { top: 3 }]}>
-									{activityId ? "Update" : "Create"}
+									Preview
+									{/* {activityId ? "Update" : "Create"} */}
 								</Text>
 							</TouchableOpacity>
 						</View>
