@@ -276,57 +276,58 @@ const newCourseDetails = () => {
             />
           </View>
         </TouchableOpacity>
+        
+					<TouchableOpacity
+						style={styles.subCourse}
+						onPress={useCallback(() => {
+							router.push({
+								pathname: "/subject/attendance",
+								params: { subjectId: id, role: role },
+							});
+						}, [router, id, role])}
+					>
+						<View style={styles.row}>
+							<Image
+								source={require("@/assets/course/att.png")}
+								style={[styles.courseImg, { width: 60, left: -25 }]}
+							/>
+							<Text style={{ fontSize: 14, left: -60 }}>Attendance</Text>
+							<FontAwesome6
+								name="arrow-right-long"
+								size={20}
+								color="#1f1f1f"
+								style={{ left: 15 }}
+							/>
+						</View>
+					</TouchableOpacity>
+				)}
 
-        <TouchableOpacity
-          style={styles.subCourse}
-          onPress={useCallback(() => {
-            router.push({
-              pathname: "/subject/attendance",
-              params: { subjectId: id, role: role },
-            });
-          }, [router, id, role])}
-        >
-          <View style={styles.row}>
-            <Image
-              source={require("@/assets/course/attendance.png")}
-              style={[styles.courseImg, { width: 40 }]}
-            />
-            <Text style={{ fontSize: 14, left: -50 }}>Attendance</Text>
-            <FontAwesome6
-              name="arrow-right-long"
-              size={20}
-              color="#1f1f1f"
-              style={{ left: 15 }}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.subCourse}
-          onPress={useCallback(() => {
-            router.push({
-              pathname: "/subject/Peoples",
-              params: { subjectId: id, role: role },
-            });
-          }, [router, id, role])}
-        >
-          <View style={styles.row}>
-            <Image
-              source={require("@/assets/course/acc.png")}
-              style={[styles.courseImg, { width: 40, left: -15 }]}
-            />
-            <Text style={{ fontSize: 14, left: -65 }}>People</Text>
-            <FontAwesome6
-              name="arrow-right-long"
-              size={20}
-              color="#1f1f1f"
-              style={{ left: 15 }}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
+				<TouchableOpacity
+					style={styles.subCourse}
+					onPress={useCallback(() => {
+						router.push({
+							pathname: "/subject/Peoples",
+							params: { subjectId: id, role: role },
+						});
+					}, [router, id, role])}
+				>
+					<View style={styles.row}>
+						<Image
+							source={require("@/assets/course/people.png")}
+							style={[styles.courseImg, { width: 50, left: -20 }]}
+						/>
+						<Text style={{ fontSize: 14, left: -65 }}>People</Text>
+						<FontAwesome6
+							name="arrow-right-long"
+							size={20}
+							color="#1f1f1f"
+							style={{ left: 15 }}
+						/>
+					</View>
+				</TouchableOpacity>
+			</View>
+		</ScrollView>
+	);
 };
 
 export default memo(newCourseDetails);
