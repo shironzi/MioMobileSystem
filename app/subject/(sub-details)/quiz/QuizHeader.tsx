@@ -187,7 +187,7 @@ const QuizHeader = ({
             </Text>
           )}
           <TouchableOpacity
-            onPress={() => setShowAvailableFromPicker(info.deadline !== null)}
+            onPress={() => setShowAvailableFromPicker(true)}
             style={[
               globalStyles.inputContainer,
               errors.find((err) => err.name === "availableFrom") && {
@@ -218,7 +218,6 @@ const QuizHeader = ({
               setShowAvailableFromPicker(false);
               if (event.type !== "dismissed" && selectedDate) {
                 let date: Date | null = selectedDate;
-                if (info.deadline === null) date = null;
 
                 setQuizInfo((prev) => ({
                   ...prev,

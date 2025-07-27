@@ -2,9 +2,9 @@ import globalStyles from "@/styles/globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import FileUpload from "@/components/FileUpload";
 import { Picker } from "@react-native-picker/picker";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FileUploadSingle from "@/components/FileUploadSingle";
 
 interface FileInfo {
   uri: string;
@@ -16,7 +16,7 @@ interface QuizItem {
   id: string;
   item_id?: string;
   question: string;
-  question_image: FileInfo[] | null;
+  question_image: FileInfo | null;
   choices: string[];
   answer: string[];
   questionType:
@@ -24,8 +24,7 @@ interface QuizItem {
     | "multiple_multiple"
     | "essay"
     | "file_upload"
-    | "fill"
-    | "dropdown";
+    | "fill";
   points: number;
 }
 
@@ -43,7 +42,7 @@ interface Props {
   item: QuizItem;
   inputErrors: QuizItemError[];
   handleQuestionInput: (value: string, id: string) => void;
-  handleQuestionImage: (id: string, file: FileInfo[]) => void;
+  handleQuestionImage: (id: string, file: FileInfo) => void;
   handlePointsInput: (value: string, id: string) => void;
   handleChangeQuestionType: (
     id: string,
@@ -139,11 +138,9 @@ const QuizItem = ({
             marginHorizontal: "auto",
           }}
         >
-          <FileUpload
-            handleFiles={(file: FileInfo[]) =>
-              handleQuestionImage(item.id, file)
-            }
-            fileTypes={"image/*"}
+          <FileUploadSingle
+            handleFile={(file: FileInfo) => handleQuestionImage(item.id, file)}
+            fileTypes={["image"]}
           />
         </View>
       </View>
@@ -201,7 +198,6 @@ const QuizItem = ({
         </View>
       </View>
       {(item.questionType === "multiple_choice" ||
-        item.questionType === "dropdown" ||
         item.questionType === "multiple_multiple") && (
         <View>
           <Text style={globalStyles.text1}>Choices</Text>
@@ -271,7 +267,6 @@ const QuizItem = ({
             <Text style={globalStyles.text1}>Answer</Text>
           )}
         {(item.questionType === "multiple_choice" ||
-          item.questionType === "dropdown" ||
           item.questionType === "multiple_multiple") && (
           <View style={{ rowGap: 10 }}>
             <View style={[globalStyles.textInputContainer, { rowGap: 5 }]}>

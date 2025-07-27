@@ -992,6 +992,7 @@ interface QuizItem {
   id: string;
   item_id?: string;
   question: string;
+  question_image: FileInfo | null;
   choices: string[];
   answer: string[];
   questionType:
@@ -999,8 +1000,7 @@ interface QuizItem {
     | "multiple_multiple"
     | "essay"
     | "file_upload"
-    | "fill"
-    | "dropdown";
+    | "fill";
   points: number;
 }
 
@@ -1063,6 +1063,15 @@ export async function createQuiz(
         item.choices.forEach((choice, optIdx) => {
           formdata.append(`questions[${index}][options][${optIdx}]`, choice);
         });
+      }
+
+      if (item.question_image) {
+        const image = item.question_image;
+        formdata.append(`questions[${index}][image]`, {
+          name: image.name,
+          uri: image.uri,
+          mimeType: image.mimeType,
+        } as any);
       }
     });
 

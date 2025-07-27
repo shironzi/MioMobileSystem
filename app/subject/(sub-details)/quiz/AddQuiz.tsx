@@ -253,10 +253,7 @@ const AddQuiz = () => {
         errors.push({ name: "points", id: item.id });
       }
 
-      if (
-        item.questionType === "multiple_choice" ||
-        item.questionType === "dropdown"
-      ) {
+      if (item.questionType === "multiple_choice") {
         if (item.choices.length < 1) {
           hasError = true;
           errors.push({ name: "choices_length", id: item.id });
@@ -359,10 +356,7 @@ const AddQuiz = () => {
     let hasChanges = false;
 
     const updated = quizItems.map((item) => {
-      if (
-        (item.questionType === "dropdown" || item.questionType === "fill") &&
-        item.answer.length !== 1
-      ) {
+      if (item.questionType === "fill" && item.answer.length !== 1) {
         hasChanges = true;
         return { ...item, answer: [""] };
       }

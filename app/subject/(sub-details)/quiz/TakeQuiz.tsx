@@ -21,7 +21,6 @@ export interface QuizItem {
     | "essay"
     | "file_upload"
     | "fill_blank"
-    | "dropdown"
     | "multiple_multiple";
   question: string;
   options: { id: string; label: string }[];
