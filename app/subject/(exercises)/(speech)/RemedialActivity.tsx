@@ -77,7 +77,7 @@ const RemedialFlashcards = () => {
         return;
       }
 
-      if ((res.success && res.is_passed) || res.total_tries >= 5) {
+      if (res.success) {
         setCurrentCard(currentCard + 1);
       }
 
@@ -97,12 +97,10 @@ const RemedialFlashcards = () => {
 
       if (res.success) {
         setAttemptId(res.attemptId);
-        setCards(Object.values(res.flashcards));
+        setCards(res.flashcards);
         setCurrentCard(res.currentItem ?? 0);
-
-        console.log(cards);
       } else {
-        Alert.alert("Access Denied", res.message, [
+        Alert.alert("Message", res.message, [
           {
             text: "OK",
             onPress: () => router.back(),

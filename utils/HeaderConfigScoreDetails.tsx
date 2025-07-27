@@ -30,6 +30,7 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
               navigation.goBack();
               navigation.goBack();
               navigation.goBack();
+              navigation.goBack();
             }}
           >
             <FontAwesome6 name="arrow-left-long" size={24} color="#282727" />
