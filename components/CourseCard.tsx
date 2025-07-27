@@ -128,16 +128,18 @@ const CourseCard = (props: {
             >
               {props.courseTitle}
             </Text>
-            <Text
-              style={{
-                color: "#333",
-                marginLeft: 30,
-                fontWeight: 300,
-                fontSize: 13,
-              }}
-            >
-              {props.courseId}
-            </Text>
+            {props.role === "teacher" && (
+              <Text
+                style={{
+                  color: "#333",
+                  marginLeft: 30,
+                  fontWeight: 300,
+                  fontSize: 13,
+                }}
+              >
+                {props.courseId}
+              </Text>
+            )}
             <Text
               style={{
                 color: "#333",
