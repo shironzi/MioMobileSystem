@@ -9,7 +9,6 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -17,6 +16,7 @@ import {
   View,
 } from "react-native";
 import FeedbackAlert from "@/components/FeedbackAlert";
+import RemedialSchedule from "@/components/modals/RemedialSchedule";
 
 const bingo = () => {
   HeaderConfigQuiz("Piddie Says");
@@ -51,6 +51,20 @@ const bingo = () => {
     { image_id: string; selected_at: string; audio_id: string }[]
   >([]);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showSchedule, setShowSchedule] = useState<boolean>(false);
+  const [scheduleMessage, setScheduleMessage] = useState<{
+    has_schedule: boolean;
+    message: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+  }>({
+    has_schedule: false,
+    message: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+  });
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
@@ -139,6 +153,7 @@ const bingo = () => {
             totalItems: activityData.length,
             activityType: activity_type,
             difficulty: "Remedial",
+            is_remedial: "true",
           },
         });
       }, 5000);
@@ -188,12 +203,14 @@ const bingo = () => {
         setActivityData(res.items);
         setAudioFiles(res.audio_paths);
       } else {
-        Alert.alert("", res.message, [
-          {
-            text: "OK",
-            onPress: () => router.back(),
-          },
-        ]);
+        setShowSchedule(true);
+        setScheduleMessage({
+          message: res.message,
+          has_schedule: res.has_schedule,
+          date: res.date ?? "",
+          end_time: res.end_time ?? "",
+          start_time: res.start_time ?? "",
+        });
       }
       setLoading(false);
     };
@@ -201,7 +218,19 @@ const bingo = () => {
     fetchData();
   }, [subjectId, remedialId]);
 
-  if (loading) {
+  if (showSchedule) {
+    return (
+      <RemedialSchedule
+        message={scheduleMessage?.message}
+        has_schedule={scheduleMessage?.has_schedule}
+        date={scheduleMessage.date}
+        end_time={scheduleMessage.end_time}
+        start_time={scheduleMessage.start_time}
+      />
+    );
+  }
+
+  if (loading && !showSchedule) {
     return (
       <View
         style={{

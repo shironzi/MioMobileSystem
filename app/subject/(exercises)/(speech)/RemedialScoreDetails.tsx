@@ -25,7 +25,7 @@ interface EvalEntry {
 }
 
 const RemedialScoreDetails = () => {
-  headerConfigScoreDetails("Score Details");
+  headerConfigScoreDetails("Score Details", "", true);
 
   const { subjectId, activity_type, remedialId, attemptId } =
     useLocalSearchParams<{

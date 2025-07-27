@@ -126,15 +126,6 @@ const RemedialFlashcards = () => {
           end_time: res.end_time ?? "",
           start_time: res.start_time ?? "",
         });
-        // Alert.alert("Message", res.message, [
-        //   {
-        //     text: "OK",
-        //     onPress: () => {
-        //       router.back();
-        //       router.back();
-        //     },
-        //   },
-        // ]);
       }
     };
     fetchActivity();

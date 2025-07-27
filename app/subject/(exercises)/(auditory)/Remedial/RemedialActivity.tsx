@@ -8,7 +8,6 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -19,6 +18,7 @@ import {
 } from "react-native";
 import Svg, { Line } from "react-native-svg";
 import FeedbackAlert from "@/components/FeedbackAlert";
+import RemedialSchedule from "@/components/modals/RemedialSchedule";
 
 const { width, height } = Dimensions.get("window");
 
@@ -79,6 +79,20 @@ const MatchingCards = () => {
   const imagePositions = useRef<{ [key: number]: ImageRef }>({});
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showSchedule, setShowSchedule] = useState<boolean>(false);
+  const [scheduleMessage, setScheduleMessage] = useState<{
+    has_schedule: boolean;
+    message: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+  }>({
+    has_schedule: false,
+    message: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+  });
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
@@ -139,6 +153,7 @@ const MatchingCards = () => {
           params: {
             score: res.score,
             totalItems: total,
+            is_remedial: "true",
           },
         });
       }, 5000);
@@ -226,12 +241,14 @@ const MatchingCards = () => {
         setAttemptId(res.attemptId);
         setTotal(res.total);
       } else {
-        Alert.alert("", res.message, [
-          {
-            text: "OK",
-            onPress: () => router.back(),
-          },
-        ]);
+        setShowSchedule(true);
+        setScheduleMessage({
+          message: res.message,
+          has_schedule: res.has_schedule,
+          date: res.date ?? "",
+          end_time: res.end_time ?? "",
+          start_time: res.start_time ?? "",
+        });
       }
       setLoading(false);
     };
@@ -239,7 +256,19 @@ const MatchingCards = () => {
     fetchActivity();
   }, []);
 
-  if (loading) {
+  if (showSchedule) {
+    return (
+      <RemedialSchedule
+        message={scheduleMessage?.message}
+        has_schedule={scheduleMessage?.has_schedule}
+        date={scheduleMessage.date}
+        end_time={scheduleMessage.end_time}
+        start_time={scheduleMessage.start_time}
+      />
+    );
+  }
+
+  if (loading && !showSchedule) {
     return (
       <View
         style={{
