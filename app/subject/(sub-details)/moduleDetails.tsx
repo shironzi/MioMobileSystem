@@ -372,8 +372,22 @@ const moduleDetails = () => {
 					)}
 				</ScrollView>
 			) : (
-				<View>
-					<Text>There was no modules yet!</Text>
+				<View
+					style={{
+						justifyContent: "center",
+						backgroundColor: "#fff",
+						flex: 1,
+					}}
+				>
+					<Image
+						source={require("@/assets/load/noavailable.png")}
+						resizeMode="contain"
+						style={globalStyles.image}
+					/>
+					<Text style={globalStyles.line1}>No Module Yet</Text>
+					<Text style={globalStyles.line2}>
+						There’s nothing available in this{"\n"}section right now.
+					</Text>
 				</View>
 			)}
 		</View>
