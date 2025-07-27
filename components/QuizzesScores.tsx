@@ -116,6 +116,7 @@ const QuizzesScores = ({
 										name="long-arrow-right"
 										size={20}
 										color="black"
+										style={{ top: 0, left: -18 }}
 									/>
 								</View>
 							</TouchableOpacity>
