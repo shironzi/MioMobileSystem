@@ -36,17 +36,16 @@ const MicrophoneTest = () => {
   const [recordingAudio, setRecordingAudio] = useState<string | null>("");
 
   const handleTakeExercise = () => {
-    router.push({
-      pathname: "/subject/(exercises)/(speech)/RemedialActivity",
-      params: {
-        subjectId: subjectId,
-        activity_type: activity_type,
-        phoneme: phoneme,
-        remedialId: activityId,
-      },
-    });
-
     if (remedial === "true") {
+      router.push({
+        pathname: "/subject/(exercises)/(speech)/RemedialActivity",
+        params: {
+          subjectId: subjectId,
+          activity_type: activity_type,
+          phoneme: phoneme,
+          remedialId: activityId,
+        },
+      });
     } else if (activity_type === "picture") {
       router.push({
         pathname:
