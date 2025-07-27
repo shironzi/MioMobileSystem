@@ -80,10 +80,8 @@ const CourseCard = (props: {
                   borderRadius: 10,
                   borderBottomLeftRadius: 0,
                   borderBottomRightRadius: 0,
+                  marginBottom: -50,
                 },
-                props.role === "teacher"
-                  ? { marginBottom: -50 }
-                  : { marginBottom: -40 },
                 props.background_color && {
                   backgroundColor: props.background_color,
                 },
@@ -130,18 +128,16 @@ const CourseCard = (props: {
             >
               {props.courseTitle}
             </Text>
-            {props.role === "teacher" && (
-              <Text
-                style={{
-                  color: "#333",
-                  marginLeft: 30,
-                  fontWeight: 300,
-                  fontSize: 13,
-                }}
-              >
-                {props.courseId}
-              </Text>
-            )}
+            <Text
+              style={{
+                color: "#333",
+                marginLeft: 30,
+                fontWeight: 300,
+                fontSize: 13,
+              }}
+            >
+              {props.courseId}
+            </Text>
             <Text
               style={{
                 color: "#333",
