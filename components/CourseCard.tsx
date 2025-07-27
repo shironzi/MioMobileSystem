@@ -77,11 +77,13 @@ const CourseCard = (props: {
                 {
                   width: "100%",
                   height: "90%",
-                  marginBottom: -50,
                   borderRadius: 10,
                   borderBottomLeftRadius: 0,
                   borderBottomRightRadius: 0,
                 },
+                props.role === "teacher"
+                  ? { marginBottom: -50 }
+                  : { marginBottom: -40 },
                 props.background_color && {
                   backgroundColor: props.background_color,
                 },
