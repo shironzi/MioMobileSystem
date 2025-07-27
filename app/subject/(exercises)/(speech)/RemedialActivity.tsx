@@ -7,7 +7,6 @@ import { startRemedial, submitRemedialAnswer } from "@/utils/specialized";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import {
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -17,6 +16,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FeedbackAlert from "@/components/FeedbackAlert";
+import RemedialSchedule from "@/components/modals/RemedialSchedule";
 
 const RemedialFlashcards = () => {
   const router = useRouter();
@@ -42,6 +42,20 @@ const RemedialFlashcards = () => {
   const [currentCard, setCurrentCard] = useState<any>(0);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showSchedule, setShowSchedule] = useState<boolean>(false);
+  const [scheduleMessage, setScheduleMessage] = useState<{
+    has_schedule: boolean;
+    message: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+  }>({
+    has_schedule: false,
+    message: "",
+    date: "",
+    start_time: "",
+    end_time: "",
+  });
 
   const handleNextCard = async () => {
     if (!attemptId) return;
@@ -101,21 +115,41 @@ const RemedialFlashcards = () => {
         setAttemptId(res.attemptId);
         setCards(res.flashcards);
         setCurrentCard(res.currentItem ?? 0);
-      } else {
-        Alert.alert("Message", res.message, [
-          {
-            text: "OK",
-            onPress: () => router.back(),
-          },
-        ]);
-      }
 
-      setLoading(false);
+        setLoading(false);
+      } else {
+        setShowSchedule(true);
+        setScheduleMessage({
+          message: res.message,
+          has_schedule: res.has_schedule,
+          date: res.date ?? "",
+          end_time: res.end_time ?? "",
+          start_time: res.start_time ?? "",
+        });
+        // Alert.alert("Message", res.message, [
+        //   {
+        //     text: "OK",
+        //     onPress: () => {
+        //       router.back();
+        //       router.back();
+        //     },
+        //   },
+        // ]);
+      }
     };
     fetchActivity();
   }, []);
 
-  if (loading && (!cards || cards.length === 0)) {
+  if (showSchedule) {
+    return (
+      <RemedialSchedule
+        message={scheduleMessage?.message}
+        has_schedule={scheduleMessage?.has_schedule}
+      />
+    );
+  }
+
+  if (loading && !showSchedule) {
     return (
       <View
         style={{

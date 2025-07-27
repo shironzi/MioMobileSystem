@@ -3,7 +3,11 @@ import React, { useCallback } from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 
-const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
+const HeaderConfigScoreDetails = (
+  title: string,
+  activity_type?: string,
+  isRemedial?: boolean,
+) => {
   const navigation = useNavigation();
 
   console.log(activity_type);
@@ -28,7 +32,9 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
               navigation.goBack();
               navigation.goBack();
               navigation.goBack();
-              navigation.goBack();
+              if (!isRemedial) {
+                navigation.goBack();
+              }
             }}
           >
             <FontAwesome6 name="arrow-left-long" size={24} color="#282727" />
@@ -45,7 +51,7 @@ const HeaderConfigScoreDetails = (title: string, activity_type?: string) => {
 
         headerBackTitleVisible: false,
       });
-    }, [navigation, title]),
+    }, [navigation, title, isRemedial]),
   );
 };
 

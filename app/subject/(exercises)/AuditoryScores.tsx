@@ -13,7 +13,9 @@ const AuditoryScores = () => {
     difficulty: string;
   }>();
 
-  headerConfigScoreDetails("Score Detail", activity_type);
+  const isRemedial = false;
+
+  headerConfigScoreDetails("Score Detail", activity_type, isRemedial);
 
   const fill = !isNaN(parseFloat(score)) ? parseFloat(score) : 0;
 

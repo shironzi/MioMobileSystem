@@ -101,10 +101,13 @@ const Flashcards = () => {
         setCurrentCard(res.currentItem ?? 0);
         setLoading(false);
       } else {
-        Alert.alert("", res.message, [
+        Alert.alert("Message", res.message, [
           {
             text: "OK",
-            onPress: () => router.back(),
+            onPress: () => {
+              router.back();
+              router.back();
+            },
           },
         ]);
       }

@@ -30,7 +30,9 @@ interface Feedback {
 }
 
 const AuditoryScores = () => {
-  headerConfigScoreDetails("Score Details");
+  const isRemedial = false;
+
+  headerConfigScoreDetails("Score Details", "", isRemedial);
 
   const { subjectId, activityType, activityId, userId, attemptId, role } =
     useLocalSearchParams<{
