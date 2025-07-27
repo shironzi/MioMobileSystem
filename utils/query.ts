@@ -3,6 +3,16 @@ import { getAuth } from "@react-native-firebase/auth";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
+const getMimeType = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.headers.get("Content-Type") ?? "unrecognized";
+  } catch (error) {
+    console.error("Failed to get MIME type:", error);
+    return "unrecognized";
+  }
+};
+
 export async function getSubjects() {
   try {
     const { data } = await api.get(`/subjects`);
@@ -128,7 +138,6 @@ export async function editAnnouncement(
   description: string,
   files: FileInfo[],
   urls: string[],
-  existingImageUrls: { url: string; name: string }[],
   subjectId: string,
   announcementId: string,
   formattedDate: string,
@@ -140,20 +149,23 @@ export async function editAnnouncement(
     formData.append("description", description);
     formData.append("date_posted", formattedDate);
 
-    existingImageUrls.forEach((url, idx) => {
-      if (url.url.trim()) {
-        formData.append(`image_urls[${idx}]`, url.url);
-      }
-    });
+    if (files.length > 0) {
+      for (const file of files) {
+        const index = files.indexOf(file);
+        if (!file.uri || !file.name) continue;
 
-    files.forEach((file, idx) => {
-      if (!file.uri) return;
-      formData.append(`files[${idx}][file]`, {
-        uri: file.uri,
-        name: file.name,
-        type: file.mimeType ?? "application/octet-stream",
-      } as any);
-    });
+        let fileType = file.mimeType;
+        if (!fileType) {
+          fileType = await getMimeType(file.uri);
+        }
+
+        formData.append(`files[${index}]`, {
+          uri: file.uri,
+          name: file.name,
+          type: fileType,
+        } as any);
+      }
+    }
 
     urls.forEach((url, idx) => {
       if (url.trim()) {
