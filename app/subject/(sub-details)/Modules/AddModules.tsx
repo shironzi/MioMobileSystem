@@ -196,21 +196,21 @@ const AddModules = () => {
     if (!title.trim().length) {
       errors.push({ name: "title" });
     }
-    if (!description.trim().length) {
-      errors.push({ name: "description" });
-    }
+    // if (!description.trim().length) {
+    //   errors.push({ name: "description" });
+    // }
 
-    if (subSections.length > 0) {
-      subSections.forEach((item) => {
-        if (!item.title.trim()) {
-          errors.push({ name: "subsection", id: item.id });
-        }
-
-        if (!item.description.trim()) {
-          errors.push({ name: "subsection", id: item.id });
-        }
-      });
-    }
+    // if (subSections.length > 0) {
+    //   subSections.forEach((item) => {
+    //     if (!item.title.trim()) {
+    //       errors.push({ name: "subsection_title", id: item.id });
+    //     }
+    //
+    //     // if (!item.description.trim()) {
+    //     //   errors.push({ name: "subsection", id: item.id });
+    //     // }
+    //   });
+    // }
 
     console.log(hasPreRequisites);
     if (hasPreRequisites) {
@@ -312,21 +312,18 @@ const AddModules = () => {
     if (!title.trim().length) {
       errors.push({ name: "title" });
     }
-    if (!description.trim().length) {
-      errors.push({ name: "description" });
-    }
 
-    if (subSections.length > 0) {
-      subSections.forEach((item) => {
-        if (!item.title.trim()) {
-          errors.push({ name: "subsection", id: item.id });
-        }
-
-        if (!item.description.trim()) {
-          errors.push({ name: "subsection", id: item.id });
-        }
-      });
-    }
+    // if (subSections.length > 0) {
+    //   subSections.forEach((item) => {
+    //     if (!item.title.trim()) {
+    //       errors.push({ name: "subsection", id: item.id });
+    //     }
+    //
+    //     if (!item.description.trim()) {
+    //       errors.push({ name: "subsection", id: item.id });
+    //     }
+    //   });
+    // }
 
     if (errors.length) {
       setInputErrors(errors);

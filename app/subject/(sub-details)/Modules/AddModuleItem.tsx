@@ -59,7 +59,7 @@ const AddModuleItem = ({
       <View>
         <Text style={globalStyles.text1}>Sub-section Title</Text>
         {inputErrors.some(
-          (err) => err.name === "subsection" && err.id === item.id,
+          (err) => err.name === "subsection_title" && err.id === item.id,
         ) && <Text style={globalStyles.errorText}>This field is required</Text>}
         <TextInput
           value={item.title}
@@ -67,7 +67,7 @@ const AddModuleItem = ({
           style={[
             globalStyles.textInputContainer,
             inputErrors.some(
-              (err) => err.name === "subsection" && err.id === item.id,
+              (err) => err.name === "subsection_title" && err.id === item.id,
             ) && {
               borderColor: "red",
             },
@@ -76,20 +76,12 @@ const AddModuleItem = ({
       </View>
       <View>
         <Text style={globalStyles.text1}>Description</Text>
-        {inputErrors.some(
-          (err) => err.name === "subsection" && err.id === item.id,
-        ) && <Text style={globalStyles.errorText}>This field is required</Text>}
         <TextInput
           value={item.description}
           onChangeText={(value) => setSectionDesc(item.id, value)}
           style={[
             globalStyles.textInputContainer,
             { minHeight: 150, textAlignVertical: "top" },
-            inputErrors.some(
-              (err) => err.name === "subsection" && err.id === item.id,
-            ) && {
-              borderColor: "red",
-            },
           ]}
           multiline
         />
@@ -98,9 +90,6 @@ const AddModuleItem = ({
         <Text style={[globalStyles.text2, { marginBottom: 0 }]}>
           Image / PDF / PPT / Document Files
         </Text>
-        {inputErrors.some(
-          (err) => err.name === "subFile" && err.id === item.id,
-        ) && <Text style={globalStyles.errorText}>This field is required</Text>}
         <FileUpload
           handleFiles={(file: FileInfo[]) => {
             setSectionFile(item.id, file);

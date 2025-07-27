@@ -219,11 +219,25 @@ const AddModuleFooter = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[globalStyles.submitButton, { marginHorizontal: "auto" }]}
-          onPress={specializedType === "auditory" ? handleNext : createModule}
+          onPress={
+            specializedType === "auditory" && isRemedial
+              ? handleNext
+              : createModule
+          }
           disabled={isSubmitting}
         >
           {specializedType === "auditory" ? (
-            <Text style={globalStyles.submitButtonText}>Next</Text>
+            <Text style={globalStyles.submitButtonText}>
+              {specializedType === "auditory" && isRemedial
+                ? "Next"
+                : moduleId
+                  ? !isSubmitting
+                    ? "Update"
+                    : "Updating..."
+                  : !isSubmitting
+                    ? "Create"
+                    : "Creating..."}
+            </Text>
           ) : (
             <Text style={globalStyles.submitButtonText}>
               {isSubmitting

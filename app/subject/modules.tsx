@@ -23,6 +23,7 @@ interface Module {
   description: string;
   visible: boolean;
   remedial_module?: boolean;
+  pre_req_title: string;
 }
 
 interface Assignment {
@@ -173,6 +174,7 @@ const ModulesScreen = () => {
                   title={item.title}
                   visible={item.visible}
                   description={item.description}
+                  preReqTitle={item.pre_req_title}
                   subjectId={subjectId}
                   role={role}
                   modules={moduleList}
@@ -199,6 +201,7 @@ const ModulesScreen = () => {
                     id={item.id}
                     title={item.title}
                     visible={item.visible}
+                    preReqTitle={item.pre_req_title}
                     description={item.description}
                     subjectId={subjectId}
                     isRemedial={item.remedial_module}

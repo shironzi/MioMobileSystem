@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import globalStyles from "@/styles/globalStyles";
 
 interface Module {
   id: string;
@@ -44,6 +45,7 @@ type Props = {
   specialized?: Specialized[];
   specializedType?: string;
   handleDeleteModule: (id: string) => void;
+  preReqTitle: string;
 };
 
 const ModuleCard = ({
@@ -60,6 +62,7 @@ const ModuleCard = ({
   specialized,
   specializedType,
   handleDeleteModule,
+  preReqTitle,
 }: Props) => {
   const router = useRouter();
 
@@ -148,8 +151,13 @@ const ModuleCard = ({
                 />
                 <View style={styles.titleContainer}>
                   <Text style={styles.title} numberOfLines={3}>
-                    {!isRemedial ? `[Module ${index + 1}] - ${title}` : title}
+                    {!isRemedial ? `${title}` : title}
                   </Text>
+                  {!visible && (
+                    <Text style={[globalStyles.text2, { color: "red" }]}>
+                      🔒 {preReqTitle}
+                    </Text>
+                  )}
                 </View>
                 <FontAwesome6
                   name="arrow-right-long"
