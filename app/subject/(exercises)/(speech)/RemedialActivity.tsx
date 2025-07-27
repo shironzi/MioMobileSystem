@@ -145,6 +145,9 @@ const RemedialFlashcards = () => {
       <RemedialSchedule
         message={scheduleMessage?.message}
         has_schedule={scheduleMessage?.has_schedule}
+        date={scheduleMessage.date}
+        end_time={scheduleMessage.end_time}
+        start_time={scheduleMessage.start_time}
       />
     );
   }

@@ -227,3 +227,20 @@ export function formatTime12Hour(timeString: string) {
     hour12: true,
   });
 }
+
+export function formatTime12Hour2(timeString: string) {
+  const [hour, minute, second = "00"] = timeString.split(":");
+
+  if (hour === undefined || minute === undefined) return "";
+
+  const date = new Date();
+  date.setHours(Number(hour));
+  date.setMinutes(Number(minute));
+  date.setSeconds(Number(second));
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
