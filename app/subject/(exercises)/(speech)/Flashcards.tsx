@@ -10,30 +10,37 @@ import {
   Alert,
   Image,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FeedbackAlert from "@/components/FeedbackAlert";
+import {
+  defaultSchedule,
+  Flashcard,
+  Schedule,
+} from "@/app/subject/(exercises)/(speech)/SpeechDataTypes";
+import globalStyles from "@/styles/globalStyles";
+import SpeechStyles from "@/styles/SpeechStyles";
+import Colors from "@/styles/Colors";
+import RemedialSchedule from "@/components/modals/RemedialSchedule";
 
 const Flashcards = () => {
   const router = useRouter();
 
   HeaderConfigQuiz("Flashcards");
 
-  const { subjectId, difficulty, activity_type, activityId } =
+  const { subjectId, difficulty, activity_type, activityId, phoneme } =
     useLocalSearchParams<{
       activity_type: string;
       difficulty: string;
       subjectId: string;
       activityId: string;
+      phoneme: string;
     }>();
 
-  const [cards, setCards] = useState<{ flashcard_id: string; text: string }[]>(
-    [],
-  );
+  const [cards, setCards] = useState<Flashcard[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [recordingAudio, setRecordingAudio] = useState<string | null>();
@@ -42,6 +49,8 @@ const Flashcards = () => {
   const [currentCard, setCurrentCard] = useState<number>(0);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [schedule, setSchedule] = useState<Schedule>(defaultSchedule);
+  const [showSchedule, setShowSchedule] = useState(false);
 
   const handleNextCard = async () => {
     if (!attemptId) return;
@@ -51,11 +60,11 @@ const Flashcards = () => {
     const res = await submitAnswer(
       subjectId,
       activity_type,
-      difficulty,
       activityId,
       attemptId,
       cards[currentCard].flashcard_id,
       recordingAudio,
+      phoneme,
     );
 
     if (res.feedbacks) {
@@ -74,7 +83,6 @@ const Flashcards = () => {
             attemptId,
           },
         });
-
         return;
       }
 
@@ -93,6 +101,7 @@ const Flashcards = () => {
         activity_type,
         difficulty,
         activityId,
+        phoneme,
       );
 
       if (res.success) {
@@ -100,6 +109,15 @@ const Flashcards = () => {
         setCards(Object.values(res.flashcards));
         setCurrentCard(res.currentItem ?? 0);
         setLoading(false);
+      } else if (!res.success) {
+        setShowSchedule(true);
+        setSchedule({
+          message: res.message,
+          has_schedule: res.has_schedule,
+          date: res.date,
+          end_time: res.end_time,
+          start_time: res.start_time,
+        });
       } else {
         Alert.alert("Message", res.message, [
           {
@@ -116,100 +134,58 @@ const Flashcards = () => {
   }, []);
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+    return <LoadingCard />;
   }
 
-  if (!cards) {
+  if (showSchedule) {
     return (
-      <View style={styles.container}>
-        <Text>No flashcards available.</Text>
-      </View>
+      <RemedialSchedule
+        message={schedule?.message}
+        has_schedule={schedule?.has_schedule}
+        date={schedule.date}
+        end_time={schedule.end_time}
+        start_time={schedule.start_time}
+      />
     );
   }
-  const getInstruction =
-    "Look at the word. Tap and hold the microphone and read the word out loud. Try to pronounce it clearly.";
 
   return (
     <GestureHandlerRootView>
-      <ScrollView style={styles.container}>
+      <ScrollView style={globalStyles.container}>
         <ActivityProgress
           difficulty={difficulty}
           totalItems={cards.length}
           completedItems={currentCard}
-          // instruction="Guess the picture"
+          instruction={
+            "Look at the word. Tap and hold the microphone and read the word out\n loud. Try to pronounce it clearly."
+          }
         />
-        <View
-          style={{
-            // marginHorizontal: 10,
-            borderColor: "#ddd",
-            borderWidth: 1,
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            marginBottom: 15,
-            marginTop: -10,
-          }}
-        >
-          <Text
-            style={{
-              marginHorizontal: 10,
-              textAlign: "justify",
-              fontWeight: "500",
-              fontSize: 16,
-              color: "#2264dc",
-              marginTop: 10,
-            }}
-          >
-            Piddie Tips!
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              margin: 10,
-              textAlign: "justify",
-              fontWeight: "300",
-            }}
-          >
-            {getInstruction}
-          </Text>
-        </View>
 
-        <View style={styles.flashcardContainer}>
+        <View style={SpeechStyles.flashcardContainer}>
           <Image
             source={require("@/assets/images/face/echo.png")}
             style={{ width: 90, height: 50 }}
             resizeMode="contain"
           />
-
           {feedback && (
-            <View
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-              }}
-            >
-              <FeedbackAlert
-                message={feedback}
-                onHide={() => setFeedback(null)}
-              />
-            </View>
+            <FeedbackAlert
+              message={feedback}
+              onHide={() => setFeedback(null)}
+            />
           )}
 
-          <View style={styles.textContainer}>
-            <Text style={styles.flashcardText}>{cards[currentCard]?.text}</Text>
+          <View style={SpeechStyles.textContainer}>
+            {cards[currentCard].image_url ? (
+              <Image
+                source={{ uri: cards[currentCard].image_url }}
+                style={SpeechStyles.imageContainer}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={SpeechStyles.flashcardText}>
+                {cards[currentCard]?.text}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -231,15 +207,13 @@ const Flashcards = () => {
         <View>
           <TouchableOpacity
             style={[
-              styles.continueButton,
-              isAnswered && !isRecording
-                ? { backgroundColor: "#FFBF18" }
-                : { backgroundColor: "#ddd" },
+              SpeechStyles.continueButton,
+              isAnswered && !isRecording ? Colors.yellow : Colors.white,
             ]}
             disabled={!isAnswered || isRecording || isSending}
             onPress={handleNextCard}
           >
-            <Text style={styles.continueButtonText}>
+            <Text style={SpeechStyles.continueButtonText}>
               {isSending ? "Submitting...." : "Next"}
             </Text>
           </TouchableOpacity>
@@ -248,49 +222,5 @@ const Flashcards = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 30,
-    height: "100%",
-  },
-  flashcardContainer: {
-    backgroundColor: "#fff",
-    padding: 20,
-    height: 230,
-    borderRadius: 20,
-    borderColor: "#ddd",
-    borderWidth: 1,
-  },
-  textContainer: {
-    margin: "auto",
-    textAlign: "center",
-  },
-  flashcardText: {
-    fontSize: 22,
-    flexWrap: "wrap",
-    textAlign: "center",
-    top: -15,
-    fontWeight: 300,
-    lineHeight: 35,
-  },
-  continueButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    left: -5,
-    padding: 17,
-    borderRadius: 15,
-    alignItems: "center",
-    width: "100%",
-    top: 15,
-  },
-  continueButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default memo(Flashcards);

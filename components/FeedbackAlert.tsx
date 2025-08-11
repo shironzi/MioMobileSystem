@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Text, StyleSheet } from "react-native";
+import { Animated, StyleSheet, Text, View } from "react-native";
 
 const FeedbackAlert = ({
   message,
@@ -29,9 +29,11 @@ const FeedbackAlert = ({
   }, []);
 
   return (
-    <Animated.View style={[styles.alertContainer, { opacity: fadeAnim }]}>
-      <Text style={styles.alertText}>{message}</Text>
-    </Animated.View>
+    <View style={styles.feedbackContainer}>
+      <Animated.View style={[styles.alertContainer, { opacity: fadeAnim }]}>
+        <Text style={styles.alertText}>{message}</Text>
+      </Animated.View>
+    </View>
   );
 };
 
@@ -49,6 +51,13 @@ const styles = StyleSheet.create({
   alertText: {
     color: "#fff",
     fontSize: 16,
+  },
+  feedbackContainer: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
   },
 });
 

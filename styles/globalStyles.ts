@@ -5,7 +5,9 @@ const globalStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     flex: 1,
+    height: "100%",
   },
+
   inputContainer: {
     fontSize: 16,
     borderWidth: 1,
@@ -45,13 +47,11 @@ const globalStyles = StyleSheet.create({
   cardContainer: {
     paddingHorizontal: 26,
     paddingVertical: 15,
-    // borderRadius: 10,
     backgroundColor: "#fff",
     borderRadius: 20,
     borderColor: "#ddd",
     borderWidth: 1,
     rowGap: 10,
-    // elevation: 5,
   },
   cardBody: {
     paddingHorizontal: 0,
