@@ -36,15 +36,20 @@ const ImageUpload = (props: {
     }
   }, [file]);
 
-  if (props.image_path) {
-    const urlNoFile = new URL(props.image_path);
-    const fileNameOrDefault =
-      urlNoFile.pathname.split("/").pop() || "No file name found";
-
-    setFileName(fileNameOrDefault);
-  }
-
-  console.log(props.image_path);
+  useEffect(() => {
+    if (props.image_path) {
+      try {
+        const urlNoFile = new URL(props.image_path);
+        const fileNameOrDefault =
+          urlNoFile.pathname.split("/").pop() || "No file name found";
+        setFileName(fileNameOrDefault);
+      } catch (e) {
+        console.warn("Invalid image path", props.image_path);
+      }
+    } else {
+      setFileName("");
+    }
+  }, [props.image_path]);
 
   return (
     <View style={{ rowGap: 18 }}>

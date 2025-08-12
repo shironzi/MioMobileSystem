@@ -4,14 +4,15 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { getActivityById } from "@/utils/specialized";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import FlashcardItem from "@/app/subject/(exercises)/(speech)/ManageActivity/FlashcardItem";
 import { Flashcard } from "@/app/subject/(exercises)/(speech)/SpeechDataTypes";
-import {
+import addFlashcard, {
   flashcardFileUpload,
   flashcardText,
   removeFlashcard,
 } from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechActivityFunc";
+import globalStyles from "@/styles/globalStyles";
 
 type Parameters = {
   subjectId: string;
@@ -23,7 +24,6 @@ type Parameters = {
 
 const item = {
   flashcard_id: "0",
-  file: null,
   text: "",
   image_url: "",
 };
@@ -37,19 +37,6 @@ const AddSpeechActivity = () => {
   const [activityTitle, setActivityTitle] = useState<string>("");
   const [flashcards, setFlashcards] = useState<Flashcard[]>([item]);
 
-  const header = (
-    <SpeechHeader
-      activityType={activityType}
-      setActivityType={setActivityType}
-      activityDifficulty={activityDifficulty}
-      setActivityDifficulty={setActivityDifficulty}
-      activityTitle={activityTitle}
-      setActivityTitle={setActivityTitle}
-      titleError={false}
-      activityId={activityId}
-    />
-  );
-
   useEffect(() => {
     if (!activityId) return;
 
@@ -62,17 +49,15 @@ const AddSpeechActivity = () => {
         activityId,
       );
 
-      const formatted: Flashcard[] = Object.values(res.flashcards).map(
+      const flashcards: Flashcard[] = Object.values(res.flashcards).map(
         (item: any) => ({
-          id: item.flashcard_id,
           flashcard_id: item.flashcard_id,
-          file: null,
           image_url: item.image_url,
           text: item.text,
         }),
       );
-      setFlashcards(formatted);
-      setActivityType("picture");
+      setFlashcards(flashcards);
+      setActivityType(activity_type);
       setActivityTitle(res.title);
       setActivityDifficulty(difficulty);
 
@@ -89,10 +74,37 @@ const AddSpeechActivity = () => {
     return <LoadingCard />;
   }
 
+  const header = (
+    <SpeechHeader
+      activityType={activityType}
+      setActivityType={setActivityType}
+      activityDifficulty={activityDifficulty}
+      setActivityDifficulty={setActivityDifficulty}
+      activityTitle={activityTitle}
+      setActivityTitle={setActivityTitle}
+      titleError={false}
+      activityId={activityId}
+    />
+  );
+
+  const footer = (
+    <View
+      style={[globalStyles.alignRowCenter, { justifyContent: "space-around" }]}
+    >
+      <TouchableOpacity style={globalStyles.inactivityButton}>
+        <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={globalStyles.submitButton} onPress={() => {}}>
+        <Text style={globalStyles.submitButtonText}>Preview</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const flashcardItem = (item: Flashcard, index: number) => (
     <FlashcardItem
       item={item}
       index={index}
+      lastItem={index === flashcards.length - 1}
       activityType={activityType}
       handleRemove={() =>
         setFlashcards(removeFlashcard(item.flashcard_id, flashcards))
@@ -103,9 +115,10 @@ const AddSpeechActivity = () => {
       handleImageRemove={function (): void {
         throw new Error("Function not implemented.");
       }}
-      handleTextInput={(value: string) =>
-        setFlashcards(flashcardText(item.flashcard_id, value, flashcards))
-      }
+      handleTextInput={(value: string) => {
+        setFlashcards(flashcardText(item.flashcard_id, value, flashcards));
+      }}
+      handleAdd={() => setFlashcards(addFlashcard(flashcards))}
     />
   );
 
@@ -116,6 +129,7 @@ const AddSpeechActivity = () => {
         keyExtractor={(item) => item.flashcard_id}
         renderItem={({ item, index }) => flashcardItem(item, index)}
         ListHeaderComponent={header}
+        ListFooterComponent={footer}
       />
     </View>
   );

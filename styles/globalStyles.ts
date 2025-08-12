@@ -2,12 +2,12 @@ import { StyleSheet } from "react-native";
 
 const globalStyles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 26,
     backgroundColor: "#fff",
     flex: 1,
     height: "100%",
   },
-
   inputContainer: {
     fontSize: 16,
     borderWidth: 1,
@@ -131,6 +131,12 @@ const globalStyles = StyleSheet.create({
     color: "#888",
     fontSize: 12,
     lineHeight: 14,
+  },
+  text2Yellow: {
+    color: "#FFBF189E",
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "400",
   },
   image: {
     width: 300,
