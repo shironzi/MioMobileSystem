@@ -1,6 +1,3 @@
-import PhraseRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Phrase/PhraseRenderItem";
-import PictureRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Picture/PictureRenderItem";
-import QuestionRenderItem from "@/app/subject/(exercises)/(speech)/ManageActivity/Question/QuestionRenderItem";
 import SpeechHeader from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechHeader";
 import LoadingCard from "@/components/loadingCard";
 import useHeaderConfig from "@/utils/HeaderConfig";
@@ -8,31 +5,13 @@ import { getActivityById } from "@/utils/specialized";
 import { useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
-
-interface FileInfo {
-  uri: string;
-  name: string;
-  mimeType?: string;
-}
-
-interface InputError {
-  id: string;
-  error: string;
-}
-
-interface PictureItem {
-  id: string;
-  flashcard_id: string | null;
-  file: FileInfo | null;
-  text: string;
-  image_url: string;
-}
-
-interface Flashcard {
-  id: string;
-  flashcard_id: string | null;
-  text: string;
-}
+import FlashcardItem from "@/app/subject/(exercises)/(speech)/ManageActivity/FlashcardItem";
+import { Flashcard } from "@/app/subject/(exercises)/(speech)/SpeechDataTypes";
+import {
+  flashcardFileUpload,
+  flashcardText,
+  removeFlashcard,
+} from "@/app/subject/(exercises)/(speech)/ManageActivity/SpeechActivityFunc";
 
 type Parameters = {
   subjectId: string;
@@ -42,15 +21,8 @@ type Parameters = {
   activityId: string;
 };
 
-const data = {
-  id: "0",
-  flashcard_id: null,
-  text: "",
-};
-
-const picture = {
-  id: "0",
-  flashcard_id: null,
+const item = {
+  flashcard_id: "0",
   file: null,
   text: "",
   image_url: "",
@@ -59,23 +31,11 @@ const picture = {
 const AddSpeechActivity = () => {
   const { subjectId, activity_type, difficulty, activityId } =
     useLocalSearchParams<Parameters>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [activityType, setActivityType] = useState<string>("picture");
   const [activityDifficulty, setActivityDifficulty] = useState<string>("easy");
   const [activityTitle, setActivityTitle] = useState<string>("");
-  const [titleError, setTitleError] = useState<boolean>(false);
-  const [phraseFlashcard, setPhraseFlashcard] = useState<Flashcard[]>([data]);
-  const [questionFlashcard, setQuestionFlashcard] = useState<Flashcard[]>([
-    data,
-  ]);
-  const [pictureFlashcard, setPictureFlashcards] = useState<PictureItem[]>([
-    picture,
-  ]);
-
-  // error handling
-  const [pictureError, setPictureError] = useState<InputError[]>([]);
-  const [questionError, setQuestionError] = useState<InputError[]>([]);
-  const [phraseError, setPhraseError] = useState<InputError[]>([]);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([item]);
 
   const header = (
     <SpeechHeader
@@ -85,7 +45,7 @@ const AddSpeechActivity = () => {
       setActivityDifficulty={setActivityDifficulty}
       activityTitle={activityTitle}
       setActivityTitle={setActivityTitle}
-      titleError={titleError}
+      titleError={false}
       activityId={activityId}
     />
   );
@@ -93,6 +53,7 @@ const AddSpeechActivity = () => {
   useEffect(() => {
     if (!activityId) return;
 
+    setLoading(true);
     const fetchActivity = async () => {
       const res = await getActivityById(
         subjectId,
@@ -101,38 +62,17 @@ const AddSpeechActivity = () => {
         activityId,
       );
 
-      const flashcards = res.items || res.flashcards || [];
-
-      if (activity_type === "picture") {
-        const formatted: PictureItem[] = Object.values(flashcards).map(
-          (item: any) => ({
-            id: item.flashcard_id,
-            flashcard_id: item.flashcard_id,
-            file: null,
-            image_url: item.image_url,
-            text: item.text,
-          }),
-        );
-        setPictureFlashcards(formatted);
-        setActivityType("picture");
-      } else {
-        const formatted: Flashcard[] = Object.values(flashcards).map(
-          (item: any) => ({
-            id: item.flashcard_id,
-            flashcard_id: item.flashcard_id,
-            text: item.text,
-          }),
-        );
-
-        if (activity_type === "question") {
-          setQuestionFlashcard(formatted);
-          setActivityType("question");
-        } else if (activity_type === "phrase") {
-          setPhraseFlashcard(formatted);
-          setActivityType("phrase");
-        }
-      }
-
+      const formatted: Flashcard[] = Object.values(res.flashcards).map(
+        (item: any) => ({
+          id: item.flashcard_id,
+          flashcard_id: item.flashcard_id,
+          file: null,
+          image_url: item.image_url,
+          text: item.text,
+        }),
+      );
+      setFlashcards(formatted);
+      setActivityType("picture");
       setActivityTitle(res.title);
       setActivityDifficulty(difficulty);
 
@@ -145,97 +85,38 @@ const AddSpeechActivity = () => {
     activityId ? "Update Speech Activity" : "Add Speech Activity",
   );
 
-  if (loading && activityId) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+  if (loading) {
+    return <LoadingCard />;
   }
+
+  const flashcardItem = (item: Flashcard, index: number) => (
+    <FlashcardItem
+      item={item}
+      index={index}
+      activityType={activityType}
+      handleRemove={() =>
+        setFlashcards(removeFlashcard(item.flashcard_id, flashcards))
+      }
+      handleImageUpload={(uri: string) =>
+        setFlashcards(flashcardFileUpload(item.flashcard_id, uri, flashcards))
+      }
+      handleImageRemove={function (): void {
+        throw new Error("Function not implemented.");
+      }}
+      handleTextInput={(value: string) =>
+        setFlashcards(flashcardText(item.flashcard_id, value, flashcards))
+      }
+    />
+  );
 
   return (
     <View style={{ backgroundColor: "#fff", height: "100%" }}>
-      {activityType === "picture" && (
-        <FlatList
-          data={pictureFlashcard}
-          renderItem={({ item, index }) => (
-            <PictureRenderItem
-              item={item}
-              items={pictureFlashcard}
-              index={index}
-              activityType={activityType}
-              difficulty={activityDifficulty}
-              setPictureItems={setPictureFlashcards}
-              inputErrors={pictureError}
-              setInputErrors={setPictureError}
-              firstIndex={pictureFlashcard[0].id}
-              lastIndex={pictureFlashcard[pictureFlashcard.length - 1]?.id}
-              subjectId={subjectId}
-              activityId={activityId}
-              activityTitle={activityTitle}
-              titleError={setTitleError}
-            />
-          )}
-          ListHeaderComponent={header}
-        />
-      )}
-
-      {activityType === "question" && (
-        <FlatList
-          data={questionFlashcard}
-          renderItem={({ item, index }) => (
-            <QuestionRenderItem
-              item={item}
-              items={questionFlashcard}
-              index={index}
-              activityType={activityType}
-              difficulty={activityDifficulty}
-              inputErrors={questionError}
-              setInputErrors={setQuestionError}
-              setPictureItems={setQuestionFlashcard}
-              firstIndex={questionFlashcard[0].id}
-              lastIndex={questionFlashcard[questionFlashcard.length - 1]?.id}
-              subjectId={subjectId}
-              activityId={activityId}
-              activityTitle={activityTitle}
-              titleError={setTitleError}
-            />
-          )}
-          ListHeaderComponent={header}
-        />
-      )}
-
-      {activityType === "phrase" && (
-        <FlatList
-          data={phraseFlashcard}
-          renderItem={({ item, index }) => (
-            <PhraseRenderItem
-              item={item}
-              items={phraseFlashcard}
-              index={index}
-              activityType={activityType}
-              difficulty={activityDifficulty}
-              inputErrors={phraseError}
-              setInputErrors={setPhraseError}
-              setPictureItems={setPhraseFlashcard}
-              firstIndex={phraseFlashcard[0].id}
-              lastIndex={phraseFlashcard[phraseFlashcard.length - 1]?.id}
-              subjectId={subjectId}
-              activityId={activityId}
-              activityTitle={activityTitle}
-              titleError={setTitleError}
-            />
-          )}
-          ListHeaderComponent={header}
-        />
-      )}
+      <FlatList
+        data={flashcards}
+        keyExtractor={(item) => item.flashcard_id}
+        renderItem={({ item, index }) => flashcardItem(item, index)}
+        ListHeaderComponent={header}
+      />
     </View>
   );
 };

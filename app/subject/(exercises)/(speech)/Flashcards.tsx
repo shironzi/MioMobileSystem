@@ -26,20 +26,21 @@ import SpeechStyles from "@/styles/SpeechStyles";
 import Colors from "@/styles/Colors";
 import RemedialSchedule from "@/components/modals/RemedialSchedule";
 
+type Parameters = {
+  activity_type: string;
+  difficulty: string;
+  subjectId: string;
+  activityId: string;
+  phoneme: string;
+};
+
 const Flashcards = () => {
   const router = useRouter();
 
   HeaderConfigQuiz("Flashcards");
 
   const { subjectId, difficulty, activity_type, activityId, phoneme } =
-    useLocalSearchParams<{
-      activity_type: string;
-      difficulty: string;
-      subjectId: string;
-      activityId: string;
-      phoneme: string;
-    }>();
-
+    useLocalSearchParams<Parameters>();
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);

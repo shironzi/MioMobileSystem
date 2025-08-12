@@ -1,7 +1,7 @@
 export interface Flashcard {
   flashcard_id: string;
   text: string;
-  image_url: string | null;
+  image_url: string;
 }
 
 export interface Schedule {

@@ -103,7 +103,6 @@ const globalStyles = StyleSheet.create({
   divider: {
     borderTopWidth: 1,
     borderColor: "#82828257",
-    marginHorizontal: -10,
   },
   errorText: {
     color: "red",
@@ -159,6 +158,11 @@ const globalStyles = StyleSheet.create({
     borderColor: "#82828257",
     borderRadius: 20,
     paddingHorizontal: 10,
+  },
+  alignRowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
 
