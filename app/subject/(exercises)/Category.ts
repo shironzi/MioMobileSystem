@@ -29,7 +29,6 @@ export default function handleCategory({
         subjectId: subjectId,
         activity_type: activity_type,
         difficulty: difficulty,
-        category: category,
         activityId: activityId,
         prevAttemptId: attemptId,
       },
@@ -43,7 +42,6 @@ export default function handleCategory({
           role === "teacher"
             ? "/subject/(exercises)/(auditory)/ManageAuditoryActivity/AddAuditoryActivity"
             : "/subject/(exercises)/(auditory)/SpeakerTest",
-        // : "/subject/(exercises)/(auditory)/bingo",
         params: {
           subjectId,
           activity_type,

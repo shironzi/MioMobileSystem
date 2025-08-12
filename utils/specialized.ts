@@ -329,35 +329,16 @@ export async function startActivity(
   activityType: string,
   difficulty: string,
   activityId: string,
-) {
-  try {
-    const { data } = await api.post(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`,
-    );
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function startRemedial(
-  subjectId: string,
-  activityType: string,
-  remedial_id: string,
   phoneme: string,
 ) {
-  try {
-    const { data } = await api.post(
-      `/subject/${subjectId}/specialized/speech/remedial/${activityType}/${remedial_id}/${phoneme}`,
-    );
+  let url = `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}`;
 
+  if (phoneme) {
+    url = `/subject/${subjectId}/specialized/speech/remedial/${activityType}/${activityId}/${phoneme}`;
+  }
+
+  try {
+    const { data } = await api.post(url);
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -369,18 +350,67 @@ export async function startRemedial(
     }
   }
 }
+
+// export async function submitAnswer(
+//   subjectId: string,
+//   activityType: string,
+//   activityId: string,
+//   attemptId: string,
+//   flashcardId: string,
+//   fileUri: string,
+//   phoneme: string,
+// ) {
+//   try {
+//     const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+//
+//     const filename = fileUri.split("/").pop()!;
+//     const mimeType = "audio/mpeg";
+//
+//     const formData = new FormData();
+//     formData.append("audio_file", {
+//       uri: fileUri,
+//       name: filename,
+//       type: mimeType,
+//     } as any);
+//
+//     const token = await getAuth().currentUser?.getIdToken(true);
+//
+//     const response = await fetch(url, {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "multipart/form-data",
+//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//       },
+//       body: formData,
+//     });
+//
+//     return await response.json();
+//   } catch (err: any) {
+//     if (err.response) {
+//       return err.response.status;
+//     } else if (err.request) {
+//       return { error: "No response from server" };
+//     } else {
+//       return { error: err.message };
+//     }
+//   }
+// }
 
 export async function submitAnswer(
   subjectId: string,
   activityType: string,
-  difficulty: string,
   activityId: string,
   attemptId: string,
   flashcardId: string,
   fileUri: string,
+  phoneme: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+    let url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+    if (phoneme) {
+      url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/remedial/${activityType}/${activityId}/${phoneme}/${attemptId}/${flashcardId}`;
+    }
 
     const filename = fileUri.split("/").pop()!;
     const mimeType = "audio/mpeg";
@@ -392,19 +422,8 @@ export async function submitAnswer(
       type: mimeType,
     } as any);
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
-
-    return await response.json();
+    const { data } = await api.post(url, formData);
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

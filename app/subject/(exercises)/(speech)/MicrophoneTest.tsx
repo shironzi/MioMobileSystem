@@ -7,76 +7,33 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import takeActivity from "@/app/subject/(exercises)/(speech)/SpeechRoutes";
+import Colors from "@/styles/Colors";
 
 const MicrophoneTest = () => {
   useHeaderConfig("Microphone Test");
 
-  const {
-    category,
-    activity_type,
-    role,
-    subjectId,
-    activityId,
-    difficulty,
-    attemptId,
-    remedial,
-    phoneme,
-  } = useLocalSearchParams<{
-    category: string;
-    activity_type: string;
-    role: string;
-    difficulty: string;
-    subjectId: string;
-    activityId: string;
-    attemptId: string;
-    remedial: string;
-    phoneme: string;
-  }>();
+  const { activity_type, role, subjectId, activityId, difficulty, phoneme } =
+    useLocalSearchParams<{
+      activity_type: string;
+      role: string;
+      difficulty: string;
+      subjectId: string;
+      activityId: string;
+      phoneme: string;
+    }>();
 
   const [recordingAudio, setRecordingAudio] = useState<string | null>("");
 
   const handleTakeExercise = () => {
-    if (remedial === "true") {
-      router.push({
-        pathname: "/subject/(exercises)/(speech)/RemedialActivity",
-        params: {
-          subjectId: subjectId,
-          activity_type: activity_type,
-          phoneme: phoneme,
-          remedialId: activityId,
-        },
-      });
-    } else if (activity_type === "picture") {
-      router.push({
-        pathname:
-          role === "teacher"
-            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-            : "/subject/(exercises)/(speech)/PictureFlashcards",
-        params: {
-          subjectId,
-          activity_type,
-          difficulty,
-          category,
-          activityId,
-          prevAttemptId: attemptId,
-        },
-      });
-    } else if (activity_type === "phrase" || activity_type === "question") {
-      router.push({
-        pathname:
-          role === "teacher"
-            ? "/subject/(exercises)/(speech)/ManageActivity/AddSpeechActivity"
-            : "/subject/(exercises)/(speech)/Flashcards",
-        params: {
-          subjectId,
-          activity_type,
-          difficulty,
-          category,
-          activityId,
-          prevAttemptId: attemptId,
-        },
-      });
-    }
+    takeActivity(
+      role,
+      subjectId,
+      activity_type,
+      phoneme,
+      activityId,
+      difficulty,
+    );
   };
 
   return (
@@ -164,12 +121,7 @@ const MicrophoneTest = () => {
                   ]}
                   onPress={() => router.back()}
                 >
-                  <Text
-                    style={[
-                      globalStyles.submitButtonText,
-                      { color: "#FFBF18" },
-                    ]}
-                  >
+                  <Text style={[globalStyles.submitButtonText, Colors.yellow]}>
                     No
                   </Text>
                 </TouchableOpacity>

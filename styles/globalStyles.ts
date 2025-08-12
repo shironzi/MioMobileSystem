@@ -5,7 +5,9 @@ const globalStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     flex: 1,
+    height: "100%",
   },
+
   inputContainer: {
     fontSize: 16,
     borderWidth: 1,
@@ -45,13 +47,11 @@ const globalStyles = StyleSheet.create({
   cardContainer: {
     paddingHorizontal: 26,
     paddingVertical: 15,
-    // borderRadius: 10,
     backgroundColor: "#fff",
     borderRadius: 20,
     borderColor: "#ddd",
     borderWidth: 1,
     rowGap: 10,
-    // elevation: 5,
   },
   cardBody: {
     paddingHorizontal: 0,
@@ -103,7 +103,6 @@ const globalStyles = StyleSheet.create({
   divider: {
     borderTopWidth: 1,
     borderColor: "#82828257",
-    marginHorizontal: -10,
   },
   errorText: {
     color: "red",
@@ -159,6 +158,11 @@ const globalStyles = StyleSheet.create({
     borderColor: "#82828257",
     borderRadius: 20,
     paddingHorizontal: 10,
+  },
+  alignRowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
 
