@@ -6,7 +6,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import ScoreDropdown from "@/app/subject/Scores/ScoreDropdown";
-import { SpecializedActivity } from "@/app/subject/Scores/ScoresTypes";
+import { SpecializedActivity, Student } from "@/app/subject/Scores/ScoresTypes";
 import ItemCard from "@/app/subject/Scores/ItemCard";
 
 const Scores = () => {
@@ -18,6 +18,7 @@ const Scores = () => {
     specializedType: string;
   }>();
   const [activities, setActivities] = useState<SpecializedActivity[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [quizzes, setQuizzes] = useState<{ id: string; title: string }[]>([]);
   const [assignments, setAssignments] = useState<
@@ -48,7 +49,7 @@ const Scores = () => {
         setActivities(data.activities);
         setQuizzes(data.quizzes);
         setAssignments(data.assignments);
-        console.log(data.activities);
+        setStudents(data.students);
       }
       setLoading(false);
     };
@@ -74,18 +75,30 @@ const Scores = () => {
               sActivity={activities.filter(
                 (act) => act.activityType === "picture",
               )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"picture"}
             />
             <ScoreDropdown
               title={"Word Flashcards"}
               sActivity={activities.filter(
                 (act) => act.activityType === "word",
               )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"word"}
             />
             <ScoreDropdown
               title={"Reading Flashcards"}
               sActivity={activities.filter(
                 (act) => act.activityType === "phrase",
               )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"phrase"}
             />
           </View>
         ) : (

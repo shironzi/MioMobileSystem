@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import SpeechDetailedDropdown from "@/app/subject/Scores/SpeechDetailedDropdown";
 
 interface Feedback {
   id: string;

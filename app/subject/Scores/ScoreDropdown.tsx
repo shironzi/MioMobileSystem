@@ -1,16 +1,27 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { memo, useState } from "react";
-import { SpecializedActivity } from "@/app/subject/Scores/ScoresTypes";
+import { SpecializedActivity, Student } from "@/app/subject/Scores/ScoresTypes";
 import ItemCard from "@/app/subject/Scores/ItemCard";
 import { router } from "expo-router";
 
 interface Props {
   title: string;
   sActivity: SpecializedActivity[];
+  students: Student[];
+  role: string;
+  subjectId: string;
+  activityType: string;
 }
 
-const ScoreDropdown = ({ title, sActivity = [] }: Props) => {
+const ScoreDropdown = ({
+  title,
+  sActivity = [],
+  students = [],
+  role,
+  subjectId,
+  activityType,
+}: Props) => {
   const [isVisible, setVisible] = useState(false);
 
   const handleRoute = (difficulty: string) => {
@@ -22,7 +33,13 @@ const ScoreDropdown = ({ title, sActivity = [] }: Props) => {
 
     router.push({
       pathname: "/subject/Scores/SelectActivity",
-      params: { sActivity: JSON.stringify(selectedDifficulty?.activities) },
+      params: {
+        sActivity: JSON.stringify(selectedDifficulty?.activities),
+        students: JSON.stringify(students),
+        role,
+        subjectId,
+        activityType,
+      },
     });
   };
 

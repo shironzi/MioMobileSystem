@@ -1,8 +1,3 @@
-import globalStyles from "@/styles/globalStyles";
-import headerConfigScoreDetails from "@/utils/HeaderConfigScoreDetails";
-import { addComment, getAttempt, getAttemptStudent } from "@/utils/query";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -12,106 +7,53 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import React, { useEffect, useState } from "react";
+import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import useHeaderConfig from "@/utils/HeaderConfig";
+import { router, useLocalSearchParams } from "expo-router";
+import SpeechDetailedDropdown from "@/app/subject/Scores/SpeechDetailedDropdown";
+import { Feedback } from "@/app/subject/Scores/ScoresTypes";
+import { getAttempt, getAttemptStudent } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
 
-interface Feedback {
-  id: string;
-  feedback: string;
-  audio: string;
-  phonemes: {
-    phone: string;
-    quality_score: number;
-    sound_most_like: string;
-  }[];
-  word: string;
-  score: number;
-}
+const SpecializedScore = () => {
+  useHeaderConfig("Score");
 
-const AuditoryScores = () => {
-  const isRemedial = false;
-
-  headerConfigScoreDetails("Score Details", "", isRemedial);
-
-  const { subjectId, activityType, activityId, userId, attemptId, role } =
+  const { role, studentId, activityId, subjectId, attemptId, activityType } =
     useLocalSearchParams<{
-      subjectId: string;
-      activityType: string;
-      activityId: string;
-      userId: string;
-      attemptId: string;
       role: string;
+      studentId: string;
+      activityId: string;
+      subjectId: string;
+      attemptId: string;
+      activityType: string;
     }>();
 
-  const [overallScore, setOverallScore] = useState<number>(0);
+  const [overallScore, setOverallScore] = useState(0);
+  const [comment, setComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [commentError, setCommentError] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [feedback, setFeedback] = useState<string>("");
-  const [comment, setComment] = useState<string>("");
-  const [commentError, setCommentError] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const handleComment = (comment: string) => {
-    if (comment.length > 300) {
-      setCommentError(true);
-      return;
-    }
-
-    setCommentError(false);
-    setComment(comment);
-  };
-
-  const handleAddComment = async () => {
-    if (comment.trim().length < 1) return;
-
-    setIsSubmitting(true);
-    const res = await addComment(
-      subjectId,
-      activityType,
-      activityId,
-      userId,
-      attemptId,
-      comment,
-    );
-
-    if (res.success) {
-      Alert.alert(
-        "Success",
-        res.message,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              router.back();
-            },
-          },
-        ],
-        { cancelable: false },
-      );
-    } else {
-      Alert.alert("Error", res.message);
-    }
-
-    setIsSubmitting(false);
-  };
+  const handleAddComment = () => {};
 
   useEffect(() => {
     const fetchAttempt = async () => {
-      const res = userId
+      const res = studentId
         ? await getAttempt(
             subjectId,
-            activityType,
             activityId,
-            userId,
+            studentId,
             attemptId,
+            activityType,
           )
-        : await getAttemptStudent(subjectId, activityType, activityId);
+        : await getAttemptStudent(subjectId, activityId);
 
       if (res.success) {
         setOverallScore(res.overall_score ?? 0);
         setFeedbacks(res.feedbacks);
-        setFeedback(res.feedback);
         setComment(res.comment);
         setLoading(false);
       } else {
@@ -135,18 +77,7 @@ const AuditoryScores = () => {
   }, []);
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+    return <LoadingCard />;
   }
 
   return (
@@ -160,30 +91,27 @@ const AuditoryScores = () => {
           },
         ]}
       >
-        {overallScore !== null && (
-          <View style={[globalStyles.cardContainer, { paddingVertical: 25 }]}>
-            <Text style={styles.sectionTitle}>Score</Text>
-            <View style={styles.scoreRow}>
-              <AnimatedCircularProgress
-                size={150}
-                width={10}
-                fill={overallScore}
-                tintColor="#2264DC"
-                backgroundColor="#e7eaea"
-                rotation={0}
-                lineCap="round"
-              >
-                {() => (
-                  <>
-                    <Text style={styles.scoreText}>{overallScore}</Text>
-                    <Text>Points</Text>
-                  </>
-                )}
-              </AnimatedCircularProgress>
-              <Text>Out of 100 points</Text>
-            </View>
+        <View style={[globalStyles.cardContainer, { paddingVertical: 25 }]}>
+          <View style={styles.scoreRow}>
+            <AnimatedCircularProgress
+              size={150}
+              width={10}
+              fill={overallScore}
+              tintColor="#2264DC"
+              backgroundColor="#e7eaea"
+              rotation={0}
+              lineCap="round"
+            >
+              {() => (
+                <>
+                  <Text style={styles.scoreText}>{overallScore}</Text>
+                  <Text>Points</Text>
+                </>
+              )}
+            </AnimatedCircularProgress>
+            <Text>Out of 100 points</Text>
           </View>
-        )}
+        </View>
 
         <View style={globalStyles.cardContainer}>
           <Text style={styles.sectionTitle}>Comments</Text>
@@ -206,7 +134,7 @@ const AuditoryScores = () => {
                 ]}
                 placeholder={"Add Comment"}
                 value={comment}
-                onChangeText={(value: string) => handleComment(value)}
+                onChangeText={setComment}
                 multiline={true}
               />
 
@@ -233,7 +161,7 @@ const AuditoryScores = () => {
           {feedbacks.length === 0 ? (
             <View style={globalStyles.cardContainer}>
               <Text style={styles.sectionTitle}>Mio Feedback</Text>
-              <Text style={styles.feedbackText}>{feedback}</Text>
+              <Text style={styles.feedbackText}>{feedbacks[0].feedback}</Text>
             </View>
           ) : (
             feedbacks.map((item, index) => (
@@ -293,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(AuditoryScores);
+export default SpecializedScore;

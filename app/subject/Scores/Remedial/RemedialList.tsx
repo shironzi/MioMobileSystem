@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getRemedialList, getRemedialListByStudent } from "@/utils/specialized";
 import { router, useLocalSearchParams } from "expo-router";
 import globalStyles from "@/styles/globalStyles";
-import RemedialItem from "@/app/subject/(sub-details)/Scores/Remedial/RemedialItem";
+import RemedialItem from "@/app/subject/Scores/Remedial/RemedialItem";
 import LoadingCard from "@/components/loadingCard";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Ionicons } from "@expo/vector-icons";

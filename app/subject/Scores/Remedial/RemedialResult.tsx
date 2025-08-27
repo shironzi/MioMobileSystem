@@ -16,7 +16,7 @@ import {
 } from "@/utils/specialized";
 import { router, useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import SpeechDetailedDropdown from "@/app/subject/Scores/SpeechDetailedDropdown";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { addRemedialComment } from "@/utils/query";
 

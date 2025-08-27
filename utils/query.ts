@@ -627,10 +627,10 @@ export async function getPeoples(subjectId: string) {
 
 export async function getAttempt(
   subjectId: string,
-  activityType: string,
   activityId: string,
   userId: string,
   attemptId: string,
+  activityType: string,
 ) {
   try {
     const { data } = await api.get(
@@ -695,14 +695,10 @@ export async function getStudentRemedialAuditory(
   }
 }
 
-export async function getAttemptStudent(
-  subjectId: string,
-  activityType: string,
-  activityId: string,
-) {
+export async function getAttemptStudent(subjectId: string, activityId: string) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/student/scores/${activityType}/${activityId}`,
+      `/subject/${subjectId}/student/scores/${activityId}`,
     );
 
     return data;
@@ -1248,10 +1244,6 @@ export async function getScoreActivityAttempt(
   try {
     const { data } = await api.get(
       `/subject/${subjectId}/teacher/scores/${activityType}/${activityId}/${userId}`,
-    );
-
-    console.log(
-      `/subject/${subjectId}/scores/${activityType}/${activityId}/${userId}`,
     );
 
     return data;
