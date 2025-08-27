@@ -127,6 +127,16 @@ const globalStyles = StyleSheet.create({
     backgroundColor: "#fff",
     gap: 15,
   },
+  cardContainer2: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 20,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    gap: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   text2: {
     color: "#888",
     fontSize: 12,
