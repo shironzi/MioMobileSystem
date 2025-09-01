@@ -40,8 +40,6 @@ const RemedialList = () => {
       return;
     }
 
-    console.log(activityTypes);
-
     router.push({
       pathname: "/subject/(sub-details)/Scores/Remedial/AddRemedialSchedule",
       params: {
@@ -82,38 +80,20 @@ const RemedialList = () => {
   }, [activeRemedial]);
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+    return <LoadingCard />;
   }
-  console.log(firstname);
 
   return (
-    <View style={[{ backgroundColor: "#fff", height: "100%", rowGap: 20 }]}>
+    <View style={globalStyles.container}>
       {role === "teacher" && (
         <TouchableOpacity style={styles.addButton} onPress={handleAddSchedule}>
-          <View
-            style={{
-              top: 20,
-              alignSelf: "center",
-              flexDirection: "row",
-            }}
-          >
+          <View style={styles.addRemedial}>
             <Ionicons name="add-circle" size={20} color="#ffbf18" />
             <Text style={styles.addText}>Add Remedial Schedule</Text>
           </View>
         </TouchableOpacity>
       )}
-      <View style={[{ paddingHorizontal: 10, rowGap: 20 }]}>
+      <View style={{ rowGap: 20 }}>
         <View style={globalStyles.cardContainer}>
           <Text style={globalStyles.textLabel}>Active</Text>
           {activeRemedial.length > 0 ? (
@@ -154,7 +134,7 @@ const RemedialList = () => {
               color="#FFBF18"
             />
           </TouchableOpacity>
-          {isVisible && <View style={globalStyles.divider}></View>}
+          {isVisible && <View style={globalStyles.divider} />}
           {isVisible && (
             <View>
               {inactiveRemedial ? (
@@ -197,23 +177,25 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   addButton: {
-    left: -8,
-    width: "88%",
     backgroundColor: "#fcefcc",
     borderColor: "#ffbf18",
     borderWidth: 2,
     borderRadius: 20,
     borderStyle: "dashed",
-    margin: 30,
     marginBottom: 20,
     height: 60,
-    marginVertical: 5,
-    marginTop: 20,
+    marginHorizontal: "auto",
+    width: "100%",
   },
   addText: {
     color: "#ffbf18",
     fontWeight: 500,
     marginHorizontal: 10,
+  },
+  addRemedial: {
+    top: 20,
+    alignSelf: "center",
+    flexDirection: "row",
   },
 });
 
