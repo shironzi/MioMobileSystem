@@ -12,8 +12,8 @@ import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { router, useLocalSearchParams } from "expo-router";
-import SpeechDetailedDropdown from "@/app/subject/Scores/SpeechDetailedDropdown";
-import { Feedback } from "@/app/subject/Scores/ScoresTypes";
+import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import { Feedback } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 import { getAttempt, getAttemptStudent } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
 

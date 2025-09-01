@@ -1,8 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { memo, useState } from "react";
-import { SpecializedActivity, Student } from "@/app/subject/Scores/ScoresTypes";
-import ItemCard from "@/app/subject/Scores/ItemCard";
+import {
+  SpecializedActivity,
+  Student,
+} from "@/app/subject/(sub-details)/Scores/ScoresTypes";
+import ItemCard from "@/app/subject/(sub-details)/Scores/ItemCard";
 import { router } from "expo-router";
 
 interface Props {

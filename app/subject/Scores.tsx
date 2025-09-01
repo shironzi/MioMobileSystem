@@ -5,9 +5,12 @@ import { getActivities } from "@/utils/specialized";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-import ScoreDropdown from "@/app/subject/Scores/ScoreDropdown";
-import { SpecializedActivity, Student } from "@/app/subject/Scores/ScoresTypes";
-import ItemCard from "@/app/subject/Scores/ItemCard";
+import ScoreDropdown from "@/app/subject/(sub-details)/Scores/ScoreDropdown";
+import {
+  SpecializedActivity,
+  Student,
+} from "@/app/subject/(sub-details)/Scores/ScoresTypes";
+import ItemCard from "@/app/subject/(sub-details)/Scores/ItemCard";
 
 const Scores = () => {
   useHeaderConfig("Scores");

@@ -1,6 +1,6 @@
 import { View } from "react-native";
-import { ActivityItem } from "@/app/subject/Scores/ScoresTypes";
-import ItemCard from "@/app/subject/Scores/ItemCard";
+import { ActivityItem } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
+import ItemCard from "@/app/subject/(sub-details)/Scores/ItemCard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo } from "react";
 import globalStyles from "@/styles/globalStyles";

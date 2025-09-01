@@ -1,9 +1,9 @@
 import { View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import ItemCard from "@/app/subject/Scores/ItemCard";
+import ItemCard from "@/app/subject/(sub-details)/Scores/ItemCard";
 import { useMemo } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { Student } from "@/app/subject/Scores/ScoresTypes";
+import { Student } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 import useHeaderConfig from "@/utils/HeaderConfig";
 
 const SelectStudent = () => {

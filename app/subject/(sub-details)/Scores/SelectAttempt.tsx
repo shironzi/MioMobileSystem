@@ -12,7 +12,7 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import globalStyles from "@/styles/globalStyles";
 import { formatDayDateTimeWithAmPm } from "@/utils/DateFormat";
 import LoadingCard from "@/components/loadingCard";
-import { Attempt } from "@/app/subject/Scores/ScoresTypes";
+import { Attempt } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 
 const SelectAttempt = () => {
   useHeaderConfig("Select Attempt");
