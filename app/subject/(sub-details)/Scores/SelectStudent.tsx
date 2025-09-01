@@ -26,11 +26,20 @@ const SelectStudent = () => {
     }
   }, [students]);
 
-  const handleRoute = (studentId: string) => {
-    router.push({
-      pathname: "/subject/Scores/SelectAttempt",
-      params: { studentId, activityId, role, subjectId, activityType },
-    });
+  const handleRoute = (studentId: string, studentName?: string) => {
+    if (activityType === "remedial") {
+      router.push({
+        pathname: "/subject/Scores/Remedial/RemedialList",
+        params: { studentId, role, subjectId, studentName },
+      });
+    } else {
+      router.push({
+        pathname: "/subject/Scores/SelectAttempt",
+        params: { studentId, activityId, role, subjectId, activityType },
+      });
+    }
+
+    console.log(activityType);
   };
 
   return (
@@ -39,7 +48,7 @@ const SelectStudent = () => {
         <ItemCard
           placeholder={act.name}
           key={act.studentId}
-          handleRoute={() => handleRoute(act.studentId)}
+          handleRoute={() => handleRoute(act.studentId, act.name)}
         />
       ))}
     </View>

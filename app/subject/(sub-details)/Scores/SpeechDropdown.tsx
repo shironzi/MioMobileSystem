@@ -67,57 +67,49 @@ const SpeechDropdown = ({
 
       {isVisible && (
         <View style={{ width: "100%" }}>
-          <View
-            style={[globalStyles.divider, { marginTop: -10, marginBottom: 10 }]}
-          ></View>
-          {items ? (
-            <View>
-              <View style={{ rowGap: 10 }}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={globalStyles.text1}>Word: </Text>
-                  <Text>
-                    {firstLetter}
-                    {restOfWord}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={globalStyles.text1}>Score: </Text>
-                  <Text>{items.score}%</Text>
-                </View>
-                <View style={{ flexDirection: "column" }}>
-                  <Text style={globalStyles.text1}>Mio Feedback: </Text>
-                  <Text style={{ maxWidth: 300 }}>{items.feedback}</Text>
-                </View>
-                <AudioPlayer uri={items.audio} />
+          {/*<View*/}
+          {/*  style={[globalStyles.divider, { marginTop: -10, marginBottom: 10 }]}*/}
+          {/*></View>*/}
+          <View>
+            <View style={{ rowGap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={globalStyles.text1}>Word: </Text>
+                <Text>
+                  {firstLetter}
+                  {restOfWord}
+                </Text>
               </View>
-              {role !== "student" &&
-                Object.entries(items.phonemes).map(([word, phones], index) => (
-                  <View key={index} style={{ marginTop: 20 }}>
-                    <Text style={globalStyles.text1}>Word: {word}</Text>
-                    <View style={styles.table}>
-                      <View style={styles.headerRow}>
-                        <Text style={styles.headerCell}>Phone</Text>
-                        <Text style={styles.headerCell}>Sound Most Like</Text>
-                        <Text style={styles.headerCell}>Score</Text>
-                      </View>
-                      {phones.map((phone, index) => (
-                        <View key={index} style={styles.row}>
-                          <Text style={styles.cell}>{phone.phone}</Text>
-                          <Text style={styles.cell}>
-                            {phone.sound_most_like}
-                          </Text>
-                          <Text style={styles.cell}>{phone.quality_score}</Text>
-                        </View>
-                      ))}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={globalStyles.text1}>Score: </Text>
+                <Text>{items.score}%</Text>
+              </View>
+              <View style={{ flexDirection: "column" }}>
+                <Text style={globalStyles.text1}>Mio Feedback: </Text>
+                <Text style={{ maxWidth: 300 }}>{items.feedback}</Text>
+              </View>
+              <AudioPlayer uri={items.audio} />
+            </View>
+            {role !== "student" &&
+              Object.entries(items.phonemes).map(([word, phones], index) => (
+                <View key={index} style={{ marginTop: 20 }}>
+                  <Text style={globalStyles.text1}>Word: {word}</Text>
+                  <View style={styles.table}>
+                    <View style={styles.headerRow}>
+                      <Text style={styles.headerCell}>Phone</Text>
+                      <Text style={styles.headerCell}>Sound Most Like</Text>
+                      <Text style={styles.headerCell}>Score</Text>
                     </View>
+                    {phones.map((phone, index) => (
+                      <View key={index} style={styles.row}>
+                        <Text style={styles.cell}>{phone.phone}</Text>
+                        <Text style={styles.cell}>{phone.sound_most_like}</Text>
+                        <Text style={styles.cell}>{phone.quality_score}</Text>
+                      </View>
+                    ))}
                   </View>
-                ))}
-            </View>
-          ) : (
-            <View style={styles.dropdownContent}>
-              <Text style={styles.item}>No Feedback</Text>
-            </View>
-          )}
+                </View>
+              ))}
+          </View>
         </View>
       )}
     </View>

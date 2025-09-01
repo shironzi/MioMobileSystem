@@ -14,8 +14,10 @@ import useHeaderConfig from "@/utils/HeaderConfig";
 import { router, useLocalSearchParams } from "expo-router";
 import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
 import { Feedback } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
-import { getAttempt, getAttemptStudent } from "@/utils/query";
+import { addComment, getAttempt, getAttemptStudent } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
+import LoadingAlert from "@/components/Alerts/LoadingAlert";
+import CompletedAlert from "@/components/Alerts/CompletedAlert";
 
 const SpecializedScore = () => {
   useHeaderConfig("Score");
@@ -33,14 +35,38 @@ const SpecializedScore = () => {
   const [overallScore, setOverallScore] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [commentError, setCommentError] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [feedback, setFeedback] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleAddComment = () => {};
+  const handleAddComment = async () => {
+    setIsSubmitting(true);
+
+    const res = await addComment(
+      subjectId,
+      activityType,
+      activityId,
+      studentId,
+      attemptId,
+      comment,
+    );
+
+    if (res.success) {
+      setIsSuccess(true);
+    }
+
+    setIsSubmitting(false);
+  };
 
   useEffect(() => {
     const fetchAttempt = async () => {
+      if (comment.trim().length > 300) {
+        setCommentError(true);
+        return;
+      }
+
       const res = studentId
         ? await getAttempt(
             subjectId,
@@ -54,6 +80,7 @@ const SpecializedScore = () => {
       if (res.success) {
         setOverallScore(res.overall_score ?? 0);
         setFeedbacks(res.feedbacks);
+        setFeedback(res.feedback);
         setComment(res.comment);
         setLoading(false);
       } else {
@@ -82,6 +109,14 @@ const SpecializedScore = () => {
 
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
+      {isSubmitting && <LoadingAlert />}
+      {isSuccess && (
+        <CompletedAlert
+          message={"Comment saved!"}
+          handleButton={() => setIsSuccess(false)}
+        />
+      )}
+
       <View
         style={[
           globalStyles.container,
@@ -159,7 +194,13 @@ const SpecializedScore = () => {
         </View>
         <View style={{ rowGap: 20 }}>
           {feedbacks.length === 0 ? (
-            <Text>No Feedback Yet</Text>
+            <View style={globalStyles.cardContainer}>
+              <Text>
+                {feedback
+                  ? feedback
+                  : "This activity doesn’t have feedback yet."}
+              </Text>
+            </View>
           ) : (
             feedbacks.map((item, index) => (
               <SpeechDropdown

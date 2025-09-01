@@ -17,7 +17,7 @@ interface Remedial {
 }
 
 const RemedialList = () => {
-  useHeaderConfig("Scores");
+  useHeaderConfig("Remedial");
 
   const { subjectId, role, studentId, firstname } = useLocalSearchParams<{
     subjectId: string;
@@ -113,27 +113,30 @@ const RemedialList = () => {
           </View>
         </TouchableOpacity>
       )}
-      <View
-        style={[
-          { paddingHorizontal: 20, rowGap: 20 },
-          role === "teacher" && { marginTop: 20 },
-        ]}
-      >
+      <View style={[{ paddingHorizontal: 10, rowGap: 20 }]}>
         <View style={globalStyles.cardContainer}>
           <Text style={globalStyles.textLabel}>Active</Text>
-          <View style={globalStyles.divider}></View>
-          {activeRemedial?.map((item, index) => (
-            <RemedialItem
-              subjectId={subjectId}
-              remedialId={item.remedialId}
-              activityType={item.activityType}
-              remedial={item.remedials}
-              activity_title={item.activity_title}
-              key={index}
-              role={role}
-              studentId={studentId}
-            />
-          ))}
+          {activeRemedial.length > 0 ? (
+            activeRemedial?.map((item, index) => (
+              <View>
+                <View style={globalStyles.divider} />
+                <RemedialItem
+                  subjectId={subjectId}
+                  remedialId={item.remedialId}
+                  activityType={item.activityType}
+                  remedial={item.remedials}
+                  activity_title={item.activity_title}
+                  key={index}
+                  role={role}
+                  studentId={studentId}
+                />
+              </View>
+            ))
+          ) : (
+            <Text style={globalStyles.text2}>
+              No remedials available. Keep practicing with the main activities!
+            </Text>
+          )}
         </View>
         <View style={globalStyles.cardContainer}>
           <TouchableOpacity

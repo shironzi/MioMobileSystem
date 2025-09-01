@@ -34,15 +34,22 @@ const Scores = () => {
   const handleRemedialRoute = () => {
     if (role === "teacher") {
       router.push({
-        pathname: "/subject/(sub-details)/Scores/ScoreStudentList",
-        params: { subjectId: subjectId, role: role, activityType: "remedial" },
+        pathname: "/subject/(sub-details)/Scores/SelectStudent",
+        params: {
+          subjectId: subjectId,
+          role: role,
+          activityType: "remedial",
+          students: JSON.stringify(students),
+        },
       });
-      return;
+
+      console.log("right here");
+    } else {
+      router.push({
+        pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
+        params: { subjectId: subjectId, role: role },
+      });
     }
-    router.push({
-      pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
-      params: { subjectId: subjectId, role: role },
-    });
   };
 
   useEffect(() => {
@@ -105,7 +112,28 @@ const Scores = () => {
             />
           </View>
         ) : (
-          ""
+          <View>
+            <ScoreDropdown
+              title={"Piddie Says"}
+              sActivity={activities.filter(
+                (act) => act.activityType === "bingo",
+              )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"bingo"}
+            />
+            <ScoreDropdown
+              title={"Matching Cards"}
+              sActivity={activities.filter(
+                (act) => act.activityType === "matching",
+              )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"matching"}
+            />
+          </View>
         )}
 
         {/*<SpecializedScores activities={activities} />*/}
