@@ -18,11 +18,7 @@ export interface Feedback {
   id: string;
   feedback: string;
   audio: string;
-  phonemes: {
-    phone: string;
-    quality_score: number;
-    sound_most_like: string;
-  }[];
+  phonemes: { key: Phoneme[] };
   word: string;
   score: number;
 }
@@ -31,4 +27,10 @@ export interface Attempt {
   attemptId: string;
   score: number;
   submitted_at: string;
+}
+
+export interface Phoneme {
+  phone: string;
+  quality_score: number;
+  sound_most_like: string;
 }

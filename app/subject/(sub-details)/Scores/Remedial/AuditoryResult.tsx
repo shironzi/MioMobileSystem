@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
 
 interface Feedback {
   id: string;
@@ -227,7 +227,7 @@ const AuditoryScores = () => {
             </View>
           ) : (
             feedbacks.map((item, index) => (
-              <SpeechDetailedDropdown
+              <SpeechDropdown
                 items={item}
                 placeholder={index}
                 key={item.id}

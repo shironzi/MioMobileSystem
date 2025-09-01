@@ -5,8 +5,9 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import globalStyles from "@/styles/globalStyles";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import AudioPlayer from "@/components/trainingActivities/AudioPlayer";
+import { Phoneme } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 
-const SpeechDetailedDropdown = ({
+const SpeechDropdown = ({
   items,
   placeholder,
   role,
@@ -15,13 +16,9 @@ const SpeechDetailedDropdown = ({
     id: string;
     feedback: string;
     audio: string;
-    phonemes: {
-      phone: string;
-      quality_score: number;
-      sound_most_like: string;
-    }[];
     word: string;
     score: number;
+    phonemes: { key: Phoneme[] };
   };
   placeholder: number;
   role: string;
@@ -93,23 +90,28 @@ const SpeechDetailedDropdown = ({
                 </View>
                 <AudioPlayer uri={items.audio} />
               </View>
-              {role !== "student" && (
-                <View style={styles.table}>
-                  <View style={styles.headerRow}>
-                    <Text style={styles.headerCell}>Phone</Text>
-                    <Text style={styles.headerCell}>Sound Most Like</Text>
-                    <Text style={styles.headerCell}>Score</Text>
-                  </View>
-
-                  {items.phonemes.map((phone, index) => (
-                    <View key={index} style={styles.row}>
-                      <Text style={styles.cell}>{phone.phone}</Text>
-                      <Text style={styles.cell}>{phone.sound_most_like}</Text>
-                      <Text style={styles.cell}>{phone.quality_score}</Text>
+              {role !== "student" &&
+                Object.entries(items.phonemes).map(([word, phones], index) => (
+                  <View key={index} style={{ marginTop: 20 }}>
+                    <Text style={globalStyles.text1}>Word: {word}</Text>
+                    <View style={styles.table}>
+                      <View style={styles.headerRow}>
+                        <Text style={styles.headerCell}>Phone</Text>
+                        <Text style={styles.headerCell}>Sound Most Like</Text>
+                        <Text style={styles.headerCell}>Score</Text>
+                      </View>
+                      {phones.map((phone, index) => (
+                        <View key={index} style={styles.row}>
+                          <Text style={styles.cell}>{phone.phone}</Text>
+                          <Text style={styles.cell}>
+                            {phone.sound_most_like}
+                          </Text>
+                          <Text style={styles.cell}>{phone.quality_score}</Text>
+                        </View>
+                      ))}
                     </View>
-                  ))}
-                </View>
-              )}
+                  </View>
+                ))}
             </View>
           ) : (
             <View style={styles.dropdownContent}>
@@ -163,19 +165,15 @@ const styles = StyleSheet.create({
     height: 30,
   },
   table: {
-    marginTop: 20,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 16,
     padding: 5,
   },
   headerRow: {
     flexDirection: "row",
-    backgroundColor: "#f2f2f2",
     paddingVertical: 10,
     paddingHorizontal: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
   },
   headerCell: {
     flex: 1,
@@ -186,8 +184,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 10,
     paddingHorizontal: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
   },
   cell: {
     flex: 1,
@@ -195,4 +193,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SpeechDetailedDropdown;
+export default SpeechDropdown;

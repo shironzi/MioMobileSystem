@@ -12,7 +12,7 @@ import globalStyles from "@/styles/globalStyles";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { router, useLocalSearchParams } from "expo-router";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
 import { Feedback } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 import { getAttempt, getAttemptStudent } from "@/utils/query";
 import LoadingCard from "@/components/loadingCard";
@@ -159,13 +159,10 @@ const SpecializedScore = () => {
         </View>
         <View style={{ rowGap: 20 }}>
           {feedbacks.length === 0 ? (
-            <View style={globalStyles.cardContainer}>
-              <Text style={styles.sectionTitle}>Mio Feedback</Text>
-              <Text style={styles.feedbackText}>{feedbacks[0].feedback}</Text>
-            </View>
+            <Text>No Feedback Yet</Text>
           ) : (
             feedbacks.map((item, index) => (
-              <SpeechDetailedDropdown
+              <SpeechDropdown
                 items={item}
                 placeholder={index}
                 key={item.id}

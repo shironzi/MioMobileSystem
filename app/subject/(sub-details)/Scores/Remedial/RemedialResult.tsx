@@ -16,7 +16,7 @@ import {
 } from "@/utils/specialized";
 import { router, useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
-import SpeechDetailedDropdown from "@/app/subject/(sub-details)/Scores/SpeechDetailedDropdown";
+import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { addRemedialComment } from "@/utils/query";
 
@@ -232,7 +232,7 @@ const RemedialResult = () => {
           )}
         </View>
         {items?.map((item, index) => (
-          <SpeechDetailedDropdown
+          <SpeechDropdown
             key={item.id}
             items={item}
             placeholder={index}
