@@ -34,3 +34,8 @@ export interface Phoneme {
   quality_score: number;
   sound_most_like: string;
 }
+
+export interface AcademicActivity {
+  id: string;
+  title: string;
+}

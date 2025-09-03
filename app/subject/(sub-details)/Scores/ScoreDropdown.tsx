@@ -62,6 +62,7 @@ const ScoreDropdown = ({
       </TouchableOpacity>
       {isVisible && (
         <View style={styles.difficulties}>
+          <Text>Select Difficulty</Text>
           <ItemCard
             handleRoute={() => handleRoute("easy")}
             placeholder={"Easy"}

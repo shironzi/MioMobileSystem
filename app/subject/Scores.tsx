@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import ScoreDropdown from "@/app/subject/(sub-details)/Scores/ScoreDropdown";
 import {
+  AcademicActivity,
   SpecializedActivity,
   Student,
 } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
@@ -23,33 +24,32 @@ const Scores = () => {
   const [activities, setActivities] = useState<SpecializedActivity[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quizzes, setQuizzes] = useState<{ id: string; title: string }[]>([]);
-  const [assignments, setAssignments] = useState<
-    {
-      id: string;
-      title: string;
-    }[]
-  >([]);
+  const [quizzes, setQuizzes] = useState<AcademicActivity[]>([]);
+  const [assignments, setAssignments] = useState<AcademicActivity[]>([]);
 
   const handleRemedialRoute = () => {
-    if (role === "teacher") {
-      router.push({
-        pathname: "/subject/(sub-details)/Scores/SelectStudent",
-        params: {
-          subjectId: subjectId,
-          role: role,
-          activityType: "remedial",
-          students: JSON.stringify(students),
-        },
-      });
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/SelectStudent",
+      params: {
+        subjectId: subjectId,
+        role: role,
+        activityType: "remedial",
+        students: JSON.stringify(students),
+      },
+    });
+  };
 
-      console.log("right here");
-    } else {
-      router.push({
-        pathname: "/subject/(sub-details)/Scores/Remedial/RemedialList",
-        params: { subjectId: subjectId, role: role },
-      });
-    }
+  const handleAssignmentRoute = () => {
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/SelectAssignment",
+      params: {
+        subjectId: subjectId,
+        role: role,
+        activityType: "assignment",
+        students: JSON.stringify(students),
+        assignments: JSON.stringify(assignments),
+      },
+    });
   };
 
   useEffect(() => {
@@ -72,10 +72,11 @@ const Scores = () => {
 
   return (
     <ScrollView style={globalStyles.container}>
-      <View style={{ paddingBottom: 50 }}>
+      <View style={{ paddingBottom: 50, rowGap: 20 }}>
+        <ItemCard placeholder={"Remedials"} handleRoute={handleRemedialRoute} />
         <ItemCard
-          placeholder={"View Remedials"}
-          handleRoute={handleRemedialRoute}
+          placeholder={"Assignments"}
+          handleRoute={handleAssignmentRoute}
         />
 
         {specializedType === "speech" ? (
@@ -135,27 +136,7 @@ const Scores = () => {
             />
           </View>
         )}
-
-        {/*<SpecializedScores activities={activities} />*/}
-        {/*{quizzes.length > 0 && (*/}
-        {/*  <QuizzesScores*/}
-        {/*    subjectId={subjectId}*/}
-        {/*    quizzes={quizzes}*/}
-        {/*    role={role}*/}
-        {/*    placeholder={"Quizzes"}*/}
-        {/*  />*/}
-        {/*)}*/}
-        {/*{assignments.length > 0 && (*/}
-        {/*  <QuizzesScores*/}
-        {/*    subjectId={subjectId}*/}
-        {/*    quizzes={assignments}*/}
-        {/*    role={role}*/}
-        {/*    placeholder={"Assignments"}*/}
-        {/*  />*/}
-        {/*)}*/}
       </View>
-
-      <View></View>
     </ScrollView>
   );
 };

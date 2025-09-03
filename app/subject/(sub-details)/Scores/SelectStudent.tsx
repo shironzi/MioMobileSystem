@@ -32,6 +32,11 @@ const SelectStudent = () => {
         pathname: "/subject/Scores/Remedial/RemedialList",
         params: { studentId, role, subjectId, studentName },
       });
+    } else if (activityType === "assignment") {
+      router.push({
+        pathname: "/subject/Scores/ViewAssignment",
+        params: { studentId, role, subjectId, studentName, activityId },
+      });
     } else {
       router.push({
         pathname: "/subject/Scores/SelectAttempt",
