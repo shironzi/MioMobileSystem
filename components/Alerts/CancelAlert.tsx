@@ -1,28 +1,25 @@
 import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
-import { Image } from "expo-image";
 
 interface Props {
-  message: string;
-  handleButton: () => void;
-  showImage?: boolean;
+  handleApprove: () => void;
+  handleReject: () => void;
 }
 
-const CompletedAlert = ({ message, handleButton, showImage = true }: Props) => {
+const CancelAlert = ({ handleApprove, handleReject }: Props) => {
   return (
     <Modal transparent={true} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.card}>
-          {showImage && (
-            <Image
-              source={require("@/assets/Alerts/completed.png")}
-              style={styles.image}
-            />
-          )}
+          <Text style={styles.message}>Are you sure you want to cancel?</Text>
 
-          <Text style={styles.message}>{message}</Text>
-          <TouchableOpacity style={styles.button} onPress={handleButton}>
-            <Text style={styles.buttonText}>OK</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.approve} onPress={handleReject}>
+              <Text style={[styles.buttonText, { color: "#28a745" }]}>No</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancel} onPress={handleApprove}>
+              <Text style={[styles.buttonText, { color: "#D32F2F" }]}>Yes</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -60,17 +57,30 @@ const styles = StyleSheet.create({
     color: "#444",
     marginBottom: 20,
   },
-  button: {
-    backgroundColor: "#28a745",
+  approve: {
+    borderColor: "#28a745",
     paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingHorizontal: 50,
     borderRadius: 10,
+    borderWidth: 1,
+  },
+  cancel: {
+    borderColor: "#D32F2F",
+    paddingVertical: 12,
+    paddingHorizontal: 50,
+    borderRadius: 10,
+    borderWidth: 1,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+  },
 });
 
-export default CompletedAlert;
+export default CancelAlert;

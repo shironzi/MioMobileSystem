@@ -1,54 +1,114 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCard";
+import { router, useLocalSearchParams } from "expo-router";
+import { getStudentAssignment } from "@/utils/assignment";
+import CancelAlert from "@/components/Alerts/CancelAlert";
+import { FileInfo } from "@/app/subject/(exercises)/(language)/ManageActivity/AddLanguageActivity";
+import LoadingCard from "@/components/loadingCard";
 
 const ViewAssignment = () => {
   useHeaderConfig("Assignment");
 
-  const overallScore = 0;
+  const { studentId, role, subjectId, activityId } = useLocalSearchParams<{
+    studentId: string;
+    role: string;
+    subjectId: string;
+    activityId: string;
+  }>();
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [score, setScore] = useState("0");
+  const [showAlert, setShowAlert] = useState(false);
+  const [studentAnswer, setStudentAnswer] = useState<{
+    work: string | FileInfo[];
+    title: string;
+    total: number;
+    comment: string;
+    submission_type: string;
+    description: string;
+  }>();
+
+  const handleCancel = () => {
+    router.back();
+    router.back();
+    router.back();
+  };
+
+  useEffect(() => {
+    const getAssignment = async () => {
+      const res = await getStudentAssignment(subjectId, activityId, studentId);
+
+      setStudentAnswer(res.assignment);
+      setLoading(false);
+    };
+
+    getAssignment();
+  });
+
+  if (loading) {
+    return <LoadingCard />;
+  }
 
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.text1}>Latest Attempt</Text>
+    <ScrollView>
+      <View style={globalStyles.container}>
+        <Text style={globalStyles.text1}>Latest Attempt</Text>
+        <View style={{ rowGap: 20 }}>
+          <AcademicItemCard
+            title={"Description"}
+            question={studentAnswer?.description}
+            hasScore={false}
+          />
 
-      <View style={{ rowGap: 15 }}>
-        <View style={globalStyles.cardContainer}>
-          <View style={styles.scoreRow}>
-            <AnimatedCircularProgress
-              size={150}
-              width={10}
-              fill={overallScore}
-              tintColor="#2264DC"
-              backgroundColor="#e7eaea"
-              rotation={0}
-              lineCap="round"
-            >
-              {() => (
-                <>
-                  <Text style={styles.scoreText}>{overallScore}</Text>
-                  <Text>Points</Text>
-                </>
-              )}
-            </AnimatedCircularProgress>
-            <Text>Out of 100 points</Text>
-          </View>
-        </View>
-
-        <View>
           <AcademicItemCard
             title={"Question 1"}
             score={score}
             setScore={setScore}
-            totalScore={"10"}
-            question={"Question Here"}
+            totalScore={studentAnswer?.total.toString()}
+            answerType={studentAnswer?.submission_type}
+            studentAnswer={studentAnswer?.work}
           />
+
+          <View style={globalStyles.cardContainer}>
+            <Text style={globalStyles.text1}>Comments</Text>
+            <TextInput
+              style={styles.commentTextBox}
+              multiline={true}
+              textAlignVertical={"top"}
+            />
+          </View>
         </View>
+
+        <View style={[globalStyles.buttonContainer, { marginTop: 25 }]}>
+          <TouchableOpacity
+            style={globalStyles.inactivityButton}
+            onPress={() => setShowAlert(true)}
+          >
+            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={globalStyles.submitButton}>
+            <Text style={globalStyles.submitButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+
+        {showAlert && (
+          <CancelAlert
+            handleApprove={handleCancel}
+            handleReject={() => setShowAlert(false)}
+          />
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -62,6 +122,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     paddingHorizontal: 20,
+  },
+  commentTextBox: {
+    borderWidth: 1,
+    borderRadius: 10,
+    minHeight: 100,
+    borderColor: "#ddd",
+    paddingVertical: 10,
   },
 });
 

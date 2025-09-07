@@ -180,6 +180,10 @@ const globalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
 });
 
 export default globalStyles;

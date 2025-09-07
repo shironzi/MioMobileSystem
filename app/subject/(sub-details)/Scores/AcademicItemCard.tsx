@@ -1,11 +1,16 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import FileUpload from "@/components/FileUpload";
+import { FileInfo } from "@/app/subject/(exercises)/(language)/ManageActivity/AddLanguageActivity";
 
 interface Props {
   title: string;
-  score: string;
-  setScore: (score: string) => void;
-  totalScore: string;
-  question: string;
+  score?: string;
+  setScore?: (score: string) => void;
+  totalScore?: string;
+  question?: string;
+  hasScore?: boolean;
+  answerType?: string;
+  studentAnswer?: string | FileInfo[];
 }
 
 const AcademicItemCard = ({
@@ -13,27 +18,46 @@ const AcademicItemCard = ({
   score,
   setScore,
   totalScore,
-  question,
+  question = "",
+  hasScore = true,
+  answerType,
+  studentAnswer,
 }: Props) => {
   return (
     <View style={styles.cardContainer}>
       {/*  Title*/}
       <View style={styles.cardHeader}>
         <Text style={styles.title}>{title}</Text>
-        <View style={styles.scoreContainer}>
-          <TextInput
-            value={score}
-            onChangeText={setScore}
-            style={[styles.ScoreText, styles.ScoreInput]}
-          />
-          <Text style={styles.ScoreText}>/</Text>
-          <Text style={styles.ScoreText}>{totalScore}</Text>
-        </View>
+        {hasScore && (
+          <View style={styles.scoreContainer}>
+            <TextInput
+              value={score}
+              onChangeText={setScore}
+              style={[styles.ScoreText, styles.ScoreInput]}
+            />
+            <Text style={styles.ScoreText}>/</Text>
+            <Text style={styles.ScoreText}>{totalScore}</Text>
+          </View>
+        )}
       </View>
 
       {/*  Question*/}
       <View style={styles.questionContainer}>
-        <Text>{question}</Text>
+        {title === "Description" && <Text>{question}</Text>}
+
+        {answerType === "text" && typeof studentAnswer === "string" && (
+          <TextInput
+            style={styles.textAnswer}
+            multiline={true}
+            placeholder="Answer"
+            textAlignVertical="top"
+            value={studentAnswer}
+          />
+        )}
+
+        {answerType === "file" && (
+          <FileUpload handleFiles={(file: FileInfo[]) => {}} />
+        )}
       </View>
     </View>
   );
@@ -57,6 +81,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     flexDirection: "row",
     alignItems: "center",
+    minHeight: 50,
   },
   title: {
     fontWeight: 500,
@@ -83,6 +108,14 @@ const styles = StyleSheet.create({
   },
   questionContainer: {
     paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  textAnswer: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#E6E6E6",
+    padding: 10,
+    minHeight: 120,
   },
 });
 

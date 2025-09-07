@@ -71,7 +71,7 @@ export async function getAnnouncementById(
   }
 }
 
-interface FileInfo {
+export interface FileInfo {
   uri: string;
   name: string;
   mimeType?: string;
@@ -247,43 +247,6 @@ export async function deleteAnnouncements(
 export async function getAssignments(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/assignments`);
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function submitAssignmentEval(
-  studentId: string,
-  assignmentId: string,
-  subjectId: string,
-  comments: string,
-  feedback: string,
-  score: string,
-) {
-  try {
-    const newScore = parseInt(score);
-    console.log({
-      comments: comments,
-      feedback: feedback,
-      score: newScore,
-    });
-
-    const { data } = await api.put(
-      `/subject/${subjectId}/assignment/${assignmentId}/${studentId}`,
-      {
-        comments: comments,
-        feedback: feedback,
-        score: newScore,
-      },
-    );
 
     return data;
   } catch (err: any) {
@@ -580,22 +543,6 @@ export async function editAssignment(
 export async function getQuizById(subjectId: string, quizId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/quiz/${quizId}`);
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function getStudents(subjectId: string) {
-  try {
-    const { data } = await api.get(`/subject/${subjectId}/students`);
 
     return data;
   } catch (err: any) {
@@ -1213,28 +1160,6 @@ export async function getQuiz(subjectId: string, quizId: string) {
   }
 }
 
-export async function getScoreActivityAttemptStudent(
-  subjectId: string,
-  activityType: string,
-  activityId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/student/scores/${activityType}/${activityId}`,
-    );
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
 export async function getScoreActivityAttempt(
   subjectId: string,
   activityType: string,
@@ -1411,72 +1336,6 @@ export async function getStudentQuizAttempt(
     const { data } = await api.get(
       `/subject/${subjectId}/check/quiz/${quizId}/${studentId}`,
     );
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function getStudentAssignmentAttempt(
-  subjectId: string,
-  assignment: string,
-  studentId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/scores/assignment/${assignment}/${studentId}`,
-    );
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function updateStudentQuiz(
-  subjectId: string,
-  quizId: string,
-  studentId: string,
-  transformedData: { itemId: string; score: number }[],
-) {
-  try {
-    console.log(transformedData);
-    const { data } = await api.post(
-      `/subject/${subjectId}/check/quiz/${quizId}/${studentId}`,
-      { items: transformedData },
-    );
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function getStudentAssignmentScore(
-  subjectId: string,
-  assignmentId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/score/assignments/${assignmentId}`,
-    );
-
     return data;
   } catch (err: any) {
     if (err.response) {
