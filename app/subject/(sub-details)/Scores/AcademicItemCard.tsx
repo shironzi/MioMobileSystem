@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import FileUpload from "@/components/FileUpload";
-import { FileInfo } from "@/app/subject/(exercises)/(language)/ManageActivity/AddLanguageActivity";
+import FilePreview from "@/components/Files/FilePreview";
 
 interface Props {
   title: string;
@@ -10,7 +9,7 @@ interface Props {
   question?: string;
   hasScore?: boolean;
   answerType?: string;
-  studentAnswer?: string | FileInfo[];
+  studentAnswer?: string;
 }
 
 const AcademicItemCard = ({
@@ -55,8 +54,8 @@ const AcademicItemCard = ({
           />
         )}
 
-        {answerType === "file" && (
-          <FileUpload handleFiles={(file: FileInfo[]) => {}} />
+        {answerType === "file" && studentAnswer && (
+          <FilePreview url={studentAnswer} />
         )}
       </View>
     </View>

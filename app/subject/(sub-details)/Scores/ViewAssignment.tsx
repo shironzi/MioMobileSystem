@@ -13,7 +13,6 @@ import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCar
 import { router, useLocalSearchParams } from "expo-router";
 import { getStudentAssignment } from "@/utils/assignment";
 import CancelAlert from "@/components/Alerts/CancelAlert";
-import { FileInfo } from "@/app/subject/(exercises)/(language)/ManageActivity/AddLanguageActivity";
 import LoadingCard from "@/components/loadingCard";
 
 const ViewAssignment = () => {
@@ -30,7 +29,7 @@ const ViewAssignment = () => {
   const [score, setScore] = useState("0");
   const [showAlert, setShowAlert] = useState(false);
   const [studentAnswer, setStudentAnswer] = useState<{
-    work: string | FileInfo[];
+    work: string;
     title: string;
     total: number;
     comment: string;
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     minHeight: 100,
     borderColor: "#ddd",
-    paddingVertical: 10,
+    padding: 10,
   },
 });
 
