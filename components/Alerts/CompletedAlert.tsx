@@ -1,13 +1,41 @@
 import { Text, View, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
+import { useEffect, useState } from "react";
+import { router } from "expo-router";
 
 interface Props {
   message: string;
   handleButton: () => void;
   showImage?: boolean;
+  autoClose?: boolean;
 }
 
-const CompletedAlert = ({ message, handleButton, showImage = true }: Props) => {
+const CompletedAlert = ({
+  message,
+  handleButton,
+  showImage = true,
+  autoClose,
+}: Props) => {
+  const [timer, setTimer] = useState(5);
+
+  useEffect(() => {
+    if (timer === 0) {
+      if (autoClose) {
+        handleButton();
+        router.back();
+        router.back();
+        router.back();
+      }
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer, autoClose, handleButton]);
+
   return (
     <Modal transparent={true} animationType="fade">
       <View style={styles.overlay}>
@@ -21,7 +49,7 @@ const CompletedAlert = ({ message, handleButton, showImage = true }: Props) => {
 
           <Text style={styles.message}>{message}</Text>
           <TouchableOpacity style={styles.button} onPress={handleButton}>
-            <Text style={styles.buttonText}>OK</Text>
+            <Text style={styles.buttonText}>OK {timer}</Text>
           </TouchableOpacity>
         </View>
       </View>

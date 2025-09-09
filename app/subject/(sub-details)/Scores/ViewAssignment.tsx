@@ -11,30 +11,35 @@ import React, { useEffect, useState } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCard";
 import { router, useLocalSearchParams } from "expo-router";
-import { getStudentAssignment } from "@/utils/assignment";
+import { getStudentAssignment, submitAssignmentEval } from "@/utils/assignment";
 import CancelAlert from "@/components/Alerts/CancelAlert";
 import LoadingCard from "@/components/loadingCard";
+import CompletedAlert from "@/components/Alerts/CompletedAlert";
 
 const ViewAssignment = () => {
   useHeaderConfig("Assignment");
 
-  const { studentId, role, subjectId, activityId } = useLocalSearchParams<{
+  const { studentId, subjectId, activityId } = useLocalSearchParams<{
     studentId: string;
-    role: string;
     subjectId: string;
     activityId: string;
   }>();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [score, setScore] = useState("0");
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [comment, setComment] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [studentAnswer, setStudentAnswer] = useState<{
     work: string;
     title: string;
     total: number;
-    comment: string;
+    comments: string;
     submission_type: string;
     description: string;
+    score: number;
   }>();
 
   const handleCancel = () => {
@@ -43,24 +48,71 @@ const ViewAssignment = () => {
     router.back();
   };
 
+  const handleSubmit = async () => {
+    const newScore = parseInt(score);
+
+    if (!studentAnswer?.total) {
+      setErrorMessage(
+        "Unable to retrieve the total score.\nPlease check the assignment setup Details",
+      );
+      setShowAlert(true);
+      return;
+    }
+
+    if (newScore > studentAnswer.total) {
+      setErrorMessage(
+        `Score cannot exceed the total score (${studentAnswer.total}).`,
+      );
+      setShowAlert(true);
+      return;
+    }
+
+    if (isNaN(newScore) || newScore < 0) {
+      setErrorMessage("Please enter a valid score.");
+      setShowAlert(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const res = await submitAssignmentEval(
+      studentId,
+      activityId,
+      subjectId,
+      comment,
+      newScore,
+    );
+
+    if (res.success) {
+      setShowAlert(true);
+      setErrorMessage("Score was successfully updated.");
+    } else {
+      setShowAlert(true);
+      setErrorMessage("Failed to submit the score.\nPlease try again.");
+    }
+
+    setIsSubmitting(false);
+  };
+
   useEffect(() => {
     const getAssignment = async () => {
       const res = await getStudentAssignment(subjectId, activityId, studentId);
 
       setStudentAnswer(res.assignment);
+      setComment(res.assignment.comments);
       setLoading(false);
     };
 
     getAssignment();
-  });
+  }, []);
 
   if (loading) {
     return <LoadingCard />;
   }
 
   return (
-    <ScrollView>
-      <View style={globalStyles.container}>
+    <View style={[globalStyles.container, { height: "100%" }]}>
+      <ScrollView>
         <Text style={globalStyles.text1}>Latest Attempt</Text>
         <View style={{ rowGap: 20 }}>
           <AcademicItemCard
@@ -71,7 +123,7 @@ const ViewAssignment = () => {
 
           <AcademicItemCard
             title={"Question 1"}
-            score={score}
+            score={studentAnswer?.score.toString() ?? ""}
             setScore={setScore}
             totalScore={studentAnswer?.total.toString()}
             answerType={studentAnswer?.submission_type}
@@ -84,6 +136,8 @@ const ViewAssignment = () => {
               style={styles.commentTextBox}
               multiline={true}
               textAlignVertical={"top"}
+              value={comment}
+              onChangeText={setComment}
             />
           </View>
         </View>
@@ -91,23 +145,38 @@ const ViewAssignment = () => {
         <View style={[globalStyles.buttonContainer, { marginTop: 25 }]}>
           <TouchableOpacity
             style={globalStyles.inactivityButton}
-            onPress={() => setShowAlert(true)}
+            onPress={() => setShowCancelAlert(true)}
+            disabled={isSubmitting}
           >
             <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={globalStyles.submitButton}>
-            <Text style={globalStyles.submitButtonText}>Save</Text>
+          <TouchableOpacity
+            style={globalStyles.submitButton}
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+          >
+            <Text style={globalStyles.submitButtonText}>
+              {isSubmitting ? "Saving..." : "Save"}
+            </Text>
           </TouchableOpacity>
         </View>
 
-        {showAlert && (
+        {showCancelAlert && (
           <CancelAlert
             handleApprove={handleCancel}
-            handleReject={() => setShowAlert(false)}
+            handleReject={() => setShowCancelAlert(false)}
           />
         )}
-      </View>
-    </ScrollView>
+
+        {showAlert && (
+          <CompletedAlert
+            message={errorMessage}
+            handleButton={() => setShowAlert(false)}
+            autoClose={true}
+          />
+        )}
+      </ScrollView>
+    </View>
   );
 };
 

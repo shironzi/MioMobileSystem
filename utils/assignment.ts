@@ -71,23 +71,14 @@ export async function submitAssignmentEval(
   assignmentId: string,
   subjectId: string,
   comments: string,
-  feedback: string,
-  score: string,
+  score: number,
 ) {
   try {
-    const newScore = parseInt(score);
-    console.log({
-      comments: comments,
-      feedback: feedback,
-      score: newScore,
-    });
-
     const { data } = await api.put(
       `/subject/${subjectId}/assignment/${assignmentId}/${studentId}`,
       {
         comments: comments,
-        feedback: feedback,
-        score: newScore,
+        score: score,
       },
     );
 

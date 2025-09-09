@@ -51,6 +51,7 @@ const AcademicItemCard = ({
             placeholder="Answer"
             textAlignVertical="top"
             value={studentAnswer}
+            editable={false}
           />
         )}
 
@@ -81,17 +82,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     minHeight: 50,
+    justifyContent: "space-between",
   },
   title: {
     fontWeight: 500,
     fontSize: 16,
-    width: "85%",
   },
   scoreContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
     columnGap: 2.5,
+    width: "10%",
   },
   ScoreText: {
     fontWeight: 500,
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#B5C4DF",
     borderRadius: 7.5,
+    width: 40,
   },
   questionContainer: {
     paddingVertical: 10,
