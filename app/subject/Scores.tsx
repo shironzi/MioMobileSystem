@@ -52,6 +52,19 @@ const Scores = () => {
     });
   };
 
+  const handleQuizzesRoute = () => {
+    router.push({
+      pathname: "/subject/(sub-details)/Scores/SelectQuizzes",
+      params: {
+        subjectId: subjectId,
+        role: role,
+        activityType: "quiz",
+        students: JSON.stringify(students),
+        quizzes: JSON.stringify(quizzes),
+      },
+    });
+  };
+
   useEffect(() => {
     const fetchActivities = async () => {
       const data = await getActivities(subjectId);
@@ -73,7 +86,14 @@ const Scores = () => {
   return (
     <ScrollView style={globalStyles.container}>
       <View style={{ paddingBottom: 50, rowGap: 20 }}>
-        <ItemCard placeholder={"Remedials"} handleRoute={handleRemedialRoute} />
+        {specializedType === "speech" ||
+          specializedType === "auditory" ||
+          (specializedType === "language" && (
+            <ItemCard
+              placeholder={"Remedials"}
+              handleRoute={handleRemedialRoute}
+            />
+          ))}
         <ItemCard
           placeholder={"Assignments"}
           handleRoute={handleAssignmentRoute}
@@ -112,7 +132,7 @@ const Scores = () => {
               activityType={"phrase"}
             />
           </View>
-        ) : (
+        ) : specializedType === "auditory" ? (
           <View>
             <ScoreDropdown
               title={"Piddie Says"}
@@ -135,6 +155,31 @@ const Scores = () => {
               activityType={"matching"}
             />
           </View>
+        ) : specializedType === "language" ? (
+          <View>
+            <ScoreDropdown
+              title={"Fill in the Box"}
+              sActivity={activities.filter(
+                (act) => act.activityType === "fill",
+              )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"fill"}
+            />
+            <ScoreDropdown
+              title={"Homonyms"}
+              sActivity={activities.filter(
+                (act) => act.activityType === "homonyms",
+              )}
+              students={students}
+              role={role}
+              subjectId={subjectId}
+              activityType={"homonyms"}
+            />
+          </View>
+        ) : (
+          <ItemCard placeholder={"Quizzes"} handleRoute={handleQuizzesRoute} />
         )}
       </View>
     </ScrollView>

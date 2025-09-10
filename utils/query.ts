@@ -1327,7 +1327,7 @@ export async function getQuizScore(subjectId: string, quizId: string) {
   }
 }
 
-export async function getStudentQuizAttempt(
+export async function getStudentQuiz(
   subjectId: string,
   quizId: string,
   studentId: string,
