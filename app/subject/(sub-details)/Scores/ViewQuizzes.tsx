@@ -82,9 +82,23 @@ const ViewQuizzes = () => {
         <View>
           <AcademicItemCard
             title={"Description"}
+            description={description}
             hasScore={false}
-            question={description}
           />
+
+          {quiz.map((item, index) => (
+            <AcademicItemCard
+              key={index}
+              title={`Question ${index + 1}`}
+              question={item.question}
+              answerType={item.type}
+              options={item.options}
+              studentAnswer={item.student_answer}
+              totalScore={item.points.toString()}
+              score={item.score.toString()}
+              correct_answer={item.correct_answer}
+            />
+          ))}
         </View>
       </ScrollView>
     </View>

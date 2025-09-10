@@ -40,15 +40,13 @@ export interface AcademicActivity {
   title: string;
 }
 
-interface Options {
-  [key: string]: string;
-}
-
 export interface Quiz {
   correct_answer: string;
   points: number;
   question: string;
   question_id: string;
   student_answer: string;
-  options: Options;
+  options: string[];
+  type: string;
+  score: number;
 }

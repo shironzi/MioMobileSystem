@@ -1,15 +1,20 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import FilePreview from "@/components/Files/FilePreview";
+import React from "react";
+import Multiple from "@/components/quiz/Multiple";
 
 interface Props {
   title: string;
   score?: string;
   setScore?: (score: string) => void;
   totalScore?: string;
+  description?: string;
   question?: string;
   hasScore?: boolean;
   answerType?: string;
   studentAnswer?: string;
+  options?: string[];
+  correct_answer?: string;
 }
 
 const AcademicItemCard = ({
@@ -21,6 +26,9 @@ const AcademicItemCard = ({
   hasScore = true,
   answerType,
   studentAnswer,
+  options,
+  description,
+  correct_answer,
 }: Props) => {
   return (
     <View style={styles.cardContainer}>
@@ -42,8 +50,9 @@ const AcademicItemCard = ({
 
       {/*  Question*/}
       <View style={styles.questionContainer}>
-        {title === "Description" && <Text>{question}</Text>}
+        {description && <Text>{description}</Text>}
 
+        <Text>{question}</Text>
         {answerType === "text" && typeof studentAnswer === "string" && (
           <TextInput
             style={styles.textAnswer}
@@ -58,6 +67,17 @@ const AcademicItemCard = ({
         {answerType === "file" && studentAnswer && (
           <FilePreview url={studentAnswer} />
         )}
+
+        {answerType === "multiple_choice" &&
+          options &&
+          correct_answer &&
+          studentAnswer && (
+            <Multiple
+              options={options}
+              correct_answer={correct_answer}
+              studentAnswer={studentAnswer}
+            />
+          )}
       </View>
     </View>
   );
@@ -111,6 +131,7 @@ const styles = StyleSheet.create({
   questionContainer: {
     paddingVertical: 10,
     paddingHorizontal: 15,
+    rowGap: 10,
   },
   textAnswer: {
     borderWidth: 1,
