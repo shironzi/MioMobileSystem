@@ -1,13 +1,15 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import globalStyles from "@/styles/globalStyles";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import React, { useEffect, useState } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCard";
-import { getStudentQuiz } from "@/utils/query";
-import { useLocalSearchParams } from "expo-router";
+import { getStudentQuiz, updateStudentQuiz } from "@/utils/query";
+import { router, useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
 import { Quiz } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
+import Button from "@/components/commons/Button";
+import Score from "@/components/commons/Score";
+import CompletedAlert from "@/components/Alerts/CompletedAlert";
 
 const ViewQuizzes = () => {
   useHeaderConfig("Quiz");
@@ -24,6 +26,58 @@ const ViewQuizzes = () => {
   const [quiz, setQuiz] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [percentage, setPercentage] = useState(0);
+  const [comment, setComment] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+
+    const res = await updateStudentQuiz(
+      subjectId,
+      activityId,
+      studentId,
+      quiz,
+      comment,
+    );
+
+    if (res.success) {
+      setModalMessage(res.message);
+    } else {
+      setModalMessage(
+        "Something went wrong while updating the student quiz. Please try again.",
+      );
+    }
+    setShowModal(true);
+  };
+  const handleCancel = () => {
+    router.back();
+    router.back();
+    router.back();
+  };
+
+  const handleItemScore = (
+    question_id: string,
+    score: string,
+    points: number,
+  ) => {
+    let newScore = parseInt(score);
+
+    if (isNaN(newScore)) {
+      newScore = 0;
+    } else if (newScore < 0) {
+      newScore = 0;
+    } else if (newScore > points) {
+      newScore = points;
+    }
+
+    setQuiz((items) =>
+      items.map((item) =>
+        item.question_id === question_id ? { ...item, score: newScore } : item,
+      ),
+    );
+  };
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -33,6 +87,7 @@ const ViewQuizzes = () => {
       setScore(res.score);
       setDescription(res.description);
       setQuiz(res.quiz);
+      setComment(res.comments);
 
       setPercentage(() => {
         if (!res.total || res.total === 0) return 0;
@@ -49,56 +104,63 @@ const ViewQuizzes = () => {
     return <LoadingCard />;
   }
 
-  const totalScoreView = () => (
-    <View>
-      <Text style={{ fontSize: 24, color: "#1F1F1F", textAlign: "center" }}>
-        {score}
-      </Text>
-      <Text>Points</Text>
-    </View>
-  );
-
   return (
-    <View style={globalStyles.container}>
-      <ScrollView>
-        <View style={globalStyles.cardContainer}>
-          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Score</Text>
-          <View style={styles.scoreBox}>
-            <AnimatedCircularProgress
-              size={150}
-              width={10}
-              fill={percentage}
-              tintColor="#2264DC"
-              backgroundColor="#e7eaea"
-              rotation={0}
-              lineCap="round"
-            >
-              {totalScoreView}
-            </AnimatedCircularProgress>
-            <Text>Out of {total} points</Text>
-          </View>
-        </View>
+    <View style={[globalStyles.container]}>
+      {showModal && (
+        <CompletedAlert message={modalMessage} handleButton={handleCancel} />
+      )}
 
-        <View>
-          <AcademicItemCard
-            title={"Description"}
-            description={description}
-            hasScore={false}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{ rowGap: 20 }}>
+          <Score
+            percentage={percentage}
+            score={score}
+            setScore={setScore}
+            total={total}
           />
 
-          {quiz.map((item, index) => (
-            <AcademicItemCard
-              key={index}
-              title={`Question ${index + 1}`}
-              question={item.question}
-              answerType={item.type}
-              options={item.options}
-              studentAnswer={item.student_answer}
-              totalScore={item.points.toString()}
-              score={item.score.toString()}
-              correct_answer={item.correct_answer}
+          <View style={globalStyles.cardContainer}>
+            <Text style={globalStyles.text1}>Comment</Text>
+            <TextInput
+              value={comment}
+              onChangeText={setComment}
+              style={styles.commentInput}
+              placeholder={"Add your comment here"}
             />
-          ))}
+          </View>
+
+          <View style={{ rowGap: 20 }}>
+            <AcademicItemCard
+              title={"Description"}
+              description={description}
+              hasScore={false}
+            />
+
+            <View style={{ rowGap: 10 }}>
+              {quiz.map((item, index) => (
+                <AcademicItemCard
+                  key={index}
+                  title={`Question ${index + 1}`}
+                  question={item.question}
+                  answerType={item.type}
+                  options={item.options}
+                  studentAnswer={item.student_answer}
+                  totalScore={item.max_point.toString()}
+                  score={item.points.toString()}
+                  correct_answer={item.correct_answer}
+                  setScore={(score) =>
+                    handleItemScore(item.question_id, score, item.max_point)
+                  }
+                />
+              ))}
+            </View>
+          </View>
+
+          <Button
+            submit={handleSubmit}
+            cancel={handleCancel}
+            isSubmitting={isSubmitting}
+          />
         </View>
       </ScrollView>
     </View>
@@ -106,11 +168,13 @@ const ViewQuizzes = () => {
 };
 
 const styles = StyleSheet.create({
-  scoreBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 20,
+  commentInput: {
+    borderWidth: 1,
+    borderColor: "#82828257",
+    borderRadius: 10,
+    minHeight: 100,
+    textAlignVertical: "top",
+    paddingHorizontal: 10,
   },
 });
 

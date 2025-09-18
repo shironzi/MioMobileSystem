@@ -19,9 +19,9 @@ const Multiple = ({ options, correct_answer, studentAnswer }: Props) => {
               ? styles.correct
               : option === studentAnswer && styles.incorrect,
           ]}
+          key={index}
         >
           <Fontisto
-            key={index}
             name={
               studentAnswer === option
                 ? "radio-btn-active"

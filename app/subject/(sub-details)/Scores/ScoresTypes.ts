@@ -42,6 +42,7 @@ export interface AcademicActivity {
 
 export interface Quiz {
   correct_answer: string;
+  max_point: number;
   points: number;
   question: string;
   question_id: string;
