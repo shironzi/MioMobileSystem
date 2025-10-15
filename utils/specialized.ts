@@ -229,54 +229,7 @@ export async function getRemedialResult(
   }
 }
 
-export async function getAuditoryRemedialResult(
-  subjectId: string,
-  activityType: string,
-  remedialId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/scores/remedialList/${activityType}/${remedialId}`,
-    );
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
 export async function getRemedialResultByStudent(
-  subjectId: string,
-  activityType: string,
-  remedialId: string,
-  phoneme: string,
-  studentId: string,
-  attemptId: string,
-) {
-  try {
-    const { data } = await api.get(
-      `/subject/${subjectId}/scores/remedialList/${studentId}/${activityType}/${remedialId}/${phoneme}/${attemptId}`,
-    );
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function getAuditoryRemedialResultByStudent(
   subjectId: string,
   activityType: string,
   remedialId: string,
@@ -351,52 +304,6 @@ export async function startActivity(
   }
 }
 
-// export async function submitAnswer(
-//   subjectId: string,
-//   activityType: string,
-//   activityId: string,
-//   attemptId: string,
-//   flashcardId: string,
-//   fileUri: string,
-//   phoneme: string,
-// ) {
-//   try {
-//     const url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
-//
-//     const filename = fileUri.split("/").pop()!;
-//     const mimeType = "audio/mpeg";
-//
-//     const formData = new FormData();
-//     formData.append("audio_file", {
-//       uri: fileUri,
-//       name: filename,
-//       type: mimeType,
-//     } as any);
-//
-//     const token = await getAuth().currentUser?.getIdToken(true);
-//
-//     const response = await fetch(url, {
-//       method: "POST",
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "multipart/form-data",
-//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//       },
-//       body: formData,
-//     });
-//
-//     return await response.json();
-//   } catch (err: any) {
-//     if (err.response) {
-//       return err.response.status;
-//     } else if (err.request) {
-//       return { error: "No response from server" };
-//     } else {
-//       return { error: err.message };
-//     }
-//   }
-// }
-
 export async function submitAnswer(
   subjectId: string,
   activityType: string,
@@ -422,62 +329,21 @@ export async function submitAnswer(
       type: mimeType,
     } as any);
 
-    const { data } = await api.post(url, formData);
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
-export async function submitRemedialAnswer(
-  subjectId: string,
-  activityType: string,
-  attemptId: string,
-  remedial_id: string,
-  phoneme: string,
-  itemId: string,
-  fileUri: string,
-) {
-  try {
-    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/remedial/${activityType}/${remedial_id}/${phoneme}/${attemptId}/${itemId}`;
-
-    const filename = fileUri.split("/").pop()!;
-    const mimeType = "audio/mpeg";
-
-    const formData = new FormData();
-    formData.append("audio_file", {
-      uri: fileUri,
-      name: filename,
-      type: mimeType,
-    } as any);
-
     const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
+    const res = await fetch(url, {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        Accept: "multipart/json",
         "Content-Type": "multipart/form-data",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: formData,
     });
 
-    return await response.json();
+    return await res.json();
   } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
+    return { error: err.message };
   }
 }
 
@@ -538,8 +404,6 @@ export async function createPictureSpeechActivity(
   selectedActivityId: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture`;
-
     const formData = new FormData();
 
     formData.append("activity_type", activityType);
@@ -560,19 +424,23 @@ export async function createPictureSpeechActivity(
         } as any);
       }
     });
+
     const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    const res = await fetch(
+      `/subject/${subjectId}/specialized/speech/picture`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "multipart/json",
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
       },
-      body: formData,
-    });
+    );
 
-    return await response.json();
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -602,8 +470,6 @@ export async function createSpeechActivity(
       is_remedial: isRemedial,
       activity_id: selectedActivityId,
     };
-
-    console.log(payload);
 
     const { data } = await api.post(
       `/subject/${subjectId}/specialized/speech`,
@@ -645,22 +511,6 @@ export async function getActivityById(
   }
 }
 
-export async function getActivityList(subjectId: string) {
-  try {
-    const { data } = await api.get(`/subject/${subjectId}/specialized/speech`);
-
-    return data;
-  } catch (err: any) {
-    if (err.response) {
-      return err.response.status;
-    } else if (err.request) {
-      return { error: "No response from server" };
-    } else {
-      return { error: err.message };
-    }
-  }
-}
-
 export async function updatePictureActivity(
   subjectId: string,
   difficulty: string,
@@ -670,8 +520,6 @@ export async function updatePictureActivity(
   isRemedial: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`;
-
     const formData = new FormData();
     formData.append("title", title);
     formData.append("is_remedial", isRemedial);
@@ -696,21 +544,22 @@ export async function updatePictureActivity(
       }
     });
 
-    console.log(formData);
-
     const token = await getAuth().currentUser?.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    const res = await fetch(
+      `/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "multipart/json",
+          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
       },
-      body: formData,
-    });
+    );
 
-    return await response.json();
+    return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -732,9 +581,7 @@ export async function updateSpeechActivity(
   isRemedial: string,
 ) {
   try {
-    console.log(flashcards);
     const payload = { flashcards: flashcards, title, is_remedial: isRemedial };
-    console.log(payload);
 
     const { data } = await api.put(
       `/subject/${subjectId}/specialized/speech/${activityType}/${difficulty}/${activityId}`,

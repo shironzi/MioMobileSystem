@@ -58,6 +58,8 @@ const Flashcards = () => {
     if (!recordingAudio) return;
     setIsSending(true);
 
+    console.log("working here");
+
     const res = await submitAnswer(
       subjectId,
       activity_type,
@@ -67,6 +69,8 @@ const Flashcards = () => {
       recordingAudio,
       phoneme,
     );
+
+    console.log(res);
 
     if (res.feedbacks) {
       setFeedback(res.feedbacks);

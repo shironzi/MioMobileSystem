@@ -15,6 +15,10 @@ api.interceptors.request.use(
       if (!config.headers) config.headers = {};
       config.headers.Authorization = `Bearer ${sessionId}`;
     }
+
+    if (!(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
     return config;
   },
   (error) => Promise.reject(error),
@@ -29,13 +33,11 @@ api.interceptors.response.use(
 
     if (error.response) {
       return Promise.reject(error.response);
-    } else if (error.request) {
+    } else if (error.status === 500) {
       return Promise.reject({
         status: 500,
         message: "No response from server",
       });
-    } else {
-      return Promise.reject({ status: 500, message: error.message });
     }
   },
 );
