@@ -8,7 +8,6 @@ import React, { memo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import takeActivity from "@/app/subject/(exercises)/(speech)/SpeechRoutes";
-import Colors from "@/styles/Colors";
 
 const MicrophoneTest = () => {
   useHeaderConfig("Microphone Test");
@@ -52,28 +51,10 @@ const MicrophoneTest = () => {
               source={require("@/assets/mic_test.png")}
               style={[styles.image, { width: 170, height: 200 }]}
             />
-            <Text
-              style={[
-                globalStyles.text1,
-                {
-                  marginHorizontal: "auto",
-                  fontSize: 20,
-                  marginVertical: 10,
-                },
-              ]}
-            >
+            <Text style={[globalStyles.text1, styles.title]}>
               Microphone Test
             </Text>
-            <Text
-              style={[
-                globalStyles.text1,
-                {
-                  marginHorizontal: "auto",
-                  fontSize: 14,
-                  fontWeight: 300,
-                },
-              ]}
-            >
+            <Text style={[globalStyles.text1, styles.description]}>
               Say "Piddie" to test the microphone
             </Text>
           </View>
@@ -93,12 +74,8 @@ const MicrophoneTest = () => {
               <Text
                 style={[
                   globalStyles.text1,
-                  {
-                    marginHorizontal: "auto",
-                    marginVertical: 10,
-                    fontSize: 14,
-                    fontWeight: 300,
-                  },
+                  styles.description,
+                  { marginVertical: 10 },
                 ]}
               >
                 Did you hear your voice clearly?
@@ -110,20 +87,10 @@ const MicrophoneTest = () => {
                 }}
               >
                 <TouchableOpacity
-                  style={[
-                    globalStyles.submitButton,
-                    {
-                      backgroundColor: "#fff",
-                      borderWidth: 1,
-                      borderColor: "#FFBF18",
-                      width: "45%",
-                    },
-                  ]}
+                  style={[globalStyles.inactivityButton]}
                   onPress={() => router.back()}
                 >
-                  <Text style={[globalStyles.submitButtonText, Colors.yellow]}>
-                    No
-                  </Text>
+                  <Text style={[globalStyles.inactivityButtonText]}>No</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -147,6 +114,16 @@ const styles = StyleSheet.create({
     height: 250,
     alignSelf: "center",
     marginVertical: "auto",
+  },
+  title: {
+    marginHorizontal: "auto",
+    fontSize: 20,
+    marginVertical: 10,
+  },
+  description: {
+    marginHorizontal: "auto",
+    fontSize: 14,
+    fontWeight: 300,
   },
 });
 
