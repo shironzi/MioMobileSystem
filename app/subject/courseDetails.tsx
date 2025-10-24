@@ -1,6 +1,6 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Image,
   RefreshControl,
@@ -12,13 +12,13 @@ import {
 } from "react-native";
 
 import HeaderConfig from "@/utils/HeaderConfig";
+import * as SecureStore from "expo-secure-store";
 
 const newCourseDetails = () => {
   const router = useRouter();
   const {
     id,
     title,
-    role,
     subjectType,
     specializedType,
     image_url,
@@ -30,12 +30,25 @@ const newCourseDetails = () => {
     title: string;
     subjectType: string;
     specializedType?: string;
-    role: string;
     image_url: string;
     banner_subTitle: string;
     banner_title: string;
     banner_description: string;
   }>();
+
+  const [role, setRole] = useState<string>("student");
+
+  const fetchRole = async () => {
+    return await SecureStore.getItemAsync("role");
+  };
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      setRole((await SecureStore.getItemAsync("role")) ?? "student");
+    };
+
+    fetchRole();
+  }, []);
 
   const parsedImageUrl = useMemo<string>(() => {
     try {

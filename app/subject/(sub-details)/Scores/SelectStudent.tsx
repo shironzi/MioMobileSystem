@@ -48,8 +48,6 @@ const SelectStudent = () => {
         params: { studentId, activityId, role, subjectId, activityType },
       });
     }
-
-    console.log(activityType);
   };
 
   return (

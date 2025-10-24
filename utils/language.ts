@@ -1,8 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
 
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
 interface FileInfo {
   uri: string;
   name: string;
@@ -144,26 +142,35 @@ export async function submitHomonymsActivity(
   }[],
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          answers: payload,
-          answer_logs: answersLogs,
-          audio_logs: audioLogs,
-        }),
-      },
+    const { data } = await api.patch(
+      `/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
+      JSON.stringify({
+        answers: payload,
+        answer_logs: answersLogs,
+        audio_logs: audioLogs,
+      }),
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
+    //   {
+    //     method: "PATCH",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: JSON.stringify({
+    //       answers: payload,
+    //       answer_logs: answersLogs,
+    //       audio_logs: audioLogs,
+    //     }),
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -185,12 +192,6 @@ export async function submitFillActivity(
   answer_logs: { item_id: string; answers: string[]; answered_at: string[] }[],
 ) {
   try {
-    console.log(
-      { answers: payload },
-      { audio_logs: audio_logs },
-      { answer_logs: answer_logs },
-    );
-
     const { data } = await api.patch(
       `/subject/${subjectId}/language/fill/${difficulty}/${activityId}/${attemptId}`,
       {
@@ -245,22 +246,27 @@ export async function createHomonym(
   });
 
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/language/homonyms`,
+      formData,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -299,21 +305,24 @@ export async function createFill(
   }
 
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/language/fill`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/language/fill`,
     );
 
-    return await res.json();
+    return data;
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/fill`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -366,22 +375,27 @@ export async function editHomonyms(
   }
 
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms/${difficulty}/${activityId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          "Content-Type": "multipart/form-data",
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/language/homonyms/${difficulty}/${activityId}`,
+      formData,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms/${difficulty}/${activityId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -438,21 +452,26 @@ export async function editFill(
   }
 
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/language/fill/${difficulty}/${activityId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/language/fill/${difficulty}/${activityId}`,
+      formData,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/fill/${difficulty}/${activityId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -471,18 +490,24 @@ export async function getAttemptActivityLanguage(
   attemptId: string,
 ) {
   try {
-    const url = `${IPADDRESS}/subject/${subjectId}/attempts/language/${activity_type}/${activityId}/${attemptId}`;
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.get(
+      `/subject/${subjectId}/attempts/language/${activity_type}/${activityId}/${attemptId}`,
+    );
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
+    return data;
 
-    return await response.json();
+    // const url = `${IPADDRESS}/subject/${subjectId}/attempts/language/${activity_type}/${activityId}/${attemptId}`;
+    // const token = await getAuth().currentUser?.getIdToken(true);
+    //
+    // const response = await fetch(url, {
+    //   method: "GET",
+    //   headers: {
+    //     Accept: "application/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    // });
+    //
+    // return await response.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

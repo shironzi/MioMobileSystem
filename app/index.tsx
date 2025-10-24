@@ -2,7 +2,6 @@ import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAuth } from "@react-native-firebase/auth";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { memo, useEffect, useState } from "react";
@@ -99,8 +98,7 @@ const Index = () => {
       const userPassword = data.password.trim();
 
       const res = await login(emailAdress, userPassword);
-      console.log(res);
-      if (res.status === "success") {
+      if (res.success) {
         if (rememberMe) {
           await SecureStore.setItemAsync(`emailAddress`, emailAdress);
           await SecureStore.setItemAsync(`password`, userPassword);
@@ -130,22 +128,30 @@ const Index = () => {
 
   useEffect(() => {
     const checkStoredCredentials = async () => {
-      const storedEmail = await SecureStore.getItemAsync("emailAddress");
-      const storedPassword = await SecureStore.getItemAsync("password");
+      try {
+        const storedEmail = await SecureStore.getItemAsync("emailAddress");
+        const storedPassword = await SecureStore.getItemAsync("password");
+        const token = await SecureStore.getItemAsync("token");
 
-      if (storedEmail && storedPassword) {
-        setValue("email", storedEmail);
-        setValue("password", storedPassword);
-        setRememberMe(true);
+        console.log(token);
+
+        // Restore email & password if "Remember Me" was used
+        if (storedEmail && storedPassword) {
+          setValue("email", storedEmail);
+          setValue("password", storedPassword);
+          setRememberMe(true);
+        }
+
+        // Navigate depending on token
+        if (token) {
+          router.replace("/(drawer)/(tabs)");
+        }
+      } catch (error) {
+        console.error("Error checking stored credentials:", error);
       }
     };
 
     checkStoredCredentials();
-    const user = getAuth().currentUser;
-
-    if (user) {
-      router.replace("/(drawer)/(tabs)");
-    }
   }, []);
 
   useFocusEffect(() => {

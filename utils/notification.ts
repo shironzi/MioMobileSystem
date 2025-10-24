@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export async function updateFCMToken(student_id: string, token: string) {
   try {

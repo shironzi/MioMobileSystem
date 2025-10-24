@@ -114,12 +114,12 @@ const Scores = () => {
             <ScoreDropdown
               title={"Word Flashcards"}
               sActivity={activities.filter(
-                (act) => act.activityType === "word",
+                (act) => act.activityType === "question",
               )}
               students={students}
               role={role}
               subjectId={subjectId}
-              activityType={"word"}
+              activityType={"question"}
             />
             <ScoreDropdown
               title={"Reading Flashcards"}

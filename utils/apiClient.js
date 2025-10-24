@@ -1,5 +1,6 @@
-import { getAuth } from "@react-native-firebase/auth";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -10,14 +11,19 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    const sessionId = await getAuth().currentUser?.getIdToken(true);
+    const sessionId = await SecureStore.getItemAsync("token");
+
     if (sessionId) {
       if (!config.headers) config.headers = {};
       config.headers.Authorization = `Bearer ${sessionId}`;
     }
 
-    if (!(config.data instanceof FormData)) {
-      config.headers["Content-Type"] = "application/json";
+    if (!config.headers["Content-Type"]) {
+      if (config.data instanceof FormData) {
+        config.headers["Content-Type"] = "multipart/form-data";
+      } else {
+        config.headers["Content-Type"] = "application/json";
+      }
     }
     return config;
   },
@@ -26,18 +32,33 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.code === "ECONNABORTED") {
-      return Promise.reject({ status: 408, message: "Request timed out" });
+  async (error) => {
+    const status = error.response?.status;
+
+    if (status === 401) {
+      // unauthorized remove saved credentials
+      await SecureStore.deleteItemAsync("token");
+      await SecureStore.deleteItemAsync("id");
+      await SecureStore.deleteItemAsync("email");
+      await SecureStore.deleteItemAsync("role");
+      await SecureStore.deleteItemAsync("name");
+      await SecureStore.deleteItemAsync("firstname");
+      await SecureStore.deleteItemAsync("photo_url");
+      await SecureStore.deleteItemAsync("gradeLevel");
+      await SecureStore.deleteItemAsync("studentid");
+
+      router.replace("/");
     }
 
-    if (error.response) {
-      return Promise.reject(error.response);
-    } else if (error.status === 500) {
+    if (!error.response) {
+      // Server didn’t respond at all
       return Promise.reject({
         status: 500,
         message: "No response from server",
       });
     }
+
+    // Forward the original error response
+    return Promise.reject(error.response);
   },
 );

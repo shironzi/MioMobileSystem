@@ -40,6 +40,8 @@ const SpecializedScore = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [feedback, setFeedback] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   const handleAddComment = async () => {
     setIsSubmitting(true);
@@ -67,15 +69,16 @@ const SpecializedScore = () => {
         return;
       }
 
-      const res = studentId
-        ? await getAttempt(
-            subjectId,
-            activityId,
-            studentId,
-            attemptId,
-            activityType,
-          )
-        : await getAttemptStudent(subjectId, activityId);
+      const res =
+        role === "teacher"
+          ? await getAttempt(
+              subjectId,
+              activityId,
+              studentId,
+              attemptId,
+              activityType,
+            )
+          : await getAttemptStudent(subjectId, activityId, activityType);
 
       if (res.success) {
         setOverallScore(res.overall_score ?? 0);
@@ -84,24 +87,27 @@ const SpecializedScore = () => {
         setComment(res.comment);
         setLoading(false);
       } else {
-        Alert.alert(
-          "Success",
-          res.message,
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                router.back();
-              },
-            },
-          ],
-          { cancelable: false },
-        );
+        setShowModal(true);
+        setMessage(res.message);
       }
     };
 
     fetchAttempt();
   }, []);
+
+  if (showModal) {
+    return (
+      <CompletedAlert
+        message={message}
+        handleButton={() => {
+          setShowModal(false);
+          router.back();
+          router.back();
+          router.back();
+        }}
+      />
+    );
+  }
 
   if (loading) {
     return <LoadingCard />;

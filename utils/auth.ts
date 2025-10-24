@@ -6,25 +6,54 @@ import messaging from "@react-native-firebase/messaging";
 
 export default async function login(email: string, password: string) {
   try {
-    const auth = getAuth();
-    await auth.signInWithEmailAndPassword(email, password);
-    const user = auth.currentUser;
+    const { data } = await api.post("/auth/login", {
+      email: email,
+      password: password,
+    });
 
-    console.log(user);
+    const user = data.user;
 
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    await SecureStore.setItemAsync("token", data.token);
+    await SecureStore.setItemAsync("id", user.id);
+    await SecureStore.setItemAsync("email", user.email);
+    await SecureStore.setItemAsync("role", user.role);
+    await SecureStore.setItemAsync("name", user.name);
+    await SecureStore.setItemAsync("firstname", user.firstname);
+    await SecureStore.setItemAsync("photo_url", user.photo_url);
+    await SecureStore.setItemAsync("gradeLevel", user.gradeLevel);
+    await SecureStore.setItemAsync("studentid", user.studentid ?? null);
 
-    if (enabled) {
-      const fcmToken = await messaging().getToken();
-      if (fcmToken && user?.uid) {
-        await updateFCMToken(user?.uid, fcmToken);
-      }
-    }
+    return data;
+  } catch (error: any) {
+    throw new Error(`Login failed: ${error.message}`);
+  }
+}
 
-    return { status: "success" };
+export async function verify() {
+  try {
+    const res = await api.post("/auth/verify", {});
+
+    return res.data;
+  } catch (error: any) {
+    throw new Error(`Login failed: ${error.message}`);
+  }
+}
+
+export async function logout() {
+  try {
+    const res = await api.post("/auth/logout", {});
+
+    await SecureStore.deleteItemAsync("token");
+    await SecureStore.deleteItemAsync("id");
+    await SecureStore.deleteItemAsync("email");
+    await SecureStore.deleteItemAsync("role");
+    await SecureStore.deleteItemAsync("name");
+    await SecureStore.deleteItemAsync("firstname");
+    await SecureStore.deleteItemAsync("photo_url");
+    await SecureStore.deleteItemAsync("gradeLevel");
+    await SecureStore.deleteItemAsync("studentid");
+
+    return res.data;
   } catch (error: any) {
     throw new Error(`Login failed: ${error.message}`);
   }
@@ -42,24 +71,6 @@ export async function requestOtp() {
     } else {
       return { error: err.message };
     }
-  }
-}
-
-export async function logout() {
-  try {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (user?.uid) {
-      await removeFCMToken(user?.uid);
-    }
-
-    await getAuth().signOut();
-    await SecureStore.deleteItemAsync("sessionId");
-
-    delete api.defaults.headers.common.Authorization;
-  } catch (error: any) {
-    throw new Error(`Logout failed: ${error.message}`);
   }
 }
 

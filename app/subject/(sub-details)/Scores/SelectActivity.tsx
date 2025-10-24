@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useMemo } from "react";
 import globalStyles from "@/styles/globalStyles";
 import useHeaderConfig from "@/utils/HeaderConfig";
+import * as SecureStore from "expo-secure-store";
 
 const SelectActivity = () => {
   useHeaderConfig("Select Activity");
@@ -26,7 +27,20 @@ const SelectActivity = () => {
     }
   }, [sActivity]);
 
-  const handleRoute = (activityId: string) => {
+  const handleRoute = async (activityId: string) => {
+    console.log(role);
+    if (role === "student" || role === "parent") {
+      const studentId =
+        (await SecureStore.getItemAsync("studentid")) ??
+        (await SecureStore.getItemAsync("id"));
+
+      router.push({
+        pathname: "/subject/Scores/SpecializedScore",
+        params: { studentId, activityId, role, subjectId, activityType },
+      });
+      return;
+    }
+
     router.push({
       pathname: "/subject/Scores/SelectStudent",
       params: { students, activityId, role, subjectId, activityType },

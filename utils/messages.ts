@@ -1,8 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
 
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
 interface FileInfo {
   uri: string;
   name: string;
@@ -58,18 +56,18 @@ export async function sendMessage(
       } as any);
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.post(`/message/sent/${receiver_id}`, formData);
 
-    const res = await fetch(`${IPADDRESS}/message/sent/${receiver_id}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+    // const res = await fetch(`${IPADDRESS}/message/sent/${receiver_id}`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formData,
+    // });
 
-    return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -99,21 +97,18 @@ export async function replyMessage(
       } as any);
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.post(`/message/reply/${receiver_id}`, formData);
 
-    const res = await fetch(`${IPADDRESS}/message/reply/${receiver_id}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+    // const res = await fetch(`${IPADDRESS}/message/reply/${receiver_id}`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formData,
+    // });
 
-    console.log(subject);
-    console.log(body);
-
-    return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import CompletedAlert from "@/components/Alerts/CompletedAlert";
 
 // interface SocialLink {
 //   title: string;
@@ -36,6 +37,8 @@ const Edit = () => {
   const [newBiography, setNewBiography] = useState(biography);
   const [profile_pic, setProfile_pic] = useState<FileInfo | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
   // const [contact, setContact] = useState("");
   // const [socialLinks, setSocialLinks] = useState([{ title: "", url: "" }]);
 
@@ -58,24 +61,8 @@ const Edit = () => {
       setIsSubmitting(true);
       const res = await editProfile(profile_pic, newBiography);
 
-      if (res.success) {
-        Alert.alert(
-          "Success",
-          res.message,
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                router.back();
-                router.back();
-              },
-            },
-          ],
-          { cancelable: false },
-        );
-      } else {
-        Alert.alert("Error", res.message);
-      }
+      setShowModal(true);
+      setMessage(res.message);
       setIsSubmitting(false);
     } catch (err) {
       // console.error("Submission error:", err);
@@ -105,6 +92,18 @@ const Edit = () => {
   //   },
   //   [socialLinks],
   // );
+
+  if (showModal) {
+    return (
+      <CompletedAlert
+        message={message}
+        handleButton={() => {
+          setShowModal(false);
+          router.back();
+        }}
+      />
+    );
+  }
 
   return (
     <ScrollView

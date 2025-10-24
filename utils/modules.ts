@@ -1,8 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
 
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
 export async function getModules(subjectId: string) {
   try {
     const { data } = await api.get(`/subject/${subjectId}/modules`);
@@ -128,20 +126,19 @@ export async function addModule(
     });
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-  console.log(formData);
-
   try {
-    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/module`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
-
-    return await res.json();
+    const { data } = await api.post(`/subject/${subjectId}/module`, formData);
+    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/module`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formData,
+    // });
+    //
+    // return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -243,24 +240,25 @@ export async function updateModule(
     }
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-
-  console.log(formData);
-
   try {
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/module/${moduleId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/module/${moduleId}`,
+      formData,
     );
-
-    return await res.json();
+    return data;
+    // const res = await fetch(
+    //   `${IPADDRESS}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -322,23 +320,26 @@ export async function addRemedial(
     });
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-  console.log(formData);
-
   try {
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/module/remedial`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/module/remedial`,
+      formData,
     );
 
-    return await res.json();
+    return data;
+    // const res = await fetch(
+    //   `${IPADDRESS}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -426,23 +427,25 @@ export async function addRemedialAuditory(
     });
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-  console.log(formData);
-
   try {
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/module/remedial/auditory`,
+      formData,
     );
 
-    return await res.json();
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -524,23 +527,26 @@ export async function updateRemedialAuditory(
     });
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-  console.log(formData);
-
   try {
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory/${moduleId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/module/remedial/auditory/${moduleId}`,
+      formData,
     );
 
-    return await res.json();
+    return data;
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory/${moduleId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -603,23 +609,25 @@ export async function updateRemedial(
     });
   }
 
-  const token = await getAuth().currentUser?.getIdToken(true);
-  console.log(formData);
-
   try {
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/module/remedial/${moduleId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/module/remedial/${moduleId}`,
+      formData,
     );
-
-    return await res.json();
+    return data;
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/${moduleId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

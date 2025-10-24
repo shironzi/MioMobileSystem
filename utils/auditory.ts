@@ -1,5 +1,10 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
+import * as SecureStore from "expo-secure-store";
+
+export const getToken = async () => {
+  const token = await SecureStore.getItemAsync("token");
+  return token ?? "";
+};
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -107,22 +112,25 @@ export async function createBingoActivity(
       formData.append(`answers[${index}]`, item);
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/bingo`,
+      formData,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -164,22 +172,27 @@ export async function createMatchingActivity(
       } as any);
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/matching`,
+      formData,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    // return await response.json();
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -249,22 +262,27 @@ export async function updateBingoActivity(
       formData.append(`answers[${index}][audio_id]`, item);
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
+      formData,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await response.json();
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -349,28 +367,32 @@ export async function submitMatchingRemedial(
   answers: { image_id: string; audio_id: string }[],
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
     const payload = {
       answers,
       answerLogs,
     };
 
-    console.log(JSON.stringify(payload));
-
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/matching/${remedialId}/${attemptId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/remedial/matching/${remedialId}/${attemptId}`,
+      payload,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/matching/${remedialId}/${attemptId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: JSON.stringify(payload),
+    //   },
+    // );
+    //
+    // return await response.json();
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -391,32 +413,35 @@ export async function submitBingoActivity(
   totalPlay: { audio_id: string; played_at: string[] }[],
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const jsonData = JSON.stringify({
+      answers,
+      audio_played: totalPlay,
+    });
 
-    console.log(
-      JSON.stringify({
-        answers,
-        audio_played: totalPlay,
-      }),
+    const { data } = await api.post(
+      `/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
+      jsonData,
     );
 
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          answers,
-          audio_played: totalPlay,
-        }),
-      },
-    );
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: JSON.stringify({
+    //       answers,
+    //       audio_played: totalPlay,
+    //     }),
+    //   },
+    // );
+    //
+    // return await response.json();
 
-    return await response.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -436,32 +461,33 @@ export async function submitBingoRemedial(
   totalPlay: { audio_id: string; played_at: string[] }[],
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    console.log(
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedialId}/${attemptId}`,
       JSON.stringify({
         answers,
         audio_played: totalPlay,
       }),
     );
 
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedialId}/${attemptId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          answers,
-          audio_played: totalPlay,
-        }),
-      },
-    );
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedialId}/${attemptId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: JSON.stringify({
+    //       answers,
+    //       audio_played: totalPlay,
+    //     }),
+    //   },
+    // );
+    //
+    // return await response.json();
 
-    return await response.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -489,28 +515,32 @@ export async function submitMatchingActivity(
   answers: { image_id: string; audio_id: string }[],
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
     const payload = {
       answers,
       answerLogs,
     };
 
-    console.log(JSON.stringify(payload));
-
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
-      {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      },
+    const { data } = await api.put(
+      `/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
+      payload,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
+    //   {
+    //     method: "PUT",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: JSON.stringify(payload),
+    //   },
+    // );
+    //
+    // return await response.json();
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -544,7 +574,6 @@ export async function updateMatchingActivity(
   remedialId: string,
 ) {
   try {
-    const token = await getAuth().currentUser?.getIdToken(true);
     const formData = new FormData();
 
     formData.append(`title`, title);
@@ -570,20 +599,27 @@ export async function updateMatchingActivity(
       }
     });
 
-    const response = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
+      formData,
     );
 
-    return await response.json();
+    // const response = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "multipart/form-data",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await response.json();
+
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

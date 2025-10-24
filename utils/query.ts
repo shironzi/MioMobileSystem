@@ -1,8 +1,6 @@
 import { api } from "@/utils/apiClient";
 import { getAuth } from "@react-native-firebase/auth";
 
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
 const getMimeType = async (url: string): Promise<string> => {
   try {
     const response = await fetch(url, { method: "HEAD" });
@@ -105,23 +103,22 @@ export async function createAnnouncement(
       formdata.append(`urls[${index}][url]`, url);
     });
 
-    console.log(formdata);
+    const { data } = await api.post(
+      `/subject/${subjectId}/announcement`,
+      formdata,
+    );
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    return data;
 
-    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
-      method: "POST",
-      headers: {
-        Accept: "multipart/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formdata,
-    });
-
-    const responseJson = await res.json();
-    console.log(responseJson);
-    return responseJson;
+    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "multipart/json",
+    //     "Content-Type": "multipart/form-data",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formdata,
+    // });
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -172,23 +169,24 @@ export async function editAnnouncement(
         formData.append(`urls[${idx}][url]`, url);
       }
     });
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/announcement/${announcementId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
 
-    console.log(formData);
-
-    const token = await getAuth().currentUser?.getIdToken(true);
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/announcement/${announcementId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/announcement/${announcementId}`,
+      formData,
     );
 
-    return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -325,21 +323,24 @@ export async function submitAssignment(
       } as any);
     }
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/assignment/${assignmentId}/answer`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "multipart/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formdata,
+    //   },
+    // );
 
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/assignment/${assignmentId}/answer`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "multipart/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formdata,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/assignment/${assignmentId}/answer`,
+      formdata,
     );
 
-    return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -642,10 +643,14 @@ export async function getStudentRemedialAuditory(
   }
 }
 
-export async function getAttemptStudent(subjectId: string, activityId: string) {
+export async function getAttemptStudent(
+  subjectId: string,
+  activityId: string,
+  activityType: string,
+) {
   try {
     const { data } = await api.get(
-      `/subject/${subjectId}/student/scores/${activityId}`,
+      `/subject/${subjectId}/student/scores/${activityType}/${activityId}`,
     );
 
     return data;
@@ -894,18 +899,18 @@ export async function editProfile(picture: FileInfo | null, biography: string) {
     }
     formdata.append("biography", biography);
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.post(`/profile`, formdata);
 
-    const res = await fetch(`${IPADDRESS}/profile`, {
-      method: "POST",
-      headers: {
-        Accept: "multipart/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formdata,
-    });
+    // const res = await fetch(`${IPADDRESS}/profile`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "multipart/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formdata,
+    // });
 
-    return await res.json();
+    return data;
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -1018,18 +1023,23 @@ export async function createQuiz(
       }
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.post(
+      `/subject/${subjectId}/create/quiz`,
+      formdata,
+    );
 
-    const res = await fetch(`${IPADDRESS}/subject/${subjectId}/create/quiz`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formdata,
-    });
+    return data;
 
-    return await res.json();
+    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/create/quiz`, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formdata,
+    // });
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -1103,21 +1113,24 @@ export async function updateQuiz(
       }
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/update/quiz/${quizId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formdata,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/create/quiz`,
+      formdata,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/update/quiz/${quizId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formdata,
+    //   },
+    // );
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -1263,21 +1276,24 @@ export async function submitAnswer(
       } as any);
     }
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
-      `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formdata,
-      },
+    const { data } = await api.post(
+      `/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
+      formdata,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formdata,
+    //   },
+    // );
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

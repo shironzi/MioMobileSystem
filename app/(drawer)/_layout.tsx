@@ -9,12 +9,12 @@ import { useFocusEffect, useNavigation } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { useCallback, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { logout } from "@/utils/auth";
 import { StackActions } from "@react-navigation/native";
-import { getAuth } from "@react-native-firebase/auth";
 import { FontAwesome } from "@expo/vector-icons";
 import { getProfile } from "@/utils/query";
 import messaging from "@react-native-firebase/messaging";
+import { logout } from "@/utils/auth";
+import * as SecureStore from "expo-secure-store";
 
 interface CustomDrawerContentProps extends DrawerContentComponentProps {
   children?: React.ReactNode;
@@ -35,13 +35,14 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
   }>();
 
   useEffect(() => {
-    const auth = getAuth();
+    const setSideBarDetails = async () => {
+      const name: string = (await SecureStore.getItemAsync("name")) ?? "";
+      const id: string = (await SecureStore.getItemAsync("id")) ?? "";
 
-    const unsubscribeAuth = auth.onAuthStateChanged((u) => {
-      if (u) {
-        setUserData({ id: u.uid, name: u.displayName });
-      }
-    });
+      setUserData({ id: id, name: name });
+    };
+
+    setSideBarDetails();
 
     const fetchProfile = async () => {
       const res = await getProfile();
@@ -63,15 +64,17 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     });
 
     return () => {
-      unsubscribeAuth();
       unsubscribeFCM();
     };
   }, []);
 
   const handleLogout = useCallback(async () => {
-    await logout();
-    rootNav?.dispatch(StackActions.replace("index"));
-    props.navigation.closeDrawer();
+    const res = await logout();
+
+    if (res.success) {
+      rootNav?.dispatch(StackActions.replace("index"));
+      props.navigation.closeDrawer();
+    }
   }, [props.navigation]);
 
   useFocusEffect(
@@ -82,8 +85,6 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
       return () => {};
     }, [navigation]),
   );
-
-  console.log(profile?.role);
 
   const rootNav = props.navigation.getParent();
 

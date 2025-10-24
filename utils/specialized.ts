@@ -1,7 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
-
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 interface FileInfo {
   uri: string;
@@ -314,9 +311,9 @@ export async function submitAnswer(
   phoneme: string,
 ) {
   try {
-    let url = `${IPADDRESS}/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
+    let url = `/subject/${subjectId}/speech/${activityType}/${activityId}/${attemptId}/${flashcardId}`;
     if (phoneme) {
-      url = `${IPADDRESS}/subject/${subjectId}/specialized/speech/remedial/${activityType}/${activityId}/${phoneme}/${attemptId}/${flashcardId}`;
+      url = `/subject/${subjectId}/specialized/speech/remedial/${activityType}/${activityId}/${phoneme}/${attemptId}/${flashcardId}`;
     }
 
     const filename = fileUri.split("/").pop()!;
@@ -328,20 +325,25 @@ export async function submitAnswer(
       name: filename,
       type: mimeType,
     } as any);
+    console.log(url);
 
-    const token = await getAuth().currentUser?.getIdToken(true);
+    const { data } = await api.post(url, formData);
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "multipart/json",
-        "Content-Type": "multipart/form-data",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    });
+    console.log(data);
+    console.log(url);
+    return data;
 
-    return await res.json();
+    // const res = await fetch(url, {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "multipart/json",
+    //     "Content-Type": "multipart/form-data",
+    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //   },
+    //   body: formData,
+    // });
+    //
+    // return await res.json();
   } catch (err: any) {
     return { error: err.message };
   }
@@ -355,6 +357,10 @@ export async function finishActivity(
   attemptId: string,
 ) {
   try {
+    console.log(
+      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
+    );
+
     const { data } = await api.patch(
       `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
     );
@@ -425,22 +431,27 @@ export async function createPictureSpeechActivity(
       }
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
+    const { data } = await api.post(
       `/subject/${subjectId}/specialized/speech/picture`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "multipart/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+      formData,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `/subject/${subjectId}/specialized/speech/picture`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "multipart/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -544,22 +555,27 @@ export async function updatePictureActivity(
       }
     });
 
-    const token = await getAuth().currentUser?.getIdToken(true);
-
-    const res = await fetch(
+    const { data } = await api.post(
       `/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "multipart/json",
-          "Content-Type": "multipart/form-data",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: formData,
-      },
+      formData,
     );
 
-    return await res.json();
+    return data;
+
+    // const res = await fetch(
+    //   `/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "multipart/json",
+    //       "Content-Type": "multipart/form-data",
+    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    //     },
+    //     body: formData,
+    //   },
+    // );
+    //
+    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

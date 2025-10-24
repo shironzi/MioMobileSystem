@@ -32,6 +32,8 @@ const ViewAssignment = () => {
   const [comment, setComment] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
   const [studentAnswer, setStudentAnswer] = useState<{
     work: string;
     title: string;
@@ -88,7 +90,7 @@ const ViewAssignment = () => {
       setErrorMessage("Score was successfully updated.");
     } else {
       setShowAlert(true);
-      setErrorMessage("Failed to submit the score.\nPlease try again.");
+      setErrorMessage("Failed to submit the score. Please try again.");
     }
 
     setIsSubmitting(false);
@@ -98,9 +100,14 @@ const ViewAssignment = () => {
     const getAssignment = async () => {
       const res = await getStudentAssignment(subjectId, activityId, studentId);
 
-      setStudentAnswer(res.assignment);
-      setComment(res.assignment.comments);
       setLoading(false);
+      if (res.success) {
+        setStudentAnswer(res.assignment);
+        setComment(res.assignment.comments);
+      } else {
+        setShowModal(true);
+        setMessage(res.message);
+      }
     };
 
     getAssignment();
@@ -108,6 +115,20 @@ const ViewAssignment = () => {
 
   if (loading) {
     return <LoadingCard />;
+  }
+
+  if (showModal) {
+    return (
+      <CompletedAlert
+        message={message}
+        handleButton={() => {
+          router.back();
+          router.back();
+          router.back();
+          setShowModal(false);
+        }}
+      />
+    );
   }
 
   return (
