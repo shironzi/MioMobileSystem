@@ -9,6 +9,20 @@ export const api = axios.create({
   timeout: 600000,
 });
 
+const unAuthorizedAccess = async () => {
+  await SecureStore.deleteItemAsync("token");
+  await SecureStore.deleteItemAsync("id");
+  await SecureStore.deleteItemAsync("email");
+  await SecureStore.deleteItemAsync("role");
+  await SecureStore.deleteItemAsync("name");
+  await SecureStore.deleteItemAsync("firstname");
+  await SecureStore.deleteItemAsync("photo_url");
+  await SecureStore.deleteItemAsync("gradeLevel");
+  await SecureStore.deleteItemAsync("studentid");
+
+  router.replace("/");
+};
+
 api.interceptors.request.use(
   async (config) => {
     const sessionId = await SecureStore.getItemAsync("token");
@@ -16,6 +30,8 @@ api.interceptors.request.use(
     if (sessionId) {
       if (!config.headers) config.headers = {};
       config.headers.Authorization = `Bearer ${sessionId}`;
+    } else {
+      await unAuthorizedAccess();
     }
 
     if (!config.headers["Content-Type"]) {
@@ -37,17 +53,7 @@ api.interceptors.response.use(
 
     if (status === 401) {
       // unauthorized remove saved credentials
-      await SecureStore.deleteItemAsync("token");
-      await SecureStore.deleteItemAsync("id");
-      await SecureStore.deleteItemAsync("email");
-      await SecureStore.deleteItemAsync("role");
-      await SecureStore.deleteItemAsync("name");
-      await SecureStore.deleteItemAsync("firstname");
-      await SecureStore.deleteItemAsync("photo_url");
-      await SecureStore.deleteItemAsync("gradeLevel");
-      await SecureStore.deleteItemAsync("studentid");
-
-      router.replace("/");
+      await unAuthorizedAccess();
     }
 
     if (!error.response) {
