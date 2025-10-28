@@ -78,9 +78,8 @@ const index = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchSubjects();
-    }, 3000); // 3000 ms = 3 seconds
+    }, 3000);
 
-    // Cleanup timeout if component unmounts before 3 seconds
     return () => clearTimeout(timer);
   }, []);
 

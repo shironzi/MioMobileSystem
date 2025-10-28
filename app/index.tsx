@@ -103,8 +103,9 @@ const Index = () => {
         if (rememberMe) {
           await SecureStore.setItemAsync(`emailAddress`, emailAdress);
           await SecureStore.setItemAsync(`password`, userPassword);
-          router.replace("/(drawer)/(tabs)");
         }
+
+        router.replace("/(drawer)/(tabs)");
 
         // const request = await requestOtp();
         // console.log(request);
