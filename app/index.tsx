@@ -95,14 +95,17 @@ const Index = () => {
   const onSubmit = async (data: FormData) => {
     setErrorMessage("");
     try {
-      const emailAdress = data.email.trim();
+      const emailAddress = data.email.trim();
       const userPassword = data.password.trim();
+      const res = await login(emailAddress, userPassword);
 
-      const res = await login(emailAdress, userPassword);
       if (res.success) {
         if (rememberMe) {
-          await SecureStore.setItemAsync(`emailAddress`, emailAdress);
+          await SecureStore.setItemAsync(`emailAddress`, emailAddress);
           await SecureStore.setItemAsync(`password`, userPassword);
+        } else {
+          await SecureStore.deleteItemAsync(`emailAddress`);
+          await SecureStore.deleteItemAsync(`password`);
         }
 
         router.replace("/(drawer)/(tabs)");
@@ -115,10 +118,9 @@ const Index = () => {
         //     params: { message: request.message },
         //   });
         // }
-      } else {
-        setErrorMessage("Login failed. Please try again.");
       }
     } catch (e: any) {
+      console.log(e);
       setErrorMessage("Failed to log in. Please check your credentials.");
     }
   };
@@ -147,16 +149,6 @@ const Index = () => {
 
           if (res.success) {
             router.replace("/(drawer)/(tabs)");
-            console.log(token);
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
-            console.log("THIS IS RUNNING");
           }
         }
 

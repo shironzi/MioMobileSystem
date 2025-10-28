@@ -1,13 +1,6 @@
 import { api } from "@/utils/apiClient";
 import * as SecureStore from "expo-secure-store";
 
-export const getToken = async () => {
-  const token = await SecureStore.getItemAsync("token");
-  return token ?? "";
-};
-
-const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
-
 interface FileInfo {
   uri: string;
   name: string;
@@ -598,6 +591,8 @@ export async function updateMatchingActivity(
         } as any);
       }
     });
+
+    console.log(formData);
 
     const { data } = await api.post(
       `/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,

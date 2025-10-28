@@ -11,10 +11,6 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    console.log("===================================");
-    console.log("FIRST REQUEST");
-    console.log("===================================");
-
     let sessionId = await SecureStore.getItemAsync("token");
     sessionId = sessionId?.replace(/^"|"$/g, "");
 
@@ -31,12 +27,6 @@ api.interceptors.request.use(
           ? "multipart/form-data"
           : "application/json";
     }
-
-    console.log("FINAL REQUEST CONFIG:", {
-      url: config.url,
-      method: config.method,
-      headers: config.headers,
-    });
 
     return config;
   },

@@ -11,7 +11,6 @@ export default async function login(email: string, password: string) {
     const user = data.user;
 
     await SecureStore.setItemAsync("token", data.token);
-    console.log(await SecureStore.getItemAsync("token"));
     await SecureStore.setItemAsync("id", user.id);
     await SecureStore.setItemAsync("email", user.email);
     await SecureStore.setItemAsync("role", user.role);
@@ -19,7 +18,7 @@ export default async function login(email: string, password: string) {
     await SecureStore.setItemAsync("firstname", user.firstname);
     await SecureStore.setItemAsync("photo_url", user.photo_url);
     await SecureStore.setItemAsync("gradeLevel", user.gradeLevel);
-    await SecureStore.setItemAsync("studentid", user.studentid ?? null);
+    // await SecureStore.setItemAsync("studentid", user.studentid ?? null);
 
     return data;
   } catch (error: any) {

@@ -164,8 +164,6 @@ const MatchingPreview = () => {
 
       setIsSubmitting(false);
 
-      console.log(res);
-
       if (res.success) {
         Alert.alert(
           "Success",

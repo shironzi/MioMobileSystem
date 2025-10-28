@@ -17,7 +17,7 @@ interface FileInfo {
 const AddMatchingCards = (props: {
   isFirst: boolean;
   index: number;
-  handleFileUpload: (file: FileInfo) => void;
+  handleFileUpload: (file: string) => void;
   handleFileRemove: () => void;
   image: FileInfo | null;
   image_path: string | null;
@@ -72,8 +72,7 @@ const AddMatchingCards = (props: {
           </View>
         )}
         <ImageUpload
-          handleFiles={(file: FileInfo) => props.handleFileUpload(file)}
-          imageUri={props.image}
+          handleFiles={(file: string) => props.handleFileUpload(file)}
           image_path={props.image_path}
           handleImageRemove={() => props.handleFileRemove()}
           isError={false}
