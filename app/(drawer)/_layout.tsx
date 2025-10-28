@@ -11,7 +11,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
-import { getProfile } from "@/utils/query";
 import messaging from "@react-native-firebase/messaging";
 import { logout } from "@/utils/auth";
 import * as SecureStore from "expo-secure-store";
@@ -28,7 +27,6 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     name: string | null;
   } | null>(null);
   const [profile, setProfile] = useState<{
-    biography: string;
     name: string;
     photo_url: string;
     role: string;
@@ -45,12 +43,14 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     setSideBarDetails();
 
     const fetchProfile = async () => {
-      const res = await getProfile();
+      const storedName = (await SecureStore.getItemAsync("name")) ?? "";
+      const storedPhotoUrl =
+        (await SecureStore.getItemAsync("photo_url")) ?? "";
+      const storedRole = (await SecureStore.getItemAsync("role")) ?? "";
       setProfile({
-        name: res.name,
-        biography: res.biography,
-        photo_url: res.photo_url,
-        role: res.role,
+        name: storedName,
+        photo_url: storedPhotoUrl,
+        role: storedRole,
       });
     };
 
@@ -59,7 +59,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
     const unsubscribeFCM = messaging().onMessage(async (remoteMessage) => {
       if (remoteMessage.data?.type === "profile_update") {
         console.log("Received profile update");
-        await fetchProfile();
+        // await fetchProfile();
       }
     });
 
@@ -123,11 +123,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
         label="Profile"
         labelStyle={styles.drawerItemLabel}
         onPress={() => {
-          props.navigation.navigate("profile", {
-            biography: profile?.biography,
-            name: profile?.name,
-            photo_url: profile?.photo_url,
-          });
+          props.navigation.navigate("profile");
           props.navigation.closeDrawer();
         }}
         icon={() => <MaterialIcons name="person" size={30} color="#fff" />}

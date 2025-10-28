@@ -9,38 +9,35 @@ export const api = axios.create({
   timeout: 600000,
 });
 
-const unAuthorizedAccess = async () => {
-  await SecureStore.deleteItemAsync("token");
-  await SecureStore.deleteItemAsync("id");
-  await SecureStore.deleteItemAsync("email");
-  await SecureStore.deleteItemAsync("role");
-  await SecureStore.deleteItemAsync("name");
-  await SecureStore.deleteItemAsync("firstname");
-  await SecureStore.deleteItemAsync("photo_url");
-  await SecureStore.deleteItemAsync("gradeLevel");
-  await SecureStore.deleteItemAsync("studentid");
-
-  router.replace("/");
-};
-
 api.interceptors.request.use(
   async (config) => {
-    const sessionId = await SecureStore.getItemAsync("token");
+    console.log("===================================");
+    console.log("FIRST REQUEST");
+    console.log("===================================");
 
-    if (sessionId) {
-      if (!config.headers) config.headers = {};
-      config.headers.Authorization = `Bearer ${sessionId}`;
-    } else {
-      await unAuthorizedAccess();
+    let sessionId = await SecureStore.getItemAsync("token");
+    sessionId = sessionId?.replace(/^"|"$/g, "");
+
+    if (sessionId && config.url !== "/auth/login") {
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${sessionId}`,
+      };
     }
 
     if (!config.headers["Content-Type"]) {
-      if (config.data instanceof FormData) {
-        config.headers["Content-Type"] = "multipart/form-data";
-      } else {
-        config.headers["Content-Type"] = "application/json";
-      }
+      config.headers["Content-Type"] =
+        config.data instanceof FormData
+          ? "multipart/form-data"
+          : "application/json";
     }
+
+    console.log("FINAL REQUEST CONFIG:", {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+    });
+
     return config;
   },
   (error) => Promise.reject(error),
@@ -52,8 +49,16 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401) {
-      // unauthorized remove saved credentials
-      await unAuthorizedAccess();
+      await SecureStore.deleteItemAsync("token");
+      await SecureStore.deleteItemAsync("id");
+      await SecureStore.deleteItemAsync("email");
+      await SecureStore.deleteItemAsync("role");
+      await SecureStore.deleteItemAsync("name");
+      await SecureStore.deleteItemAsync("firstname");
+      await SecureStore.deleteItemAsync("photo_url");
+      await SecureStore.deleteItemAsync("gradeLevel");
+      await SecureStore.deleteItemAsync("studentid");
+      router.replace("/");
     }
 
     if (!error.response) {

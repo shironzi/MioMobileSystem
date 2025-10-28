@@ -76,7 +76,12 @@ const index = () => {
   };
 
   useEffect(() => {
-    fetchSubjects();
+    const timer = setTimeout(() => {
+      fetchSubjects();
+    }, 3000); // 3000 ms = 3 seconds
+
+    // Cleanup timeout if component unmounts before 3 seconds
+    return () => clearTimeout(timer);
   }, []);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {
@@ -112,18 +117,7 @@ const index = () => {
   };
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+    return <LoadingCard></LoadingCard>;
   }
 
   return (

@@ -1,8 +1,5 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 import * as SecureStore from "expo-secure-store";
-import { removeFCMToken, updateFCMToken } from "@/utils/notification";
-import messaging from "@react-native-firebase/messaging";
 
 export default async function login(email: string, password: string) {
   try {
@@ -14,6 +11,7 @@ export default async function login(email: string, password: string) {
     const user = data.user;
 
     await SecureStore.setItemAsync("token", data.token);
+    console.log(await SecureStore.getItemAsync("token"));
     await SecureStore.setItemAsync("id", user.id);
     await SecureStore.setItemAsync("email", user.email);
     await SecureStore.setItemAsync("role", user.role);
@@ -90,3 +88,18 @@ export async function VerifyOtpCode(OTPCode: number) {
     }
   }
 }
+
+export const verifyToken = async () => {
+  try {
+    const { data } = await api.post(`/auth/verify`);
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+};

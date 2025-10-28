@@ -1,4 +1,4 @@
-import login from "@/utils/auth";
+import login, { verifyToken } from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -47,6 +47,7 @@ const Index = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [onboardingIndex, setOnboardingIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const {
     control,
@@ -102,9 +103,8 @@ const Index = () => {
         if (rememberMe) {
           await SecureStore.setItemAsync(`emailAddress`, emailAdress);
           await SecureStore.setItemAsync(`password`, userPassword);
+          router.replace("/(drawer)/(tabs)");
         }
-
-        router.replace("/(drawer)/(tabs)");
 
         // const request = await requestOtp();
         // console.log(request);
@@ -133,8 +133,6 @@ const Index = () => {
         const storedPassword = await SecureStore.getItemAsync("password");
         const token = await SecureStore.getItemAsync("token");
 
-        console.log(token);
-
         // Restore email & password if "Remember Me" was used
         if (storedEmail && storedPassword) {
           setValue("email", storedEmail);
@@ -144,8 +142,24 @@ const Index = () => {
 
         // Navigate depending on token
         if (token) {
-          router.replace("/(drawer)/(tabs)");
+          const res = await verifyToken();
+
+          if (res.success) {
+            router.replace("/(drawer)/(tabs)");
+            console.log(token);
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+            console.log("THIS IS RUNNING");
+          }
         }
+
+        setLoading(false);
       } catch (error) {
         console.error("Error checking stored credentials:", error);
       }
@@ -157,6 +171,23 @@ const Index = () => {
   useFocusEffect(() => {
     navigation.setOptions({ headerShown: false });
   });
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          source={require("@/assets/logo-1.png")}
+          style={{ width: 200, height: 200, resizeMode: "contain" }}
+        />
+      </View>
+    );
+  }
 
   if (onboardingIndex >= 0) {
     const current = onboardingData[onboardingIndex];
