@@ -15,8 +15,7 @@ interface FileInfo {
 interface Audio {
   filename: string | null;
   audio_id: string | null;
-  audio_path: string;
-  audio: FileInfo | null;
+  audio_path: string | FileInfo | null;
 }
 const router = useRouter();
 const ListFooter = (props: {
@@ -50,7 +49,6 @@ const ListFooter = (props: {
           <AddBingoAudio
             key={index}
             isFirst={index === 0}
-            audio={item.audio ?? null}
             filename={item.filename}
             audio_path={item.audio_path}
             handleFileUpload={(file) => props.handleAudioUpload(index, file)}
@@ -63,7 +61,6 @@ const ListFooter = (props: {
             isFirst={index === 0}
             filename={item.filename}
             audio_path={item.audio_path}
-            audio={item.audio ?? null}
             handleFileUpload={(file) => props.handleAudioUpload(index, file)}
             handleFileRemove={() => props.handleAudioRemove(index)}
           />

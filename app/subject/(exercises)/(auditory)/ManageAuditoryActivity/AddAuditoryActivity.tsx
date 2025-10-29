@@ -29,8 +29,7 @@ interface Images {
 interface Audio {
   filename: string | null;
   audio_id: string | null;
-  audio_path: string;
-  audio: FileInfo | null;
+  audio_path: FileInfo | string | null;
 }
 
 interface Remedial {
@@ -134,30 +133,16 @@ const AddAuditoryActivity = () => {
     if (activityType === "bingo") {
       setBingoAudio((prev) => {
         const lastItem = prev[prev.length - 1];
-        if (
-          !lastItem ||
-          lastItem.audio !== null ||
-          lastItem.audio_path !== null
-        ) {
-          return [
-            ...prev,
-            { audio_path: "", audio_id: null, audio: null, filename: null },
-          ];
+        if (!lastItem || lastItem.audio_path !== null) {
+          return [...prev, { audio_path: "", audio_id: null, filename: null }];
         }
         return prev;
       });
     } else {
       setMatchingAudio((prev) => {
         const lastItem = prev[prev.length - 1];
-        if (
-          !lastItem ||
-          lastItem.audio !== null ||
-          lastItem.audio_path !== null
-        ) {
-          return [
-            ...prev,
-            { audio_path: "", audio_id: null, audio: null, filename: null },
-          ];
+        if (!lastItem || lastItem.audio_path !== null) {
+          return [...prev, { audio_path: "", audio_id: null, filename: null }];
         }
         return prev;
       });
@@ -181,17 +166,17 @@ const AddAuditoryActivity = () => {
     }
   };
 
-  const handleAudioUpload = (index: number, audio: FileInfo) => {
+  const handleAudioUpload = (index: number, audio_path: FileInfo | string) => {
     if (activityType === "bingo") {
       setBingoAudio((prev) => {
         const updated = [...prev];
-        updated[index] = { ...updated[index], audio };
+        updated[index] = { ...updated[index], audio_path };
         return updated;
       });
     } else {
       setMatchingAudio((prev) => {
         const updated = [...prev];
-        updated[index] = { ...updated[index], audio };
+        updated[index] = { ...updated[index], audio_path };
         return updated;
       });
     }
@@ -316,6 +301,7 @@ const AddAuditoryActivity = () => {
             setRemedialId(res.remedial_id);
           } else {
             Alert.alert("Error", "Please try again later.");
+            router.back();
           }
         } else if (activity_type === "matching") {
           const res = await getMatchingActivityById(
@@ -335,6 +321,7 @@ const AddAuditoryActivity = () => {
             setRemedialId(res.remedial_id);
           } else {
             Alert.alert("Error", "Please try again later.");
+            router.back();
           }
         }
         setLoading(false);

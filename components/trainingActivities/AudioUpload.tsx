@@ -13,10 +13,9 @@ interface FileInfo {
 const AudioUpload = (props: {
   handleFiles: (file: FileInfo) => void;
   handleAudioRemove: () => void;
-  audioUri: FileInfo | null;
   isError: boolean;
   filename: string | null;
-  audio_path: string | null;
+  audio_path: string | FileInfo | null;
 }) => {
   const [file, setFile] = useState<FileInfo | null>(null);
 
@@ -27,8 +26,7 @@ const AudioUpload = (props: {
     });
 
     if (!res.canceled) {
-      const { uri, name, mimeType } = res.assets[0];
-      setFile({ uri, name, mimeType });
+      setFile(res.assets[0]);
     }
   };
 
@@ -37,10 +35,12 @@ const AudioUpload = (props: {
       props.handleFiles(file);
     }
   }, [file]);
+
+  console.log("audio path: ", props.audio_path);
   return (
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>
-        {props.audioUri || props.audio_path ? (
+        {props.audio_path ? (
           <View style={styles.fileRow}>
             <View style={{ flexDirection: "row" }}></View>
             <View
@@ -55,7 +55,9 @@ const AudioUpload = (props: {
               <Text
                 style={{ maxWidth: 250, marginVertical: 10, flexWrap: "wrap" }}
               >
-                {props.audioUri?.name ?? props.filename}
+                {typeof props.audio_path === "object"
+                  ? props.audio_path?.name
+                  : props.filename}
               </Text>
               <TouchableOpacity
                 onPress={props.handleAudioRemove}
@@ -66,28 +68,22 @@ const AudioUpload = (props: {
             </View>
           </View>
         ) : (
-            <View style={{
-              // borderColor: "#ddd",
-              // borderWidth: 1,
-              // borderRadius: 20,
-              // padding: 20,
-              // width: "125%",
-              // left: -35
-            }}>
-              <TouchableOpacity
-            style={[
-              styles.addFileRow,
-              props.isError
-                ? { borderColor: "#db4141" }
-                : { borderColor: "#ffbf18" },
-            ]}
-            onPress={handleFileUpload}
-          >
-            <Feather name="upload" size={24} color="#FFBF18" />
-            <Text style={styles.addFileText}>Browse files to upload audio</Text>
-          </TouchableOpacity>
-            </View>
-          
+          <View>
+            <TouchableOpacity
+              style={[
+                styles.addFileRow,
+                props.isError
+                  ? { borderColor: "#db4141" }
+                  : { borderColor: "#ffbf18" },
+              ]}
+              onPress={handleFileUpload}
+            >
+              <Feather name="upload" size={24} color="#FFBF18" />
+              <Text style={styles.addFileText}>
+                Browse files to upload audio
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </View>
@@ -128,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     rowGap: 10,
     height: 100,
-    left:-13
+    left: -13,
   },
   addFileText: {
     color: "#1F1F1F68",

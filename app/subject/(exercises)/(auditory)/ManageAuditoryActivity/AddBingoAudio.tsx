@@ -18,8 +18,7 @@ interface AddBingoAudioProps {
   isFirst: boolean;
   handleFileUpload: (file: FileInfo) => void;
   handleFileRemove: () => void;
-  audio: FileInfo | null;
-  audio_path: string;
+  audio_path: string | FileInfo | null;
   filename: string | null;
 }
 
@@ -27,7 +26,6 @@ const AddBingoAudio = ({
   isFirst,
   handleFileUpload,
   handleFileRemove,
-  audio,
   audio_path,
   filename,
 }: AddBingoAudioProps) => {
@@ -46,7 +44,7 @@ const AddBingoAudio = ({
     >
       <View style={{ paddingHorizontal: 20 }}>
         {isFirst && (
-          <View style={{marginVertical:5}}>
+          <View style={{ marginVertical: 5 }}>
             {/* <Text style={[globalStyles.text1, {paddingVertical:5, left:-10}]}>
               Audio
             </Text> */}
@@ -56,18 +54,18 @@ const AddBingoAudio = ({
         <AudioUpload
           handleFiles={handleFileUpload}
           handleAudioRemove={handleFileRemove}
-          audioUri={audio ?? null}
           audio_path={audio_path}
           filename={filename}
           isError={false}
         />
-        {(audio_path || audio?.uri) && (
-          <EditPlayer uri={(audio?.uri ?? audio_path)!} />
+        {audio_path && (
+          <EditPlayer
+            uri={typeof audio_path === "object" ? audio_path?.uri : audio_path}
+          />
         )}
       </View>
     </Animated.View>
   );
 };
-
 
 export default memo(AddBingoAudio);

@@ -19,16 +19,14 @@ interface AddBingoAudioProps {
   isFirst: boolean;
   handleFileUpload: (file: FileInfo) => void;
   handleFileRemove: () => void;
-  audio: FileInfo | null;
   filename: string | null;
-  audio_path: string | null;
+  audio_path: string | FileInfo | null;
 }
 
 const AddMatchingAudio = ({
   isFirst,
   handleFileUpload,
   handleFileRemove,
-  audio,
   filename,
   audio_path,
 }: AddBingoAudioProps) => {
@@ -56,18 +54,18 @@ const AddMatchingAudio = ({
         <AudioUpload
           handleFiles={handleFileUpload}
           handleAudioRemove={handleFileRemove}
-          audioUri={audio ?? null}
           isError={false}
           filename={filename}
           audio_path={audio_path}
         />
-        {(audio_path || audio?.uri) && (
-          <EditPlayer uri={(audio?.uri ?? audio_path)!} />
+        {audio_path && (
+          <EditPlayer
+            uri={typeof audio_path === "object" ? audio_path?.uri : audio_path}
+          />
         )}
       </View>
     </Animated.View>
   );
 };
-
 
 export default memo(AddMatchingAudio);
