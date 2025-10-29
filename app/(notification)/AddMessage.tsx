@@ -65,8 +65,6 @@ const AddMessage = () => {
     setMessageSending(true);
 
     const res = await sendMessage(receiver, message, files);
-    console.log(res);
-
     if (res.success) {
       Keyboard.dismiss;
       router.replace({
@@ -91,15 +89,12 @@ const AddMessage = () => {
 
       if (roleValue === "student" || roleValue === "parent") {
         const res = await getSubjectTeachers();
-        console.log(res);
-
         if (res.success) {
           setUsers(res.users);
           setReceiver(res.users[0].user_id);
         }
       } else if (roleValue === "teacher") {
         const res = await getMessageSubjects();
-        console.log(res);
         if (res.success) {
           setSubjects(res.subjects);
         }
@@ -117,7 +112,6 @@ const AddMessage = () => {
 
       const res = await getMessagePeoples(selectedSubject);
 
-      console.log(res);
       if (res.success) {
         const userList = Object.keys(res.students).map((id) => ({
           user_id: id,
@@ -149,8 +143,6 @@ const AddMessage = () => {
       </View>
     );
   }
-
-  console.log(parents);
 
   return (
     <KeyboardAvoidingView

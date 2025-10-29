@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 
 const getMimeType = async (url: string): Promise<string> => {
   try {
@@ -109,16 +108,6 @@ export async function createAnnouncement(
     );
 
     return data;
-
-    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/announcement`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "multipart/json",
-    //     "Content-Type": "multipart/form-data",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formdata,
-    // });
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -169,17 +158,6 @@ export async function editAnnouncement(
         formData.append(`urls[${idx}][url]`, url);
       }
     });
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/announcement/${announcementId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
 
     const { data } = await api.post(
       `/subject/${subjectId}/announcement/${announcementId}`,
@@ -227,7 +205,7 @@ export async function deleteAnnouncements(
     const payload = { announcement_ids: announcement_ids };
 
     const { data } = await api.delete(`/subject/${subjectId}/announcement`, {
-      data: payload, // ✅ CORRECT: attaches the JSON body properly
+      data: payload,
     });
 
     return data;
@@ -311,7 +289,6 @@ export async function submitAssignment(
 ) {
   try {
     const formdata = new FormData();
-    console.log(answerFiles);
 
     if (submissionType === SubmissionOptions.Text) {
       formdata.append("answer_text", answer);
@@ -322,18 +299,6 @@ export async function submitAssignment(
         type: answerFiles.mimeType,
       } as any);
     }
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/assignment/${assignmentId}/answer`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "multipart/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formdata,
-    //   },
-    // );
 
     const { data } = await api.post(
       `/subject/${subjectId}/assignment/${assignmentId}/answer`,
@@ -454,8 +419,6 @@ export async function createAssignment(
       file_types_types: fileTypes ?? null,
     });
 
-    console.log(payload);
-
     const { data } = await api.post(
       `/subject/${subjectId}/assignment`,
       payload,
@@ -515,8 +478,6 @@ export async function editAssignment(
       visibility: visibility,
       file_types_types: fileTypes ?? null,
     });
-
-    console.log(payload);
 
     const { data } = await api.put(
       `/subject/${subjectId}/assignment/${assignmentId}`,
@@ -821,8 +782,6 @@ export async function addAttendance(
   }[],
 ) {
   try {
-    console.log({ students: payload });
-
     const { data } = await api.post(
       `/subject/${subjectId}/attendance/${attendanceId}`,
       { students: payload },
@@ -849,8 +808,6 @@ export async function editAttendance(
   }[],
 ) {
   try {
-    console.log({ students: payload });
-
     const { data } = await api.put(
       `/subject/${subjectId}/attendance/${attendanceId}`,
       {
@@ -900,15 +857,6 @@ export async function editProfile(picture: FileInfo | null, biography: string) {
     formdata.append("biography", biography);
 
     const { data } = await api.post(`/profile`, formdata);
-
-    // const res = await fetch(`${IPADDRESS}/profile`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "multipart/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formdata,
-    // });
 
     return data;
   } catch (err: any) {
@@ -966,8 +914,6 @@ export async function createQuiz(
   try {
     const formdata = new FormData();
 
-    console.log(quizInfo.deadline);
-
     formdata.append("title", quizInfo.title);
     formdata.append("description", quizInfo.description);
     formdata.append("attempts", quizInfo.attempts.toString());
@@ -998,7 +944,6 @@ export async function createQuiz(
     }
 
     quizItems.forEach((item, index) => {
-      console.log(item);
       formdata.append(`questions[${index}][question]`, item.question);
       formdata.append(
         `questions[${index}][answer]`,
@@ -1029,17 +974,6 @@ export async function createQuiz(
     );
 
     return data;
-
-    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/create/quiz`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formdata,
-    // });
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -1067,8 +1001,6 @@ export async function updateQuiz(
     formdata.append("access_code", quizInfo.access_code || "");
     formdata.append("show_correct_answers", quizInfo.show_answer.toString());
     formdata.append("visibility", quizInfo.visibility);
-
-    console.log(quizInfo.visibility);
 
     if (quizInfo.deadline) {
       formdata.append(
@@ -1119,18 +1051,6 @@ export async function updateQuiz(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/update/quiz/${quizId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formdata,
-    //   },
-    // );
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -1282,18 +1202,6 @@ export async function submitAnswer(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/quiz/${quizId}/${attemptId}/${itemId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formdata,
-    //   },
-    // );
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

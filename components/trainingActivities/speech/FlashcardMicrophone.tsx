@@ -47,8 +47,6 @@ const FlashcardMicrophone = (props: {
   const stopRecording = async () => {
     await audioRecorder.stop();
 
-    console.log(audioRecorder);
-
     const recordingUri = audioRecorder.uri;
     setIsRecording(false);
     props.onStop(recordingUri);

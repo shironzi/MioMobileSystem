@@ -29,7 +29,6 @@ const FireAlertModal = ({
   const status = useAudioPlayerStatus(player);
 
   if (status.didJustFinish) {
-    console.log("hello");
     player.seekTo(0);
     player.play();
     const vibrationPattern = [1000, 1000];

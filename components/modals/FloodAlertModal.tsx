@@ -29,7 +29,6 @@ const FloodAlertModal = ({
   const status = useAudioPlayerStatus(player);
 
   if (status.didJustFinish) {
-    console.log("hello");
     player.seekTo(0);
     player.play();
   }

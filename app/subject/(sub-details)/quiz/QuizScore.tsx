@@ -16,10 +16,6 @@ const QuizScore = () => {
     attemptId: string;
   }>();
 
-  console.log(subjectId);
-  console.log(quizId);
-  console.log(attemptId);
-
   const [score, setScore] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,8 +29,6 @@ const QuizScore = () => {
       if (res.success) {
         setScore(res.score);
         setTotal(res.total_quiz_points);
-
-        console.log(res);
       } else {
         Alert.alert(
           "Failed",

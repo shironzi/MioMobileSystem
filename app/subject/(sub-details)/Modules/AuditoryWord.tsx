@@ -53,7 +53,6 @@ const AuditoryWord = ({ text, video_link }: Props) => {
 
       const result = await response.json();
       const base64Audio = result?.generations?.[0]?.audio;
-      console.log(result);
 
       if (!base64Audio) {
         Alert.alert("Error", "Failed to play audio. Please try again later!");

@@ -48,7 +48,6 @@ const Inbox = () => {
     ]);
     setInboxMessage(inbox.messages);
     setSentMessage(sent.messages);
-    console.log("Initial or updated messages fetched.");
   };
   const router = useRouter();
 
@@ -68,7 +67,6 @@ const Inbox = () => {
       const unsubscribe = messaging().onMessage(async (remoteMessage) => {
         const type = remoteMessage.data?.type;
         if (type === "message") {
-          console.log("New message notification received. Refetching...");
           await fetchMessages();
         }
       });
@@ -114,7 +112,6 @@ const Inbox = () => {
         style={styles.addButton}
         onPress={() => {
           router.push("/(notification)/AddMessage");
-          // console.log("add todo");
         }}
       >
         <View

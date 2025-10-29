@@ -26,16 +26,14 @@ interface FileInfo {
   mimeType?: string;
 }
 
-interface Items {
+interface Images {
   image_id: string;
-  file: FileInfo | null;
-  image_path: string | null;
+  image_path: FileInfo | string | null;
 }
 
 interface Audio {
   audio_id: string | null;
-  audio_path: string | null;
-  audio: FileInfo | null;
+  audio_path: FileInfo | string | null;
 }
 
 interface Answers {
@@ -54,8 +52,8 @@ interface Connection {
 interface Answer {
   image_id: string | null;
   audio_id: string | null;
-  image: FileInfo | null;
-  audio: FileInfo | null;
+  image_path: string | FileInfo | null;
+  audio_path: string | FileInfo | null;
 }
 
 interface AudioRef {
@@ -93,7 +91,7 @@ const MatchingPreview = () => {
     remedialId: string;
   }>();
 
-  const parsedMatchingItems = useMemo<Items[]>(() => {
+  const parsedMatchingItems = useMemo<Images[]>(() => {
     try {
       return JSON.parse(matchingItems || "[]");
     } catch {
@@ -130,15 +128,15 @@ const MatchingPreview = () => {
 
   const handlePlayAudio = async (index: number) => {
     const uri =
-      parsedMatchingAudio[index].audio?.uri ??
-      parsedMatchingAudio[index].audio_path;
+      typeof parsedMatchingAudio[index].audio_path === "object"
+        ? parsedMatchingAudio[index].audio_path?.uri
+        : parsedMatchingAudio[index].audio_path;
     if (!uri) return;
     player.replace({ uri });
     player.play();
   };
 
   const handleSubmit = async () => {
-    console.log(answers);
     if (answers.length < 3 || answers.length > 5) {
       return;
     }
@@ -216,8 +214,8 @@ const MatchingPreview = () => {
         initialAnswers.push({
           audio_id: ans.audio_id,
           image_id: ans.image_id,
-          image: parsedMatchingItems[index].file,
-          audio: parsedMatchingAudio[index].audio,
+          image_path: parsedMatchingItems[index].image_path,
+          audio_path: parsedMatchingAudio[index].audio_path,
         });
       });
 
@@ -254,8 +252,8 @@ const MatchingPreview = () => {
         const newEntry = {
           audio_id: audioData.audio_id,
           image_id: imageData.image_id,
-          image: imageData.file,
-          audio: audioData.audio,
+          image_path: imageData.image_path,
+          audio_path: audioData.audio_path,
         };
 
         if (prev.length === 0) return [...prev, newEntry];
@@ -267,10 +265,10 @@ const MatchingPreview = () => {
             imageData.image_id !== null && a.image_id === imageData.image_id;
 
           const sameImageUri =
-            imageData.file?.uri && a.image?.uri === imageData.file.uri;
+            imageData.image_path && a.image_path === imageData.image_path;
 
           const sameAudioUri =
-            audioData.audio?.uri && a.audio?.uri === audioData.audio.uri;
+            audioData.audio_path && a.audio_path === audioData.audio_path;
 
           return !(sameAudioId || sameImageId || sameImageUri || sameAudioUri);
         });
@@ -396,7 +394,12 @@ const MatchingPreview = () => {
               >
                 <Image
                   resizeMode="contain"
-                  source={{ uri: item.file?.uri || item.image_path || "" }}
+                  source={{
+                    uri:
+                      typeof item.image_path === "object"
+                        ? item.image_path?.uri
+                        : item.image_path,
+                  }}
                   style={{
                     width: 100,
                     height: 80,

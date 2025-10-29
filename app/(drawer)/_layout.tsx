@@ -58,8 +58,7 @@ const CustomDrawerContent: React.FC<CustomDrawerContentProps> = (props) => {
 
     const unsubscribeFCM = messaging().onMessage(async (remoteMessage) => {
       if (remoteMessage.data?.type === "profile_update") {
-        console.log("Received profile update");
-        // await fetchProfile();
+        await fetchProfile();
       }
     });
 

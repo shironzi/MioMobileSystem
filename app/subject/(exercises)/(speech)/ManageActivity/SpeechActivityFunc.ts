@@ -45,8 +45,6 @@ export function flashcardFileUpload(
   uri: string,
   flashcards: Flashcard[],
 ): Flashcard[] {
-  console.log("Updated");
-
   return flashcards.map((item) =>
     item.flashcard_id === id ? { ...item, image_url: uri } : item,
   );

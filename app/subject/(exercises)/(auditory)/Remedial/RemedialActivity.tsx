@@ -132,7 +132,6 @@ const MatchingCards = () => {
     if (!attemptId) return;
 
     setIsSending(true);
-    console.log(answers);
 
     const res = await submitMatchingRemedial(
       subjectId,
@@ -141,8 +140,6 @@ const MatchingCards = () => {
       answerLogs,
       answers,
     );
-
-    console.log(res);
 
     if (res.success) {
       setFeedback(res.feedback);

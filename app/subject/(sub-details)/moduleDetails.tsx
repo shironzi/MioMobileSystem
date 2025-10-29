@@ -101,8 +101,6 @@ const moduleDetails = () => {
       if (res.success) {
         setModule(res.module);
         setPosition(res.position);
-
-        console.log(position);
       }
       setLoading(false);
     };

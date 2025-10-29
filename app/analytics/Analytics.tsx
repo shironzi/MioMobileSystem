@@ -59,7 +59,6 @@ const Analytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAnalyticsDashboard();
-      console.log(res);
 
       if (res.success) {
         setData({
@@ -116,7 +115,6 @@ const Analytics = () => {
     const fetchStudents = async () => {
       if (subject && subject.subject_id) {
         const res = await getAnalyticsStudents(subject.subject_id);
-        console.log("fetching students");
 
         if (res.success) {
           setStudentList(res.peoples);

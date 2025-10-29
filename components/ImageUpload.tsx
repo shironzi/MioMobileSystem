@@ -7,15 +7,21 @@ import React, { memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SpeechStyles from "@/styles/SpeechStyles";
 
+interface FileInfo {
+  uri: string;
+  name: string;
+  mimeType?: string;
+}
+
 const ImageUpload = (props: {
-  handleFiles: (uri: string) => void;
+  handleFiles: (uri: string | FileInfo) => void;
   handleImageRemove: () => void;
   image_path: string | null;
   isError: boolean;
   showPreview: boolean;
   index: number;
 }) => {
-  const [file, setFile] = useState<string | null>(null);
+  const [file, setFile] = useState<FileInfo | null>(null);
   const [fileName, setFileName] = useState("");
 
   const handleFileUpload = async () => {
@@ -25,8 +31,7 @@ const ImageUpload = (props: {
     });
 
     if (!res.canceled) {
-      const { uri } = res.assets[0];
-      setFile(uri);
+      setFile(res.assets[0]);
     }
   };
 

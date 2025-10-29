@@ -63,7 +63,6 @@ const AssignmentDetails = () => {
         submissionType,
       );
 
-      console.log(response);
       if (response.success) {
         Alert.alert("Success", "Your answer has been submitted!");
         router.back();
@@ -85,7 +84,6 @@ const AssignmentDetails = () => {
 
         try {
           const res = await getAssignmentById(subjectId, assignmentId);
-          console.log(res);
 
           if (res.success && res.assignment) {
             const assignment = res.assignment;

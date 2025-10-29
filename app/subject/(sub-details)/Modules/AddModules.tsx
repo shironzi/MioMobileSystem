@@ -212,7 +212,6 @@ const AddModules = () => {
     //   });
     // }
 
-    console.log(hasPreRequisites);
     if (hasPreRequisites) {
       if (!preRequisiteType || preRequisiteType.trim() === "") {
         errors.push({ name: "preReqType" });
@@ -221,8 +220,6 @@ const AddModules = () => {
         errors.push({ name: "preReqSelect" });
       }
     }
-
-    console.log(errors);
 
     if (errors.length) {
       setInputErrors(errors);
@@ -278,8 +275,6 @@ const AddModules = () => {
             modulePosition,
           );
 
-    console.log(res);
-
     if (res.success) {
       Alert.alert(
         "Success",
@@ -300,8 +295,6 @@ const AddModules = () => {
     } else {
       Alert.alert("Failed", res.message);
     }
-
-    console.log(res);
 
     setIsSubmitting(false);
   };

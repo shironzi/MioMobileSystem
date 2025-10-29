@@ -51,8 +51,6 @@ const SpeechPreview = () => {
     selectedActivityId: string;
   }>();
 
-  console.log(difficulty);
-
   const parsedBingoItems = useMemo<Flashcard[]>(() => {
     try {
       return JSON.parse(data || "[]");
@@ -87,9 +85,6 @@ const SpeechPreview = () => {
             selectedActivityId,
           );
 
-      console.log(selectedActivityId);
-      console.log(res);
-
       if (res.success) {
         Alert.alert(
           "Success",
@@ -109,7 +104,6 @@ const SpeechPreview = () => {
         Alert.alert("Message", res.message);
       }
     } catch (err) {
-      console.log(err);
       Alert.alert("Error", "Submission failed. Please check your inputs.");
     }
 

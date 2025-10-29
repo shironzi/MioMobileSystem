@@ -20,11 +20,10 @@ interface FileInfo {
   mimeType?: string;
 }
 
-interface Items {
+interface Images {
   id: string;
-  file: FileInfo | null;
+  image_path: FileInfo | string | null;
   image_id: string | null;
-  image_path: string | null;
 }
 
 interface Audio {
@@ -46,7 +45,6 @@ interface Matching {
 
 const matching = {
   id: "0",
-  file: null,
   image_path: null,
   image_id: null,
 };
@@ -63,10 +61,8 @@ const AddAuditoryActivity = () => {
       activityId: string;
     }>();
 
-  const [bingoItems, setBingoItems] = useState<Items[]>([
-    { id: "0", file: null, image_path: null, image_id: null },
-  ]);
-  const [matchingItems, setMatchingItems] = useState<Items[]>([matching]);
+  const [bingoItems, setBingoItems] = useState<Images[]>([matching]);
+  const [matchingItems, setMatchingItems] = useState<Images[]>([matching]);
   const [bingoAudio, setBingoAudio] = useState<Audio[]>([]);
   const [matchingAudio, setMatchingAudio] = useState<Audio[]>([]);
   const [matchingAnswers, setMatchingAnswers] = useState<Matching[]>([]);
@@ -79,17 +75,17 @@ const AddAuditoryActivity = () => {
   const [remedialList, setRemedialList] = useState<Remedial[]>([]);
   const [remedialIdError, setRemedialIdError] = useState<boolean>(false);
 
-  const handleFileUpload = (index: number, file: FileInfo) => {
+  const handleFileUpload = (index: number, image_path: FileInfo | string) => {
     if (activityType === "bingo") {
       setBingoItems((prev) => {
         const updated = [...prev];
-        updated[index] = { ...updated[index], file };
+        updated[index] = { ...updated[index], image_path };
         return updated;
       });
     } else {
       setMatchingItems((prev) => {
         const updated = [...prev];
-        updated[index] = { ...updated[index], file };
+        updated[index] = { ...updated[index], image_path };
         return updated;
       });
     }
@@ -116,24 +112,18 @@ const AddAuditoryActivity = () => {
     if (activityType === "bingo") {
       setBingoItems((prev) => {
         const lastItem = prev[prev.length - 1];
-        if (lastItem?.file !== null || lastItem?.image_path !== null) {
+        if (lastItem?.image_path !== null) {
           const newId = (parseInt(lastItem.id) + 1).toString() + "b";
-          return [
-            ...prev,
-            { id: newId, file: null, image_path: null, image_id: null },
-          ];
+          return [...prev, { id: newId, image_path: null, image_id: null }];
         }
         return prev;
       });
     } else {
       setMatchingItems((prev) => {
         const lastItem = prev[prev.length - 1];
-        if (lastItem?.file !== null || lastItem?.image_path !== null) {
+        if (lastItem?.image_path !== null) {
           const newId = (parseInt(lastItem.id) + 1).toString() + "b";
-          return [
-            ...prev,
-            { id: newId, file: null, image_path: null, image_id: null },
-          ];
+          return [...prev, { id: newId, image_path: null, image_id: null }];
         }
         return prev;
       });
@@ -324,8 +314,6 @@ const AddAuditoryActivity = () => {
             setActivityTitle(res.title);
             setRemedialList(res.remedials);
             setRemedialId(res.remedial_id);
-
-            console.log(remedialId);
           } else {
             Alert.alert("Error", "Please try again later.");
           }
@@ -367,18 +355,7 @@ const AddAuditoryActivity = () => {
   }, []);
 
   if (loading && activityId) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <LoadingCard></LoadingCard>
-      </View>
-    );
+    return <LoadingCard />;
   }
 
   const renderItem = ({ item, index }: { item: any; index: number }) => {
@@ -387,11 +364,12 @@ const AddAuditoryActivity = () => {
         <AddBingoCards
           isFirst={index === 0}
           index={index}
-          image_path={item.image_path}
           bingoError={bingoError}
           image={item.file ?? null}
           handleFileRemove={() => handleRemoveBingoItem(index)}
-          handleFileUpload={(file: FileInfo) => handleFileUpload(index, file)}
+          handleFileUpload={(file: FileInfo | string) =>
+            handleFileUpload(index, file)
+          }
         />
       );
     } else if (activityType === "matching") {
@@ -399,10 +377,11 @@ const AddAuditoryActivity = () => {
         <AddMatchingCards
           isFirst={index === 0}
           index={index}
-          image_path={item.image_path}
-          image={item.file ?? null}
+          image={item.image_path}
           handleFileRemove={() => handleRemoveBingoItem(index)}
-          handleFileUpload={(file: FileInfo) => handleFileUpload(index, file)}
+          handleFileUpload={(file: FileInfo | string) =>
+            handleFileUpload(index, file)
+          }
           totalImages={matchingItems.length}
           error={matchingError}
         />
@@ -416,7 +395,7 @@ const AddAuditoryActivity = () => {
       {activityType === "bingo" && (
         <Animated.FlatList
           data={bingoItems}
-          keyExtractor={(item) => item.image_path ?? item.id}
+          keyExtractor={(item) => item.id}
           ListHeaderComponent={
             <ListHeader
               activityType={activityType}
@@ -458,7 +437,7 @@ const AddAuditoryActivity = () => {
       {activityType === "matching" && (
         <Animated.FlatList
           data={matchingItems}
-          keyExtractor={(item) => item.image_path ?? item.id}
+          keyExtractor={(item) => item.id}
           ListHeaderComponent={
             <ListHeader
               activityType={activityType}

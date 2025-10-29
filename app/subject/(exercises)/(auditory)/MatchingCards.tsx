@@ -123,7 +123,6 @@ const MatchingCards = () => {
     if (answers.length < activity.length) return;
 
     setIsSending(true);
-    console.log(answers);
 
     const res = await submitMatchingActivity(
       subjectId,

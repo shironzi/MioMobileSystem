@@ -19,16 +19,13 @@ import {
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import LoadingCard from "@/components/loadingCard";
 import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
+import { Phoneme } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 
 interface Feedback {
   id: string;
   feedback: string;
   audio: string;
-  phonemes: {
-    phone: string;
-    quality_score: number;
-    sound_most_like: string;
-  }[];
+  phonemes: { key: Phoneme[] };
   word: string;
   score: number;
 }
@@ -115,7 +112,6 @@ const AuditoryScores = () => {
         setFeedbacks(res.feedbacks);
         setFeedback(res.feedback);
         setComment(res.comment);
-        console.log(res.feedbacks);
       }
 
       setLoading(false);

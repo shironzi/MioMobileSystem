@@ -119,8 +119,6 @@ const StudentAnalytics = () => {
           ? await getChildAnalytics()
           : await fetchStudentAnalytics(studentId);
 
-      console.log(res.success);
-
       if (res.success) {
         setData({
           sessions: res.sessions,
@@ -152,8 +150,6 @@ const StudentAnalytics = () => {
           };
         });
         setBarchartData(barData);
-      } else {
-        console.log("Failed to fetch data");
       }
       setLoading(false);
     };

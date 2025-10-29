@@ -58,7 +58,6 @@ const RemedialList = () => {
         ? await getRemedialListByStudent(subjectId, studentId)
         : await getRemedialList(subjectId);
 
-      console.log(res);
       if (res.success) {
         setActivityRemedial(res.active_remedials);
         setInactivityRemedial(res.inactive_remedials);

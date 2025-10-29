@@ -83,8 +83,6 @@ const RemedialAttempts = () => {
             remedialId,
           );
 
-      console.log(res);
-
       if (res.success) {
         setAttempts(res.attempts);
       } else {

@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 
 interface FileInfo {
   uri: string;
@@ -152,25 +151,6 @@ export async function submitHomonymsActivity(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/language/homonyms/${difficulty}/${activityId}/${attemptId}`,
-    //   {
-    //     method: "PATCH",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: JSON.stringify({
-    //       answers: payload,
-    //       answer_logs: answersLogs,
-    //       audio_logs: audioLogs,
-    //     }),
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -252,21 +232,6 @@ export async function createHomonym(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -310,19 +275,6 @@ export async function createFill(
     );
 
     return data;
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/fill`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -381,21 +333,6 @@ export async function editHomonyms(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/homonyms/${difficulty}/${activityId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -458,20 +395,6 @@ export async function editFill(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/language/fill/${difficulty}/${activityId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -495,19 +418,6 @@ export async function getAttemptActivityLanguage(
     );
 
     return data;
-
-    // const url = `${IPADDRESS}/subject/${subjectId}/attempts/language/${activity_type}/${activityId}/${attemptId}`;
-    // const token = await getAuth().currentUser?.getIdToken(true);
-    //
-    // const response = await fetch(url, {
-    //   method: "GET",
-    //   headers: {
-    //     Accept: "application/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    // });
-    //
-    // return await response.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

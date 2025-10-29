@@ -28,7 +28,6 @@ const SelectActivity = () => {
   }, [sActivity]);
 
   const handleRoute = async (activityId: string) => {
-    console.log(role);
     if (role === "student" || role === "parent") {
       const studentId =
         (await SecureStore.getItemAsync("studentid")) ??

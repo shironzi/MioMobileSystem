@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 
 interface FileInfo {
   uri: string;
@@ -58,15 +57,6 @@ export async function sendMessage(
 
     const { data } = await api.post(`/message/sent/${receiver_id}`, formData);
 
-    // const res = await fetch(`${IPADDRESS}/message/sent/${receiver_id}`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formData,
-    // });
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -98,15 +88,6 @@ export async function replyMessage(
     });
 
     const { data } = await api.post(`/message/reply/${receiver_id}`, formData);
-
-    // const res = await fetch(`${IPADDRESS}/message/reply/${receiver_id}`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formData,
-    // });
 
     return data;
   } catch (err: any) {

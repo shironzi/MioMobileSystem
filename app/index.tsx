@@ -120,7 +120,6 @@ const Index = () => {
         // }
       }
     } catch (e: any) {
-      console.log(e);
       setErrorMessage("Failed to log in. Please check your credentials.");
     }
   };

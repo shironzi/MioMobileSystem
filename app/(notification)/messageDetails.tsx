@@ -71,17 +71,11 @@ const MessageDetails = () => {
   useHeaderConfig(name ?? "");
 
   const handleSent = async () => {
-    if (!messageInput.trim() && !file) {
-      console.log("hello");
-    }
     setIsSending(true);
-    console.log("hello senign");
     const res =
       selectedType.toUpperCase() === "sent"
         ? await sendMessage(senderId, messageInput, file)
         : await replyMessage(receiverId, messageInput, messageInput, file);
-
-    console.log(res);
 
     if (res.success) {
       setMessageData((prev) => [

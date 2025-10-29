@@ -113,8 +113,6 @@ const BingoPreview = () => {
     setCurrentAudio((prev) =>
       prev >= parsedBingoAudio.length - 1 ? 0 : prev + 1,
     );
-
-    console.log(audioAnswers);
   };
 
   useEffect(() => {
@@ -134,9 +132,6 @@ const BingoPreview = () => {
     player.replace({ uri });
     player.play();
     setIsPlayed(true);
-
-    console.log(currentAudio);
-    console.log(uri);
   }, [player, currentAudio, parsedBingoAudio]);
 
   const handleSubmit = async () => {
@@ -173,7 +168,6 @@ const BingoPreview = () => {
             answers,
           );
 
-      console.log(res);
       setIsCreating(false);
 
       if (res.success) {

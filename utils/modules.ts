@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import { getAuth } from "@react-native-firebase/auth";
 
 export async function getModules(subjectId: string) {
   try {
@@ -128,16 +127,6 @@ export async function addModule(
 
   try {
     const { data } = await api.post(`/subject/${subjectId}/module`, formData);
-    // const res = await fetch(`${IPADDRESS}/subject/${subjectId}/module`, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formData,
-    // });
-    //
-    // return await res.json();
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -246,19 +235,6 @@ export async function updateModule(
       formData,
     );
     return data;
-    // const res = await fetch(
-    //   `${IPADDRESS}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -327,19 +303,6 @@ export async function addRemedial(
     );
 
     return data;
-    // const res = await fetch(
-    //   `${IPADDRESS}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -432,19 +395,6 @@ export async function addRemedialAuditory(
       `/subject/${subjectId}/module/remedial/auditory`,
       formData,
     );
-
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -534,19 +484,6 @@ export async function updateRemedialAuditory(
     );
 
     return data;
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/auditory/${moduleId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -615,19 +552,6 @@ export async function updateRemedial(
       formData,
     );
     return data;
-    // const res = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/module/remedial/${moduleId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

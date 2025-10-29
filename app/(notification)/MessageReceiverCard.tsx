@@ -29,12 +29,9 @@ const MessageSenderCard = ({
     const localUri = FileSystem.documentDirectory + fileName;
 
     const { uri } = await FileSystem.downloadAsync(url, localUri);
-    console.log("Download completed to", uri);
 
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(uri);
-    } else {
-      console.log("Sharing is not available on this platform");
     }
   }
 

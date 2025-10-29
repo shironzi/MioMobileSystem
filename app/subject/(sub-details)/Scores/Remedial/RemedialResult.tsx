@@ -19,16 +19,15 @@ import LoadingCard from "@/components/loadingCard";
 import SpeechDropdown from "@/app/subject/(sub-details)/Scores/SpeechDropdown";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import { addRemedialComment } from "@/utils/query";
+import { Phoneme } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
 
 interface Item {
   id: string;
   feedback: string;
   audio: string;
   phonemes: {
-    phone: string;
-    quality_score: number;
-    sound_most_like: string;
-  }[];
+    key: Phoneme[];
+  };
   word: string;
   score: number;
 }
@@ -117,7 +116,6 @@ const RemedialResult = () => {
         : await getRemedialResult(subjectId, activityType, remedialId, phoneme);
 
       if (res.success) {
-        console.log(res.items);
         setScore(res.score);
         setItems(res.items);
         setComment(res.comment);

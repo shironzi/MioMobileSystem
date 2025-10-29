@@ -1,5 +1,4 @@
 import { api } from "@/utils/apiClient";
-import * as SecureStore from "expo-secure-store";
 
 interface FileInfo {
   uri: string;
@@ -39,10 +38,6 @@ export async function getMatchingActivityById(
   try {
     const { data } = await api.get(
       `/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}`,
-    );
-
-    console.log(
-      "/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}",
     );
 
     return data;
@@ -110,19 +105,6 @@ export async function createBingoActivity(
       formData,
     );
 
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -152,38 +134,35 @@ export async function createMatchingActivity(
     formData.append("remedial_id", remedialId);
 
     answers.forEach((item, index) => {
-      formData.append(`activity[${index}][image]`, {
-        uri: item.image?.uri,
-        name: item.image?.name,
-        type: item.image?.mimeType,
-      } as any);
+      if (
+        item.image_path &&
+        typeof item.image_path === "object" &&
+        "uri" in item.image_path
+      ) {
+        formData.append(`activity[${index}][image]`, {
+          uri: item.image_path.uri,
+          name: item.image_path.name || `image-${index}.jpg`,
+          type: item.image_path.type || "image/jpeg",
+        } as any);
+      }
 
-      formData.append(`activity[${index}][audio]`, {
-        uri: item.audio?.uri,
-        name: item.audio?.name,
-        type: item.audio?.mimeType,
-      } as any);
+      if (
+        item.audio_path &&
+        typeof item.audio_path === "object" &&
+        "uri" in item.audio_path
+      ) {
+        formData.append(`activity[${index}][audio]`, {
+          uri: item.audio_path.uri,
+          name: item.audio_path.name || `audio-${index}.mp3`,
+          type: item.audio_path.type || "audio/mpeg",
+        } as any);
+      }
     });
 
     const { data } = await api.post(
       `/subject/${subjectId}/specialized/auditory/matching`,
       formData,
     );
-
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
-    // return await response.json();
 
     return data;
   } catch (err: any) {
@@ -259,21 +238,6 @@ export async function updateBingoActivity(
       `/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
       formData,
     );
-
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/bingo/${difficulty}/${activityId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await response.json();
 
     return data;
   } catch (err: any) {
@@ -370,21 +334,6 @@ export async function submitMatchingRemedial(
       payload,
     );
 
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/matching/${remedialId}/${attemptId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: JSON.stringify(payload),
-    //   },
-    // );
-    //
-    // return await response.json();
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -416,24 +365,6 @@ export async function submitBingoActivity(
       jsonData,
     );
 
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/auditory/bingo/${difficulty}/${activityId}/${attemptId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: JSON.stringify({
-    //       answers,
-    //       audio_played: totalPlay,
-    //     }),
-    //   },
-    // );
-    //
-    // return await response.json();
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -461,24 +392,6 @@ export async function submitBingoRemedial(
         audio_played: totalPlay,
       }),
     );
-
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/remedial/bingo/${remedialId}/${attemptId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: JSON.stringify({
-    //       answers,
-    //       audio_played: totalPlay,
-    //     }),
-    //   },
-    // );
-    //
-    // return await response.json();
 
     return data;
   } catch (err: any) {
@@ -518,21 +431,6 @@ export async function submitMatchingActivity(
       payload,
     );
 
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/auditory/matching/${difficulty}/${activityId}/${attemptId}`,
-    //   {
-    //     method: "PUT",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: JSON.stringify(payload),
-    //   },
-    // );
-    //
-    // return await response.json();
-
     return data;
   } catch (err: any) {
     if (err.response) {
@@ -548,8 +446,8 @@ export async function submitMatchingActivity(
 interface Answer {
   image_id: string | null;
   audio_id: string | null;
-  audio: FileInfo | null;
-  image: FileInfo | null;
+  image_path: string | FileInfo | null;
+  audio_path: string | FileInfo | null;
 }
 
 interface FileInfo {
@@ -575,44 +473,35 @@ export async function updateMatchingActivity(
       formData.append(`activity[${index}][image_id]`, answer.image_id ?? "");
       formData.append(`activity[${index}][audio_id]`, answer.audio_id ?? "");
 
-      if (answer.image?.uri) {
+      if (
+        answer.image_path &&
+        typeof answer.image_path === "object" &&
+        "uri" in answer.image_path
+      ) {
         formData.append(`activity[${index}][image]`, {
-          uri: answer.image.uri,
-          name: answer.image.name,
-          type: answer.image.type || "image/jpeg",
+          uri: answer.image_path.uri,
+          name: answer.image_path.name || `image-${index}.jpg`,
+          type: answer.image_path.type || "image/jpeg",
         } as any);
       }
 
-      if (answer.audio?.uri) {
+      if (
+        answer.audio_path &&
+        typeof answer.audio_path === "object" &&
+        "uri" in answer.audio_path
+      ) {
         formData.append(`activity[${index}][audio]`, {
-          uri: answer.audio.uri,
-          name: answer.audio.name,
-          type: answer.audio.type || "audio/mpeg",
+          uri: answer.audio_path.uri,
+          name: answer.audio_path.name || `audio-${index}.mp3`,
+          type: answer.audio_path.type || "audio/mpeg",
         } as any);
       }
     });
-
-    console.log(formData);
 
     const { data } = await api.post(
       `/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
       formData,
     );
-
-    // const response = await fetch(
-    //   `${IPADDRESS}/subject/${subjectId}/specialized/auditory/matching/${difficulty}/${activityId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "multipart/form-data",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await response.json();
 
     return data;
   } catch (err: any) {

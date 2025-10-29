@@ -88,7 +88,6 @@ const TakeQuiz = () => {
       setIsSubmitting(true);
 
       const submitQuiz = await finalizeQuiz(subjectId, quizId, attemptId);
-      console.log(submitQuiz);
 
       if (submitQuiz.success) {
         Alert.alert(
@@ -194,8 +193,6 @@ const TakeQuiz = () => {
     answer: string | string[],
     file: FileInfo[] | null,
   ) => {
-    console.log(answer);
-
     setAnswers((prev) => {
       const index = prev.findIndex((a) => a.itemId === itemId);
       const existing = index > -1 ? prev[index] : null;

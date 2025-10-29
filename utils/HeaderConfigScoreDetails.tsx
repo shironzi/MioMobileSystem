@@ -9,9 +9,6 @@ const HeaderConfigScoreDetails = (
   isRemedial?: boolean,
 ) => {
   const navigation = useNavigation();
-
-  console.log(activity_type);
-
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({

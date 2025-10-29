@@ -39,8 +39,6 @@ export default function getAnnouncementTemplate(template: string, date: Date) {
 export async function getTemplateType(title: string) {
   const newTitle = title.toLowerCase().trim();
 
-  console.log(newTitle);
-
   if (newTitle === "class suspension notice") return "no_class";
   else if (newTitle === "emergency announcement") return "emergency";
   else if (newTitle === "assignment reminder") return "reminder_assignment";

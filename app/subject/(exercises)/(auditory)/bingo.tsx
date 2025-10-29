@@ -69,9 +69,6 @@ const bingo = () => {
     const date = getCurrentDateTime();
     const audioId = audioFiles[currentAudio].audio_id;
 
-    console.log(audioId);
-    console.log(image_id);
-
     const existingIndex = answers.findIndex((a) => a.audio_id === audioId);
 
     let previousImageId: string | undefined = undefined;
@@ -128,8 +125,6 @@ const bingo = () => {
       answers,
       totalPlay,
     );
-
-    console.log(res);
 
     if (res.success) {
       setFeedback(res.feedback);

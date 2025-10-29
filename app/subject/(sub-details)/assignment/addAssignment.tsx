@@ -128,7 +128,6 @@ const addAssignment = () => {
 
     if (errorList.length > 0) {
       setError(errorList);
-      console.log(errorList);
       return;
     }
     setIsSubmitting(true);

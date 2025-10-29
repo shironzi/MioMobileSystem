@@ -71,8 +71,6 @@ const AnnouncementPreview = () => {
           formattedDate,
         );
 
-    console.log(res);
-
     setIsSubmitting(false);
 
     if (res.success) {

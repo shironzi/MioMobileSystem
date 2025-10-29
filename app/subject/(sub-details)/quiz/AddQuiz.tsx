@@ -310,7 +310,6 @@ const AddQuiz = () => {
     }
 
     if (infoErrors.length > 0) {
-      console.log(infoErrors);
       setInputErrors((prev) => [...prev, ...infoErrors]);
       return;
     }
@@ -328,8 +327,6 @@ const AddQuiz = () => {
     const res = quizId
       ? await updateQuiz(subjectId, quizId, quizInfo, quizItems)
       : await createQuiz(subjectId, quizInfo, quizItems);
-
-    console.log(res);
 
     if (res.success) {
       Alert.alert(
@@ -369,7 +366,6 @@ const AddQuiz = () => {
   }, [quizItems]);
 
   useEffect(() => {
-    console.log(quizId);
     if (quizId) {
       setLoading(true);
       const fetchQuiz = async () => {

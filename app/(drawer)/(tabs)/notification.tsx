@@ -39,11 +39,7 @@ const Notification = () => {
   const deleteNotification = useCallback(async (id: string) => {
     openSwipeableRef.current = null;
 
-    const res = await dismissNotification(id);
-
-    if (res.success) {
-      console.log(res.message);
-    }
+    await dismissNotification(id);
 
     setTimeout(() => {
       setNotifications((prev) =>

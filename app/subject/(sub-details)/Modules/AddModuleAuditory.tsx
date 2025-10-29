@@ -184,8 +184,6 @@ const AddModuleAuditory = () => {
     } else {
       Alert.alert("Failed", res.message);
     }
-
-    console.log(res);
   };
 
   const Footer = (

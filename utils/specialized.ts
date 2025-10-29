@@ -325,25 +325,10 @@ export async function submitAnswer(
       name: filename,
       type: mimeType,
     } as any);
-    console.log(url);
 
     const { data } = await api.post(url, formData);
 
-    console.log(data);
-    console.log(url);
     return data;
-
-    // const res = await fetch(url, {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "multipart/json",
-    //     "Content-Type": "multipart/form-data",
-    //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //   },
-    //   body: formData,
-    // });
-    //
-    // return await res.json();
   } catch (err: any) {
     return { error: err.message };
   }
@@ -357,10 +342,6 @@ export async function finishActivity(
   attemptId: string,
 ) {
   try {
-    console.log(
-      `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
-    );
-
     const { data } = await api.patch(
       `/subject/${subjectId}/speech/${activityType}/${difficulty}/${activityId}/${attemptId}`,
     );
@@ -437,21 +418,6 @@ export async function createPictureSpeechActivity(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `/subject/${subjectId}/specialized/speech/picture`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "multipart/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;
@@ -561,21 +527,6 @@ export async function updatePictureActivity(
     );
 
     return data;
-
-    // const res = await fetch(
-    //   `/subject/${subjectId}/specialized/speech/picture/${difficulty}/${activityId}`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "multipart/json",
-    //       "Content-Type": "multipart/form-data",
-    //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    //     },
-    //     body: formData,
-    //   },
-    // );
-    //
-    // return await res.json();
   } catch (err: any) {
     if (err.response) {
       return err.response.status;

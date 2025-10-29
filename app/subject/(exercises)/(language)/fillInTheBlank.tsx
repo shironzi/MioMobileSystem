@@ -73,7 +73,6 @@ const fillInTheBlank = () => {
 
     if (currentItem < activity.length - 1) {
       setCurrentItem(currentItem + 1);
-      console.log(currentItem);
     } else {
       if (!attemptId) {
         return;
@@ -185,7 +184,6 @@ const fillInTheBlank = () => {
       const now = getCurrentDateTime();
 
       setAudioLogs((prev) => {
-        console.log(prev);
         const existingIndex = prev.findIndex((log) => log.item_id === itemId);
         if (existingIndex !== -1) {
           const updated = [...prev];
@@ -203,7 +201,6 @@ const fillInTheBlank = () => {
 
   useEffect(() => {
     const fetchActivity = async () => {
-      console.log(prevAttemptId);
       const res = prevAttemptId
         ? await getAttemptActivityLanguage(
             subjectId,
@@ -257,7 +254,7 @@ const fillInTheBlank = () => {
             difficulty={difficulty}
             totalItems={activity.length}
             completedItems={currentItem}
-            // instruction="Guess the picture"
+            instruction="Guess the picture"
           />
         </View>
         <View

@@ -17,10 +17,9 @@ interface FileInfo {
 const AddBingoCards = (props: {
   isFirst: boolean;
   index: number;
-  handleFileUpload: (file: FileInfo) => void;
+  handleFileUpload: (file: FileInfo | string) => void;
   handleFileRemove: () => void;
-  image: FileInfo | null;
-  image_path: string | null;
+  image: string | FileInfo | null;
   bingoError: {
     errorMessage: string;
     error: string;
@@ -72,12 +71,19 @@ const AddBingoCards = (props: {
           </View>
         )}
         <ImageUpload
-          handleFiles={(file: FileInfo) => props.handleFileUpload(file)}
-          imageUri={props.image}
-          image_path={props.image_path}
+          handleFiles={(file: FileInfo | string) =>
+            props.handleFileUpload(file)
+          }
+          image_path={
+            (typeof props.image === "object"
+              ? props.image?.uri
+              : props.image) ?? null
+          }
           handleImageRemove={() => props.handleFileRemove()}
           isError={image_error}
-          showPreview={!!props.image_path}
+          showPreview={
+            !!(typeof props.image === "object" ? props.image?.uri : props.image)
+          }
           index={props.index}
         />
       </View>

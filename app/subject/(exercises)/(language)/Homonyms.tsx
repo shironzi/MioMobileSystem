@@ -245,8 +245,6 @@ const Homonyms = () => {
           )
         : await startHomonymsActivity(subjectId, difficulty, activityId);
 
-      console.log(res);
-
       Object.entries(res.activity).map(([key, value]: [string, any]) => {
         setItems((prev) => [
           ...prev,
@@ -291,7 +289,7 @@ const Homonyms = () => {
           difficulty={difficulty}
           totalItems={items.length}
           completedItems={currentItem}
-          // instruction="Guess the picture"
+          instruction="Guess the picture"
         />
       </View>
       <View

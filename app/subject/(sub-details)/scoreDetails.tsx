@@ -53,8 +53,6 @@ const ScoreDetails = () => {
         activityId,
         attemptId,
       );
-
-      console.log(res);
       if (!res.success) {
         throw new Error(res.error || "Failed to load scores");
       }

@@ -32,8 +32,6 @@ const ScoreDropdown = ({
       (act) => act.difficulty === difficulty,
     );
 
-    console.log(selectedDifficulty);
-
     router.push({
       pathname: "/subject/Scores/SelectActivity",
       params: {

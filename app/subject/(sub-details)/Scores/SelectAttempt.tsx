@@ -30,8 +30,6 @@ const SelectAttempt = () => {
   const [attempts, setAttempts] = useState<Attempt[]>([]);
 
   const handleViewAttempt = (attemptId: string) => {
-    console.log(attemptId);
-
     router.push({
       pathname: "/subject/Scores/SpecializedScore",
       params: {
@@ -56,7 +54,6 @@ const SelectAttempt = () => {
 
       if (res.success) {
         setAttempts(res.attempts);
-        console.log(res.attempts);
       }
 
       setLoading(false);

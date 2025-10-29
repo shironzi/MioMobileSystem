@@ -92,8 +92,6 @@ const PictureFlashcards = () => {
             selectedActivityId,
           );
 
-      console.log(res);
-
       if (res.success) {
         Alert.alert(
           "Success",
