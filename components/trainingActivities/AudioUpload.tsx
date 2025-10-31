@@ -36,7 +36,6 @@ const AudioUpload = (props: {
     }
   }, [file]);
 
-  console.log("audio path: ", props.audio_path);
   return (
     <View style={{ rowGap: 18 }}>
       <View style={{ paddingVertical: 9, rowGap: 18 }}>

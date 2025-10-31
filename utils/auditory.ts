@@ -54,50 +54,56 @@ export async function getMatchingActivityById(
 
 export async function createBingoActivity(
   subjectId: string,
-  activityType: string,
   difficulty: string,
   bingoItems: {
-    file: FileInfo | null;
-    image_path: string | null;
+    image_path: string | FileInfo | null;
   }[],
   audioFiles: {
-    audio: FileInfo | null;
-    audio_path: string | null;
+    audio_path: string | FileInfo | null;
   }[],
   title: string,
   remedialId: string,
-  answers: string[],
+  answers: { image_id: string; audio_id: string }[],
 ) {
   try {
     const formData = new FormData();
 
-    formData.append("activity_type", activityType);
+    formData.append("activity_type", "bingo");
     formData.append("difficulty", difficulty);
     formData.append("title", title);
     formData.append("remedial_id", remedialId);
 
     bingoItems.forEach((item, index) => {
-      if (item.file) {
+      if (
+        item.image_path &&
+        typeof item.image_path === "object" &&
+        "uri" in item.image_path
+      ) {
         formData.append(`activity[${index}][image]`, {
-          uri: item.file.uri,
-          name: item.file.name,
-          type: item.file.mimeType ?? "image/jpeg",
+          uri: item.image_path.uri,
+          name: item.image_path.name,
+          type: item.image_path.mimeType ?? "image/jpeg",
         } as any);
       }
     });
 
     audioFiles.forEach((item, index) => {
-      if (item.audio) {
+      if (
+        item.audio_path &&
+        typeof item.audio_path === "object" &&
+        "uri" in item.audio_path
+      ) {
         formData.append(`audio[${index}][audio_file]`, {
-          uri: item.audio.uri,
-          name: item.audio.name,
-          type: item.audio.mimeType ?? "audio/mpeg",
+          uri: item.audio_path.uri,
+          name: item.audio_path.name,
+          type: item.audio_path.mimeType ?? "audio/mpeg",
         } as any);
       }
     });
 
     answers.forEach((item, index) => {
-      formData.append(`answers[${index}]`, item);
+      formData.append(`answers[${index}][image_id]`, item.image_id ?? "");
+      formData.append(`answers[${index}][audio_id]`, item.audio_id ?? "");
     });
 
     const { data } = await api.post(
@@ -178,23 +184,19 @@ export async function createMatchingActivity(
 
 export async function updateBingoActivity(
   subjectId: string,
-  activityType: string,
   difficulty: string,
   activityId: string,
   bingoItems: {
-    file: FileInfo | null;
-    image_path: string | null;
+    image_path: FileInfo | string | null;
     image_id?: string | null;
   }[],
   audioFiles: {
-    audio: FileInfo | null;
-    audio_path: string | null;
+    audio_path: FileInfo | string | null;
     audio_id?: string | null;
   }[],
   title: string,
   remedialId: string,
-  answers: string[],
-  audio_answers: string[],
+  answers: { audio_id: string; image_id: string }[],
 ) {
   try {
     const formData = new FormData();
@@ -203,11 +205,15 @@ export async function updateBingoActivity(
     formData.append("remedial_id", remedialId);
 
     bingoItems.forEach((item, index) => {
-      if (item.file) {
+      if (
+        item.image_path &&
+        typeof item.image_path === "object" &&
+        "uri" in item.image_path
+      ) {
         formData.append(`activity[${index}][image]`, {
-          uri: item.file.uri,
-          name: item.file.name,
-          type: item.file.mimeType ?? "image/jpeg",
+          uri: item.image_path.uri,
+          name: item.image_path.name,
+          type: item.image_path.mimeType || "image/jpeg",
         } as any);
       }
 
@@ -215,23 +221,24 @@ export async function updateBingoActivity(
     });
 
     audioFiles.forEach((item, index) => {
-      if (item.audio) {
+      if (
+        item.audio_path &&
+        typeof item.audio_path === "object" &&
+        "uri" in item.audio_path
+      ) {
         formData.append(`audio[${index}][audio_file]`, {
-          uri: item.audio.uri,
-          name: item.audio.name,
-          type: item.audio.mimeType ?? "audio/mpeg",
+          uri: item.audio_path.uri,
+          name: item.audio_path.name,
+          type: item.audio_path.mimeType || "audio/mpeg",
         } as any);
       }
 
       formData.append(`audio[${index}][audio_id]`, item.audio_id ?? "");
     });
 
-    answers.forEach((item, index) => {
-      formData.append(`answers[${index}][image_id]`, item);
-    });
-
-    audio_answers.forEach((item, index) => {
-      formData.append(`answers[${index}][audio_id]`, item);
+    answers.forEach((ans, index) => {
+      formData.append(`answers[${index}][image_id]`, ans.image_id ?? "");
+      formData.append(`answers[${index}][audio_id]`, ans.audio_id ?? "");
     });
 
     const { data } = await api.post(

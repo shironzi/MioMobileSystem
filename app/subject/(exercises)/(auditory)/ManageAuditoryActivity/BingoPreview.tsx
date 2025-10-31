@@ -23,15 +23,13 @@ interface FileInfo {
 
 interface BingoItem {
   id: string;
-  file: FileInfo | null;
-  image_path: string | null;
+  image_path: FileInfo | string | null;
   image_id: string | null;
 }
 
 interface AudioItem {
   id: string;
-  audio: FileInfo | null;
-  audio_path: string | null;
+  audio_path: string | FileInfo | null;
   audio_id: string | null;
 }
 
@@ -40,7 +38,6 @@ const BingoPreview = () => {
 
   const {
     subjectId,
-    activityType,
     activityId,
     activityDifficulty,
     bingoItems,
@@ -49,7 +46,6 @@ const BingoPreview = () => {
     remedialId,
   } = useLocalSearchParams<{
     subjectId: string;
-    activityType: string;
     activityId: string;
     activityDifficulty: string;
     bingoItems: string;
@@ -77,8 +73,9 @@ const BingoPreview = () => {
   const [currentAudio, setCurrentAudio] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [audioAnswers, setAudioAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<
+    { image_id: string; audio_id: string }[]
+  >([]);
   const [isPlayed, setIsPlayed] = useState(false);
 
   const player = useAudioPlayer();
@@ -86,33 +83,30 @@ const BingoPreview = () => {
 
   const activityData = parsedBingoItems.map((item) => ({
     image_id: item.id,
-    image_url: item.file?.uri ?? item.image_path ?? "",
+    image_path: item.image_path,
   }));
 
   const handleCardPress = (image_id: string) => {
     if (!isPlayed) return;
 
-    // let current = currentAudio - 1;
-    // if (current < 0) {
-    //   current = 0;
-    // }
-
-    const newImage = [...answers];
-    newImage[currentAudio] = image_id;
-    setAnswers(newImage);
-
-    const newAudio = [...audioAnswers];
-    newAudio[currentAudio] =
+    // Get the corresponding audio_id for the currentAudio index
+    const audio_id =
       parsedBingoAudio.find((_, index) => index === currentAudio)?.audio_id ??
       "";
-    setAudioAnswers(newAudio);
 
-    if (!newImage[currentAudio] || newImage[currentAudio].length < 0) {
-      return;
+    // Update the answers array with both image_id and audio_id
+    setAnswers((prev) => {
+      const updated = [...prev];
+      updated[currentAudio] = { image_id, audio_id };
+      return updated;
+    });
+
+    // Move to next audio only if valid
+    if (image_id && image_id.length > 0) {
+      setCurrentAudio((prev) =>
+        prev >= parsedBingoAudio.length - 1 ? 0 : prev + 1,
+      );
     }
-    setCurrentAudio((prev) =>
-      prev >= parsedBingoAudio.length - 1 ? 0 : prev + 1,
-    );
   };
 
   useEffect(() => {
@@ -125,8 +119,10 @@ const BingoPreview = () => {
 
   const playAudio = useCallback(async () => {
     const uri =
-      parsedBingoAudio[currentAudio].audio?.uri ??
-      parsedBingoAudio[currentAudio].audio_path;
+      typeof parsedBingoAudio[currentAudio].audio_path === "object"
+        ? parsedBingoAudio[currentAudio].audio_path?.uri
+        : parsedBingoAudio[currentAudio].audio_path;
+
     if (!uri) return;
 
     player.replace({ uri });
@@ -135,9 +131,12 @@ const BingoPreview = () => {
   }, [player, currentAudio, parsedBingoAudio]);
 
   const handleSubmit = async () => {
+    if (answers.length !== parsedBingoAudio.length) {
+      return;
+    }
+
     const activity = parsedBingoItems.map((item) => {
       return {
-        file: item.file,
         image_path: item.image_path,
         image_id: item.image_id,
       };
@@ -147,7 +146,6 @@ const BingoPreview = () => {
       const res = activityId
         ? await updateBingoActivity(
             subjectId,
-            activityType,
             activityDifficulty,
             activityId,
             activity,
@@ -155,11 +153,9 @@ const BingoPreview = () => {
             title,
             remedialId,
             answers,
-            audioAnswers,
           )
         : await createBingoActivity(
             subjectId,
-            activityType,
             activityDifficulty,
             activity,
             parsedBingoAudio,
@@ -242,10 +238,12 @@ const BingoPreview = () => {
         keyExtractor={(item) => item.image_id}
         renderItem={({ item, index }) => (
           <BingoCard
-            image={item.image_url}
-            isMatched={answers.some(
-              (aud) => aud === index.toString() || aud === item.image_id,
-            )}
+            image={
+              typeof item.image_path === "object"
+                ? item.image_path?.uri
+                : item.image_path
+            }
+            isMatched={answers.some((aud) => aud.image_id === item.image_id)}
             onPress={() => handleCardPress(item.image_id ?? index.toString())}
           />
         )}

@@ -345,14 +345,14 @@ const AddAuditoryActivity = () => {
     return <LoadingCard />;
   }
 
-  const renderItem = ({ item, index }: { item: any; index: number }) => {
+  const renderItem = ({ item, index }: { item: Images; index: number }) => {
     if (activityType === "bingo") {
       return (
         <AddBingoCards
           isFirst={index === 0}
           index={index}
           bingoError={bingoError}
-          image={item.file ?? null}
+          image={item.image_path}
           handleFileRemove={() => handleRemoveBingoItem(index)}
           handleFileUpload={(file: FileInfo | string) =>
             handleFileUpload(index, file)

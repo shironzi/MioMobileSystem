@@ -1,7 +1,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import globalStyles from "@/styles/globalStyles";
 import React, { memo } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -31,32 +31,9 @@ const AddBingoCards = (props: {
       entering={FadeInUp}
       exiting={FadeOut}
       layout={LinearTransition}
-      style={[
-        {
-          backgroundColor: "#fff",
-          paddingHorizontal: 20,
-          marginHorizontal: 5,
-          marginVertical: 5,
-        },
-        props.isFirst && {
-          paddingTop: 10,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-        },
-      ]}
+      style={[styles.container, props.isFirst && styles.isFirst]}
     >
-      <View
-        style={{
-          padding: 20,
-          backgroundColor: "#fff",
-          rowGap: 10,
-          borderColor: "#ddd",
-          borderWidth: 1,
-          borderRadius: 20,
-          marginBottom: 5,
-          flex: 1,
-        }}
-      >
+      <View style={styles.item}>
         {props.isFirst && (
           <View>
             <Text style={[globalStyles.text1, { marginTop: -5 }]}>
@@ -90,5 +67,29 @@ const AddBingoCards = (props: {
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    marginHorizontal: 5,
+    marginVertical: 5,
+  },
+  isFirst: {
+    paddingTop: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  item: {
+    padding: 20,
+    backgroundColor: "#fff",
+    rowGap: 10,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 20,
+    marginBottom: 5,
+    flex: 1,
+  },
+});
 
 export default memo(AddBingoCards);

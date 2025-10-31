@@ -1,7 +1,7 @@
 import AudioUpload from "@/components/trainingActivities/AudioUpload";
 import EditPlayer from "@/components/trainingActivities/EditPlayer";
 import React, { memo } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOut,
@@ -34,13 +34,7 @@ const AddBingoAudio = ({
       entering={FadeInUp}
       exiting={FadeOut}
       layout={LinearTransition}
-      style={[
-        {
-          backgroundColor: "#fff",
-          paddingHorizontal: 20,
-          marginHorizontal: 20,
-        },
-      ]}
+      style={styles.container}
     >
       <View style={{ paddingHorizontal: 20 }}>
         {isFirst && (
@@ -67,5 +61,13 @@ const AddBingoAudio = ({
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    marginHorizontal: 20,
+  },
+});
 
 export default memo(AddBingoAudio);
