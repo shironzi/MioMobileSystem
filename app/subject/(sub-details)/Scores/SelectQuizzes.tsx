@@ -19,8 +19,13 @@ const SelectAssignment = () => {
     }>();
 
   const handleRoute = (activityId: string) => {
+    const path =
+      role != "teacher"
+        ? "/subject/Scores/ViewQuizzes"
+        : "/subject/(sub-details)/Scores/SelectStudent";
+
     router.push({
-      pathname: "/subject/(sub-details)/Scores/SelectStudent",
+      pathname: path,
       params: {
         students,
         role,

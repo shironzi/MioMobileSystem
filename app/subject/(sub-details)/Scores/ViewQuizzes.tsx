@@ -3,7 +3,11 @@ import globalStyles from "@/styles/globalStyles";
 import React, { useEffect, useState } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCard";
-import { getStudentQuiz, updateStudentQuiz } from "@/utils/query";
+import {
+  getStudentQuiz,
+  getStudentQuizScore,
+  updateStudentQuiz,
+} from "@/utils/query";
 import { router, useLocalSearchParams } from "expo-router";
 import LoadingCard from "@/components/loadingCard";
 import { Quiz } from "@/app/subject/(sub-details)/Scores/ScoresTypes";
@@ -14,10 +18,11 @@ import CompletedAlert from "@/components/Alerts/CompletedAlert";
 const ViewQuizzes = () => {
   useHeaderConfig("Quiz");
 
-  const { studentId, subjectId, activityId } = useLocalSearchParams<{
+  const { studentId, subjectId, activityId, role } = useLocalSearchParams<{
     studentId: string;
     subjectId: string;
     activityId: string;
+    role: string;
   }>();
 
   const [total, setTotal] = useState(0);
@@ -81,13 +86,16 @@ const ViewQuizzes = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const res = await getStudentQuiz(subjectId, activityId, studentId);
+      const res =
+        role === "teacher"
+          ? await getStudentQuiz(subjectId, activityId, studentId)
+          : await getStudentQuizScore(subjectId, activityId);
 
       setTotal(res.total);
       setScore(res.score);
       setDescription(res.description);
       setQuiz(res.quiz);
-      setComment(res.comments);
+      setComment(res.feedback);
 
       setPercentage(() => {
         if (!res.total || res.total === 0) return 0;
@@ -111,7 +119,7 @@ const ViewQuizzes = () => {
       )}
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ rowGap: 20 }}>
+        <View style={{ rowGap: 20, paddingBottom: 50 }}>
           <Score
             percentage={percentage}
             score={score}
@@ -120,12 +128,13 @@ const ViewQuizzes = () => {
           />
 
           <View style={globalStyles.cardContainer}>
-            <Text style={globalStyles.text1}>Comment</Text>
+            <Text style={globalStyles.text1}>Feedback</Text>
             <TextInput
               value={comment}
               onChangeText={setComment}
               style={styles.commentInput}
-              placeholder={"Add your comment here"}
+              placeholder={role === "teacher" ? "Add your comment here" : ""}
+              editable={role === "teacher"}
             />
           </View>
 
@@ -151,16 +160,19 @@ const ViewQuizzes = () => {
                   setScore={(score) =>
                     handleItemScore(item.question_id, score, item.max_point)
                   }
+                  role={role}
                 />
               ))}
             </View>
           </View>
 
-          <Button
-            submit={handleSubmit}
-            cancel={handleCancel}
-            isSubmitting={isSubmitting}
-          />
+          {role === "teacher" && (
+            <Button
+              submit={handleSubmit}
+              cancel={handleCancel}
+              isSubmitting={isSubmitting}
+            />
+          )}
         </View>
       </ScrollView>
     </View>

@@ -78,7 +78,7 @@ const index = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchSubjects();
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);

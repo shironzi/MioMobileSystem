@@ -15,6 +15,7 @@ interface Props {
   studentAnswer?: string;
   options?: string[];
   correct_answer?: string;
+  role?: string;
 }
 
 const AcademicItemCard = ({
@@ -29,6 +30,7 @@ const AcademicItemCard = ({
   options,
   description,
   correct_answer,
+  role,
 }: Props) => {
   return (
     <View style={styles.cardContainer}>
@@ -41,6 +43,7 @@ const AcademicItemCard = ({
               value={score}
               onChangeText={setScore}
               style={[styles.ScoreText, styles.ScoreInput]}
+              editable={role === "teacher"}
             />
             <Text style={styles.ScoreText}>/</Text>
             <Text style={styles.ScoreText}>{totalScore}</Text>
@@ -60,7 +63,7 @@ const AcademicItemCard = ({
             placeholder="Answer"
             textAlignVertical="top"
             value={studentAnswer}
-            editable={false}
+            editable={role === "teacher"}
           />
         )}
 

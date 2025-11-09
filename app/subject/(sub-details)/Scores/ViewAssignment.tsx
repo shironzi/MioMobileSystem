@@ -11,7 +11,11 @@ import React, { useEffect, useState } from "react";
 import useHeaderConfig from "@/utils/HeaderConfig";
 import AcademicItemCard from "@/app/subject/(sub-details)/Scores/AcademicItemCard";
 import { router, useLocalSearchParams } from "expo-router";
-import { getStudentAssignment, submitAssignmentEval } from "@/utils/assignment";
+import {
+  getAssignmentScore,
+  getStudentAssignment,
+  submitAssignmentEval,
+} from "@/utils/assignment";
 import CancelAlert from "@/components/Alerts/CancelAlert";
 import LoadingCard from "@/components/loadingCard";
 import CompletedAlert from "@/components/Alerts/CompletedAlert";
@@ -19,10 +23,11 @@ import CompletedAlert from "@/components/Alerts/CompletedAlert";
 const ViewAssignment = () => {
   useHeaderConfig("Assignment");
 
-  const { studentId, subjectId, activityId } = useLocalSearchParams<{
+  const { studentId, subjectId, activityId, role } = useLocalSearchParams<{
     studentId: string;
     subjectId: string;
     activityId: string;
+    role: string;
   }>();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -98,12 +103,16 @@ const ViewAssignment = () => {
 
   useEffect(() => {
     const getAssignment = async () => {
-      const res = await getStudentAssignment(subjectId, activityId, studentId);
+      const res =
+        role === "teacher"
+          ? await getStudentAssignment(subjectId, activityId, studentId)
+          : await getAssignmentScore(subjectId, activityId);
 
       setLoading(false);
       if (res.success) {
+        console.log(res.assignment);
         setStudentAnswer(res.assignment);
-        setComment(res.assignment.comments);
+        setComment(res.assignment.feedback);
       } else {
         setShowModal(true);
         setMessage(res.message);
@@ -139,48 +148,47 @@ const ViewAssignment = () => {
           <AcademicItemCard
             title={"Description"}
             question={studentAnswer?.description}
-            hasScore={false}
-          />
-
-          <AcademicItemCard
-            title={"Question 1"}
             score={studentAnswer?.score.toString() ?? ""}
             setScore={setScore}
             totalScore={studentAnswer?.total.toString()}
             answerType={studentAnswer?.submission_type}
             studentAnswer={studentAnswer?.work}
+            role={role}
           />
 
           <View style={globalStyles.cardContainer}>
-            <Text style={globalStyles.text1}>Comments</Text>
+            <Text style={globalStyles.text1}>Feedback</Text>
             <TextInput
               style={styles.commentTextBox}
               multiline={true}
               textAlignVertical={"top"}
               value={comment}
               onChangeText={setComment}
+              editable={role === "teacher"}
             />
           </View>
         </View>
 
-        <View style={[globalStyles.buttonContainer, { marginTop: 25 }]}>
-          <TouchableOpacity
-            style={globalStyles.inactivityButton}
-            onPress={() => setShowCancelAlert(true)}
-            disabled={isSubmitting}
-          >
-            <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={globalStyles.submitButton}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <Text style={globalStyles.submitButtonText}>
-              {isSubmitting ? "Saving..." : "Save"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {role === "teacher" && (
+          <View style={[globalStyles.buttonContainer, { marginTop: 25 }]}>
+            <TouchableOpacity
+              style={globalStyles.inactivityButton}
+              onPress={() => setShowCancelAlert(true)}
+              disabled={isSubmitting}
+            >
+              <Text style={globalStyles.inactivityButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={globalStyles.submitButton}
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+            >
+              <Text style={globalStyles.submitButtonText}>
+                {isSubmitting ? "Saving..." : "Save"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {showCancelAlert && (
           <CancelAlert

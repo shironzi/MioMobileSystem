@@ -1272,6 +1272,23 @@ export async function getStudentQuiz(
   }
 }
 
+export async function getStudentQuizScore(subjectId: string, quizId: string) {
+  try {
+    const { data } = await api.get(
+      `/subject/${subjectId}/quiz/score/student/${quizId}`,
+    );
+    return data;
+  } catch (err: any) {
+    if (err.response) {
+      return err.response.status;
+    } else if (err.request) {
+      return { error: "No response from server" };
+    } else {
+      return { error: err.message };
+    }
+  }
+}
+
 export async function updateStudentQuiz(
   subjectId: string,
   quizId: string,
