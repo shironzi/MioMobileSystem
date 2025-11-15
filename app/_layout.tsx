@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { PermissionsAndroid, SafeAreaView, Vibration } from "react-native";
 import messaging from "@react-native-firebase/messaging";
@@ -8,6 +8,8 @@ import FireAlertModal from "@/components/modals/FireAlertModal";
 import FloodAlertModal from "@/components/modals/FloodAlertModal";
 import SchoolThreat from "@/components/modals/SchoolThreat";
 import PowerOutageModal from "@/components/modals/PowerOutageModal";
+import { verifyToken } from "@/utils/auth";
+import * as SecureStore from "expo-secure-store";
 
 export default function Layout() {
   const [showAlert, setShowAlert] = useState(false);
@@ -88,11 +90,28 @@ export default function Layout() {
     });
   }
 
+  const verifyAuth = async () => {
+    const token = await SecureStore.getItemAsync("token");
+
+    // verifying authorization
+    if (token) {
+      const res = await verifyToken();
+
+      if (res.success) {
+        router.replace("/(drawer)/(tabs)");
+      }
+    } else {
+      router.replace("/");
+    }
+  };
+
   useEffect(() => {
     messageListener();
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
+
+    verifyAuth();
   }, []);
 
   return (

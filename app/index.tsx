@@ -1,4 +1,4 @@
-import login, { verifyToken } from "@/utils/auth";
+import login from "@/utils/auth";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -133,22 +133,12 @@ const Index = () => {
       try {
         const storedEmail = await SecureStore.getItemAsync("emailAddress");
         const storedPassword = await SecureStore.getItemAsync("password");
-        const token = await SecureStore.getItemAsync("token");
 
         // Restore email & password if "Remember Me" was used
         if (storedEmail && storedPassword) {
           setValue("email", storedEmail);
           setValue("password", storedPassword);
           setRememberMe(true);
-        }
-
-        // Navigate depending on token
-        if (token) {
-          const res = await verifyToken();
-
-          if (res.success) {
-            router.replace("/(drawer)/(tabs)");
-          }
         }
 
         setLoading(false);
