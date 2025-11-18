@@ -17,6 +17,8 @@ import {
   RefreshControl,
 } from "react-native";
 import NoSubjects from "@/components/noData/NoSubjects";
+import { verifyToken } from "@/utils/auth";
+import { router } from "expo-router";
 
 const data = [
   { label: "All", value: "all" },
@@ -75,12 +77,31 @@ const index = () => {
     }
   };
 
+  const verifyAuth = async () => {
+    const token = await SecureStore.getItemAsync("token");
+
+    // verifying authorization
+    if (token) {
+      const res = await verifyToken();
+
+      if (res.success) {
+        router.replace("/(drawer)/(tabs)");
+      } else {
+        router.replace("/");
+      }
+    } else {
+      router.replace("/");
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchSubjects();
     }, 5000);
 
     return () => clearTimeout(timer);
+
+    verifyAuth();
   }, []);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {

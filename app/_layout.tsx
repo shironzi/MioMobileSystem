@@ -99,6 +99,8 @@ export default function Layout() {
 
       if (res.success) {
         router.replace("/(drawer)/(tabs)");
+      } else {
+        router.replace("/");
       }
     } else {
       router.replace("/");
