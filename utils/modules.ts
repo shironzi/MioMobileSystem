@@ -144,7 +144,6 @@ const getMimeType = async (url: string): Promise<string> => {
     const response = await fetch(url, { method: "HEAD" });
     return response.headers.get("Content-Type") ?? "unrecognized";
   } catch (error) {
-    console.error("Failed to get MIME type:", error);
     return "unrecognized";
   }
 };

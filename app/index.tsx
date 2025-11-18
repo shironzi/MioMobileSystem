@@ -142,9 +142,7 @@ const Index = () => {
         }
 
         setLoading(false);
-      } catch (error) {
-        console.error("Error checking stored credentials:", error);
-      }
+      } catch (error) {}
     };
 
     checkStoredCredentials();
