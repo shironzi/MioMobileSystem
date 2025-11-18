@@ -108,15 +108,16 @@ const ViewAssignment = () => {
           ? await getStudentAssignment(subjectId, activityId, studentId)
           : await getAssignmentScore(subjectId, activityId);
 
-      setLoading(false);
       if (res.success) {
-        console.log(res.assignment);
         setStudentAnswer(res.assignment);
         setComment(res.assignment.feedback);
       } else {
         setShowModal(true);
+        console.log(res.message);
         setMessage(res.message);
       }
+
+      setLoading(false);
     };
 
     getAssignment();
@@ -131,9 +132,6 @@ const ViewAssignment = () => {
       <CompletedAlert
         message={message}
         handleButton={() => {
-          router.back();
-          router.back();
-          router.back();
           setShowModal(false);
         }}
       />

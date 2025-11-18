@@ -99,12 +99,10 @@ export default function Layout() {
 
       if (res.success) {
         router.replace("/(drawer)/(tabs)");
-      } else {
-        router.replace("/");
+        return;
       }
-    } else {
-      router.replace("/");
     }
+    router.replace("/");
   };
 
   useEffect(() => {

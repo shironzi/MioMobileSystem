@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import { router } from "expo-router";
+import * as Updates from "expo-updates";
 
 const IPADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
@@ -37,7 +37,6 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response?.status;
-    console.log(status);
 
     if (status === 401) {
       await SecureStore.deleteItemAsync("token");
@@ -49,7 +48,8 @@ api.interceptors.response.use(
       await SecureStore.deleteItemAsync("photo_url");
       await SecureStore.deleteItemAsync("gradeLevel");
       await SecureStore.deleteItemAsync("studentid");
-      router.replace("/");
+
+      await Updates.reloadAsync();
     }
 
     if (!error.response) {

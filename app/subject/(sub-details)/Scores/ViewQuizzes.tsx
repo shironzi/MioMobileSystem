@@ -91,16 +91,21 @@ const ViewQuizzes = () => {
           ? await getStudentQuiz(subjectId, activityId, studentId)
           : await getStudentQuizScore(subjectId, activityId);
 
-      setTotal(res.total);
-      setScore(res.score);
-      setDescription(res.description);
-      setQuiz(res.quiz);
-      setComment(res.feedback);
+      if (res.success) {
+        setTotal(res.total);
+        setScore(res.score);
+        setDescription(res.description);
+        setQuiz(res.quiz);
+        setComment(res.feedback);
 
-      setPercentage(() => {
-        if (!res.total || res.total === 0) return 0;
-        return (res.score / res.total) * 100;
-      });
+        setPercentage(() => {
+          if (!res.total || res.total === 0) return 0;
+          return (res.score / res.total) * 100;
+        });
+      } else {
+        setModalMessage(res.message);
+        setShowModal(true);
+      }
 
       setLoading(false);
     };
@@ -112,12 +117,22 @@ const ViewQuizzes = () => {
     return <LoadingCard />;
   }
 
+  if (showModal) {
+    return (
+      <CompletedAlert
+        message={modalMessage}
+        handleButton={() => {
+          router.back();
+          router.back();
+          router.back();
+          setShowModal(false);
+        }}
+      />
+    );
+  }
+
   return (
     <View style={[globalStyles.container]}>
-      {showModal && (
-        <CompletedAlert message={modalMessage} handleButton={handleCancel} />
-      )}
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ rowGap: 20, paddingBottom: 50 }}>
           <Score
