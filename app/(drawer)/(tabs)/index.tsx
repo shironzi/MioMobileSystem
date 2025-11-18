@@ -76,7 +76,11 @@ const index = () => {
   };
 
   useEffect(() => {
-    fetchSubjects();
+    const timer = setTimeout(() => {
+      fetchSubjects();
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {
