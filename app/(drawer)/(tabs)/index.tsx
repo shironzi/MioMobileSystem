@@ -95,13 +95,12 @@ const index = () => {
   };
 
   useEffect(() => {
+    verifyAuth();
     const timer = setTimeout(() => {
       fetchSubjects();
     }, 5000);
 
     return () => clearTimeout(timer);
-
-    verifyAuth();
   }, []);
 
   const filteredSubjects = useMemo<Subject[] | null>(() => {
