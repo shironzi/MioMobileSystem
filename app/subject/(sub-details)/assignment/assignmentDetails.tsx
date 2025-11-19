@@ -108,7 +108,6 @@ const AssignmentDetails = () => {
             Alert.alert("Error", "Failed to fetch the assignment details.");
           }
         } catch (error) {
-          console.error("Error fetching assignment: ", error);
           Alert.alert("Error", "Something went wrong. Please try again.");
           setLoading(false);
         }

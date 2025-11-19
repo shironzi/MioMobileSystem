@@ -113,7 +113,6 @@ const ViewAssignment = () => {
         setComment(res.assignment.feedback);
       } else {
         setShowModal(true);
-        console.log(res.message);
         setMessage(res.message);
       }
 
