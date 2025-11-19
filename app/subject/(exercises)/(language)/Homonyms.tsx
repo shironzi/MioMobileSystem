@@ -180,6 +180,8 @@ const Homonyms = () => {
         audioLogs,
       );
 
+      console.log(res);
+
       if (res.success) {
         router.push({
           pathname: "/subject/(exercises)/AuditoryScores",
@@ -289,7 +291,6 @@ const Homonyms = () => {
           difficulty={difficulty}
           totalItems={items.length}
           completedItems={currentItem}
-          instruction="Guess the picture"
         />
       </View>
       <View

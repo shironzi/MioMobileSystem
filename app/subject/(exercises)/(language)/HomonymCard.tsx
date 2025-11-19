@@ -35,6 +35,8 @@ const HomonymCard = ({
   const activitySentence1 = activity.sentence_1.split(" ");
   const activitySentence2 = activity.sentence_2.split(" ");
 
+  const choices = activity.choices;
+
   const sentenceError1 = inputError?.index.includes(0);
   const sentenceError2 = inputError?.index.includes(1);
 
@@ -78,7 +80,7 @@ const HomonymCard = ({
         </TouchableOpacity>
         <View style={styles.wordContainer}>
           {activitySentence1.map((word, i) => {
-            if (/^_+$/.test(word)) {
+            if (/^_+$/.test(word) || choices.includes(word)) {
               return (
                 <View
                   key={i}
@@ -121,7 +123,7 @@ const HomonymCard = ({
         </TouchableOpacity>
         <View style={styles.wordContainer}>
           {activitySentence2.map((word, i) => {
-            if (/^_+$/.test(word)) {
+            if (/^_+$/.test(word) || choices.includes(word)) {
               return (
                 <View
                   key={i}

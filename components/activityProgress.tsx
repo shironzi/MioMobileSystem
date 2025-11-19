@@ -5,7 +5,7 @@ type ActivityProgressProps = {
   difficulty: string;
   totalItems: number;
   completedItems: number;
-  instruction: string;
+  instruction?: string;
 };
 
 const ActivityProgress = ({
@@ -34,10 +34,12 @@ const ActivityProgress = ({
         ))}
       </View>
 
-      <View style={styles.instructionsContainer}>
-        <Text style={styles.instructionsTitle}>Piddie Tips!</Text>
-        <Text style={styles.instructionsText}>{instruction}</Text>
-      </View>
+      {instruction && (
+        <View style={styles.instructionsContainer}>
+          <Text style={styles.instructionsTitle}>Piddie Tips!</Text>
+          <Text style={styles.instructionsText}>{instruction}</Text>
+        </View>
+      )}
     </View>
   );
 };
